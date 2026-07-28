@@ -77,17 +77,22 @@ self-referential, and cross-organisation links are rejected.
 
 ## Property matching
 
-- Buyer requirements are managed through `/buyers`, including budget, bedroom,
-  bathroom, area, type, location, postal-code, and feature preferences.
+- Buyer and tenant requirements are managed through `/buyers` and `/tenants`.
+  Criteria include budget, bedrooms, bathrooms, area, property type, listing
+  availability, location, postal codes, geographic radius, required features,
+  named nearby schools, and minimum transport score.
 - `POST /buyers/{buyer}/generate-matches` scores available properties for one applicant.
+- `POST /tenants/{tenant}/generate-matches` scores available and to-let
+  properties for one tenant applicant.
 - `POST /properties/{property}/generate-matches` scores active applicants for a listing.
-- `GET /property-matches` filters persisted matches by buyer, property, status,
-  and minimum score.
+- `GET /property-matches` filters persisted matches by applicant type, buyer,
+  tenant, property, status, and minimum score.
 - `PATCH /property-matches/{match}` records interest, dismissal, viewing state,
   and agent notes.
 
-Generated matches are organisation-scoped, de-duplicated, and create in-app
-notifications for buyers linked to a user account.
+Generated matches are organisation-scoped, de-duplicated per applicant and
+property, retain distance and component scores, and create in-app notifications
+for buyer or tenant applicants linked to a user account.
 
 ## Offers
 

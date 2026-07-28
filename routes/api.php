@@ -250,6 +250,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('property-matches', [ApiPropertyMatchController::class, 'index'])->name('property-matches.index');
         Route::patch('property-matches/{property_match}', [ApiPropertyMatchController::class, 'update'])->name('property-matches.update');
         Route::post('buyers/{buyer}/generate-matches', [ApiPropertyMatchController::class, 'forBuyer'])->name('buyers.generate-matches');
+        Route::post('tenants/{tenant}/generate-matches', [ApiPropertyMatchController::class, 'forTenant'])->name('tenants.generate-matches');
         Route::post('properties/{property}/generate-matches', [ApiPropertyMatchController::class, 'forProperty'])->name('properties.generate-matches');
     });
 

@@ -10,8 +10,11 @@ class PropertyMatch extends Model
 {
     use HasFactory;
 
+    protected $appends = ['applicant_type', 'applicant_interest_level', 'viewed_by_applicant'];
+
     protected $fillable = [
         'buyer_id',
+        'tenant_id',
         'property_id',
         'match_score',
         'match_criteria',
@@ -20,6 +23,10 @@ class PropertyMatch extends Model
         'size_match',
         'features_match',
         'type_match',
+        'school_match',
+        'transport_match',
+        'distance_km',
+        'availability',
         'status',
         'viewed_by_buyer',
         'buyer_interest_level',
@@ -27,7 +34,7 @@ class PropertyMatch extends Model
         'match_date',
         'last_updated',
         'auto_generated',
-        'team_id'
+        'team_id',
     ];
 
     protected $casts = [
@@ -37,12 +44,15 @@ class PropertyMatch extends Model
         'size_match' => 'decimal:2',
         'features_match' => 'decimal:2',
         'type_match' => 'decimal:2',
+        'school_match' => 'decimal:2',
+        'transport_match' => 'decimal:2',
+        'distance_km' => 'decimal:2',
         'viewed_by_buyer' => 'boolean',
         'auto_generated' => 'boolean',
         'match_date' => 'datetime',
         'last_updated' => 'datetime',
         'match_criteria' => 'array',
-        'buyer_interest_level' => 'integer'
+        'buyer_interest_level' => 'integer',
     ];
 
     public function buyer(): BelongsTo
@@ -53,6 +63,31 @@ class PropertyMatch extends Model
     public function property(): BelongsTo
     {
         return $this->belongsTo(Property::class);
+    }
+
+    public function tenant(): BelongsTo
+    {
+        return $this->belongsTo(Tenant::class);
+    }
+
+    public function getApplicantAttribute(): Buyer|Tenant|null
+    {
+        return $this->buyer ?? $this->tenant;
+    }
+
+    public function getApplicantTypeAttribute(): ?string
+    {
+        return $this->buyer_id ? 'buyer' : ($this->tenant_id ? 'tenant' : null);
+    }
+
+    public function getApplicantInterestLevelAttribute(): ?int
+    {
+        return $this->buyer_interest_level;
+    }
+
+    public function getViewedByApplicantAttribute(): bool
+    {
+        return (bool) $this->viewed_by_buyer;
     }
 
     public function team(): BelongsTo
@@ -87,7 +122,7 @@ class PropertyMatch extends Model
             'location' => $this->location_match,
             'size' => $this->size_match,
             'features' => $this->features_match,
-            'type' => $this->type_match
+            'type' => $this->type_match,
         ];
 
         return array_search(min($criteria), $criteria);
@@ -100,7 +135,7 @@ class PropertyMatch extends Model
             'location' => $this->location_match,
             'size' => $this->size_match,
             'features' => $this->features_match,
-            'type' => $this->type_match
+            'type' => $this->type_match,
         ];
 
         return array_search(max($criteria), $criteria);
@@ -108,7 +143,7 @@ class PropertyMatch extends Model
 
     public function getBuyerInterestText(): string
     {
-        return match($this->buyer_interest_level) {
+        return match ($this->buyer_interest_level) {
             1 => 'Not Interested',
             2 => 'Low Interest',
             3 => 'Moderate Interest',
@@ -122,7 +157,7 @@ class PropertyMatch extends Model
     {
         $this->update([
             'viewed_by_buyer' => true,
-            'last_updated' => now()
+            'last_updated' => now(),
         ]);
     }
 
@@ -130,7 +165,7 @@ class PropertyMatch extends Model
     {
         $this->update([
             'buyer_interest_level' => $level,
-            'last_updated' => now()
+            'last_updated' => now(),
         ]);
     }
 

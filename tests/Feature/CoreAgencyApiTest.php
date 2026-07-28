@@ -10,8 +10,10 @@ use App\Models\Company;
 use App\Models\ComplianceItem;
 use App\Models\Contact;
 use App\Models\Document;
+use App\Models\Neighborhood;
 use App\Models\Offer;
 use App\Models\Property;
+use App\Models\PropertyFeature;
 use App\Models\ServiceIntegration;
 use App\Models\Team;
 use App\Models\Tenant;
@@ -667,6 +669,106 @@ class CoreAgencyApiTest extends TestCase
         ])->assertOk()
             ->assertJsonPath('data.status', 'interested')
             ->assertJsonPath('data.buyer_interest_level', 5);
+
+        Notification::assertSentTo($user, NewPropertyMatches::class);
+    }
+
+    public function test_tenants_match_to_let_properties_by_radius_features_schools_and_transport(): void
+    {
+        Notification::fake();
+        [$user, $team] = $this->actingAsTeamMember();
+
+        $tenantResponse = $this->postJson('/api/v1/tenants', [
+            'name' => 'Taylor Tenant',
+            'email' => 'taylor.tenant@example.test',
+            'user_id' => $user->id,
+            'search_criteria' => [
+                'max_price' => 2500,
+                'min_bedrooms' => 2,
+                'property_type' => 'apartment',
+                'availability' => ['to_let'],
+                'latitude' => 51.5007,
+                'longitude' => -0.1246,
+                'radius_km' => 5,
+                'required_features' => ['balcony'],
+                'required_schools' => ['Oak Academy'],
+                'min_transit_score' => 70,
+            ],
+        ])->assertCreated()
+            ->assertJsonPath('data.team_id', $team->id)
+            ->assertJsonPath('data.search_criteria.radius_km', 5);
+        $tenantId = $tenantResponse->json('data.id');
+
+        $neighborhood = Neighborhood::create([
+            'name' => 'Westminster',
+            'description' => 'Central neighbourhood',
+            'schools' => [['name' => 'Oak Academy']],
+            'amenities' => ['underground'],
+            'crime_rate' => 'low',
+            'transit_score' => 90,
+        ]);
+        $property = Property::factory()->for($team)->create([
+            'status' => 'to_let',
+            'price' => 2200,
+            'bedrooms' => 2,
+            'property_type' => 'apartment',
+            'location' => 'Westminster',
+            'latitude' => 51.501,
+            'longitude' => -0.125,
+            'transit_score' => 88,
+            'neighborhood_id' => $neighborhood->id,
+        ]);
+        PropertyFeature::create([
+            'property_id' => $property->id,
+            'feature_name' => 'balcony',
+        ]);
+        $farProperty = Property::factory()->for($team)->create([
+            'status' => 'to_let',
+            'price' => 2100,
+            'bedrooms' => 2,
+            'property_type' => 'apartment',
+            'location' => 'Manchester',
+            'latitude' => 53.4808,
+            'longitude' => -2.2426,
+            'transit_score' => 90,
+            'neighborhood_id' => $neighborhood->id,
+        ]);
+        PropertyFeature::create([
+            'property_id' => $farProperty->id,
+            'feature_name' => 'balcony',
+        ]);
+
+        $generate = $this->postJson("/api/v1/tenants/$tenantId/generate-matches")
+            ->assertOk()
+            ->assertJsonPath('meta.total', 1)
+            ->assertJsonPath('data.0.tenant_id', $tenantId)
+            ->assertJsonPath('data.0.buyer_id', null)
+            ->assertJsonPath('data.0.property_id', $property->id)
+            ->assertJsonPath('data.0.applicant_type', 'tenant')
+            ->assertJsonPath('data.0.availability', 'to_let')
+            ->assertJsonPath('data.0.school_match', '100.00')
+            ->assertJsonPath('data.0.transport_match', '100.00')
+            ->assertJsonPath('data.0.distance_km', fn ($distance) => (float) $distance < 1);
+
+        $matchId = $generate->json('data.0.id');
+        $this->patchJson("/api/v1/property-matches/$matchId", [
+            'status' => 'interested',
+            'viewed_by_applicant' => true,
+            'applicant_interest_level' => 4,
+        ])->assertOk()
+            ->assertJsonPath('data.applicant_interest_level', 4)
+            ->assertJsonPath('data.viewed_by_applicant', true);
+        $this->getJson("/api/v1/property-matches?applicant_type=tenant&tenant_id=$tenantId")
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.id', $matchId);
+
+        $otherTenant = Tenant::create([
+            'team_id' => Team::factory()->create()->id,
+            'name' => 'Hidden tenant',
+            'email' => 'hidden.tenant@example.test',
+        ]);
+        $this->postJson("/api/v1/tenants/{$otherTenant->id}/generate-matches")->assertNotFound();
 
         Notification::assertSentTo($user, NewPropertyMatches::class);
     }

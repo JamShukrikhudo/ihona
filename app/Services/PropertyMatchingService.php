@@ -5,130 +5,87 @@ namespace App\Services;
 use App\Models\Buyer;
 use App\Models\Property;
 use App\Models\PropertyMatch;
+use App\Models\Tenant;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
 class PropertyMatchingService
 {
-    public function findMatches(Buyer $buyer, int $limit = 10): Collection
+    public function findMatches(Buyer|Tenant $applicant, int $limit = 10): Collection
     {
-        $criteria = $buyer->search_criteria ?? [];
+        $criteria = $applicant->search_criteria ?? [];
+        $query = Property::query()
+            ->where('team_id', $applicant->team_id)
+            ->whereIn('status', $this->availability($applicant, $criteria));
 
-        $query = Property::where('status', 'available')
-            ->where('team_id', $buyer->team_id);
+        $this->applyDatabaseCriteria($query, $criteria);
 
-        // Apply buyer criteria filters
-        if (isset($criteria['min_price']) || isset($criteria['max_price'])) {
-            $query->whereBetween('price', [
-                $criteria['min_price'] ?? 0,
-                $criteria['max_price'] ?? PHP_INT_MAX
-            ]);
-        }
+        $properties = $query->with(['features', 'neighborhood'])
+            ->limit(min(max($limit * 20, 100), 1000))
+            ->get()
+            ->filter(fn (Property $property) => $this->meetsCalculatedCriteria($criteria, $property));
 
-        if (isset($criteria['property_type'])) {
-            $query->where('property_type', $criteria['property_type']);
-        }
-
-        if (isset($criteria['min_bedrooms'])) {
-            $query->where('bedrooms', '>=', $criteria['min_bedrooms']);
-        }
-
-        if (isset($criteria['max_bedrooms'])) {
-            $query->where('bedrooms', '<=', $criteria['max_bedrooms']);
-        }
-
-        if (isset($criteria['min_bathrooms'])) {
-            $query->where('bathrooms', '>=', $criteria['min_bathrooms']);
-        }
-
-        if (isset($criteria['location']) && !empty($criteria['location'])) {
-            $query->where('location', 'like', '%' . $criteria['location'] . '%');
-        }
-
-        if (isset($criteria['postal_codes']) && is_array($criteria['postal_codes'])) {
-            $query->whereIn('postal_code', $criteria['postal_codes']);
-        }
-
-        $properties = $query->limit($limit * 2)->get(); // Get more to calculate scores
-
-        return $this->calculateMatchScores($buyer, $properties)->take($limit);
+        return $this->calculateMatchScores($applicant, $properties)->take($limit);
     }
 
-    public function calculateMatchScore(Buyer $buyer, Property $property): array
+    public function calculateMatchScore(Buyer|Tenant $applicant, Property $property): array
     {
-        $criteria = $buyer->search_criteria ?? [];
-        $scores = [];
+        $criteria = $applicant->search_criteria ?? [];
+        $distance = $this->distanceFor($criteria, $property);
+        $scores = [
+            'price_match' => $this->calculatePriceMatch($criteria, (float) $property->price),
+            'location_match' => $this->calculateLocationMatch($criteria, $property, $distance),
+            'size_match' => $this->calculateSizeMatch($criteria, $property),
+            'features_match' => $this->calculateFeaturesMatch($criteria, $property),
+            'type_match' => $this->calculateTypeMatch($criteria, $property),
+            'school_match' => $this->calculateSchoolMatch($criteria, $property),
+            'transport_match' => $this->calculateTransportMatch($criteria, $property),
+        ];
 
-        // Price match (30% weight)
-        $scores['price_match'] = $this->calculatePriceMatch($criteria, $property->price);
-
-        // Location match (25% weight)
-        $scores['location_match'] = $this->calculateLocationMatch($criteria, $property);
-
-        // Size match (20% weight)
-        $scores['size_match'] = $this->calculateSizeMatch($criteria, $property);
-
-        // Features match (15% weight)
-        $scores['features_match'] = $this->calculateFeaturesMatch($criteria, $property);
-
-        // Type match (10% weight)
-        $scores['type_match'] = $this->calculateTypeMatch($criteria, $property);
-
-        // Calculate overall score
         $overallScore = (
-            $scores['price_match'] * 0.30 +
-            $scores['location_match'] * 0.25 +
-            $scores['size_match'] * 0.20 +
-            $scores['features_match'] * 0.15 +
-            $scores['type_match'] * 0.10
+            $scores['price_match'] * 0.20
+            + $scores['location_match'] * 0.20
+            + $scores['size_match'] * 0.15
+            + $scores['features_match'] * 0.15
+            + $scores['type_match'] * 0.10
+            + $scores['school_match'] * 0.10
+            + $scores['transport_match'] * 0.10
         );
 
-        return [
-            'match_score' => round($overallScore, 2),
-            'price_match' => round($scores['price_match'], 2),
-            'location_match' => round($scores['location_match'], 2),
-            'size_match' => round($scores['size_match'], 2),
-            'features_match' => round($scores['features_match'], 2),
-            'type_match' => round($scores['type_match'], 2),
-        ];
+        return collect($scores)
+            ->map(fn (float $score) => round($score, 2))
+            ->merge([
+                'match_score' => round($overallScore, 2),
+                'distance_km' => $distance === null ? null : round($distance, 2),
+                'availability' => $property->status,
+            ])->all();
     }
 
-    public function createMatch(Buyer $buyer, Property $property, array $scores): PropertyMatch
+    public function createMatch(Buyer|Tenant $applicant, Property $property, array $scores): PropertyMatch
     {
-        // Check if match already exists
-        $existingMatch = PropertyMatch::where('buyer_id', $buyer->id)
-            ->where('property_id', $property->id)
-            ->first();
+        $applicantKey = $applicant instanceof Buyer ? 'buyer_id' : 'tenant_id';
+        $otherKey = $applicant instanceof Buyer ? 'tenant_id' : 'buyer_id';
 
-        if ($existingMatch) {
-            $existingMatch->update($scores);
-            return $existingMatch;
-        }
-
-        return PropertyMatch::create(array_merge([
-            'buyer_id' => $buyer->id,
+        return PropertyMatch::updateOrCreate([
+            $applicantKey => $applicant->id,
             'property_id' => $property->id,
-            'team_id' => $buyer->team_id,
+        ], array_merge([
+            $otherKey => null,
+            'team_id' => $applicant->team_id,
             'auto_generated' => true,
-            'match_criteria' => $buyer->search_criteria
+            'match_criteria' => $applicant->search_criteria,
+            'last_updated' => now(),
         ], $scores));
     }
 
     public function generateMatchesForBuyer(Buyer $buyer): Collection
     {
-        $properties = $this->findMatches($buyer, 20);
-        $matches = collect();
+        return $this->generateMatchesForApplicant($buyer);
+    }
 
-        foreach ($properties as $property) {
-            $scores = $this->calculateMatchScore($buyer, $property);
-
-            // Only create matches with score > 50%
-            if ($scores['match_score'] >= 50) {
-                $match = $this->createMatch($buyer, $property, $scores);
-                $matches->push($match);
-            }
-        }
-
-        return $matches;
+    public function generateMatchesForTenant(Tenant $tenant): Collection
+    {
+        return $this->generateMatchesForApplicant($tenant);
     }
 
     public function generateMatchesForProperty(Property $property): Collection
@@ -137,150 +94,246 @@ class PropertyMatchingService
             ->where('team_id', $property->team_id)
             ->whereNotNull('search_criteria')
             ->get();
+        $tenants = Tenant::where('status', 'active')
+            ->where('team_id', $property->team_id)
+            ->whereNotNull('search_criteria')
+            ->get();
 
-        $matches = collect();
+        return $buyers->concat($tenants)
+            ->filter(fn (Buyer|Tenant $applicant) => $this->propertyMatchesCriteria($applicant, $property))
+            ->map(function (Buyer|Tenant $applicant) use ($property) {
+                $scores = $this->calculateMatchScore($applicant, $property);
 
-        foreach ($buyers as $buyer) {
-            $scores = $this->calculateMatchScore($buyer, $property);
-
-            // Only create matches with score > 50%
-            if ($scores['match_score'] >= 50) {
-                $match = $this->createMatch($buyer, $property, $scores);
-                $matches->push($match);
-            }
-        }
-
-        return $matches;
+                return $scores['match_score'] >= 50
+                    ? $this->createMatch($applicant, $property, $scores)
+                    : null;
+            })->filter()->values();
     }
 
-    private function calculateMatchScores(Buyer $buyer, Collection $properties): Collection
+    private function generateMatchesForApplicant(Buyer|Tenant $applicant): Collection
     {
-        return $properties->map(function ($property) use ($buyer) {
-            $scores = $this->calculateMatchScore($buyer, $property);
+        return $this->findMatches($applicant, 20)
+            ->map(function (Property $property) use ($applicant) {
+                $scores = $this->calculateMatchScore($applicant, $property);
+
+                return $scores['match_score'] >= 50
+                    ? $this->createMatch($applicant, $property, $scores)
+                    : null;
+            })->filter()->values();
+    }
+
+    private function propertyMatchesCriteria(Buyer|Tenant $applicant, Property $property): bool
+    {
+        $criteria = $applicant->search_criteria ?? [];
+
+        if (! in_array($property->status, $this->availability($applicant, $criteria), true)) {
+            return false;
+        }
+
+        $property->loadMissing(['features', 'neighborhood']);
+
+        return $this->meetsSimpleCriteria($criteria, $property)
+            && $this->meetsCalculatedCriteria($criteria, $property);
+    }
+
+    private function availability(Buyer|Tenant $applicant, array $criteria): array
+    {
+        return $criteria['availability'] ?? ($applicant instanceof Tenant
+            ? ['to_let', 'available']
+            : ['available']);
+    }
+
+    private function applyDatabaseCriteria(Builder $query, array $criteria): void
+    {
+        if (isset($criteria['min_price'])) {
+            $query->where('price', '>=', $criteria['min_price']);
+        }
+        if (isset($criteria['max_price'])) {
+            $query->where('price', '<=', $criteria['max_price']);
+        }
+        if (isset($criteria['property_type'])) {
+            $query->where('property_type', $criteria['property_type']);
+        }
+        if (isset($criteria['min_bedrooms'])) {
+            $query->where('bedrooms', '>=', $criteria['min_bedrooms']);
+        }
+        if (isset($criteria['max_bedrooms'])) {
+            $query->where('bedrooms', '<=', $criteria['max_bedrooms']);
+        }
+        if (isset($criteria['min_bathrooms'])) {
+            $query->where('bathrooms', '>=', $criteria['min_bathrooms']);
+        }
+        if (filled($criteria['location'] ?? null)) {
+            $query->where('location', 'like', '%'.$criteria['location'].'%');
+        }
+        if (! empty($criteria['postal_codes'])) {
+            $query->whereIn('postal_code', $criteria['postal_codes']);
+        }
+        foreach ($criteria['required_features'] ?? [] as $feature) {
+            $query->whereHas('features', fn (Builder $query) => $query->where('feature_name', $feature));
+        }
+    }
+
+    private function meetsSimpleCriteria(array $criteria, Property $property): bool
+    {
+        return (! isset($criteria['min_price']) || $property->price >= $criteria['min_price'])
+            && (! isset($criteria['max_price']) || $property->price <= $criteria['max_price'])
+            && (! isset($criteria['property_type']) || $property->property_type === $criteria['property_type'])
+            && (! isset($criteria['min_bedrooms']) || $property->bedrooms >= $criteria['min_bedrooms'])
+            && (! isset($criteria['max_bedrooms']) || $property->bedrooms <= $criteria['max_bedrooms'])
+            && (! isset($criteria['min_bathrooms']) || $property->bathrooms >= $criteria['min_bathrooms'])
+            && (! filled($criteria['location'] ?? null) || str_contains(mb_strtolower($property->location), mb_strtolower($criteria['location'])))
+            && (empty($criteria['postal_codes']) || in_array($property->postal_code, $criteria['postal_codes'], true))
+            && collect($criteria['required_features'] ?? [])->diff(
+                $property->features->pluck('feature_name')
+            )->isEmpty();
+    }
+
+    private function meetsCalculatedCriteria(array $criteria, Property $property): bool
+    {
+        $distance = $this->distanceFor($criteria, $property);
+        if (isset($criteria['radius_km']) && ($distance === null || $distance > $criteria['radius_km'])) {
+            return false;
+        }
+        if ($this->calculateSchoolMatch($criteria, $property) < 100 && ! empty($criteria['required_schools'])) {
+            return false;
+        }
+
+        $transit = $this->transitScore($property);
+
+        return ! isset($criteria['min_transit_score'])
+            || ($transit !== null && $transit >= $criteria['min_transit_score']);
+    }
+
+    private function calculateMatchScores(Buyer|Tenant $applicant, Collection $properties): Collection
+    {
+        return $properties->map(function (Property $property) use ($applicant) {
+            $scores = $this->calculateMatchScore($applicant, $property);
             $property->match_score = $scores['match_score'];
             $property->match_details = $scores;
+
             return $property;
-        })->sortByDesc('match_score');
+        })->sortByDesc('match_score')->values();
     }
 
     private function calculatePriceMatch(array $criteria, float $price): float
     {
-        $minPrice = $criteria['min_price'] ?? 0;
-        $maxPrice = $criteria['max_price'] ?? PHP_INT_MAX;
+        if (! isset($criteria['min_price']) && ! isset($criteria['max_price'])) {
+            return 50;
+        }
 
-        if ($price >= $minPrice && $price <= $maxPrice) {
-            // Perfect match if within range
-            $range = $maxPrice - $minPrice;
-            $ideal = $minPrice + ($range * 0.5); // Middle of range is ideal
-
-            if ($range > 0) {
-                $deviation = abs($price - $ideal) / ($range * 0.5);
-                return max(80, 100 - ($deviation * 20)); // 80-100% for within range
-            }
+        $min = (float) ($criteria['min_price'] ?? 0);
+        $max = (float) ($criteria['max_price'] ?? max($price, $min + 1));
+        if ($price >= $min && $price <= $max) {
             return 100;
         }
 
-        // Partial match if close to range
-        if ($price < $minPrice) {
-            $deviation = ($minPrice - $price) / $minPrice;
-            return max(0, 80 - ($deviation * 80));
-        } else {
-            $deviation = ($price - $maxPrice) / $maxPrice;
-            return max(0, 80 - ($deviation * 80));
-        }
+        $boundary = $price < $min ? $min : $max;
+
+        return $boundary > 0 ? max(0, 100 - abs($price - $boundary) / $boundary * 100) : 0;
     }
 
-    private function calculateLocationMatch(array $criteria, Property $property): float
+    private function calculateLocationMatch(array $criteria, Property $property, ?float $distance): float
     {
-        $score = 50; // Base score
-
-        if (isset($criteria['location']) && !empty($criteria['location'])) {
-            $searchLocation = strtolower($criteria['location']);
-            $propertyLocation = strtolower($property->location);
-
-            if (str_contains($propertyLocation, $searchLocation)) {
-                $score += 30;
-            }
+        $scores = [];
+        if (filled($criteria['location'] ?? null)) {
+            $scores[] = str_contains(mb_strtolower($property->location), mb_strtolower($criteria['location'])) ? 100 : 0;
+        }
+        if (! empty($criteria['postal_codes'])) {
+            $scores[] = in_array($property->postal_code, $criteria['postal_codes'], true) ? 100 : 0;
+        }
+        if (isset($criteria['radius_km'])) {
+            $scores[] = $distance === null ? 0 : max(0, 100 * (1 - $distance / $criteria['radius_km']));
         }
 
-        if (isset($criteria['postal_codes']) && is_array($criteria['postal_codes'])) {
-            if (in_array($property->postal_code, $criteria['postal_codes'])) {
-                $score += 20;
-            }
-        }
-
-        return min(100, $score);
+        return $scores === [] ? 50 : array_sum($scores) / count($scores);
     }
 
     private function calculateSizeMatch(array $criteria, Property $property): float
     {
-        $score = 0;
-        $factors = 0;
-
-        // Bedrooms match
-        if (isset($criteria['min_bedrooms']) || isset($criteria['max_bedrooms'])) {
-            $minBed = $criteria['min_bedrooms'] ?? 0;
-            $maxBed = $criteria['max_bedrooms'] ?? 10;
-
-            if ($property->bedrooms >= $minBed && $property->bedrooms <= $maxBed) {
-                $score += 50;
-            } else {
-                $deviation = min(abs($property->bedrooms - $minBed), abs($property->bedrooms - $maxBed));
-                $score += max(0, 50 - ($deviation * 15));
+        $checks = [];
+        foreach ([
+            ['min_bedrooms', '>=', 'bedrooms'],
+            ['max_bedrooms', '<=', 'bedrooms'],
+            ['min_bathrooms', '>=', 'bathrooms'],
+            ['min_area', '>=', 'area_sqft'],
+            ['max_area', '<=', 'area_sqft'],
+        ] as [$key, $operator, $field]) {
+            if (isset($criteria[$key])) {
+                $checks[] = $operator === '>='
+                    ? $property->{$field} >= $criteria[$key]
+                    : $property->{$field} <= $criteria[$key];
             }
-            $factors++;
         }
 
-        // Bathrooms match
-        if (isset($criteria['min_bathrooms'])) {
-            if ($property->bathrooms >= $criteria['min_bathrooms']) {
-                $score += 30;
-            } else {
-                $deviation = $criteria['min_bathrooms'] - $property->bathrooms;
-                $score += max(0, 30 - ($deviation * 10));
-            }
-            $factors++;
-        }
-
-        // Area match
-        if (isset($criteria['min_area']) || isset($criteria['max_area'])) {
-            $minArea = $criteria['min_area'] ?? 0;
-            $maxArea = $criteria['max_area'] ?? PHP_INT_MAX;
-
-            if ($property->area_sqft >= $minArea && $property->area_sqft <= $maxArea) {
-                $score += 20;
-            }
-            $factors++;
-        }
-
-        return $factors > 0 ? min(100, $score / $factors * 2) : 50;
+        return $checks === [] ? 50 : collect($checks)->filter()->count() / count($checks) * 100;
     }
 
     private function calculateFeaturesMatch(array $criteria, Property $property): float
     {
-        $score = 50; // Base score
-
-        if (isset($criteria['required_features']) && is_array($criteria['required_features'])) {
-            $propertyFeatures = $property->features->pluck('feature_name')->toArray();
-            $requiredFeatures = $criteria['required_features'];
-
-            $matchedFeatures = array_intersect($propertyFeatures, $requiredFeatures);
-            $matchPercentage = count($requiredFeatures) > 0 
-                ? count($matchedFeatures) / count($requiredFeatures) 
-                : 1;
-
-            $score = 50 + ($matchPercentage * 50);
+        $required = collect($criteria['required_features'] ?? []);
+        if ($required->isEmpty()) {
+            return 50;
         }
 
-        return min(100, $score);
+        return $required->intersect($property->features->pluck('feature_name'))->count()
+            / $required->count() * 100;
     }
 
     private function calculateTypeMatch(array $criteria, Property $property): float
     {
-        if (isset($criteria['property_type'])) {
-            return $criteria['property_type'] === $property->property_type ? 100 : 0;
+        return isset($criteria['property_type'])
+            ? ($criteria['property_type'] === $property->property_type ? 100 : 0)
+            : 50;
+    }
+
+    private function calculateSchoolMatch(array $criteria, Property $property): float
+    {
+        $required = collect($criteria['required_schools'] ?? [])->map(fn ($name) => mb_strtolower($name));
+        if ($required->isEmpty()) {
+            return 50;
         }
 
-        return 50; // Neutral if no preference specified
+        $schools = collect($property->neighborhood?->schools ?? [])
+            ->map(fn ($school) => mb_strtolower(is_array($school)
+                ? ($school['name'] ?? $school['school_name'] ?? '')
+                : (string) $school));
+
+        return $required->intersect($schools)->count() / $required->count() * 100;
+    }
+
+    private function calculateTransportMatch(array $criteria, Property $property): float
+    {
+        if (! isset($criteria['min_transit_score'])) {
+            return 50;
+        }
+        $score = $this->transitScore($property);
+
+        return $score === null ? 0 : min(100, $score / max(1, $criteria['min_transit_score']) * 100);
+    }
+
+    private function transitScore(Property $property): ?float
+    {
+        $score = $property->transit_score ?? $property->neighborhood?->transit_score;
+
+        return $score === null ? null : (float) $score;
+    }
+
+    private function distanceFor(array $criteria, Property $property): ?float
+    {
+        if (! isset($criteria['latitude'], $criteria['longitude'], $criteria['radius_km'])
+            || $property->latitude === null || $property->longitude === null) {
+            return null;
+        }
+
+        $earthRadius = 6371;
+        $latitudeDelta = deg2rad((float) $property->latitude - (float) $criteria['latitude']);
+        $longitudeDelta = deg2rad((float) $property->longitude - (float) $criteria['longitude']);
+        $originLatitude = deg2rad((float) $criteria['latitude']);
+        $propertyLatitude = deg2rad((float) $property->latitude);
+        $a = sin($latitudeDelta / 2) ** 2
+            + cos($originLatitude) * cos($propertyLatitude) * sin($longitudeDelta / 2) ** 2;
+
+        return $earthRadius * 2 * atan2(sqrt($a), sqrt(1 - $a));
     }
 }
