@@ -79,6 +79,22 @@ signatures, terms, and status.
 Renewal, notice, ended, and terminated states support the full tenancy lifecycle
 without introducing bookkeeping into this application.
 
+## Automation and notifications
+
+Automation rules are managed through full CRUD at `/automations`. Each rule has
+a trigger name, optional context conditions, one or more actions, and an active
+state. Supported actions currently create assigned tasks, send in-app
+notifications, and update a property status.
+
+- `POST /automations/{automation}/run` executes a rule against supplied event context.
+- `GET /automation-runs` exposes completed, skipped, and failed execution audits.
+- `GET /notifications` lists the authenticated user's notifications and unread count.
+- `PATCH /notifications/{notification}/read` marks one notification as read.
+- `POST /notifications/read-all` clears the user's unread notification state.
+
+Rules and execution records are organisation-scoped. Action targets are checked
+against organisation membership before any data is changed.
+
 ## Public website integration
 
 Agency websites can consume published data without an authenticated back-office

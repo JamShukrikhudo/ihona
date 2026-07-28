@@ -471,6 +471,60 @@ class CoreAgencyApiTest extends TestCase
             ->assertJsonPath('data.monthly_rent', '1825.00');
     }
 
+    public function test_automation_rules_create_tasks_and_in_app_notifications_with_audit_runs(): void
+    {
+        [$user, $team] = $this->actingAsTeamMember();
+
+        $automation = $this->postJson('/api/v1/automations', [
+            'name' => 'Follow up accepted offers',
+            'trigger' => 'offer.accepted',
+            'conditions' => [[
+                'field' => 'offer.status',
+                'operator' => 'equals',
+                'value' => 'accepted',
+            ]],
+            'actions' => [
+                [
+                    'type' => 'create_task',
+                    'title' => 'Issue memorandum of sale',
+                    'priority' => 'high',
+                    'assigned_to' => $user->id,
+                    'due_in_days' => 1,
+                ],
+                [
+                    'type' => 'notify_user',
+                    'user_id' => $user->id,
+                    'title' => 'Offer accepted',
+                    'body' => 'Sales progression can now begin.',
+                ],
+            ],
+        ])->assertCreated()
+            ->assertJsonPath('data.team_id', $team->id);
+
+        $automationId = $automation->json('data.id');
+        $this->postJson("/api/v1/automations/$automationId/run", [
+            'context' => ['offer' => ['id' => 42, 'status' => 'accepted']],
+        ])->assertOk()
+            ->assertJsonPath('data.status', 'completed')
+            ->assertJsonCount(2, 'data.results');
+
+        $this->assertDatabaseHas('agency_tasks', [
+            'team_id' => $team->id,
+            'title' => 'Issue memorandum of sale',
+        ]);
+        $this->getJson('/api/v1/automation-runs')
+            ->assertOk()
+            ->assertJsonPath('data.0.automation_rule_id', $automationId);
+        $notifications = $this->getJson('/api/v1/notifications?unread=1')
+            ->assertOk()
+            ->assertJsonPath('meta.unread_count', 1)
+            ->assertJsonPath('data.0.data.type', 'automation');
+        $notificationId = $notifications->json('data.0.id');
+        $this->patchJson("/api/v1/notifications/$notificationId/read")
+            ->assertOk()
+            ->assertJsonPath('data.read_at', fn ($value) => $value !== null);
+    }
+
     private function actingAsTeamMember(): array
     {
         $user = User::factory()->create();
