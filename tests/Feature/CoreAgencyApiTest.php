@@ -6,6 +6,7 @@ use App\Models\AgencyTask;
 use App\Models\Branch;
 use App\Models\Buyer;
 use App\Models\Company;
+use App\Models\ComplianceItem;
 use App\Models\Contact;
 use App\Models\Document;
 use App\Models\Property;
@@ -1092,6 +1093,66 @@ class CoreAgencyApiTest extends TestCase
             'name' => 'Other agency map',
         ]);
         $this->getJson("/api/v1/service-integrations/{$otherTeamIntegration->id}")->assertNotFound();
+    }
+
+    public function test_property_compliance_documents_are_private_verified_and_team_scoped(): void
+    {
+        Storage::fake('local');
+        [$user, $team] = $this->actingAsTeamMember();
+        $property = Property::factory()->for($team)->create();
+
+        $item = $this->postJson('/api/v1/compliance-items', [
+            'property_id' => $property->id,
+            'compliance_type' => 'gas_safety',
+            'title' => 'Annual gas safety certificate',
+            'required_by_date' => now()->addWeek()->toDateString(),
+            'certificate_expiry' => now()->addYear()->toDateString(),
+            'renewal_required' => true,
+            'priority_level' => 3,
+            'risk_level' => 4,
+            'assigned_to' => $user->id,
+        ])->assertCreated()
+            ->assertJsonPath('data.team_id', $team->id)
+            ->assertJsonPath('data.status', 'pending');
+        $itemId = $item->json('data.id');
+
+        $document = $this->postJson("/api/v1/compliance-items/$itemId/documents", [
+            'file' => UploadedFile::fake()->create('gas-certificate.pdf', 100, 'application/pdf'),
+            'document_type' => 'certificate',
+            'title' => 'Gas Safe certificate',
+            'expiry_date' => now()->addYear()->toDateString(),
+        ])->assertCreated()
+            ->assertJsonPath('data.team_id', $team->id)
+            ->assertJsonPath('data.is_verified', false)
+            ->assertJsonMissingPath('data.file_path');
+        $documentId = $document->json('data.id');
+
+        $this->get("/api/v1/compliance-items/$itemId/documents/$documentId/download")
+            ->assertOk()
+            ->assertDownload('gas-certificate.pdf');
+        $this->patchJson("/api/v1/compliance-items/$itemId/documents/$documentId/verify", [
+            'verified' => true,
+            'notes' => 'Registration checked.',
+        ])->assertOk()
+            ->assertJsonPath('data.is_verified', true)
+            ->assertJsonPath('data.verified_by', $user->id);
+
+        $this->patchJson("/api/v1/compliance-items/$itemId", [
+            'status' => 'completed',
+        ])->assertOk()
+            ->assertJsonPath('data.status', 'completed')
+            ->assertJsonPath('data.completed_date', now()->startOfDay()->toISOString());
+
+        $otherTeam = Team::factory()->create();
+        $otherItem = ComplianceItem::create([
+            'team_id' => $otherTeam->id,
+            'property_id' => Property::factory()->for($otherTeam)->create()->id,
+            'compliance_type' => 'epc',
+            'title' => 'Other agency EPC',
+            'required_by_date' => now()->toDateString(),
+        ]);
+        $this->getJson("/api/v1/compliance-items/{$otherItem->id}")->assertNotFound();
+        $this->getJson("/api/v1/compliance-items/{$otherItem->id}/documents")->assertNotFound();
     }
 
     private function actingAsTeamMember(): array

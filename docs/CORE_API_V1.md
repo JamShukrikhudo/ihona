@@ -24,6 +24,7 @@ The authenticated REST API exposes the central estate-agency records under
 | Viewings | Full CRUD at `/viewings` | `property_id`, `agent_id`, `staff_id`, `status` |
 | Inspections | Full CRUD at `/inspections` | `property_id`, `tenant_id`, `type`, `status` |
 | Communications | Full CRUD at `/communications` | `channel`, `direction`, `status` |
+| Compliance items | Full CRUD at `/compliance-items` | `property_id`, type, status, priority, risk, assignee |
 
 ## Organisation setup
 
@@ -203,6 +204,26 @@ the API rather than public storage. Signatures are only accepted for signable
 documents and record the signer, exact document version, time, IP address, and
 user agent. Documents, versions, downloads, and signatures are constrained to
 the selected organisation.
+
+## Property compliance
+
+`/compliance-items` tracks property obligations including EPC, gas and
+electrical safety, fire safety, right-to-rent, AML, deposit protection,
+insurance, planning, and licensing. Records support required and completed
+dates, certificate expiry and renewal state, regulation references, priorities,
+risk levels, responsible parties, and staff assignment.
+
+Supporting evidence is managed privately through:
+
+- `GET|POST /compliance-items/{item}/documents`
+- `GET /compliance-items/{item}/documents/{document}/download`
+- `PATCH /compliance-items/{item}/documents/{document}/verify`
+- `DELETE /compliance-items/{item}/documents/{document}`
+
+Files are stored on private application storage and downloads are authorised
+through the selected organisation. Verification records the responsible user
+and timestamp. Compliance records and documents cannot be accessed through a
+different agency.
 
 ## Property marketing
 
