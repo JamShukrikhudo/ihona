@@ -2,17 +2,15 @@
 
 namespace App\Console;
 
-use Exception;
+use App\Jobs\LeaseRenewalReminder;
+use App\Jobs\SendEmailCampaign;
+use App\Models\EmailCampaign;
 use App\Models\Neighborhood;
 use App\Models\RightMoveSettings;
 use App\Models\ZooplaSettings;
 use App\Services\NeighborhoodDataService;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-use App\Jobs\SyncRightMoveProperties;
-use App\Jobs\SyncOnTheMarketProperties;
-use App\Jobs\SyncZooplaProperties;
-use App\Jobs\LeaseRenewalReminder;
 use Illuminate\Support\Facades\Log;
 
 class Kernel extends ConsoleKernel
@@ -27,6 +25,7 @@ class Kernel extends ConsoleKernel
             ->hourly()
             ->when(function () {
                 $settings = RightMoveSettings::active()->first();
+
                 return $settings ? $settings->sync_frequency === 'hourly' : true;
             })
             ->withoutOverlapping()
@@ -41,6 +40,7 @@ class Kernel extends ConsoleKernel
             ->daily()
             ->when(function () {
                 $settings = RightMoveSettings::active()->first();
+
                 return $settings ? $settings->sync_frequency === 'daily' : false;
             })
             ->withoutOverlapping()
@@ -96,6 +96,7 @@ class Kernel extends ConsoleKernel
             ->hourly()
             ->when(function () {
                 $zooplaSettings = ZooplaSettings::first();
+
                 return $zooplaSettings ? $zooplaSettings->sync_frequency === 'hourly' : true;
             })
             ->withoutOverlapping()
@@ -110,6 +111,7 @@ class Kernel extends ConsoleKernel
             ->daily()
             ->when(function () {
                 $zooplaSettings = ZooplaSettings::first();
+
                 return $zooplaSettings ? $zooplaSettings->sync_frequency === 'daily' : false;
             })
             ->withoutOverlapping()
@@ -124,6 +126,7 @@ class Kernel extends ConsoleKernel
             ->weekly()
             ->when(function () {
                 $zooplaSettings = ZooplaSettings::first();
+
                 return $zooplaSettings ? $zooplaSettings->sync_frequency === 'weekly' : false;
             })
             ->withoutOverlapping()
@@ -136,7 +139,7 @@ class Kernel extends ConsoleKernel
 
         // Schedule LeaseRenewalReminder job
         $schedule->job(new LeaseRenewalReminder)->daily();
-      
+
         // Schedule email campaigns
         $schedule->call(function () {
             $campaigns = EmailCampaign::where('status', 'scheduled')
@@ -144,11 +147,11 @@ class Kernel extends ConsoleKernel
                 ->get();
 
             foreach ($campaigns as $campaign) {
+                $campaign->update(['status' => 'sending']);
                 dispatch(new SendEmailCampaign($campaign));
-                $campaign->update(['status' => 'sent', 'sent_at' => now()]);
             }
         })->everyMinute();
-      
+
         // Update neighborhood data daily
         $schedule->call(function () {
             $neighborhoods = Neighborhood::all();

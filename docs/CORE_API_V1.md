@@ -192,6 +192,30 @@ documents and record the signer, exact document version, time, IP address, and
 user agent. Documents, versions, downloads, and signatures are constrained to
 the selected organisation.
 
+## Property marketing
+
+Tenant-authorised marketing endpoints expose reusable assets without duplicating
+the existing property record:
+
+- `GET /marketing-assets/properties/{property}/brochure`
+- `GET /marketing-assets/properties/{property}/window-card`
+- `GET /marketing-assets/properties/{property}/qr-code`
+- `GET /marketing-assets/properties/{property}/social`
+
+Brochures support standard, luxury, and minimal templates plus floorplan, map,
+and EPC options. Social responses contain reusable copy and share links.
+
+`/email-campaigns` provides campaign CRUD, segmented contact audiences, and:
+
+- `GET /email-campaigns/{campaign}/preview`
+- `POST /email-campaigns/{campaign}/schedule`
+- `POST /email-campaigns/{campaign}/cancel`
+- `GET /email-campaigns/{campaign}/metrics`
+
+Audience filters support contact types and tags. Scheduling snapshots the
+recipient count, while metrics report delivery, open, and click rates. All
+properties, contacts, campaigns, and generated assets are organisation-scoped.
+
 ## Public website integration
 
 Agency websites can consume published data without an authenticated back-office

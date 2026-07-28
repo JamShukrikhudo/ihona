@@ -17,6 +17,7 @@ class AgencyPermissionService
         'accounting-integrations', 'accounting-links', 'accounting-sync-runs',
         'calendar', 'task-comments', 'task-attachments',
         'saved-reports', 'dashboard-layouts',
+        'marketing-assets', 'email-campaigns',
     ];
 
     public const ACTIONS = ['view', 'create', 'edit', 'delete', 'export', 'approve', 'publish', 'archive'];

@@ -858,6 +858,74 @@ class CoreAgencyApiTest extends TestCase
         ])->assertNotFound();
     }
 
+    public function test_property_marketing_assets_and_email_campaigns_are_team_scoped(): void
+    {
+        [, $team] = $this->actingAsTeamMember();
+        $property = Property::factory()->for($team)->create([
+            'title' => 'Riverside Apartment',
+            'location' => 'York',
+            'price' => 425000,
+            'bedrooms' => 2,
+            'bathrooms' => 2,
+        ]);
+
+        $this->get("/api/v1/marketing-assets/properties/{$property->id}/brochure")
+            ->assertOk()
+            ->assertHeader('content-type', 'text/html; charset=UTF-8')
+            ->assertSee('Riverside Apartment');
+        $this->get("/api/v1/marketing-assets/properties/{$property->id}/window-card")
+            ->assertOk()
+            ->assertSee('£425,000', false);
+        $this->getJson("/api/v1/marketing-assets/properties/{$property->id}/qr-code?size=300")
+            ->assertOk()
+            ->assertJsonPath('data.property_id', $property->id)
+            ->assertJsonPath('data.size', 300);
+        $this->getJson("/api/v1/marketing-assets/properties/{$property->id}/social")
+            ->assertOk()
+            ->assertJsonPath('data.headline', 'Riverside Apartment')
+            ->assertJsonPath('data.caption', 'Riverside Apartment in York. 2 bedrooms, 2 bathrooms.');
+
+        Contact::create([
+            'team_id' => $team->id,
+            'type' => 'buyer',
+            'first_name' => 'Priya',
+            'emails' => ['priya@example.test'],
+            'tags' => ['york'],
+        ]);
+        Contact::create([
+            'team_id' => $team->id,
+            'type' => 'vendor',
+            'first_name' => 'Excluded',
+            'emails' => ['excluded@example.test'],
+        ]);
+
+        $campaign = $this->postJson('/api/v1/email-campaigns', [
+            'name' => 'York buyers',
+            'subject' => 'New Riverside apartment',
+            'content' => '<p>A new property matches your search.</p>',
+            'audience_filters' => ['types' => ['buyer'], 'tags' => ['york']],
+        ])->assertCreated()
+            ->assertJsonPath('data.team_id', $team->id)
+            ->assertJsonPath('data.status', 'draft');
+        $campaignId = $campaign->json('data.id');
+
+        $this->getJson("/api/v1/email-campaigns/$campaignId/preview")
+            ->assertOk()
+            ->assertJsonPath('meta.recipients_count', 1)
+            ->assertJsonPath('data.0.first_name', 'Priya');
+        $this->postJson("/api/v1/email-campaigns/$campaignId/schedule", [
+            'scheduled_at' => now()->addHour()->toIso8601String(),
+        ])->assertOk()
+            ->assertJsonPath('data.status', 'scheduled')
+            ->assertJsonPath('data.recipients_count', 1);
+        $this->getJson("/api/v1/email-campaigns/$campaignId/metrics")
+            ->assertOk()
+            ->assertJsonPath('data.delivery_rate', 0);
+
+        $otherProperty = Property::factory()->for(Team::factory()->create())->create();
+        $this->getJson("/api/v1/marketing-assets/properties/{$otherProperty->id}/social")->assertNotFound();
+    }
+
     private function actingAsTeamMember(): array
     {
         $user = User::factory()->create();

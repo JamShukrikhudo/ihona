@@ -12,8 +12,16 @@ class EmailCampaign extends Model
 
     protected $fillable = [
         'name',
+        'subject',
         'content',
+        'team_id',
+        'created_by',
+        'audience_filters',
         'status',
+        'recipients_count',
+        'delivered_count',
+        'opened_count',
+        'clicked_count',
         'scheduled_at',
         'sent_at',
     ];
@@ -21,6 +29,7 @@ class EmailCampaign extends Model
     protected $casts = [
         'scheduled_at' => 'datetime',
         'sent_at' => 'datetime',
+        'audience_filters' => 'array',
     ];
 
     public function leads()
