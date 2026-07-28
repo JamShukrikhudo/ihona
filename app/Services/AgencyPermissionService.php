@@ -15,6 +15,7 @@ class AgencyPermissionService
         'reports', 'notifications', 'permissions', 'api-tokens', 'setup',
         'portal-integrations', 'portal-sync-runs',
         'accounting-integrations', 'accounting-links', 'accounting-sync-runs',
+        'calendar', 'task-comments', 'task-attachments',
     ];
 
     public const ACTIONS = ['view', 'create', 'edit', 'delete', 'export', 'approve', 'publish', 'archive'];

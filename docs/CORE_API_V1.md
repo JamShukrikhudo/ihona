@@ -150,6 +150,25 @@ references, and payment references with external identifiers.
 No journals, ledgers, bank reconciliation, tax filing, or other bookkeeping is
 performed in this application.
 
+## Diary and task collaboration
+
+`GET /calendar` returns a single chronological feed of viewings, valuations,
+inspections, maintenance dates, and task deadlines. It accepts `start`, `end`,
+repeated `types[]`, and `staff_id` filters and returns FullCalendar-compatible
+event identifiers, start/end values, all-day state, status, and property links.
+
+Tasks support collaboration through:
+
+- `GET|POST /tasks/{task}/comments`
+- `DELETE /tasks/{task}/comments/{comment}`
+- `GET|POST /tasks/{task}/attachments`
+- `DELETE /tasks/{task}/attachments/{attachment}`
+- `PATCH /tasks/{task}/checklist/{item}`
+
+Uploaded files use private application storage. All calendar queries, comments,
+attachments, and checklist mutations are constrained to the selected
+organisation.
+
 ## Public website integration
 
 Agency websites can consume published data without an authenticated back-office

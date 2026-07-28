@@ -10,7 +10,9 @@ use App\Models\Team;
 use App\Models\User;
 use App\Notifications\NewPropertyMatches;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
@@ -679,6 +681,66 @@ class CoreAgencyApiTest extends TestCase
         ])->assertUnprocessable()->assertJsonValidationErrors('linkable_id');
 
         $this->deleteJson('/api/v1/accounting-links/'.$link->json('data.id'))->assertNoContent();
+    }
+
+    public function test_unified_calendar_and_task_collaboration_are_team_scoped(): void
+    {
+        Storage::fake('local');
+        [, $team] = $this->actingAsTeamMember();
+        $dueAt = now()->addDays(2)->setSecond(0);
+
+        $task = $this->postJson('/api/v1/tasks', [
+            'title' => 'Prepare viewing pack',
+            'due_at' => $dueAt->toIso8601String(),
+            'checklist' => [
+                ['label' => 'Print brochure', 'completed' => false],
+                ['label' => 'Confirm keys', 'completed' => false],
+            ],
+        ])->assertCreated();
+        $taskId = $task->json('data.id');
+
+        $comment = $this->postJson("/api/v1/tasks/$taskId/comments", [
+            'body' => 'Brochure is ready for review.',
+        ])->assertCreated()
+            ->assertJsonPath('data.team_id', $team->id);
+        $this->getJson("/api/v1/tasks/$taskId/comments")
+            ->assertOk()
+            ->assertJsonPath('data.0.body', 'Brochure is ready for review.');
+
+        $attachment = $this->postJson("/api/v1/tasks/$taskId/attachments", [
+            'file' => UploadedFile::fake()->create('brochure.pdf', 120, 'application/pdf'),
+        ])->assertCreated()
+            ->assertJsonPath('data.name', 'brochure.pdf');
+        Storage::disk('local')->assertExists($attachment->json('data.path'));
+
+        $this->patchJson("/api/v1/tasks/$taskId/checklist/0", ['completed' => true])
+            ->assertOk()
+            ->assertJsonPath('data.checklist.0.completed', true)
+            ->assertJsonPath('data.checklist.1.completed', false);
+
+        $this->getJson('/api/v1/calendar?types[]=task&start='.now()->toDateString().'&end='.now()->addWeek()->toDateString())
+            ->assertOk()
+            ->assertJsonPath('meta.total', 1)
+            ->assertJsonPath('data.0.id', "task:$taskId")
+            ->assertJsonPath('data.0.title', 'Prepare viewing pack');
+
+        $otherTask = \App\Models\AgencyTask::create([
+            'team_id' => Team::factory()->create()->id,
+            'created_by' => User::factory()->create()->id,
+            'title' => 'Hidden task',
+            'due_at' => $dueAt,
+        ]);
+        $calendarResponse = $this->getJson('/api/v1/calendar?types[]=task&start='.now()->toDateString().'&end='.now()->addWeek()->toDateString())
+            ->assertOk();
+
+        $this->assertNotContains(
+            $otherTask->id,
+            collect($calendarResponse->json('data'))->pluck('record_id')->all(),
+        );
+
+        $this->deleteJson("/api/v1/tasks/$taskId/attachments/".$attachment->json('data.id'))->assertNoContent();
+        Storage::disk('local')->assertMissing($attachment->json('data.path'));
+        $this->deleteJson("/api/v1/tasks/$taskId/comments/".$comment->json('data.id'))->assertNoContent();
     }
 
     private function actingAsTeamMember(): array

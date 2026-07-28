@@ -44,4 +44,14 @@ class AgencyTask extends Model
     {
         return $this->morphTo();
     }
+
+    public function comments()
+    {
+        return $this->hasMany(AgencyTaskComment::class);
+    }
+
+    public function attachments()
+    {
+        return $this->hasMany(AgencyTaskAttachment::class);
+    }
 }

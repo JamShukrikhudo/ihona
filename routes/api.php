@@ -10,6 +10,7 @@ use App\Http\Controllers\API\V1\BranchController as ApiBranchController;
 use App\Http\Controllers\API\V1\AutomationController as ApiAutomationController;
 use App\Http\Controllers\API\V1\ApiTokenController as ApiTokenController;
 use App\Http\Controllers\API\V1\AccountingIntegrationController as ApiAccountingIntegrationController;
+use App\Http\Controllers\API\V1\CalendarController as ApiCalendarController;
 use App\Http\Controllers\API\V1\BuyerController as ApiBuyerController;
 use App\Http\Controllers\API\V1\DocumentController as ApiDocumentController;
 use App\Http\Controllers\API\V1\MaintenanceController as ApiMaintenanceController;
@@ -25,6 +26,7 @@ use App\Http\Controllers\API\V1\SalesProgressionController as ApiSalesProgressio
 use App\Http\Controllers\API\V1\SearchController as ApiSearchController;
 use App\Http\Controllers\API\V1\SetupController as ApiSetupController;
 use App\Http\Controllers\API\V1\TaskController as ApiTaskController;
+use App\Http\Controllers\API\V1\TaskCollaborationController as ApiTaskCollaborationController;
 use App\Http\Controllers\API\V1\TenancyAgreementController as ApiTenancyAgreementController;
 use App\Http\Controllers\API\V1\TenantController as ApiTenantController;
 use App\Http\Controllers\API\V1\ValuationController as ApiValuationController;
@@ -112,6 +114,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('api-tokens', [ApiTokenController::class, 'index'])->name('api-tokens.index');
         Route::post('api-tokens', [ApiTokenController::class, 'store'])->name('api-tokens.store');
         Route::delete('api-tokens/{token}', [ApiTokenController::class, 'destroy'])->name('api-tokens.destroy');
+        Route::get('calendar', ApiCalendarController::class)->name('calendar');
         Route::apiResource('accounting-integrations', ApiAccountingIntegrationController::class);
         Route::post('accounting-integrations/{accounting_integration}/sync', [ApiAccountingIntegrationController::class, 'sync'])->name('accounting-integrations.sync');
         Route::get('accounting-sync-runs', [ApiAccountingIntegrationController::class, 'runs'])->name('accounting-sync-runs.index');
@@ -138,6 +141,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('inspections', ApiInspectionController::class);
         Route::apiResource('maintenance', ApiMaintenanceController::class);
         Route::apiResource('tasks', ApiTaskController::class);
+        Route::get('tasks/{task}/comments', [ApiTaskCollaborationController::class, 'comments'])->name('tasks.comments.index');
+        Route::post('tasks/{task}/comments', [ApiTaskCollaborationController::class, 'storeComment'])->name('tasks.comments.store');
+        Route::delete('tasks/{task}/comments/{comment}', [ApiTaskCollaborationController::class, 'destroyComment'])->name('tasks.comments.destroy');
+        Route::get('tasks/{task}/attachments', [ApiTaskCollaborationController::class, 'attachments'])->name('tasks.attachments.index');
+        Route::post('tasks/{task}/attachments', [ApiTaskCollaborationController::class, 'storeAttachment'])->name('tasks.attachments.store');
+        Route::delete('tasks/{task}/attachments/{attachment}', [ApiTaskCollaborationController::class, 'destroyAttachment'])->name('tasks.attachments.destroy');
+        Route::patch('tasks/{task}/checklist/{item}', [ApiTaskCollaborationController::class, 'checklist'])->name('tasks.checklist.update');
         Route::apiResource('tenants', ApiTenantController::class);
         Route::apiResource('tenancy-agreements', ApiTenancyAgreementController::class);
         Route::post('tenancy-agreements/{tenancy_agreement}/renew', [ApiTenancyAgreementController::class, 'renew'])->name('tenancy-agreements.renew');
