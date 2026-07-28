@@ -135,10 +135,12 @@ without introducing bookkeeping into this application.
 
 Automation rules are managed through full CRUD at `/automations`. Each rule has
 a trigger name, optional context conditions, one or more actions, and an active
-state. Supported actions currently create assigned tasks, send notifications
-through selected in-app, email, SMS, and push channels, and update a property
-status. Event names can cover enquiries, offers, viewing requests, tasks,
-maintenance, renewals, portal failures, and custom deployment events.
+state. Supported actions create assigned tasks, send notifications through
+selected in-app, email, SMS, and push channels, update a property status, assign
+property staff, publish listings, queue exports to a configured property portal,
+and schedule staff reminders in the unified diary. Event names can cover
+enquiries, instructions, offers, viewing requests, tasks, maintenance,
+renewals, portal failures, and custom deployment events.
 
 - `POST /automations/{automation}/run` executes a rule against supplied event context.
 - `GET /automation-runs` exposes completed, skipped, and failed execution audits.
@@ -152,8 +154,10 @@ maintenance, renewals, portal failures, and custom deployment events.
 
 Rules, preferences, delivery audits, and execution records are
 organisation-scoped. Action targets are checked against organisation membership
-before any data is changed. Provider credentials and push tokens are never
-serialized.
+before any data is changed. Property and portal IDs may be supplied by the rule
+or event context; both paths are tenant checked. Every action returns its
+created or changed record IDs in the automation-run audit. Provider credentials
+and push tokens are never serialized.
 
 ## Sales progression
 

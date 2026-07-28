@@ -5,6 +5,9 @@ namespace App\Services;
 use App\Models\AgencyTask;
 use App\Models\AutomationRule;
 use App\Models\AutomationRun;
+use App\Models\CalendarEntry;
+use App\Models\PortalIntegration;
+use App\Models\PortalListing;
 use App\Models\Property;
 use App\Models\User;
 use RuntimeException;
@@ -78,6 +81,10 @@ class AutomationEngine
             'create_task' => $this->createTask($rule, $action, $actor),
             'notify_user' => $this->notifyUser($rule, $action, $context),
             'update_property_status' => $this->updateProperty($rule, $action, $context),
+            'assign_staff' => $this->assignStaff($rule, $action, $context),
+            'publish_listing' => $this->publishListing($rule, $action, $context),
+            'export_portal' => $this->exportPortal($rule, $action, $context),
+            'schedule_reminder' => $this->scheduleReminder($rule, $action, $context, $actor),
             default => throw new RuntimeException("Unsupported automation action [{$action['type']}]."),
         };
     }
@@ -127,5 +134,106 @@ class AutomationEngine
         $property->update(['status' => $action['status']]);
 
         return ['type' => 'update_property_status', 'property_id' => $property->id, 'status' => $property->status];
+    }
+
+    private function assignStaff(AutomationRule $rule, array $action, array $context): array
+    {
+        $property = $this->property($rule, $action, $context);
+        $user = User::findOrFail($action['assigned_to']);
+        if (! $user->allTeams()->contains('id', $rule->team_id)) {
+            throw new RuntimeException('Assigned staff member does not belong to this organisation.');
+        }
+        $property->update(['agent_id' => $user->id]);
+
+        return [
+            'type' => 'assign_staff',
+            'property_id' => $property->id,
+            'assigned_to' => $user->id,
+        ];
+    }
+
+    private function publishListing(AutomationRule $rule, array $action, array $context): array
+    {
+        $property = $this->property($rule, $action, $context);
+        $status = $action['property_status'] ?? 'available';
+        $property->update(['status' => $status]);
+
+        return [
+            'type' => 'publish_listing',
+            'property_id' => $property->id,
+            'status' => $property->status,
+        ];
+    }
+
+    private function exportPortal(AutomationRule $rule, array $action, array $context): array
+    {
+        $property = $this->property($rule, $action, $context);
+        $integrationId = $action['portal_integration_id'] ?? data_get($context, 'portal_integration_id');
+        $integration = PortalIntegration::where('team_id', $rule->team_id)
+            ->where('active', true)
+            ->findOrFail($integrationId);
+        $listing = PortalListing::updateOrCreate([
+            'portal_integration_id' => $integration->id,
+            'property_id' => $property->id,
+        ], [
+            'team_id' => $rule->team_id,
+            'status' => 'pending',
+            'last_error' => null,
+        ]);
+
+        return [
+            'type' => 'export_portal',
+            'portal_integration_id' => $integration->id,
+            'property_id' => $property->id,
+            'portal_listing_id' => $listing->id,
+            'status' => $listing->status,
+        ];
+    }
+
+    private function scheduleReminder(
+        AutomationRule $rule,
+        array $action,
+        array $context,
+        User $actor,
+    ): array {
+        $assignedTo = $action['assigned_to'] ?? $actor->id;
+        $assignee = User::findOrFail($assignedTo);
+        if (! $assignee->allTeams()->contains('id', $rule->team_id)) {
+            throw new RuntimeException('Reminder assignee does not belong to this organisation.');
+        }
+        $startsAt = now()
+            ->addDays((int) ($action['due_in_days'] ?? 0))
+            ->addHours((int) ($action['due_in_hours'] ?? 0));
+        $propertyId = $action['property_id'] ?? data_get($context, 'property_id');
+        if ($propertyId) {
+            Property::where('team_id', $rule->team_id)->findOrFail($propertyId);
+        }
+        $reminder = CalendarEntry::create([
+            'team_id' => $rule->team_id,
+            'property_id' => $propertyId,
+            'organiser_id' => $assignedTo,
+            'created_by' => $actor->id,
+            'type' => 'reminder',
+            'title' => $action['title'],
+            'description' => $action['description'] ?? null,
+            'starts_at' => $startsAt,
+            'reminder_at' => $startsAt,
+            'all_day' => false,
+            'attendee_user_ids' => [$assignedTo],
+        ]);
+
+        return [
+            'type' => 'schedule_reminder',
+            'calendar_entry_id' => $reminder->id,
+            'assigned_to' => $assignedTo,
+            'starts_at' => $startsAt->toIso8601String(),
+        ];
+    }
+
+    private function property(AutomationRule $rule, array $action, array $context): Property
+    {
+        $propertyId = $action['property_id'] ?? data_get($context, 'property_id');
+
+        return Property::where('team_id', $rule->team_id)->findOrFail($propertyId);
     }
 }

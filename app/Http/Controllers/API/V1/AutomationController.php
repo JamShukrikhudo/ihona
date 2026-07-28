@@ -25,6 +25,8 @@ class AutomationController extends TenantCrudController
 
     protected function rules(Request $request, ?Model $record = null): array
     {
+        $teamId = $this->teamId($request);
+
         return [
             'name' => [$record ? 'sometimes' : 'required', 'string', 'max:255'],
             'trigger' => [$record ? 'sometimes' : 'required', 'string', 'max:100'],
@@ -34,18 +36,46 @@ class AutomationController extends TenantCrudController
             'conditions.*.operator' => ['required_with:conditions', Rule::in(['equals', 'not_equals', 'contains', 'greater_than', 'less_than'])],
             'conditions.*.value' => ['present'],
             'actions' => [$record ? 'sometimes' : 'required', 'array', 'min:1'],
-            'actions.*.type' => ['required', Rule::in(['create_task', 'notify_user', 'update_property_status'])],
-            'actions.*.title' => ['required_if:actions.*.type,create_task,notify_user', 'string', 'max:255'],
+            'actions.*.type' => ['required', Rule::in([
+                'create_task', 'notify_user', 'update_property_status', 'assign_staff',
+                'publish_listing', 'export_portal', 'schedule_reminder',
+            ])],
+            'actions.*.title' => ['required_if:actions.*.type,create_task,notify_user,schedule_reminder', 'string', 'max:255'],
             'actions.*.description' => ['nullable', 'string'],
             'actions.*.body' => ['nullable', 'string'],
             'actions.*.channels' => ['nullable', 'array', 'min:1'],
             'actions.*.channels.*' => ['required', Rule::in(NotificationDispatcher::CHANNELS)],
             'actions.*.priority' => ['nullable', Rule::in(['low', 'normal', 'high', 'urgent'])],
             'actions.*.due_in_days' => ['nullable', 'integer', 'between:0,3650'],
-            'actions.*.assigned_to' => ['nullable', 'integer'],
-            'actions.*.user_id' => ['required_if:actions.*.type,notify_user', 'integer'],
-            'actions.*.property_id' => ['nullable', 'integer'],
-            'actions.*.status' => ['required_if:actions.*.type,update_property_status', 'string', 'max:100'],
+            'actions.*.due_in_hours' => ['nullable', 'integer', 'between:0,87600'],
+            'actions.*.assigned_to' => [
+                'nullable',
+                'integer',
+                Rule::exists('team_user', 'user_id')->where('team_id', $teamId),
+            ],
+            'actions.*.user_id' => [
+                'required_if:actions.*.type,notify_user',
+                'integer',
+                Rule::exists('team_user', 'user_id')->where('team_id', $teamId),
+            ],
+            'actions.*.property_id' => [
+                'nullable',
+                'integer',
+                Rule::exists('properties', 'id')->where('team_id', $teamId),
+            ],
+            'actions.*.portal_integration_id' => [
+                'nullable',
+                'integer',
+                Rule::exists('portal_integrations', 'id')->where('team_id', $teamId),
+            ],
+            'actions.*.status' => [
+                'required_if:actions.*.type,update_property_status',
+                Rule::in(['draft', 'coming_soon', 'available', 'under_offer', 'sstc', 'exchanged', 'sold', 'to_let', 'let_agreed', 'let', 'withdrawn', 'archived']),
+            ],
+            'actions.*.property_status' => [
+                'nullable',
+                Rule::in(['coming_soon', 'available', 'to_let']),
+            ],
         ];
     }
 

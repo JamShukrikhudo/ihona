@@ -12,6 +12,7 @@ use App\Models\Contact;
 use App\Models\Document;
 use App\Models\Neighborhood;
 use App\Models\Offer;
+use App\Models\PortalIntegration;
 use App\Models\Property;
 use App\Models\PropertyFeature;
 use App\Models\ServiceIntegration;
@@ -921,6 +922,106 @@ class CoreAgencyApiTest extends TestCase
             'event_type' => 'offer.accepted',
             'channel' => 'in_app',
             'status' => 'sent',
+        ]);
+    }
+
+    public function test_automation_assigns_staff_publishes_exports_and_schedules_reminders(): void
+    {
+        [$user, $team] = $this->actingAsTeamMember();
+        $property = Property::factory()->for($team)->create([
+            'status' => 'draft',
+            'agent_id' => null,
+        ]);
+        $integration = PortalIntegration::create([
+            'team_id' => $team->id,
+            'provider' => 'rightmove',
+            'country' => 'GB',
+            'channel' => 'sales',
+            'credentials' => ['api_key' => 'secret'],
+            'active' => true,
+        ]);
+
+        $automation = $this->postJson('/api/v1/automations', [
+            'name' => 'Launch instructed property',
+            'trigger' => 'instruction.accepted',
+            'actions' => [
+                [
+                    'type' => 'assign_staff',
+                    'assigned_to' => $user->id,
+                ],
+                [
+                    'type' => 'publish_listing',
+                    'property_status' => 'available',
+                ],
+                [
+                    'type' => 'export_portal',
+                    'portal_integration_id' => $integration->id,
+                ],
+                [
+                    'type' => 'schedule_reminder',
+                    'title' => 'Check portal publication',
+                    'description' => 'Confirm the listing was accepted.',
+                    'assigned_to' => $user->id,
+                    'due_in_hours' => 24,
+                ],
+            ],
+        ])->assertCreated();
+
+        $this->postJson('/api/v1/automations/'.$automation->json('data.id').'/run', [
+            'context' => ['property_id' => $property->id],
+        ])->assertOk()
+            ->assertJsonPath('data.status', 'completed')
+            ->assertJsonCount(4, 'data.results')
+            ->assertJsonPath('data.results.0.assigned_to', $user->id)
+            ->assertJsonPath('data.results.1.status', 'available')
+            ->assertJsonPath('data.results.2.portal_integration_id', $integration->id)
+            ->assertJsonPath('data.results.2.status', 'pending')
+            ->assertJsonPath('data.results.3.assigned_to', $user->id);
+
+        $this->assertDatabaseHas('properties', [
+            'id' => $property->id,
+            'team_id' => $team->id,
+            'agent_id' => $user->id,
+            'status' => 'available',
+        ]);
+        $this->assertDatabaseHas('portal_listings', [
+            'team_id' => $team->id,
+            'portal_integration_id' => $integration->id,
+            'property_id' => $property->id,
+            'status' => 'pending',
+        ]);
+        $this->assertDatabaseHas('calendar_entries', [
+            'team_id' => $team->id,
+            'property_id' => $property->id,
+            'organiser_id' => $user->id,
+            'type' => 'reminder',
+            'title' => 'Check portal publication',
+        ]);
+
+        $otherIntegration = PortalIntegration::create([
+            'team_id' => Team::factory()->create()->id,
+            'provider' => 'zoopla',
+            'country' => 'GB',
+            'channel' => 'sales',
+            'active' => true,
+        ]);
+        $invalidAutomation = $this->postJson('/api/v1/automations', [
+            'name' => 'Blocked cross-team export',
+            'trigger' => 'listing.updated',
+            'actions' => [[
+                'type' => 'export_portal',
+            ]],
+        ])->assertCreated();
+        $this->postJson('/api/v1/automations/'.$invalidAutomation->json('data.id').'/run', [
+            'context' => [
+                'property_id' => $property->id,
+                'portal_integration_id' => $otherIntegration->id,
+            ],
+        ])->assertUnprocessable()
+            ->assertJsonPath('data.status', 'failed');
+        $this->assertDatabaseMissing('portal_listings', [
+            'portal_integration_id' => $otherIntegration->id,
+            'property_id' => $property->id,
         ]);
     }
 
