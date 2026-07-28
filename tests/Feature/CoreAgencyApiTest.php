@@ -359,6 +359,13 @@ class CoreAgencyApiTest extends TestCase
             'name' => 'Orchard Developments',
             'type' => 'developer',
         ]);
+        Appointment::create([
+            'team_id' => $team->id,
+            'name' => 'Orchard House viewing',
+            'contact' => 'Amina Viewer',
+            'appointment_date' => now()->addDay(),
+            'status' => 'scheduled',
+        ]);
 
         $otherTeam = Team::factory()->create();
         Company::create([
@@ -366,12 +373,14 @@ class CoreAgencyApiTest extends TestCase
             'name' => 'Orchard Hidden Company',
         ]);
 
-        $this->getJson('/api/v1/search?q=Orchard&types[]=properties&types[]=contacts&types[]=companies')
+        $this->getJson('/api/v1/search?q=Orchard&types[]=properties&types[]=contacts&types[]=companies&types[]=viewings')
             ->assertOk()
-            ->assertJsonPath('meta.total', 3)
+            ->assertJsonPath('meta.total', 4)
             ->assertJsonCount(1, 'data.properties')
             ->assertJsonCount(1, 'data.contacts')
             ->assertJsonCount(1, 'data.companies')
+            ->assertJsonCount(1, 'data.viewings')
+            ->assertJsonPath('data.viewings.0.title', 'Orchard House viewing')
             ->assertJsonPath('data.companies.0.title', 'Orchard Developments');
     }
 

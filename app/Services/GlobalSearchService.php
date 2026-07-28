@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Models\AgencyTask;
-use App\Models\Booking;
+use App\Models\Appointment;
 use App\Models\Company;
 use App\Models\Contact;
 use App\Models\Document;
@@ -80,13 +80,23 @@ class GlobalSearchService
 
     private function viewings(Team $team, string $like, int $limit): Collection
     {
-        return Booking::query()->where('team_id', $team->id)
+        return Appointment::query()->where('team_id', $team->id)
             ->where(fn (Builder $query) => $query->where('name', 'like', $like)
-                ->orWhere('contact', 'like', $like)->orWhere('notes', 'like', $like))
+                ->orWhere('contact', 'like', $like)
+                ->orWhere('property_address', 'like', $like)
+                ->orWhere('notes', 'like', $like))
             ->limit($limit)->get()
-            ->map(fn (Booking $record) => $this->result('viewing', $record->id, $record->name ?: 'Viewing', $record->contact, [
-                'date' => $record->date?->toDateString(), 'status' => $record->status,
-            ]));
+            ->map(fn (Appointment $record) => $this->result(
+                'viewing',
+                $record->getKey(),
+                $record->name ?: 'Viewing',
+                $record->contact ?: $record->property_address,
+                [
+                    'date' => $record->appointment_date?->toIso8601String(),
+                    'status' => $record->status,
+                    'outcome' => $record->outcome,
+                ],
+            ));
     }
 
     private function tasks(Team $team, string $like, int $limit): Collection
