@@ -11,6 +11,7 @@ The authenticated REST API exposes the central estate-agency records under
 | Contacts | Full CRUD at `/contacts` | `type`, `status`, `branch_id`, `company_id` |
 | Companies | Full CRUD at `/companies` | `type`, `branch_id` |
 | Tasks | Full CRUD at `/tasks` | `status`, `priority`, `assigned_to`, `branch_id` |
+| Calendar entries | Full CRUD at `/calendar-entries` | `type`, `status`, `branch_id`, `property_id`, `organiser_id` |
 | Offers | Full CRUD at `/offers` | `property_id`, `contact_id`, `status`, `negotiator_id` |
 | Properties | Full CRUD at `/properties` | `status`, `property_type`, price, bedrooms, country |
 | Branches | Full CRUD at `/branches` | Search by name, address, or email |
@@ -269,9 +270,16 @@ performed in this application.
 ## Diary and task collaboration
 
 `GET /calendar` returns a single chronological feed of viewings, valuations,
-inspections, maintenance dates, and task deadlines. It accepts `start`, `end`,
-repeated `types[]`, and `staff_id` filters and returns FullCalendar-compatible
-event identifiers, start/end values, all-day state, status, and property links.
+meetings, reminders, inspections, maintenance dates, and task deadlines. It
+accepts `start`, `end`, repeated `types[]`, and `staff_id` filters and returns
+FullCalendar-compatible event identifiers, start/end values, all-day state,
+status, and property links.
+
+Meetings and reminders are managed through `/calendar-entries`. Entries support
+staff and CRM attendees, organiser assignment, branch and property links,
+location, start/end and advance-reminder times, all-day state, recurrence
+metadata, and scheduled, completed, or cancelled status. Every related ID is
+validated against the selected organisation.
 
 Tasks support collaboration through:
 

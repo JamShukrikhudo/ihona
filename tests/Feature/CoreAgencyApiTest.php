@@ -1035,7 +1035,7 @@ class CoreAgencyApiTest extends TestCase
     public function test_unified_calendar_and_task_collaboration_are_team_scoped(): void
     {
         Storage::fake('local');
-        [, $team] = $this->actingAsTeamMember();
+        [$user, $team] = $this->actingAsTeamMember();
         $dueAt = now()->addDays(2)->setSecond(0);
 
         $task = $this->postJson('/api/v1/tasks', [
@@ -1073,6 +1073,65 @@ class CoreAgencyApiTest extends TestCase
             ->assertJsonPath('data.0.id', "task:$taskId")
             ->assertJsonPath('data.0.title', 'Prepare viewing pack');
 
+        $meetingStarts = now()->addDays(3)->setSecond(0);
+        $meeting = $this->postJson('/api/v1/calendar-entries', [
+            'type' => 'meeting',
+            'title' => 'Vendor marketing review',
+            'location' => 'Main branch',
+            'starts_at' => $meetingStarts->toIso8601String(),
+            'ends_at' => $meetingStarts->copy()->addHour()->toIso8601String(),
+            'reminder_at' => $meetingStarts->copy()->subHour()->toIso8601String(),
+            'attendee_user_ids' => [$user->id],
+            'recurrence' => [
+                'frequency' => 'weekly',
+                'interval' => 1,
+                'weekdays' => [(int) $meetingStarts->isoWeekday()],
+                'count' => 4,
+            ],
+        ])->assertCreated()
+            ->assertJsonPath('data.team_id', $team->id)
+            ->assertJsonPath('data.organiser_id', $user->id)
+            ->assertJsonPath('data.recurrence.frequency', 'weekly');
+        $meetingId = $meeting->json('data.id');
+
+        $reminder = $this->postJson('/api/v1/calendar-entries', [
+            'type' => 'reminder',
+            'title' => 'Call landlord',
+            'starts_at' => now()->addDays(4)->setSecond(0)->toIso8601String(),
+            'all_day' => true,
+        ])->assertCreated();
+        $reminderId = $reminder->json('data.id');
+
+        $this->getJson('/api/v1/calendar?'.http_build_query([
+            'types' => ['meeting', 'reminder'],
+            'staff_id' => $user->id,
+            'start' => now()->toDateString(),
+            'end' => now()->addWeek()->toDateString(),
+        ]))->assertOk()
+            ->assertJsonPath('meta.total', 2)
+            ->assertJsonFragment(['id' => "meeting:$meetingId", 'title' => 'Vendor marketing review'])
+            ->assertJsonFragment(['id' => "reminder:$reminderId", 'all_day' => true]);
+
+        $this->patchJson("/api/v1/calendar-entries/$meetingId", ['status' => 'completed'])
+            ->assertOk()
+            ->assertJsonPath('data.status', 'completed');
+        $this->getJson('/api/v1/calendar-entries?filter[type]=meeting&filter[status]=completed')
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.id', $meetingId);
+
+        $otherContact = Contact::create([
+            'team_id' => Team::factory()->create()->id,
+            'type' => 'vendor',
+            'first_name' => 'Hidden',
+        ]);
+        $this->postJson('/api/v1/calendar-entries', [
+            'type' => 'meeting',
+            'title' => 'Invalid cross-team meeting',
+            'starts_at' => now()->addDay()->toIso8601String(),
+            'contact_ids' => [$otherContact->id],
+        ])->assertUnprocessable()->assertJsonValidationErrors('contact_ids.0');
+
         $otherTask = AgencyTask::create([
             'team_id' => Team::factory()->create()->id,
             'created_by' => User::factory()->create()->id,
@@ -1090,6 +1149,7 @@ class CoreAgencyApiTest extends TestCase
         $this->deleteJson("/api/v1/tasks/$taskId/attachments/".$attachment->json('data.id'))->assertNoContent();
         Storage::disk('local')->assertMissing($attachment->json('data.path'));
         $this->deleteJson("/api/v1/tasks/$taskId/comments/".$comment->json('data.id'))->assertNoContent();
+        $this->deleteJson("/api/v1/calendar-entries/$reminderId")->assertNoContent();
     }
 
     public function test_document_versions_and_signatures_are_private_and_auditable(): void

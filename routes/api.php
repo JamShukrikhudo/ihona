@@ -8,6 +8,7 @@ use App\Http\Controllers\API\V1\AutomationController as ApiAutomationController;
 use App\Http\Controllers\API\V1\BranchController as ApiBranchController;
 use App\Http\Controllers\API\V1\BuyerController as ApiBuyerController;
 use App\Http\Controllers\API\V1\CalendarController as ApiCalendarController;
+use App\Http\Controllers\API\V1\CalendarEntryController as ApiCalendarEntryController;
 use App\Http\Controllers\API\V1\CommunicationController as ApiCommunicationController;
 use App\Http\Controllers\API\V1\CompanyController as ApiCompanyController;
 use App\Http\Controllers\API\V1\ComplianceDocumentController as ApiComplianceDocumentController;
@@ -132,6 +133,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('api-tokens', [ApiTokenController::class, 'store'])->name('api-tokens.store');
         Route::delete('api-tokens/{token}', [ApiTokenController::class, 'destroy'])->name('api-tokens.destroy');
         Route::get('calendar', ApiCalendarController::class)->name('calendar');
+        Route::apiResource('calendar-entries', ApiCalendarEntryController::class);
         Route::apiResource('accounting-integrations', ApiAccountingIntegrationController::class);
         Route::post('accounting-integrations/{accounting_integration}/sync', [ApiAccountingIntegrationController::class, 'sync'])->name('accounting-integrations.sync');
         Route::get('accounting-sync-runs', [ApiAccountingIntegrationController::class, 'runs'])->name('accounting-sync-runs.index');

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\V1;
 use App\Http\Controllers\Controller;
 use App\Models\AgencyTask;
 use App\Models\Appointment;
+use App\Models\CalendarEntry;
 use App\Models\Inspection;
 use App\Models\MaintenanceRequest;
 use App\Models\PropertyValuation;
@@ -20,13 +21,13 @@ class CalendarController extends Controller
             'start' => ['nullable', 'date'],
             'end' => ['nullable', 'date', 'after_or_equal:start'],
             'types' => ['nullable', 'array'],
-            'types.*' => ['in:viewing,valuation,inspection,maintenance,task'],
+            'types.*' => ['in:viewing,valuation,inspection,maintenance,task,meeting,reminder'],
             'staff_id' => ['nullable', 'integer'],
         ]);
         $teamId = (int) $request->user()->current_team_id;
         $start = isset($validated['start']) ? Carbon::parse($validated['start'])->startOfDay() : now()->startOfMonth();
         $end = isset($validated['end']) ? Carbon::parse($validated['end'])->endOfDay() : now()->endOfMonth();
-        $types = collect($validated['types'] ?? ['viewing', 'valuation', 'inspection', 'maintenance', 'task']);
+        $types = collect($validated['types'] ?? ['viewing', 'valuation', 'inspection', 'maintenance', 'task', 'meeting', 'reminder']);
         $staffId = $validated['staff_id'] ?? null;
         $events = collect();
 
@@ -73,6 +74,26 @@ class CalendarController extends Controller
                 ->whereBetween('due_at', [$start, $end])
                 ->when($staffId, fn ($query) => $query->where('assigned_to', $staffId))
                 ->get()->map(fn ($record) => $this->event('task', $record->id, $record->title, $record->due_at, $record->completed_at, false, $record->status)));
+        }
+        foreach (['meeting', 'reminder'] as $type) {
+            if ($types->contains($type)) {
+                $events = $events->concat(CalendarEntry::where('team_id', $teamId)
+                    ->where('type', $type)
+                    ->whereBetween('starts_at', [$start, $end])
+                    ->when($staffId, fn ($query) => $query->where(fn ($query) => $query
+                        ->where('organiser_id', $staffId)
+                        ->orWhereJsonContains('attendee_user_ids', (int) $staffId)))
+                    ->get()->map(fn ($record) => $this->event(
+                        $type,
+                        $record->id,
+                        $record->title,
+                        $record->starts_at,
+                        $record->ends_at,
+                        $record->all_day,
+                        $record->status,
+                        $record->property_id,
+                    )));
+            }
         }
 
         return response()->json([

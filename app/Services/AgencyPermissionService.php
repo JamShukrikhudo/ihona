@@ -17,7 +17,7 @@ class AgencyPermissionService
         'reports', 'notifications', 'permissions', 'api-tokens', 'setup',
         'portal-integrations', 'portal-sync-runs',
         'accounting-integrations', 'accounting-links', 'accounting-sync-runs',
-        'calendar', 'task-comments', 'task-attachments',
+        'calendar', 'calendar-entries', 'task-comments', 'task-attachments',
         'saved-reports', 'dashboard-layouts',
         'marketing-assets', 'email-campaigns',
         'property-media',
