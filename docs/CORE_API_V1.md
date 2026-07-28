@@ -277,6 +277,10 @@ encrypted at rest and never serialized in API responses.
   current listing payload.
 - `GET /portal-sync-runs` exposes processed, successful, failed, and partial
   synchronization audits with per-listing errors.
+- `portal-integrations:sync` processes every active integration that is due
+  according to its hourly, daily, or weekly frequency. It runs every fifteen
+  minutes through the scheduler; `--force` is available for operational
+  catch-up runs, while manual integrations remain API-triggered.
 
 Portal payloads contain public listing and media information only; internal
 notes and credentials are excluded. Integrations support branch, sales/lettings

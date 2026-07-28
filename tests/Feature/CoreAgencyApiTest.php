@@ -1352,6 +1352,33 @@ class CoreAgencyApiTest extends TestCase
             ->assertOk()
             ->assertJsonPath('data.0.status', 'completed');
 
+        $scheduled = PortalIntegration::create([
+            'team_id' => $team->id,
+            'provider' => 'zoopla',
+            'country' => 'GB',
+            'channel' => 'sales',
+            'sync_frequency' => 'hourly',
+            'active' => true,
+        ]);
+        PortalListing::create([
+            'team_id' => $team->id,
+            'portal_integration_id' => $scheduled->id,
+            'property_id' => $property->id,
+            'status' => 'pending',
+        ]);
+
+        $this->artisan('portal-integrations:sync')
+            ->expectsOutput("zoopla #{$scheduled->id}: completed")
+            ->expectsOutput('Synchronized 1 portal integration(s).')
+            ->assertSuccessful();
+        $this->assertDatabaseHas('portal_sync_runs', [
+            'team_id' => $team->id,
+            'portal_integration_id' => $scheduled->id,
+            'requested_by' => null,
+            'status' => 'completed',
+            'processed' => 1,
+        ]);
+
         $this->deleteJson("/api/v1/portal-integrations/$integrationId/properties/{$property->id}")
             ->assertOk()
             ->assertJsonPath('data.status', 'withdrawn');

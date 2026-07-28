@@ -7,6 +7,10 @@ use App\Services\NeighborhoodDataService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schedule;
 
+Schedule::command('portal-integrations:sync')
+    ->everyFifteenMinutes()
+    ->withoutOverlapping();
+
 Schedule::command('rightmove:sync-properties')
     ->hourly()
     ->when(fn () => RightMoveSettings::active()->first()?->sync_frequency === 'hourly' ?? true)

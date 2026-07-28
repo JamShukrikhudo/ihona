@@ -10,12 +10,12 @@ use Throwable;
 
 class PortalSyncService
 {
-    public function sync(PortalIntegration $integration, User $requestedBy): PortalSyncRun
+    public function sync(PortalIntegration $integration, ?User $requestedBy = null): PortalSyncRun
     {
         $run = PortalSyncRun::create([
             'team_id' => $integration->team_id,
             'portal_integration_id' => $integration->id,
-            'requested_by' => $requestedBy->id,
+            'requested_by' => $requestedBy?->id,
             'status' => 'running',
             'started_at' => now(),
         ]);
@@ -64,6 +64,7 @@ class PortalSyncService
     private function payload(PortalListing $listing): array
     {
         $property = $listing->property;
+
         return [
             'property_id' => $property->id,
             'title' => $property->title,
