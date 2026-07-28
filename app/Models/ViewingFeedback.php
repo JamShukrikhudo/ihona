@@ -36,6 +36,8 @@ class ViewingFeedback extends Model
         'team_id',
     ];
 
+    protected $hidden = ['token'];
+
     protected $casts = [
         'overall_rating' => 'integer',
         'price_rating' => 'integer',

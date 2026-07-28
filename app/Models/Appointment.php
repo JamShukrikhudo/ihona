@@ -3,10 +3,9 @@
 namespace App\Models;
 
 use DateTime;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Represents an appointment in the real estate application.
@@ -39,7 +38,12 @@ class Appointment extends Model
         'appointment_type_id',
         'name',
         'contact',
+        'attendees',
         'notes',
+        'confirmation_sent_at',
+        'reminder_sent_at',
+        'outcome',
+        'outcome_notes',
         'staff_id',
         'property_address',
         'property_type',
@@ -52,6 +56,9 @@ class Appointment extends Model
     protected $casts = [
         'appointment_date' => 'datetime',
         'date' => 'date',
+        'attendees' => 'array',
+        'confirmation_sent_at' => 'datetime',
+        'reminder_sent_at' => 'datetime',
     ];
 
     public function user()
@@ -84,11 +91,13 @@ class Appointment extends Model
         return $this->belongsTo(AppointmentType::class, 'appointment_type_id');
     }
 
+    public function feedback()
+    {
+        return $this->hasMany(ViewingFeedback::class, 'appointment_id', 'appointment_id');
+    }
+
     /**
      * Scope a query to only include upcoming appointments.
-     *
-     * @param Builder $query
-     * @return Builder
      */
     public function scopeUpcoming(Builder $query): Builder
     {
@@ -97,10 +106,6 @@ class Appointment extends Model
 
     /**
      * Scope a query to only include appointments with a specific status.
-     *
-     * @param Builder $query
-     * @param  string  $status
-     * @return Builder
      */
     public function scopeStatus(Builder $query, string $status): Builder
     {

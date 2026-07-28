@@ -29,7 +29,9 @@ abstract class TenantCrudController extends Controller
 
         $perPage = min(max($request->integer('per_page', 20), 1), 100);
 
-        return response()->json($query->latest('id')->paginate($perPage));
+        return response()->json(
+            $query->latest($query->getModel()->getQualifiedKeyName())->paginate($perPage)
+        );
     }
 
     public function store(Request $request): JsonResponse

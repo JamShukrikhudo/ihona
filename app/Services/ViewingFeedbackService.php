@@ -12,15 +12,10 @@ class ViewingFeedbackService
 {
     /**
      * Request feedback from a viewer after their viewing appointment.
-     *
-     * @param  Appointment  $appointment
-     * @param  string  $viewerEmail
-     * @param  string  $viewerName
-     * @return ViewingFeedback
      */
     public function requestFeedback(Appointment $appointment, string $viewerEmail, string $viewerName): ViewingFeedback
     {
-        if (!filter_var($viewerEmail, FILTER_VALIDATE_EMAIL)) {
+        if (! filter_var($viewerEmail, FILTER_VALIDATE_EMAIL)) {
             throw new InvalidArgumentException("Invalid viewer email address: {$viewerEmail}");
         }
 
@@ -41,10 +36,6 @@ class ViewingFeedbackService
 
     /**
      * Submit feedback for a viewing.
-     *
-     * @param  ViewingFeedback  $feedback
-     * @param  array  $data
-     * @return ViewingFeedback
      */
     public function submitFeedback(ViewingFeedback $feedback, array $data): ViewingFeedback
     {
@@ -69,9 +60,6 @@ class ViewingFeedbackService
 
     /**
      * Find a feedback record by its token (for unauthenticated links).
-     *
-     * @param  string  $token
-     * @return ViewingFeedback|null
      */
     public function findByToken(string $token): ?ViewingFeedback
     {
@@ -80,9 +68,6 @@ class ViewingFeedbackService
 
     /**
      * Get a summary of feedback for a property.
-     *
-     * @param  Property  $property
-     * @return array
      */
     public function getPropertyFeedbackSummary(Property $property): array
     {
@@ -123,7 +108,7 @@ class ViewingFeedbackService
 
     private function sendFeedbackRequestEmail(ViewingFeedback $feedback, string $viewerEmail, string $viewerName): void
     {
-        $feedbackUrl = url('/feedback/' . $feedback->token);
+        $feedbackUrl = url('/feedback/'.$feedback->token);
         $escapedName = htmlspecialchars($viewerName, ENT_QUOTES, 'UTF-8');
         $escapedTitle = htmlspecialchars($feedback->property->title ?? 'the property', ENT_QUOTES, 'UTF-8');
 
@@ -137,7 +122,8 @@ class ViewingFeedbackService
         HTML;
 
         Mail::send([], [], function ($message) use ($viewerEmail, $viewerName, $body) {
-            $message->to($viewerEmail, $viewerName)
+            $message->from(config('mail.from.address') ?: 'noreply@example.test')
+                ->to($viewerEmail, $viewerName)
                 ->subject('How was your viewing? Share your feedback')
                 ->html($body);
         });

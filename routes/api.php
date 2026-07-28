@@ -223,6 +223,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('sales-progressions/{sales_progression}/memorandum', [ApiSalesProgressionController::class, 'memorandum'])->name('sales-progressions.memorandum');
         Route::apiResource('valuations', ApiValuationController::class);
         Route::apiResource('viewings', ApiViewingController::class);
+        Route::post('viewings/{viewing}/confirmation', [ApiViewingController::class, 'sendConfirmation'])->name('viewings.confirmation');
+        Route::post('viewings/{viewing}/reminder', [ApiViewingController::class, 'sendReminder'])->name('viewings.reminder');
+        Route::get('viewings/{viewing}/feedback', [ApiViewingController::class, 'feedback'])->name('viewings.feedback.index');
+        Route::post('viewings/{viewing}/feedback', [ApiViewingController::class, 'requestFeedback'])->name('viewings.feedback.request');
+        Route::patch('viewings/{viewing}/feedback/{feedback}', [ApiViewingController::class, 'submitFeedback'])->name('viewings.feedback.submit');
         Route::apiResource('properties', ApiPropertyController::class);
         Route::get('properties/{property}/media', [ApiPropertyMediaController::class, 'index'])->name('property-media.index');
         Route::post('properties/{property}/media', [ApiPropertyMediaController::class, 'store'])->name('property-media.store');

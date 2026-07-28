@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\AgencyTask;
+use App\Models\Appointment;
 use App\Models\Branch;
 use App\Models\Buyer;
 use App\Models\Company;
@@ -18,6 +19,7 @@ use App\Models\Vendor;
 use App\Notifications\NewPropertyMatches;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\Sanctum;
@@ -1476,6 +1478,72 @@ class CoreAgencyApiTest extends TestCase
             'property_id' => $property->id,
             'applicant_id' => $otherApplicant->id,
         ])->assertUnprocessable()->assertJsonValidationErrors('applicant_id');
+    }
+
+    public function test_viewings_support_attendees_messages_feedback_and_outcomes(): void
+    {
+        Mail::fake();
+        [$user, $team] = $this->actingAsTeamMember();
+        $property = Property::factory()->for($team)->create(['title' => '12 Garden Street']);
+
+        $response = $this->postJson('/api/v1/viewings', [
+            'property_id' => $property->id,
+            'staff_id' => $user->id,
+            'appointment_date' => now()->addDay()->toIso8601String(),
+            'attendees' => [
+                ['name' => 'Avery Buyer', 'email' => 'avery@example.test'],
+                ['name' => 'Jordan Buyer', 'email' => 'jordan@example.test'],
+            ],
+        ])->assertCreated()
+            ->assertJsonPath('data.team_id', $team->id)
+            ->assertJsonCount(2, 'data.attendees');
+        $viewingId = $response->json('data.appointment_id');
+
+        $this->getJson('/api/v1/viewings')
+            ->assertOk()
+            ->assertJsonPath('data.0.appointment_id', $viewingId);
+
+        $this->postJson("/api/v1/viewings/$viewingId/confirmation")
+            ->assertOk()
+            ->assertJsonPath('data.status', 'scheduled')
+            ->assertJsonPath('data.confirmation_sent_at', fn ($value) => $value !== null);
+        $this->postJson("/api/v1/viewings/$viewingId/reminder")
+            ->assertOk()
+            ->assertJsonPath('data.reminder_sent_at', fn ($value) => $value !== null);
+
+        $feedbackResponse = $this->postJson("/api/v1/viewings/$viewingId/feedback", [
+            'attendees' => [
+                ['name' => 'Avery Buyer', 'email' => 'avery@example.test'],
+            ],
+        ])->assertCreated()
+            ->assertJsonMissingPath('data.0.token');
+        $feedbackId = $feedbackResponse->json('data.0.id');
+
+        $this->patchJson("/api/v1/viewings/$viewingId/feedback/$feedbackId", [
+            'overall_rating' => 5,
+            'interest_level' => 'very_interested',
+            'would_make_offer' => true,
+            'offer_price' => 425000,
+            'general_comments' => 'Ready to proceed.',
+        ])->assertOk()
+            ->assertJsonPath('data.overall_rating', 5)
+            ->assertJsonPath('data.interest_level', 'very_interested');
+
+        $this->patchJson("/api/v1/viewings/$viewingId", [
+            'status' => 'completed',
+            'outcome' => 'offer_expected',
+            'outcome_notes' => 'Applicant is arranging finance.',
+        ])->assertOk()
+            ->assertJsonPath('data.outcome', 'offer_expected');
+
+        $otherViewing = Appointment::create([
+            'team_id' => Team::factory()->create()->id,
+            'user_id' => $user->id,
+            'property_id' => $property->id,
+            'appointment_date' => now()->addDay(),
+        ]);
+        $this->getJson("/api/v1/viewings/{$otherViewing->getKey()}/feedback")
+            ->assertNotFound();
     }
 
     private function actingAsTeamMember(): array

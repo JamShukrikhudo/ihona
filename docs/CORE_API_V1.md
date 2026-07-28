@@ -120,6 +120,21 @@ against organisation membership before any data is changed.
 Sales progressions initialise with the standard residential-sale checklist and
 retain an immutable, staff-attributed timeline of operational events.
 
+## Viewings
+
+Viewings support assigned staff, multiple structured attendees, confirmation
+and reminder emails, and a controlled outcome vocabulary.
+
+- `POST /viewings/{viewing}/confirmation` emails all attendees with an email address.
+- `POST /viewings/{viewing}/reminder` sends a reminder for an upcoming active viewing.
+- `GET|POST /viewings/{viewing}/feedback` lists or requests attendee feedback.
+- `PATCH /viewings/{viewing}/feedback/{feedback}` captures ratings, comments,
+  interest, and offer intent.
+
+Feedback links use random private tokens that are never serialized by the
+authenticated API. Viewing and feedback records are constrained to the selected
+organisation.
+
 - `POST /sales-progressions/{progression}/memorandum` records the memorandum
   reference, recipients, issue date, and marks its checklist item complete.
 - `PATCH /sales-progressions/{progression}/checklist/{item}` records milestone
