@@ -44,6 +44,19 @@ Country packs configure the organisation's currency, locale, language, timezone,
 date format, measurement system, area unit, postal-code pattern, and available
 property portals. Supported packs are GB, IE, AU, CA, US, ZA, and NZ.
 
+## Property records
+
+`/properties` stores residential, commercial, land, new-build, development, and
+mixed-use records. Alongside price, coordinates, bedrooms, bathrooms, floor
+area, year, description, and status, records support a structured full address,
+reception-room count, structured parking and garden details, internal agency
+notes, and structured EPC assessment data.
+
+`feature_names` creates or atomically replaces the property's managed feature
+list; responses include both the direct name list and feature relationship
+records. Internal notes are confined to the authenticated agency API and are
+not selected by public website endpoints.
+
 ## Global search
 
 `GET /search?q={term}` searches properties, contacts, companies, documents,

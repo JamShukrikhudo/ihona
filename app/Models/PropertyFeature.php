@@ -2,16 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-use Illuminate\Support\Facades\Cache;
 use App\Services\PropertyFeatureService;
+use Illuminate\Database\Eloquent\Model;
 
 class PropertyFeature extends Model
 {
     protected $primaryKey = 'feature_id';
 
     protected $fillable = [
+        'team_id',
         'property_id',
         'feature_name',
     ];
@@ -20,6 +19,7 @@ class PropertyFeature extends Model
     {
         return $this->belongsTo(Property::class, 'property_id');
     }
+
     public function team()
     {
         return $this->belongsTo(Team::class, 'team_id');
@@ -42,4 +42,3 @@ class PropertyFeature extends Model
         });
     }
 }
-

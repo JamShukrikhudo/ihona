@@ -54,8 +54,10 @@ class Property extends Model implements HasMedia
     protected $fillable = [
         'title',
         'description',
+        'internal_notes',
         'property_template_id',
         'location',
+        'structured_address',
         'latitude',
         'longitude',
         'walkability_score',
@@ -68,6 +70,9 @@ class Property extends Model implements HasMedia
         'price',
         'bedrooms',
         'bathrooms',
+        'reception_rooms',
+        'parking',
+        'gardens',
         'area_sqft',
         'year_built',
         'property_type',
@@ -91,6 +96,7 @@ class Property extends Model implements HasMedia
         'postal_code',
         'country',
         'energy_rating',
+        'epc',
         'energy_score',
         'energy_rating_date',
         'insurance_policy_id',
@@ -127,6 +133,10 @@ class Property extends Model implements HasMedia
         'ar_model_scale' => 'float',
         'holographic_metadata' => 'array',
         'holographic_enabled' => 'boolean',
+        'structured_address' => 'array',
+        'parking' => 'array',
+        'gardens' => 'array',
+        'epc' => 'array',
     ];
 
     public function auctions()

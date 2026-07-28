@@ -429,22 +429,72 @@ class CoreAgencyApiTest extends TestCase
         $response = $this->postJson('/api/v1/properties', [
             'title' => 'Harbour View',
             'description' => 'A modern waterfront apartment.',
+            'internal_notes' => 'Vendor prefers accompanied viewings.',
             'location' => 'Bristol',
+            'structured_address' => [
+                'line_1' => '10 Harbour Way',
+                'city' => 'Bristol',
+                'postal_code' => 'BS1 5UH',
+                'country' => 'GB',
+            ],
             'price' => 450000,
             'bedrooms' => 2,
             'bathrooms' => 2,
+            'reception_rooms' => 1,
+            'parking' => [
+                'spaces' => 1,
+                'types' => ['allocated', 'underground'],
+            ],
+            'gardens' => [
+                'communal' => true,
+                'orientation' => 'south_west',
+            ],
             'area_sqft' => 950,
             'year_built' => 2022,
             'property_type' => 'apartment',
+            'epc' => [
+                'rating' => 'B',
+                'score' => 84,
+                'assessment_date' => '2026-01-01',
+                'expiry_date' => '2036-01-01',
+                'certificate_reference' => 'EPC-100',
+            ],
+            'feature_names' => ['balcony', 'concierge'],
         ])->assertCreated()
             ->assertJsonPath('data.team_id', $team->id)
-            ->assertJsonPath('data.status', 'draft');
+            ->assertJsonPath('data.status', 'draft')
+            ->assertJsonPath('data.structured_address.line_1', '10 Harbour Way')
+            ->assertJsonPath('data.reception_rooms', 1)
+            ->assertJsonPath('data.parking.types.1', 'underground')
+            ->assertJsonPath('data.gardens.communal', true)
+            ->assertJsonPath('data.epc.rating', 'B')
+            ->assertJsonPath('data.feature_names.0', 'balcony')
+            ->assertJsonPath('data.feature_names.1', 'concierge');
 
         $propertyId = $response->json('data.id');
 
-        $this->patchJson("/api/v1/properties/$propertyId", ['status' => 'available'])
+        $this->patchJson("/api/v1/properties/$propertyId", [
+            'status' => 'available',
+            'feature_names' => ['waterfront'],
+        ])
             ->assertOk()
-            ->assertJsonPath('data.status', 'available');
+            ->assertJsonPath('data.status', 'available')
+            ->assertJsonCount(1, 'data.feature_names')
+            ->assertJsonPath('data.feature_names.0', 'waterfront');
+        $this->assertDatabaseMissing('property_features', [
+            'property_id' => $propertyId,
+            'feature_name' => 'balcony',
+        ]);
+        $this->assertDatabaseHas('property_features', [
+            'team_id' => $team->id,
+            'property_id' => $propertyId,
+            'feature_name' => 'waterfront',
+        ]);
+
+        $this->getJson("/api/v1/properties/$propertyId")
+            ->assertOk()
+            ->assertJsonPath('data.internal_notes', 'Vendor prefers accompanied viewings.')
+            ->assertJsonPath('data.feature_names.0', 'waterfront');
 
         $this->deleteJson("/api/v1/properties/$propertyId")->assertNoContent();
         $this->assertSoftDeleted('properties', ['id' => $propertyId]);
