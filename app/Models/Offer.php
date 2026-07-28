@@ -6,6 +6,7 @@ use App\Models\Concerns\BelongsToTeam;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Offer extends Model
@@ -40,5 +41,10 @@ class Offer extends Model
     public function negotiator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'negotiator_id');
+    }
+
+    public function events(): HasMany
+    {
+        return $this->hasMany(OfferEvent::class)->oldest('occurred_at')->oldest('id');
     }
 }

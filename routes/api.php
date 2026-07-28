@@ -208,6 +208,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('tenancy-agreements/{tenancy_agreement}/renew', [ApiTenancyAgreementController::class, 'renew'])->name('tenancy-agreements.renew');
         Route::post('tenancy-agreements/{tenancy_agreement}/notice', [ApiTenancyAgreementController::class, 'notice'])->name('tenancy-agreements.notice');
         Route::apiResource('offers', ApiOfferController::class);
+        Route::get('offers/{offer}/timeline', [ApiOfferController::class, 'timeline'])->name('offers.timeline');
         Route::apiResource('portal-integrations', ApiPortalIntegrationController::class);
         Route::post('portal-integrations/{portal_integration}/sync', [ApiPortalIntegrationController::class, 'sync'])->name('portal-integrations.sync');
         Route::get('portal-sync-runs', [ApiPortalIntegrationController::class, 'runs'])->name('portal-sync-runs.index');

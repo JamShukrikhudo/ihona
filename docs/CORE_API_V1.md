@@ -78,6 +78,14 @@ results per type.
 Generated matches are organisation-scoped, de-duplicated, and create in-app
 notifications for buyers linked to a user account.
 
+## Offers
+
+Every offer creation, revision, and status change creates an immutable,
+staff-attributed negotiation event. `GET /offers/{offer}/timeline` returns the
+chronological amount, conditions, status, note, and changed fields without
+exposing records from another organisation. Clients may include
+`negotiation_note` when creating or updating an offer.
+
 ## Lettings lifecycle
 
 Tenant records and tenancy agreements are exposed through the versioned API.

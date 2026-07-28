@@ -10,6 +10,7 @@ use App\Models\Company;
 use App\Models\ComplianceItem;
 use App\Models\Contact;
 use App\Models\Document;
+use App\Models\Offer;
 use App\Models\Property;
 use App\Models\ServiceIntegration;
 use App\Models\Team;
@@ -101,6 +102,71 @@ class CoreAgencyApiTest extends TestCase
             'amount' => 100000,
             'offered_at' => now()->toIso8601String(),
         ])->assertUnprocessable()->assertJsonValidationErrors('property_id');
+    }
+
+    public function test_offer_negotiations_create_an_immutable_team_scoped_timeline(): void
+    {
+        [$user, $team] = $this->actingAsTeamMember();
+        $property = Property::factory()->for($team)->create();
+        $contact = Contact::create([
+            'team_id' => $team->id,
+            'type' => 'buyer',
+            'first_name' => 'Casey',
+        ]);
+
+        $response = $this->postJson('/api/v1/offers', [
+            'property_id' => $property->id,
+            'contact_id' => $contact->id,
+            'amount' => 400000,
+            'currency' => 'GBP',
+            'conditions' => 'Subject to survey',
+            'offered_at' => now()->toIso8601String(),
+            'negotiation_note' => 'Opening offer received by phone.',
+        ])->assertCreated();
+        $offerId = $response->json('data.id');
+
+        $this->patchJson("/api/v1/offers/$offerId", [
+            'amount' => 415000,
+            'conditions' => 'Subject to survey and finance',
+            'negotiation_note' => 'Buyer increased after vendor response.',
+        ])->assertOk()
+            ->assertJsonPath('data.amount', '415000.00');
+
+        $this->patchJson("/api/v1/offers/$offerId", [
+            'status' => 'accepted',
+            'responded_at' => now()->toIso8601String(),
+            'negotiation_note' => 'Vendor accepted the revised offer.',
+        ])->assertOk()
+            ->assertJsonPath('data.status', 'accepted');
+
+        $this->getJson("/api/v1/offers/$offerId/timeline")
+            ->assertOk()
+            ->assertJsonCount(3, 'data')
+            ->assertJsonPath('data.0.event_type', 'created')
+            ->assertJsonPath('data.0.actor_id', $user->id)
+            ->assertJsonPath('data.1.previous_amount', '400000.00')
+            ->assertJsonPath('data.1.amount', '415000.00')
+            ->assertJsonPath('data.2.event_type', 'status_changed')
+            ->assertJsonPath('data.2.previous_status', 'pending')
+            ->assertJsonPath('data.2.status', 'accepted');
+
+        $otherTeam = Team::factory()->create();
+        $otherProperty = Property::factory()->for($otherTeam)->create();
+        $otherContact = Contact::create([
+            'team_id' => $otherTeam->id,
+            'type' => 'buyer',
+            'first_name' => 'Hidden',
+        ]);
+        $otherOffer = Offer::create([
+            'team_id' => $otherTeam->id,
+            'property_id' => $otherProperty->id,
+            'contact_id' => $otherContact->id,
+            'amount' => 100000,
+            'offered_at' => now(),
+        ]);
+
+        $this->getJson("/api/v1/offers/{$otherOffer->id}/timeline")
+            ->assertNotFound();
     }
 
     public function test_task_creator_and_team_are_derived_from_authentication(): void
