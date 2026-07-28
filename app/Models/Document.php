@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use App\Services\DocumentAccessService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\Auth;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -25,11 +27,20 @@ class Document extends Model implements HasMedia
         'property_id',
         'user_id',
         'is_signable',
+        'documentable_type',
+        'documentable_id',
+        'visibility',
+        'allowed_user_ids',
+        'allowed_roles',
     ];
 
     protected $casts = [
         'is_signable' => 'boolean',
+        'allowed_user_ids' => 'array',
+        'allowed_roles' => 'array',
     ];
+
+    protected $with = ['categories'];
 
     public function digitalSignatures(): HasMany
     {
@@ -51,6 +62,11 @@ class Document extends Model implements HasMedia
         return $this->belongsTo(Property::class);
     }
 
+    public function documentable(): MorphTo
+    {
+        return $this->morphTo();
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -58,7 +74,7 @@ class Document extends Model implements HasMedia
 
     public function categories(): BelongsToMany
     {
-        return $this->belongsToMany(DocumentCategory::class, 'document_category_items');
+        return $this->belongsToMany(DocumentCategory::class, 'document_document_category');
     }
 
     public function registerMediaCollections(): void
@@ -72,9 +88,10 @@ class Document extends Model implements HasMedia
     {
         $user = Auth::user();
 
-        return $user->id === $this->user_id ||
-               $user->team_id === $this->team_id ||
-               $user->hasRole('admin');
+        return $user && app(DocumentAccessService::class)
+            ->query($user, (int) $this->team_id)
+            ->whereKey($this->id)
+            ->exists();
     }
 
     public function isSignable()

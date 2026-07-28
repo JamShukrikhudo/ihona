@@ -18,6 +18,7 @@ use App\Http\Controllers\API\V1\ContactRelationshipController as ApiContactRelat
 use App\Http\Controllers\API\V1\ContractorController as ApiContractorController;
 use App\Http\Controllers\API\V1\DashboardLayoutController as ApiDashboardLayoutController;
 use App\Http\Controllers\API\V1\DepartmentController as ApiDepartmentController;
+use App\Http\Controllers\API\V1\DocumentCategoryController as ApiDocumentCategoryController;
 use App\Http\Controllers\API\V1\DocumentController as ApiDocumentController;
 use App\Http\Controllers\API\V1\DocumentWorkflowController as ApiDocumentWorkflowController;
 use App\Http\Controllers\API\V1\EmailCampaignController as ApiEmailCampaignController;
@@ -183,6 +184,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('automation-runs', [ApiAutomationController::class, 'runs'])->name('automation-runs.index');
         Route::apiResource('buyers', ApiBuyerController::class);
         Route::apiResource('documents', ApiDocumentController::class);
+        Route::apiResource('document-categories', ApiDocumentCategoryController::class);
         Route::get('documents/{document}/versions', [ApiDocumentWorkflowController::class, 'versions'])->name('documents.versions.index');
         Route::post('documents/{document}/versions', [ApiDocumentWorkflowController::class, 'storeVersion'])->name('documents.versions.store');
         Route::get('documents/{document}/versions/{version}/download', [ApiDocumentWorkflowController::class, 'download'])->name('documents.versions.download');

@@ -41,6 +41,7 @@ abstract class TenantCrudController extends Controller
         $attributes = $this->prepareForCreate($request, $attributes);
 
         $record = $this->model::create($attributes);
+        $this->afterCreate($request, $record);
 
         return response()->json(['data' => $record->fresh()], 201);
     }
@@ -55,6 +56,7 @@ abstract class TenantCrudController extends Controller
         $record = $this->record($request);
         $attributes = $request->validate($this->rules($request, $record));
         $record->update($this->prepareForUpdate($request, $record, $attributes));
+        $this->afterUpdate($request, $record);
 
         return response()->json(['data' => $record->fresh()]);
     }
@@ -75,6 +77,10 @@ abstract class TenantCrudController extends Controller
     {
         return $attributes;
     }
+
+    protected function afterCreate(Request $request, Model $record): void {}
+
+    protected function afterUpdate(Request $request, Model $record): void {}
 
     protected function teamQuery(Request $request): Builder
     {

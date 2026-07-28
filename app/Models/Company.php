@@ -38,4 +38,9 @@ class Company extends Model
     {
         return $this->morphMany(Communication::class, 'communicable');
     }
+
+    public function documents(): MorphMany
+    {
+        return $this->morphMany(Document::class, 'documentable');
+    }
 }

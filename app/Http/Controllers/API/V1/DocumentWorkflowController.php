@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\V1;
 use App\Http\Controllers\Controller;
 use App\Models\Document;
 use App\Models\DocumentVersion;
+use App\Services\DocumentAccessService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -13,6 +14,8 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class DocumentWorkflowController extends Controller
 {
+    public function __construct(private readonly DocumentAccessService $access) {}
+
     public function versions(Request $request, int $document): JsonResponse
     {
         $record = $this->document($request, $document);
@@ -103,7 +106,9 @@ class DocumentWorkflowController extends Controller
 
     private function document(Request $request, int $id): Document
     {
-        return Document::query()->where('team_id', $request->user()->current_team_id)->findOrFail($id);
+        return $this->access
+            ->query($request->user(), (int) $request->user()->current_team_id)
+            ->findOrFail($id);
     }
 
     private function version(Request $request, int $document, int $version): DocumentVersion

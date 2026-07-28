@@ -10,6 +10,7 @@ use App\Models\Company;
 use App\Models\ComplianceItem;
 use App\Models\Contact;
 use App\Models\Document;
+use App\Models\DocumentCategory;
 use App\Models\Neighborhood;
 use App\Models\Offer;
 use App\Models\PortalIntegration;
@@ -1409,6 +1410,73 @@ class CoreAgencyApiTest extends TestCase
         $this->postJson("/api/v1/documents/{$otherDocument->id}/signatures", [
             'signature_data' => 'invalid',
         ])->assertNotFound();
+    }
+
+    public function test_documents_link_to_crm_records_with_team_categories_and_restricted_access(): void
+    {
+        [$owner, $team] = $this->actingAsTeamMember();
+        $member = User::factory()->create();
+        $team->users()->attach($member, ['role' => 'member']);
+        $member->forceFill(['current_team_id' => $team->id])->save();
+        $contact = Contact::create([
+            'team_id' => $team->id,
+            'type' => 'vendor',
+            'first_name' => 'Morgan',
+            'last_name' => 'Vendor',
+        ]);
+
+        $category = $this->postJson('/api/v1/document-categories', [
+            'name' => 'Identity',
+            'description' => 'Identity and verification records',
+        ])->assertCreated()
+            ->assertJsonPath('data.team_id', $team->id);
+        $categoryId = $category->json('data.id');
+
+        $restricted = $this->postJson('/api/v1/documents', [
+            'title' => 'Vendor identity record',
+            'related_type' => 'contact',
+            'related_id' => $contact->id,
+            'category_ids' => [$categoryId],
+            'visibility' => 'restricted',
+            'allowed_roles' => ['member'],
+        ])->assertCreated()
+            ->assertJsonPath('data.documentable_type', Contact::class)
+            ->assertJsonPath('data.documentable_id', $contact->id)
+            ->assertJsonPath('data.categories.0.name', 'Identity');
+        $restrictedId = $restricted->json('data.id');
+
+        $private = $this->postJson('/api/v1/documents', [
+            'title' => 'Owner private notes',
+            'visibility' => 'private',
+        ])->assertCreated();
+        $privateId = $private->json('data.id');
+
+        $otherCategory = DocumentCategory::create([
+            'team_id' => Team::factory()->create()->id,
+            'user_id' => User::factory()->create()->id,
+            'name' => 'Hidden category',
+        ]);
+        $this->postJson('/api/v1/documents', [
+            'title' => 'Invalid category document',
+            'category_ids' => [$otherCategory->id],
+        ])->assertUnprocessable()->assertJsonValidationErrors('category_ids.0');
+
+        Sanctum::actingAs($member);
+        $this->getJson("/api/v1/documents/$restrictedId")
+            ->assertOk()
+            ->assertJsonPath('data.title', 'Vendor identity record');
+        $this->getJson("/api/v1/documents/$restrictedId/versions")
+            ->assertOk()
+            ->assertJsonCount(0, 'data');
+        $this->getJson("/api/v1/documents/$privateId")->assertNotFound();
+        $this->getJson("/api/v1/documents/$privateId/versions")->assertNotFound();
+        $this->getJson('/api/v1/documents')
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.id', $restrictedId);
+
+        Sanctum::actingAs($owner);
+        $this->deleteJson("/api/v1/document-categories/$categoryId")->assertNoContent();
     }
 
     public function test_property_marketing_assets_and_email_campaigns_are_team_scoped(): void

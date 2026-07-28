@@ -20,6 +20,7 @@ The authenticated REST API exposes the central estate-agency records under
 | Rental applications | Full CRUD at `/rental-applications` | property, applicant, status, screening states |
 | Tenancy agreements | Full CRUD at `/tenancy-agreements` | `property_id`, `tenant_id`, `landlord_id`, `status` |
 | Documents | Full CRUD at `/documents` | `property_id`, `file_type`, `is_signable` |
+| Document categories | Full CRUD at `/document-categories` | Search by name or description |
 | Maintenance | Full CRUD at `/maintenance` | `property_id`, `tenant_id`, `contractor_id`, `status`, `priority` |
 | Sales progression | Full CRUD at `/sales-progressions` | `property_id`, `agent_id`, `stage` |
 | Valuations | Full CRUD at `/valuations` | `property_id`, `valuation_type`, `status`, `user_id` |
@@ -316,6 +317,14 @@ the API rather than public storage. Signatures are only accepted for signable
 documents and record the signer, exact document version, time, IP address, and
 user agent. Documents, versions, downloads, and signatures are constrained to
 the selected organisation.
+
+Documents may be linked directly to a contact, company, or property using
+`related_type` and `related_id`. Organisation-owned categories are assigned with
+`category_ids`. Visibility can be `team`, `private`, or `restricted`; restricted
+documents accept selected `allowed_user_ids` and agency `allowed_roles`.
+Organisation owners and administrators retain oversight, while every CRUD,
+version, download, and signature query applies the same document-level access
+policy.
 
 ## Property compliance
 

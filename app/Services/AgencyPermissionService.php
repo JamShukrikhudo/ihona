@@ -11,7 +11,7 @@ class AgencyPermissionService
 {
     public const RESOURCES = [
         'properties', 'contacts', 'companies', 'buyers', 'tenants', 'branches', 'departments', 'staff',
-        'communications', 'documents', 'inspections', 'maintenance', 'tasks', 'compliance-items',
+        'communications', 'documents', 'document-categories', 'inspections', 'maintenance', 'tasks', 'compliance-items',
         'offers', 'sales-progressions', 'valuations', 'viewings', 'rental-applications',
         'tenancy-agreements', 'property-matches', 'automations', 'automation-runs',
         'reports', 'notifications', 'permissions', 'api-tokens', 'setup',
