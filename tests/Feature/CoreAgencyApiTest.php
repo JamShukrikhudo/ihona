@@ -490,6 +490,7 @@ class CoreAgencyApiTest extends TestCase
     public function test_property_crud_is_available_through_the_versioned_api(): void
     {
         [, $team] = $this->actingAsTeamMember();
+        $branch = Branch::create(['team_id' => $team->id, 'name' => 'Harbour Office']);
 
         $response = $this->postJson('/api/v1/properties', [
             'title' => 'Harbour View',
@@ -500,9 +501,12 @@ class CoreAgencyApiTest extends TestCase
                 'line_1' => '10 Harbour Way',
                 'city' => 'Bristol',
                 'postal_code' => 'BS1 5UH',
-                'country' => 'GB',
+                'country' => 'IE',
             ],
             'price' => 450000,
+            'currency' => 'EUR',
+            'country' => 'IE',
+            'branch_id' => $branch->id,
             'bedrooms' => 2,
             'bathrooms' => 2,
             'reception_rooms' => 1,
@@ -528,6 +532,9 @@ class CoreAgencyApiTest extends TestCase
         ])->assertCreated()
             ->assertJsonPath('data.team_id', $team->id)
             ->assertJsonPath('data.status', 'draft')
+            ->assertJsonPath('data.currency', 'EUR')
+            ->assertJsonPath('data.country', 'IE')
+            ->assertJsonPath('data.branch_id', $branch->id)
             ->assertJsonPath('data.structured_address.line_1', '10 Harbour Way')
             ->assertJsonPath('data.reception_rooms', 1)
             ->assertJsonPath('data.parking.types.1', 'underground')
@@ -555,6 +562,13 @@ class CoreAgencyApiTest extends TestCase
             'property_id' => $propertyId,
             'feature_name' => 'waterfront',
         ]);
+        $otherBranch = Branch::create([
+            'team_id' => Team::factory()->create()->id,
+            'name' => 'Other Office',
+        ]);
+        $this->patchJson("/api/v1/properties/$propertyId", [
+            'branch_id' => $otherBranch->id,
+        ])->assertUnprocessable()->assertJsonValidationErrors('branch_id');
 
         $this->getJson("/api/v1/properties/$propertyId")
             ->assertOk()

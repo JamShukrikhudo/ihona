@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\V1;
 
+use App\Models\OrganisationProfile;
 use App\Models\Property;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -63,6 +64,14 @@ class PropertyController
         $attributes['agent_id'] ??= $request->user()->id;
         $attributes['status'] ??= 'draft';
         $attributes['list_date'] ??= now()->toDateString();
+        $profile = OrganisationProfile::where('team_id', $attributes['team_id'])->first();
+        $attributes['country'] = strtoupper($attributes['country'] ?? $profile?->primary_country ?? 'GB');
+        $attributes['currency'] = strtoupper(
+            $attributes['currency']
+                ?? config("countries.{$attributes['country']}.currency")
+                ?? $profile?->currency
+                ?? 'GBP',
+        );
 
         $property = DB::transaction(function () use ($attributes, $featureNames) {
             $property = Property::create($attributes);
@@ -78,6 +87,11 @@ class PropertyController
     {
         $record = $this->find($request, $property);
         $attributes = $request->validate($this->rules($request, true));
+        foreach (['country', 'currency'] as $regionalField) {
+            if (isset($attributes[$regionalField])) {
+                $attributes[$regionalField] = strtoupper($attributes[$regionalField]);
+            }
+        }
         $hasFeatures = array_key_exists('feature_names', $attributes);
         $featureNames = $attributes['feature_names'] ?? [];
         unset($attributes['feature_names']);
@@ -109,6 +123,9 @@ class PropertyController
     {
         $teamId = $this->teamId($request);
         $required = $updating ? 'sometimes' : 'required';
+        $profile = OrganisationProfile::where('team_id', $teamId)->first();
+        $operatingCountries = $profile?->operating_countries ?: array_keys(config('countries', []));
+        $currencies = collect(config('countries', []))->pluck('currency')->unique()->values()->all();
 
         return [
             'title' => [$required, 'string', 'max:255'],
@@ -121,12 +138,13 @@ class PropertyController
             'structured_address.city' => ['required_with:structured_address', 'string', 'max:100'],
             'structured_address.region' => ['nullable', 'string', 'max:100'],
             'structured_address.postal_code' => ['nullable', 'string', 'max:30'],
-            'structured_address.country' => ['nullable', 'string', 'size:2'],
+            'structured_address.country' => ['nullable', 'string', 'size:2', Rule::in($operatingCountries)],
             'postal_code' => ['nullable', 'string', 'max:30'],
-            'country' => ['nullable', 'string', 'size:2'],
+            'country' => ['nullable', 'string', 'size:2', Rule::in($operatingCountries)],
             'latitude' => ['nullable', 'numeric', 'between:-90,90'],
             'longitude' => ['nullable', 'numeric', 'between:-180,180'],
             'price' => [$required, 'numeric', 'min:0'],
+            'currency' => ['nullable', 'string', 'size:3', Rule::in($currencies)],
             'bedrooms' => [$required, 'integer', 'min:0'],
             'bathrooms' => [$required, 'integer', 'min:0'],
             'reception_rooms' => ['sometimes', 'integer', 'between:0,100'],
@@ -148,6 +166,7 @@ class PropertyController
             'list_date' => ['nullable', 'date'],
             'sold_date' => ['nullable', 'date'],
             'agent_id' => ['nullable', Rule::exists('team_user', 'user_id')->where('team_id', $teamId)],
+            'branch_id' => ['nullable', Rule::exists('branches', 'id')->where('team_id', $teamId)],
             'virtual_tour_url' => ['nullable', 'url', 'max:2048'],
             'is_featured' => ['sometimes', 'boolean'],
             'energy_rating' => ['nullable', 'string', 'max:10'],

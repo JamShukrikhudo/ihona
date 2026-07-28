@@ -68,6 +68,7 @@ class Property extends Model implements HasMedia
         'bike_description',
         'walkability_updated_at',
         'price',
+        'currency',
         'bedrooms',
         'bathrooms',
         'reception_rooms',
@@ -81,6 +82,7 @@ class Property extends Model implements HasMedia
         'sold_date',
         'user_id',
         'team_id',
+        'branch_id',
         'agent_id',
         'virtual_tour_url',
         'virtual_tour_provider',
@@ -203,6 +205,11 @@ class Property extends Model implements HasMedia
     public function team(): BelongsTo
     {
         return $this->belongsTo(Team::class);
+    }
+
+    public function branch(): BelongsTo
+    {
+        return $this->belongsTo(Branch::class);
     }
 
     public function user(): BelongsTo

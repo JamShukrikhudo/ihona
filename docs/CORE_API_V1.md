@@ -54,7 +54,9 @@ and NZ.
 mixed-use records. Alongside price, coordinates, bedrooms, bathrooms, floor
 area, year, description, and status, records support a structured full address,
 reception-room count, structured parking and garden details, internal agency
-notes, and structured EPC assessment data.
+notes, and structured EPC assessment data. Each listing carries its own ISO
+currency and an optional organisation-owned branch; country and currency
+default from the selected organisation's regional setup.
 
 `feature_names` creates or atomically replaces the property's managed feature
 list; responses include both the direct name list and feature relationship

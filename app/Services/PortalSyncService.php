@@ -94,6 +94,7 @@ class PortalSyncService
             'country' => $property->country,
             'coordinates' => ['latitude' => $property->latitude, 'longitude' => $property->longitude],
             'price' => $property->price,
+            'currency' => $property->currency,
             'bedrooms' => $property->bedrooms,
             'bathrooms' => $property->bathrooms,
             'area_sqft' => $property->area_sqft,

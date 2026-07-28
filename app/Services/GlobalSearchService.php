@@ -41,7 +41,7 @@ class GlobalSearchService
                 ->orWhere('location', 'like', $like)->orWhere('postal_code', 'like', $like))
             ->limit($limit)->get()
             ->map(fn (Property $record) => $this->result('property', $record->id, $record->title, $record->location, [
-                'status' => $record->status, 'price' => $record->price,
+                'status' => $record->status, 'price' => $record->price, 'currency' => $record->currency,
             ]));
     }
 
