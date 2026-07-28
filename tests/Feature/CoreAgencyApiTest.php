@@ -632,6 +632,60 @@ class CoreAgencyApiTest extends TestCase
             ->assertJsonPath('permission', 'contacts.delete');
     }
 
+    public function test_role_hierarchy_prevents_privilege_escalation_and_audits_changes(): void
+    {
+        $owner = User::factory()->create();
+        $team = Team::factory()->create(['user_id' => $owner->id]);
+        $admin = User::factory()->create();
+        $editor = User::factory()->create();
+        $member = User::factory()->create();
+        $team->users()->attach($owner, ['role' => 'admin']);
+        $team->users()->attach($admin, ['role' => 'admin']);
+        $team->users()->attach($editor, [
+            'role' => 'editor',
+            'permissions' => ['staff.edit'],
+        ]);
+        $team->users()->attach($member, ['role' => 'member']);
+
+        foreach ([$owner, $admin, $editor, $member] as $user) {
+            $user->forceFill(['current_team_id' => $team->id])->save();
+        }
+
+        Sanctum::actingAs($editor);
+        $this->patchJson("/api/v1/staff/{$member->id}", [
+            'role' => 'admin',
+        ])->assertForbidden();
+
+        Sanctum::actingAs($admin);
+        $this->putJson("/api/v1/permissions/members/{$member->id}", [
+            'role' => 'admin',
+        ])->assertForbidden();
+
+        Sanctum::actingAs($owner);
+        $this->putJson("/api/v1/permissions/members/{$member->id}", [
+            'role' => 'manager',
+            'permissions' => null,
+        ])->assertOk()
+            ->assertJsonPath('data.role', 'manager')
+            ->assertJsonPath('data.effective_permissions', fn ($permissions) => in_array('contacts.create', $permissions, true))
+            ->assertJsonPath('data.effective_permissions', fn ($permissions) => ! in_array('permissions.edit', $permissions, true));
+
+        $this->getJson('/api/v1/permissions/audits')
+            ->assertOk()
+            ->assertJsonPath('data.0.actor_id', $owner->id)
+            ->assertJsonPath('data.0.subject_id', $member->id)
+            ->assertJsonPath('data.0.old_role', 'member')
+            ->assertJsonPath('data.0.new_role', 'manager');
+
+        Sanctum::actingAs($member->fresh());
+        $this->getJson('/api/v1/permissions/members')->assertForbidden();
+        $this->getJson('/api/v1/staff')->assertOk();
+        $this->postJson('/api/v1/staff', [
+            'email' => User::factory()->create()->email,
+            'role' => 'member',
+        ])->assertForbidden();
+    }
+
     public function test_portal_integrations_publish_and_audit_team_scoped_listing_exports(): void
     {
         [, $team] = $this->actingAsTeamMember();

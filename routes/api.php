@@ -121,6 +121,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('v1')->middleware([ApplyOrganisationLocale::class, RequireAgencyPermission::class])->name('api.v1.')->group(function () {
         Route::get('permissions/catalog', [ApiPermissionController::class, 'catalog'])->name('permissions.catalog');
         Route::get('permissions/members', [ApiPermissionController::class, 'members'])->name('permissions.members');
+        Route::get('permissions/audits', [ApiPermissionController::class, 'audits'])->name('permissions.audits');
         Route::put('permissions/members/{member}', [ApiPermissionController::class, 'update'])->name('permissions.update');
         Route::get('api-tokens', [ApiTokenController::class, 'index'])->name('api-tokens.index');
         Route::post('api-tokens', [ApiTokenController::class, 'store'])->name('api-tokens.store');

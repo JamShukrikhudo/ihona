@@ -4,15 +4,15 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
 use App\Services\AgencyPermissionService;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class ApiTokenController extends Controller
 {
-    public function __construct(private readonly AgencyPermissionService $permissions)
-    {
-    }
+    public function __construct(private readonly AgencyPermissionService $permissions) {}
 
     public function index(Request $request): JsonResponse
     {
@@ -29,10 +29,24 @@ class ApiTokenController extends Controller
             'abilities.*' => ['string', Rule::in($this->permissions->catalog())],
             'expires_at' => ['nullable', 'date', 'after:now'],
         ]);
+        $team = $request->user()->currentTeam;
+        $effectivePermissions = $this->permissions->effectivePermissions($request->user(), $team);
+        $abilities = $validated['abilities'] ?? $effectivePermissions;
+
+        if ($effectivePermissions !== ['*']) {
+            $unauthorised = array_diff($abilities, $effectivePermissions);
+
+            if ($unauthorised !== []) {
+                throw ValidationException::withMessages([
+                    'abilities' => ['API tokens cannot be granted permissions the current role does not have.'],
+                ]);
+            }
+        }
+
         $token = $request->user()->createToken(
             $validated['name'],
-            $validated['abilities'] ?? ['*'],
-            isset($validated['expires_at']) ? \Carbon\Carbon::parse($validated['expires_at']) : null,
+            $abilities,
+            isset($validated['expires_at']) ? Carbon::parse($validated['expires_at']) : null,
         );
 
         return response()->json([
@@ -49,6 +63,7 @@ class ApiTokenController extends Controller
     public function destroy(Request $request, int $token): JsonResponse
     {
         $request->user()->tokens()->findOrFail($token)->delete();
+
         return response()->json(null, 204);
     }
 }

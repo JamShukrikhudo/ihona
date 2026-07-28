@@ -2,9 +2,12 @@
 
 namespace App\Actions\Jetstream;
 
+use App\Enums\AgencyRole;
 use App\Models\Team;
 use App\Models\User;
+use App\Services\AgencyPermissionService;
 use Closure;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
@@ -18,12 +21,20 @@ use Laravel\Jetstream\Rules\Role;
 
 class InviteTeamMember implements InvitesTeamMembers
 {
+    public function __construct(private readonly AgencyPermissionService $permissions) {}
+
     /**
      * Invite a new team member to the given team.
      */
-    public function invite(User $user, Team $team, string $email, string $role = null): void
+    public function invite(User $user, Team $team, string $email, ?string $role = null): void
     {
         Gate::forUser($user)->authorize('addTeamMember', $team);
+        $actorRole = $this->permissions->roleFor($user, $team);
+        $newRole = AgencyRole::tryFrom($role ?? '') ?? AgencyRole::Member;
+
+        if (! $actorRole->canManage($newRole)) {
+            throw new AuthorizationException('You cannot assign this organisation role.');
+        }
 
         $this->validate($team, $email, $role);
 
@@ -31,7 +42,7 @@ class InviteTeamMember implements InvitesTeamMembers
 
         $invitation = $team->teamInvitations()->create([
             'email' => $email,
-            'role'  => $role,
+            'role' => $role,
         ]);
 
         Mail::to($email)->send(new TeamInvitation($invitation));
@@ -44,7 +55,7 @@ class InviteTeamMember implements InvitesTeamMembers
     {
         Validator::make([
             'email' => $email,
-            'role'  => $role,
+            'role' => $role,
         ], $this->rules($team), [
             'email.unique' => __('This user has already been invited to the team.'),
         ])->after(
@@ -67,7 +78,7 @@ class InviteTeamMember implements InvitesTeamMembers
                 }),
             ],
             'role' => Jetstream::hasRoles()
-                            ? ['required', 'string', new Role()]
+                            ? ['required', 'string', new Role]
                             : null,
         ]);
     }

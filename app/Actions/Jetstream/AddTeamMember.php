@@ -2,10 +2,16 @@
 
 namespace App\Actions\Jetstream;
 
-use Illuminate\Contracts\Validation\Rule;
+use App\Enums\AgencyRole;
 use App\Models\Team;
 use App\Models\User;
+use App\Services\AgencyPermissionService;
+use App\Services\AgencyRoleAuditService;
 use Closure;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Jetstream\Contracts\AddsTeamMembers;
@@ -16,12 +22,23 @@ use Laravel\Jetstream\Rules\Role;
 
 class AddTeamMember implements AddsTeamMembers
 {
+    public function __construct(
+        private readonly AgencyPermissionService $permissions,
+        private readonly AgencyRoleAuditService $roleAudits,
+    ) {}
+
     /**
      * Add a new team member to the given team.
      */
-    public function add(User $user, Team $team, string $email, string $role = null): void
+    public function add(User $user, Team $team, string $email, ?string $role = null): void
     {
         Gate::forUser($user)->authorize('addTeamMember', $team);
+        $actorRole = $this->permissions->roleFor($user, $team);
+        $newRole = AgencyRole::tryFrom($role ?? '') ?? AgencyRole::Member;
+
+        if (! $actorRole->canManage($newRole)) {
+            throw new AuthorizationException('You cannot assign this organisation role.');
+        }
 
         $this->validate($team, $email, $role);
 
@@ -29,10 +46,19 @@ class AddTeamMember implements AddsTeamMembers
 
         AddingTeamMember::dispatch($team, $newTeamMember);
 
-        $team->users()->attach(
-            $newTeamMember,
-            ['role' => $role]
-        );
+        DB::transaction(function () use ($user, $team, $newTeamMember, $newRole): void {
+            $team->users()->attach($newTeamMember, ['role' => $newRole->value]);
+            $request = Request::createFrom(request());
+            $request->setUserResolver(fn () => $user);
+            $this->roleAudits->record(
+                $request,
+                $team,
+                $newTeamMember->id,
+                'membership_created',
+                null,
+                $newRole->value,
+            );
+        });
 
         TeamMemberAdded::dispatch($team, $newTeamMember);
     }
@@ -44,7 +70,7 @@ class AddTeamMember implements AddsTeamMembers
     {
         Validator::make([
             'email' => $email,
-            'role'  => $role,
+            'role' => $role,
         ], $this->rules(), [
             'email.exists' => __('We were unable to find a registered user with this email address.'),
         ])->after(
@@ -61,8 +87,8 @@ class AddTeamMember implements AddsTeamMembers
     {
         return array_filter([
             'email' => ['required', 'email', 'exists:users'],
-            'role'  => Jetstream::hasRoles()
-                            ? ['required', 'string', new Role()]
+            'role' => Jetstream::hasRoles()
+                            ? ['required', 'string', new Role]
                             : null,
         ]);
     }

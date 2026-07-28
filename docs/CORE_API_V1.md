@@ -106,6 +106,24 @@ against organisation membership before any data is changed.
 
 ## Permissions and API tokens
 
+Organisation roles follow a fixed privilege hierarchy:
+
+- `owner` has immutable control of the organisation.
+- `admin` can manage managers, editors, and members, but cannot grant or alter
+  another administrator role.
+- `manager` coordinates operational work and staff profiles without changing
+  roles or security settings.
+- `editor` can view, create, and edit operational records.
+- `member` has read-only operational access.
+
+Only owners can appoint administrators. Role defaults can be replaced with an
+explicit granular permission set. Permission responses include both stored
+overrides and the calculated `effective_permissions`.
+
+Role and permission changes are recorded in an immutable audit feed at
+`GET /permissions/audits`, including actor, subject, before/after state, IP
+address, and user agent.
+
 ## Staff and departments
 
 `/departments` provides organisation-scoped department CRUD with an optional
@@ -133,7 +151,9 @@ Permissions use `{resource}.{action}` names, with the actions `view`, `create`,
 
 Users can list, create, and revoke their own scoped Sanctum credentials at
 `/api-tokens`. The plaintext token is returned only once when it is created;
-abilities and optional expiry dates are persisted with the token.
+abilities and optional expiry dates are persisted with the token. Token
+abilities are enforced in addition to the current organisation role and cannot
+be broader than that role's effective permissions.
 
 ## Property portals
 

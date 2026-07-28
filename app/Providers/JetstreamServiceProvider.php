@@ -2,18 +2,20 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\Facades\Event;
-use Illuminate\Auth\Events\Registered;
-use App\Listeners\CreatePersonalTeam;
 use App\Actions\Jetstream\AddTeamMember;
 use App\Actions\Jetstream\CreateTeam;
 use App\Actions\Jetstream\DeleteTeam;
 use App\Actions\Jetstream\DeleteUser;
 use App\Actions\Jetstream\InviteTeamMember;
 use App\Actions\Jetstream\RemoveTeamMember;
+use App\Actions\Jetstream\UpdateTeamMemberRole as SecureUpdateTeamMemberRole;
 use App\Actions\Jetstream\UpdateTeamName;
+use App\Listeners\CreatePersonalTeam;
 use App\Models\Membership;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Jetstream\Actions\UpdateTeamMemberRole;
 use Laravel\Jetstream\Jetstream;
 
 class JetstreamServiceProvider extends ServiceProvider
@@ -23,7 +25,10 @@ class JetstreamServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(
+            UpdateTeamMemberRole::class,
+            SecureUpdateTeamMemberRole::class,
+        );
     }
 
     /**
@@ -32,8 +37,8 @@ class JetstreamServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->configurePermissions();
-    
-        // Jetstream::useMembershipModel(Membership::class);
+
+        Jetstream::useMembershipModel(Membership::class);
         Jetstream::createTeamsUsing(CreateTeam::class);
         Jetstream::updateTeamNamesUsing(UpdateTeamName::class);
         Jetstream::addTeamMembersUsing(AddTeamMember::class);
@@ -41,7 +46,7 @@ class JetstreamServiceProvider extends ServiceProvider
         Jetstream::removeTeamMembersUsing(RemoveTeamMember::class);
         Jetstream::deleteTeamsUsing(DeleteTeam::class);
         Jetstream::deleteUsersUsing(DeleteUser::class);
-    
+
         // Use our modified CreatePersonalTeam listener
         Event::listen(
             Registered::class,
@@ -63,10 +68,20 @@ class JetstreamServiceProvider extends ServiceProvider
             'delete',
         ])->description('Administrator users can perform any action.');
 
+        Jetstream::role('manager', 'Manager', [
+            'read',
+            'create',
+            'update',
+        ])->description('Managers can coordinate agency work without administering privileged roles.');
+
         Jetstream::role('editor', 'Editor', [
             'read',
             'create',
             'update',
         ])->description('Editor users have the ability to read, create, and update.');
+
+        Jetstream::role('member', 'Member', [
+            'read',
+        ])->description('Members have read-only access by default.');
     }
 }

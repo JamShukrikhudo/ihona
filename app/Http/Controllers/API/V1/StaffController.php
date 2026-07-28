@@ -2,17 +2,27 @@
 
 namespace App\Http\Controllers\API\V1;
 
+use App\Enums\AgencyRole;
 use App\Models\Branch;
 use App\Models\Department;
 use App\Models\Team;
 use App\Models\User;
+use App\Services\AgencyPermissionService;
+use App\Services\AgencyRoleAuditService;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class StaffController
 {
+    public function __construct(
+        private readonly AgencyPermissionService $permissions,
+        private readonly AgencyRoleAuditService $roleAudits,
+    ) {}
+
     public function index(Request $request): JsonResponse
     {
         $team = $this->team($request);
@@ -50,18 +60,32 @@ class StaffController
     public function store(Request $request): JsonResponse
     {
         $team = $this->team($request);
+        $actorRole = $this->permissions->roleFor($request->user(), $team);
+
+        if (! $actorRole->canManageMemberships()) {
+            throw new AuthorizationException('Only organisation owners and administrators can add staff.');
+        }
+
         $attributes = $request->validate([
             'email' => ['required', 'email', Rule::exists('users', 'email')],
             ...$this->profileRules($team),
         ]);
         $user = User::where('email', $attributes['email'])->firstOrFail();
+        $newRole = AgencyRole::from($attributes['role']);
+
+        if (! $actorRole->canManage($newRole)) {
+            throw new AuthorizationException('You cannot assign this organisation role.');
+        }
 
         if ($team->hasUser($user)) {
             throw ValidationException::withMessages(['email' => ['This user already belongs to the organisation.']]);
         }
 
         unset($attributes['email']);
-        $team->users()->attach($user, $attributes);
+        DB::transaction(function () use ($request, $team, $user, $attributes, $newRole): void {
+            $team->users()->attach($user, $attributes);
+            $this->roleAudits->record($request, $team, $user->id, 'membership_created', null, $newRole->value);
+        });
 
         return response()->json([
             'data' => $this->serialize($team, $this->member($team, $user->id)),
@@ -72,9 +96,34 @@ class StaffController
     {
         $team = $this->team($request);
         abort_if($team->user_id === $staff, 422, 'The organisation owner profile cannot be changed here.');
-        $this->member($team, $staff);
+        $member = $this->member($team, $staff);
+        $actorRole = $this->permissions->roleFor($request->user(), $team);
+        $oldRole = AgencyRole::tryFrom($member->membership->role ?? '') ?? AgencyRole::Member;
         $attributes = $request->validate($this->profileRules($team, true));
-        $team->users()->updateExistingPivot($staff, $attributes);
+        $newRole = AgencyRole::tryFrom($attributes['role'] ?? $oldRole->value) ?? AgencyRole::Member;
+
+        if (array_key_exists('role', $attributes)) {
+            if (! $actorRole->canManage($oldRole) || ! $actorRole->canManage($newRole)) {
+                throw new AuthorizationException('You cannot manage or assign this organisation role.');
+            }
+        } elseif (! $this->canEditProfile($request, $actorRole, $oldRole, $staff)) {
+            throw new AuthorizationException('You cannot edit this staff profile.');
+        }
+
+        DB::transaction(function () use ($request, $team, $staff, $attributes, $oldRole, $newRole): void {
+            $team->users()->updateExistingPivot($staff, $attributes);
+
+            if ($oldRole !== $newRole) {
+                $this->roleAudits->record(
+                    $request,
+                    $team,
+                    $staff,
+                    'role_changed',
+                    $oldRole->value,
+                    $newRole->value,
+                );
+            }
+        });
 
         return response()->json([
             'data' => $this->serialize($team, $this->member($team, $staff)),
@@ -85,8 +134,26 @@ class StaffController
     {
         $team = $this->team($request);
         abort_if($team->user_id === $staff, 422, 'The organisation owner cannot be removed.');
-        $this->member($team, $staff);
-        $team->users()->detach($staff);
+        abort_if($request->user()->id === $staff, 422, 'You cannot remove your own organisation membership.');
+        $member = $this->member($team, $staff);
+        $actorRole = $this->permissions->roleFor($request->user(), $team);
+        $subjectRole = AgencyRole::tryFrom($member->membership->role ?? '') ?? AgencyRole::Member;
+
+        if (! $actorRole->canManage($subjectRole)) {
+            throw new AuthorizationException('You cannot remove a member with this organisation role.');
+        }
+
+        DB::transaction(function () use ($request, $team, $staff, $subjectRole): void {
+            $team->users()->detach($staff);
+            $this->roleAudits->record(
+                $request,
+                $team,
+                $staff,
+                'membership_removed',
+                $subjectRole->value,
+                null,
+            );
+        });
 
         return response()->json(null, 204);
     }
@@ -94,7 +161,7 @@ class StaffController
     private function profileRules(Team $team, bool $updating = false): array
     {
         return [
-            'role' => [$updating ? 'sometimes' : 'required', Rule::in(['admin', 'editor', 'member'])],
+            'role' => [$updating ? 'sometimes' : 'required', Rule::in(AgencyRole::assignable())],
             'branch_id' => ['nullable', Rule::exists('branches', 'id')->where('team_id', $team->id)],
             'department_id' => ['nullable', Rule::exists('departments', 'id')->where('team_id', $team->id)],
             'job_title' => ['nullable', 'string', 'max:255'],
@@ -143,5 +210,23 @@ class StaffController
         }
 
         return $team;
+    }
+
+    private function canEditProfile(
+        Request $request,
+        AgencyRole $actorRole,
+        AgencyRole $subjectRole,
+        int $staff,
+    ): bool {
+        if ($request->user()->id === $staff) {
+            return true;
+        }
+
+        if ($actorRole->canManage($subjectRole)) {
+            return true;
+        }
+
+        return $actorRole === AgencyRole::Manager
+            && in_array($subjectRole, [AgencyRole::Editor, AgencyRole::Member], true);
     }
 }

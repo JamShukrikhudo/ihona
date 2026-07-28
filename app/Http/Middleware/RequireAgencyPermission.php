@@ -6,6 +6,7 @@ use App\Models\Team;
 use App\Services\AgencyPermissionService;
 use Closure;
 use Illuminate\Http\Request;
+use Laravel\Sanctum\PersonalAccessToken;
 use Symfony\Component\HttpFoundation\Response;
 
 class RequireAgencyPermission
@@ -37,10 +38,19 @@ class RequireAgencyPermission
                 default => 'view',
             };
 
-        if (! $this->permissions->can($user, $team, $resource, $action)) {
+        $permission = "$resource.$action";
+        $accessToken = $user->currentAccessToken();
+        $tokenKey = $accessToken instanceof PersonalAccessToken ? $accessToken->getKey() : null;
+        $isPersonalAccessToken = is_int($tokenKey) || is_string($tokenKey);
+        $tokenAllows = ! $isPersonalAccessToken
+            || $user->tokenCan('*')
+            || $user->tokenCan("$resource.*")
+            || $user->tokenCan($permission);
+
+        if (! $tokenAllows || ! $this->permissions->can($user, $team, $resource, $action)) {
             return response()->json([
-                'message' => 'This action is not permitted for your organisation role.',
-                'permission' => "$resource.$action",
+                'message' => 'This action is not permitted by the organisation role or API token.',
+                'permission' => $permission,
             ], 403);
         }
 
