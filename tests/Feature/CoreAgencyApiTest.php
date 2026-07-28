@@ -13,6 +13,7 @@ use App\Models\Document;
 use App\Models\DocumentCategory;
 use App\Models\Neighborhood;
 use App\Models\Offer;
+use App\Models\OrganisationProfile;
 use App\Models\PortalIntegration;
 use App\Models\Property;
 use App\Models\PropertyFeature;
@@ -1615,7 +1616,10 @@ class CoreAgencyApiTest extends TestCase
             ->assertJsonPath('data.team_id', $team->id)
             ->assertJsonPath('data.type', 'image')
             ->assertJsonPath('data.is_primary', true)
-            ->assertJsonPath('data.sort_order', 1);
+            ->assertJsonPath('data.sort_order', 1)
+            ->assertJsonPath('data.metadata.photographer', 'Agency Studio')
+            ->assertJsonPath('data.metadata.processing.optimized', true)
+            ->assertJsonPath('data.metadata.processing.watermark_applied', true);
 
         $floorplan = $this->postJson("/api/v1/properties/{$property->id}/media", [
             'file' => UploadedFile::fake()->create('floorplan.pdf', 120, 'application/pdf'),
@@ -1623,7 +1627,9 @@ class CoreAgencyApiTest extends TestCase
             'is_public' => false,
         ])->assertCreated()
             ->assertJsonPath('data.sort_order', 2)
-            ->assertJsonPath('data.is_public', false);
+            ->assertJsonPath('data.is_public', false)
+            ->assertJsonPath('data.metadata.processing.optimized', false)
+            ->assertJsonPath('data.metadata.processing.watermark_applied', false);
 
         $photoId = $photo->json('data.image_id');
         $floorplanId = $floorplan->json('data.image_id');
@@ -1646,6 +1652,72 @@ class CoreAgencyApiTest extends TestCase
 
         $this->deleteJson("/api/v1/properties/{$property->id}/media/{$photoId}")->assertNoContent();
         Storage::disk('local')->assertMissing($photo->json('data.file_path'));
+    }
+
+    public function test_property_images_are_resized_and_visibly_watermarked(): void
+    {
+        Storage::fake('local');
+        [, $team] = $this->actingAsTeamMember();
+        $property = Property::factory()->for($team)->create();
+        OrganisationProfile::create([
+            'team_id' => $team->id,
+            'agency_name' => 'North Star Estates',
+            'operating_countries' => ['GB'],
+            'primary_country' => 'GB',
+            'currency' => 'GBP',
+            'locale' => 'en-GB',
+            'language' => 'en',
+            'timezone' => 'Europe/London',
+            'date_format' => 'd/m/Y',
+            'measurement_system' => 'metric',
+            'area_unit' => 'sq_m',
+        ]);
+
+        $source = UploadedFile::fake()->image('source.jpg', 3000, 2000);
+        $original = file_get_contents($source->getRealPath());
+        $originalChecksum = hash('sha256', $original);
+
+        $plain = $this->postJson("/api/v1/properties/{$property->id}/media", [
+            'file' => UploadedFile::fake()->createWithContent('plain.jpg', $original),
+            'type' => 'image',
+            'metadata' => ['credit' => 'In-house'],
+        ])->assertCreated()
+            ->assertJsonPath('data.metadata.credit', 'In-house')
+            ->assertJsonPath('data.metadata.processing.original_width', 3000)
+            ->assertJsonPath('data.metadata.processing.original_height', 2000)
+            ->assertJsonPath('data.metadata.processing.width', 2560)
+            ->assertJsonPath('data.metadata.processing.height', 1707)
+            ->assertJsonPath('data.metadata.processing.watermark_applied', false);
+
+        $watermarked = $this->postJson("/api/v1/properties/{$property->id}/media", [
+            'file' => UploadedFile::fake()->createWithContent('watermarked.jpg', $original),
+            'type' => 'image',
+            'watermark' => true,
+        ])->assertCreated()
+            ->assertJsonPath('data.metadata.processing.width', 2560)
+            ->assertJsonPath('data.metadata.processing.height', 1707)
+            ->assertJsonPath('data.metadata.processing.watermark_applied', true);
+
+        $plainBytes = Storage::disk('local')->get($plain->json('data.file_path'));
+        $watermarkedBytes = Storage::disk('local')->get($watermarked->json('data.file_path'));
+
+        $this->assertNotSame($originalChecksum, hash('sha256', $plainBytes));
+        $this->assertNotSame(hash('sha256', $plainBytes), hash('sha256', $watermarkedBytes));
+        $this->assertSame(
+            hash('sha256', $watermarkedBytes),
+            $watermarked->json('data.metadata.processing.checksum_sha256'),
+        );
+        $this->assertSame(strlen($watermarkedBytes), $watermarked->json('data.file_size'));
+
+        $this->patchJson("/api/v1/properties/{$property->id}/media/{$watermarked->json('data.image_id')}", [
+            'watermark' => false,
+        ])->assertUnprocessable()->assertJsonValidationErrors('watermark');
+
+        $this->postJson("/api/v1/properties/{$property->id}/media", [
+            'file' => UploadedFile::fake()->create('watermarked.pdf', 10, 'application/pdf'),
+            'type' => 'floorplan',
+            'watermark' => true,
+        ])->assertUnprocessable()->assertJsonValidationErrors('watermark');
     }
 
     public function test_staff_profiles_and_departments_are_organisation_scoped(): void

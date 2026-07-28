@@ -389,8 +389,15 @@ videos, virtual and 360 tours, documents, and brochures. Uploads are stored on
 private application storage and downloaded through an authenticated,
 organisation-scoped endpoint.
 
+- Supported JPEG, PNG, and WebP images are orientation-normalised, resized to a
+  maximum 2560-pixel edge, and re-encoded on upload. Requested agency-name
+  watermarks are rendered into the stored image and cannot be removed without
+  uploading the original again.
 - Media records include title, alt text, MIME type, byte size, public/primary
-  flags, watermark intent, and extensible metadata.
+  flags, watermark state, and extensible metadata. Processing metadata records
+  original/output dimensions and byte sizes, a SHA-256 checksum, and completion
+  time; non-image media receives the same byte-integrity metadata without image
+  processing.
 - `PUT /properties/{property}/media/reorder` atomically updates display order.
 - `GET /properties/{property}/media/{medium}/download` authorises each download.
 - Only one primary item is retained for each media type when a new primary is

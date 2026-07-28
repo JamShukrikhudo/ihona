@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Models\Image;
+use App\Models\OrganisationProfile;
 use App\Models\Property;
+use App\Services\PropertyMediaProcessor;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -17,6 +19,8 @@ class PropertyMediaController
     private const TYPES = [
         'image', 'floorplan', 'epc', 'video', 'virtual_tour', 'tour_360', 'document', 'brochure',
     ];
+
+    public function __construct(private readonly PropertyMediaProcessor $processor) {}
 
     public function index(Request $request, int $property): JsonResponse
     {
@@ -52,7 +56,15 @@ class PropertyMediaController
         $path = $file->store("property-media/$teamId/{$record->id}", 'local');
 
         try {
-            $media = DB::transaction(function () use ($attributes, $file, $path, $record, $teamId): Image {
+            $processed = $this->processor->process(
+                'local',
+                $path,
+                (bool) ($attributes['watermark'] ?? false),
+                $this->watermarkText($teamId),
+                $attributes['metadata'] ?? [],
+            );
+            $this->ensureWatermarkWasApplied($attributes, $processed);
+            $media = DB::transaction(function () use ($attributes, $file, $path, $record, $teamId, $processed): Image {
                 if ($attributes['is_primary'] ?? false) {
                     $record->images()->where('type', $attributes['type'])->update(['is_primary' => false]);
                 }
@@ -64,8 +76,9 @@ class PropertyMediaController
                     'disk' => 'local',
                     'file_path' => $path,
                     'file_name' => $file->getClientOriginalName(),
-                    'mime_type' => $file->getMimeType(),
-                    'file_size' => $file->getSize(),
+                    'mime_type' => $processed['mime_type'] ?? $file->getMimeType(),
+                    'file_size' => $processed['file_size'],
+                    'metadata' => $processed['metadata'],
                     'sort_order' => (int) $record->images()->max('sort_order') + 1,
                     'is_public' => $attributes['is_public'] ?? true,
                 ]);
@@ -96,6 +109,31 @@ class PropertyMediaController
             'watermark' => ['sometimes', 'boolean'],
             'metadata' => ['nullable', 'array'],
         ]);
+
+        if (array_key_exists('watermark', $attributes) && ! $attributes['watermark'] && $media->watermark) {
+            throw ValidationException::withMessages([
+                'watermark' => ['A rendered watermark cannot be removed without uploading the original image again.'],
+            ]);
+        }
+        if (isset($attributes['metadata'])) {
+            $processing = data_get($media->metadata, 'processing');
+            if ($processing) {
+                $attributes['metadata']['processing'] = $processing;
+            }
+        }
+        if (($attributes['watermark'] ?? false) && ! $media->watermark) {
+            $processed = $this->processor->process(
+                $media->disk,
+                $media->file_path,
+                true,
+                $this->watermarkText((int) $media->team_id),
+                $attributes['metadata'] ?? collect($media->metadata)->except('processing')->all(),
+            );
+            $this->ensureWatermarkWasApplied($attributes, $processed);
+            $attributes['mime_type'] = $processed['mime_type'] ?? $media->mime_type;
+            $attributes['file_size'] = $processed['file_size'];
+            $attributes['metadata'] = $processed['metadata'];
+        }
 
         DB::transaction(function () use ($media, $attributes): void {
             if ($attributes['is_primary'] ?? false) {
@@ -185,5 +223,20 @@ class PropertyMediaController
         }
 
         return (int) $teamId;
+    }
+
+    private function watermarkText(int $teamId): string
+    {
+        return OrganisationProfile::where('team_id', $teamId)->value('agency_name')
+            ?: config('app.name', 'Agency');
+    }
+
+    private function ensureWatermarkWasApplied(array $attributes, array $processed): void
+    {
+        if (($attributes['watermark'] ?? false) && ! data_get($processed, 'metadata.processing.watermark_applied')) {
+            throw ValidationException::withMessages([
+                'watermark' => ['Watermarks can only be applied to supported image files.'],
+            ]);
+        }
     }
 }
