@@ -50,4 +50,14 @@ class Contact extends Model
     {
         return $this->morphMany(Communication::class, 'communicable');
     }
+
+    public function outgoingRelationships(): HasMany
+    {
+        return $this->hasMany(ContactRelationship::class);
+    }
+
+    public function incomingRelationships(): HasMany
+    {
+        return $this->hasMany(ContactRelationship::class, 'related_contact_id');
+    }
 }

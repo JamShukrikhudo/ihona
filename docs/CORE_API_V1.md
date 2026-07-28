@@ -49,6 +49,16 @@ viewings, tasks, offers, maintenance requests, and staff. Use repeated
 `types[]` parameters to restrict record types and `limit` to control the maximum
 results per type.
 
+## Contact relationships
+
+`GET|POST /contacts/{contact}/relationships` lists or creates typed links
+between two contacts. Each link stores labels in both directions (for example,
+`solicitor` / `client`, `landlord` / `tenant`, or `guarantor` / `applicant`)
+plus optional notes and the staff member who created it. Relationships can be
+updated or removed from either contact using
+`PATCH|DELETE /contacts/{contact}/relationships/{relationship}`. Duplicate,
+self-referential, and cross-organisation links are rejected.
+
 ## Reporting
 
 - `GET /reports/dashboard` returns organisation KPIs for properties, contacts,

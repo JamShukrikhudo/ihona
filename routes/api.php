@@ -13,6 +13,7 @@ use App\Http\Controllers\API\V1\CompanyController as ApiCompanyController;
 use App\Http\Controllers\API\V1\ComplianceDocumentController as ApiComplianceDocumentController;
 use App\Http\Controllers\API\V1\ComplianceItemController as ApiComplianceItemController;
 use App\Http\Controllers\API\V1\ContactController as ApiContactController;
+use App\Http\Controllers\API\V1\ContactRelationshipController as ApiContactRelationshipController;
 use App\Http\Controllers\API\V1\ContractorController as ApiContractorController;
 use App\Http\Controllers\API\V1\DashboardLayoutController as ApiDashboardLayoutController;
 use App\Http\Controllers\API\V1\DepartmentController as ApiDepartmentController;
@@ -153,6 +154,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('saved-reports/{savedReport}/export', [ApiReportController::class, 'export'])->name('saved-reports.export');
         Route::apiResource('dashboard-layouts', ApiDashboardLayoutController::class);
         Route::apiResource('contacts', ApiContactController::class);
+        Route::get('contacts/{contact}/relationships', [ApiContactRelationshipController::class, 'index'])->name('contacts.relationships.index');
+        Route::post('contacts/{contact}/relationships', [ApiContactRelationshipController::class, 'store'])->name('contacts.relationships.store');
+        Route::patch('contacts/{contact}/relationships/{relationship}', [ApiContactRelationshipController::class, 'update'])->name('contacts.relationships.update');
+        Route::delete('contacts/{contact}/relationships/{relationship}', [ApiContactRelationshipController::class, 'destroy'])->name('contacts.relationships.destroy');
         Route::apiResource('companies', ApiCompanyController::class);
         Route::apiResource('communications', ApiCommunicationController::class);
         Route::apiResource('contractors', ApiContractorController::class);

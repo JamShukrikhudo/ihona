@@ -73,6 +73,73 @@ class CoreAgencyApiTest extends TestCase
         $this->assertSoftDeleted('contacts', ['id' => $contactId]);
     }
 
+    public function test_contacts_support_directional_team_scoped_relationships(): void
+    {
+        [$user, $team] = $this->actingAsTeamMember();
+        $landlord = Contact::create([
+            'team_id' => $team->id,
+            'type' => 'landlord',
+            'first_name' => 'Rowan',
+            'last_name' => 'Owner',
+        ]);
+        $tenant = Contact::create([
+            'team_id' => $team->id,
+            'type' => 'tenant',
+            'first_name' => 'Alex',
+            'last_name' => 'Renter',
+        ]);
+
+        $response = $this->postJson("/api/v1/contacts/{$landlord->id}/relationships", [
+            'related_contact_id' => $tenant->id,
+            'relationship' => 'tenant',
+            'inverse_relationship' => 'landlord',
+            'notes' => 'Current tenancy at 12 Garden Street.',
+        ])->assertCreated()
+            ->assertJsonPath('data.contact_id', $landlord->id)
+            ->assertJsonPath('data.related_contact.id', $tenant->id)
+            ->assertJsonPath('data.relationship', 'tenant')
+            ->assertJsonPath('data.created_by.id', $user->id);
+        $relationshipId = $response->json('data.id');
+
+        $this->getJson("/api/v1/contacts/{$tenant->id}/relationships")
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.related_contact.id', $landlord->id)
+            ->assertJsonPath('data.0.relationship', 'landlord')
+            ->assertJsonPath('data.0.inverse_relationship', 'tenant');
+
+        $this->patchJson("/api/v1/contacts/{$tenant->id}/relationships/$relationshipId", [
+            'relationship' => 'former_landlord',
+            'inverse_relationship' => 'former_tenant',
+            'notes' => 'Tenancy has ended.',
+        ])->assertOk()
+            ->assertJsonPath('data.relationship', 'former_landlord')
+            ->assertJsonPath('data.inverse_relationship', 'former_tenant');
+
+        $this->postJson("/api/v1/contacts/{$tenant->id}/relationships", [
+            'related_contact_id' => $landlord->id,
+            'relationship' => 'former_landlord',
+            'inverse_relationship' => 'former_tenant',
+        ])->assertUnprocessable()
+            ->assertJsonValidationErrors('related_contact_id');
+
+        $otherContact = Contact::create([
+            'team_id' => Team::factory()->create()->id,
+            'type' => 'solicitor',
+            'first_name' => 'Hidden',
+        ]);
+        $this->postJson("/api/v1/contacts/{$landlord->id}/relationships", [
+            'related_contact_id' => $otherContact->id,
+            'relationship' => 'solicitor',
+            'inverse_relationship' => 'client',
+        ])->assertUnprocessable()
+            ->assertJsonValidationErrors('related_contact_id');
+
+        $this->deleteJson("/api/v1/contacts/{$landlord->id}/relationships/$relationshipId")
+            ->assertNoContent();
+        $this->assertDatabaseMissing('contact_relationships', ['id' => $relationshipId]);
+    }
+
     public function test_offer_relations_must_belong_to_the_current_team(): void
     {
         [, $team] = $this->actingAsTeamMember();
