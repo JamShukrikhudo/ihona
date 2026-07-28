@@ -10,10 +10,13 @@ class DigitalSignature extends Model
 
     protected $fillable = [
         'user_id',
+        'team_id',
         'document_id',
+        'document_version_id',
         'signature_data',
         'signed_at',
-        'team_id',
+        'ip_address',
+        'user_agent',
     ];
 
     protected $casts = [
@@ -33,5 +36,10 @@ class DigitalSignature extends Model
     public function team()
     {
         return $this->belongsTo(Team::class);
+    }
+
+    public function version()
+    {
+        return $this->belongsTo(DocumentVersion::class, 'document_version_id');
     }
 }

@@ -2,9 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\Models\AgencyTask;
+use App\Models\Buyer;
 use App\Models\Company;
 use App\Models\Contact;
-use App\Models\Buyer;
+use App\Models\Document;
 use App\Models\Property;
 use App\Models\Team;
 use App\Models\User;
@@ -724,7 +726,7 @@ class CoreAgencyApiTest extends TestCase
             ->assertJsonPath('data.0.id', "task:$taskId")
             ->assertJsonPath('data.0.title', 'Prepare viewing pack');
 
-        $otherTask = \App\Models\AgencyTask::create([
+        $otherTask = AgencyTask::create([
             'team_id' => Team::factory()->create()->id,
             'created_by' => User::factory()->create()->id,
             'title' => 'Hidden task',
@@ -741,6 +743,62 @@ class CoreAgencyApiTest extends TestCase
         $this->deleteJson("/api/v1/tasks/$taskId/attachments/".$attachment->json('data.id'))->assertNoContent();
         Storage::disk('local')->assertMissing($attachment->json('data.path'));
         $this->deleteJson("/api/v1/tasks/$taskId/comments/".$comment->json('data.id'))->assertNoContent();
+    }
+
+    public function test_document_versions_and_signatures_are_private_and_auditable(): void
+    {
+        Storage::fake('local');
+        [$user, $team] = $this->actingAsTeamMember();
+
+        $document = $this->postJson('/api/v1/documents', [
+            'title' => 'Tenancy agreement',
+            'is_signable' => true,
+        ])->assertCreated();
+        $documentId = $document->json('data.id');
+
+        $first = $this->postJson("/api/v1/documents/$documentId/versions", [
+            'file' => UploadedFile::fake()->createWithContent('agreement-v1.pdf', 'first version'),
+            'notes' => 'Initial draft',
+        ])->assertCreated()
+            ->assertJsonPath('data.team_id', $team->id)
+            ->assertJsonPath('data.version', 1)
+            ->assertJsonPath('data.file_name', 'agreement-v1.pdf');
+        Storage::disk('local')->assertExists($first->json('data.file_path'));
+
+        $second = $this->postJson("/api/v1/documents/$documentId/versions", [
+            'file' => UploadedFile::fake()->createWithContent('agreement-v2.pdf', 'second version'),
+        ])->assertCreated()
+            ->assertJsonPath('data.version', 2);
+
+        $versionId = $second->json('data.id');
+        $this->getJson("/api/v1/documents/$documentId/versions")
+            ->assertOk()
+            ->assertJsonCount(2, 'data')
+            ->assertJsonPath('data.0.version', 2);
+        $this->get("/api/v1/documents/$documentId/versions/$versionId/download")
+            ->assertOk()
+            ->assertDownload('agreement-v2.pdf');
+
+        $this->postJson("/api/v1/documents/$documentId/signatures", [
+            'document_version_id' => $versionId,
+            'signature_data' => 'signed-by-user',
+        ])->assertCreated()
+            ->assertJsonPath('data.user_id', $user->id)
+            ->assertJsonPath('data.document_version_id', $versionId);
+
+        $this->getJson("/api/v1/documents/$documentId/signatures")
+            ->assertOk()
+            ->assertJsonPath('data.0.version.version', 2)
+            ->assertJsonPath('data.0.ip_address', '127.0.0.1');
+
+        $otherDocument = Document::create([
+            'team_id' => Team::factory()->create()->id,
+            'title' => 'Private agreement',
+        ]);
+        $this->getJson("/api/v1/documents/{$otherDocument->id}/versions")->assertNotFound();
+        $this->postJson("/api/v1/documents/{$otherDocument->id}/signatures", [
+            'signature_data' => 'invalid',
+        ])->assertNotFound();
     }
 
     private function actingAsTeamMember(): array

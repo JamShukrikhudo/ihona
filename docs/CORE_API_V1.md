@@ -169,6 +169,21 @@ Uploaded files use private application storage. All calendar queries, comments,
 attachments, and checklist mutations are constrained to the selected
 organisation.
 
+## Document workflow
+
+Documents support immutable, private file versions and auditable signatures:
+
+- `GET|POST /documents/{document}/versions`
+- `GET /documents/{document}/versions/{version}/download`
+- `GET|POST /documents/{document}/signatures`
+
+Each upload records its sequential version, original filename, MIME type, size,
+SHA-256 checksum, uploader, and optional notes. Downloads are authorised through
+the API rather than public storage. Signatures are only accepted for signable
+documents and record the signer, exact document version, time, IP address, and
+user agent. Documents, versions, downloads, and signatures are constrained to
+the selected organisation.
+
 ## Public website integration
 
 Agency websites can consume published data without an authenticated back-office
