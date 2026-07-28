@@ -19,6 +19,7 @@ class AgencyPermissionService
         'saved-reports', 'dashboard-layouts',
         'marketing-assets', 'email-campaigns',
         'property-media',
+        'service-integrations',
     ];
 
     public const ACTIONS = ['view', 'create', 'edit', 'delete', 'export', 'approve', 'publish', 'archive'];

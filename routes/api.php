@@ -31,6 +31,7 @@ use App\Http\Controllers\API\V1\ReportController as ApiReportController;
 use App\Http\Controllers\API\V1\SalesProgressionController as ApiSalesProgressionController;
 use App\Http\Controllers\API\V1\SavedReportController as ApiSavedReportController;
 use App\Http\Controllers\API\V1\SearchController as ApiSearchController;
+use App\Http\Controllers\API\V1\ServiceIntegrationController as ApiServiceIntegrationController;
 use App\Http\Controllers\API\V1\SetupController as ApiSetupController;
 use App\Http\Controllers\API\V1\StaffController as ApiStaffController;
 use App\Http\Controllers\API\V1\TaskCollaborationController as ApiTaskCollaborationController;
@@ -134,6 +135,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('setup/options', [ApiSetupController::class, 'options'])->name('setup.options');
         Route::get('setup/status', [ApiSetupController::class, 'status'])->name('setup.status');
         Route::put('setup', [ApiSetupController::class, 'complete'])->name('setup.complete');
+        Route::get('service-integrations/options', [ApiServiceIntegrationController::class, 'options'])->name('service-integrations.options');
+        Route::apiResource('service-integrations', ApiServiceIntegrationController::class);
+        Route::post('service-integrations/{service_integration}/check', [ApiServiceIntegrationController::class, 'check'])->name('service-integrations.check');
         Route::get('search', ApiSearchController::class)->name('search');
         Route::get('reports/dashboard', [ApiReportController::class, 'dashboard'])->name('reports.dashboard');
         Route::get('reports/pipeline', [ApiReportController::class, 'pipeline'])->name('reports.pipeline');

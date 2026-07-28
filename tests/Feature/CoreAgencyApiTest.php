@@ -9,6 +9,7 @@ use App\Models\Company;
 use App\Models\Contact;
 use App\Models\Document;
 use App\Models\Property;
+use App\Models\ServiceIntegration;
 use App\Models\Team;
 use App\Models\User;
 use App\Notifications\NewPropertyMatches;
@@ -1032,6 +1033,65 @@ class CoreAgencyApiTest extends TestCase
             'team_id' => $team->id,
             'user_id' => $staffUser->id,
         ]);
+    }
+
+    public function test_operational_service_integrations_are_secure_and_team_scoped(): void
+    {
+        [, $team] = $this->actingAsTeamMember();
+
+        $this->getJson('/api/v1/service-integrations/options')
+            ->assertOk()
+            ->assertJsonFragment([
+                'category' => 'calendar',
+                'providers' => ['google_calendar', 'microsoft_outlook'],
+            ]);
+
+        $primary = $this->postJson('/api/v1/service-integrations', [
+            'category' => 'email',
+            'provider' => 'smtp',
+            'name' => 'Agency SMTP',
+            'credentials' => [
+                'username' => 'mailer@example.test',
+                'password' => 'secret-password',
+            ],
+            'settings' => ['host' => 'smtp.example.test', 'port' => 587],
+            'is_default' => true,
+        ])->assertCreated()
+            ->assertJsonPath('data.team_id', $team->id)
+            ->assertJsonPath('data.provider', 'smtp')
+            ->assertJsonPath('data.is_default', true)
+            ->assertJsonMissingPath('data.credentials');
+
+        $secondary = $this->postJson('/api/v1/service-integrations', [
+            'category' => 'email',
+            'provider' => 'gmail',
+            'name' => 'Gmail',
+            'is_default' => true,
+        ])->assertCreated();
+
+        $this->assertDatabaseHas('service_integrations', [
+            'id' => $primary->json('data.id'),
+            'is_default' => false,
+        ]);
+
+        $this->postJson('/api/v1/service-integrations', [
+            'category' => 'maps',
+            'provider' => 'twilio',
+            'name' => 'Invalid pairing',
+        ])->assertUnprocessable()->assertJsonValidationErrors('provider');
+
+        $this->postJson("/api/v1/service-integrations/{$secondary->json('data.id')}/check")
+            ->assertOk()
+            ->assertJsonPath('data.last_check_status', 'configured')
+            ->assertJsonMissingPath('data.credentials');
+
+        $otherTeamIntegration = ServiceIntegration::create([
+            'team_id' => Team::factory()->create()->id,
+            'category' => 'maps',
+            'provider' => 'openstreetmap',
+            'name' => 'Other agency map',
+        ]);
+        $this->getJson("/api/v1/service-integrations/{$otherTeamIntegration->id}")->assertNotFound();
     }
 
     private function actingAsTeamMember(): array

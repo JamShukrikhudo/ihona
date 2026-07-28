@@ -261,6 +261,23 @@ delete operations. List endpoints accept `search`, `filter[field]`, and `per_pag
 Responses use Laravel's paginator format. Single records are returned under a
 `data` key.
 
+## Operational service integrations
+
+`/service-integrations` configures organisation-specific providers for email,
+calendars, maps, and SMS. Supported adapters include SMTP, Microsoft 365, Gmail,
+Google Calendar, Microsoft Outlook, Google Maps, OpenStreetMap, Twilio,
+MessageBird, Vonage, and a custom SMS adapter.
+
+- `GET /service-integrations/options` returns the provider catalog.
+- `POST /service-integrations/{integration}/check` validates an active
+  configuration and records its latest health state.
+- One integration can be selected as the default for each category.
+- Credentials are encrypted at rest and are never included in API responses.
+
+Provider network calls remain adapter responsibilities, allowing deployments to
+use queues and provider-specific OAuth flows without coupling credentials or
+external availability to CRUD requests.
+
 All queries and related-record validation are constrained to the authenticated
 user's current team. A record belonging to another team is returned as `404`;
 cross-team relationship IDs fail validation with `422`.
