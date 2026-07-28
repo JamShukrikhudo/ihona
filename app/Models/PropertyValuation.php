@@ -18,6 +18,7 @@ class PropertyValuation extends Model
         'market_value',
         'rental_value',
         'valuation_date',
+        'scheduled_at',
         'valuer_name',
         'valuer_company',
         'valuation_method',
@@ -30,18 +31,26 @@ class PropertyValuation extends Model
         'valid_until',
         'team_id',
         'user_id',
-        'status'
+        'assigned_to',
+        'follow_up_at',
+        'completed_at',
+        'status',
+        'outcome',
+        'outcome_notes',
     ];
 
     protected $casts = [
         'valuation_date' => 'date',
+        'scheduled_at' => 'datetime',
+        'follow_up_at' => 'datetime',
+        'completed_at' => 'datetime',
         'valid_until' => 'date',
         'estimated_value' => 'decimal:2',
         'market_value' => 'decimal:2',
         'rental_value' => 'decimal:2',
         'comparable_properties' => 'array',
         'location_factors' => 'array',
-        'confidence_level' => 'integer'
+        'confidence_level' => 'integer',
     ];
 
     public function property(): BelongsTo
@@ -57,6 +66,11 @@ class PropertyValuation extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function assignee(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'assigned_to');
     }
 
     public function isValid(): bool

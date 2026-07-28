@@ -96,6 +96,14 @@ chronological amount, conditions, status, note, and changed fields without
 exposing records from another organisation. Clients may include
 `negotiation_note` when creating or updating an offer.
 
+## Valuations
+
+Valuations support market appraisals, rental valuations, and commercial
+valuations with a diary time, assigned negotiator, structured comparable
+properties, follow-up reminder, notes, confidence, and outcome tracking.
+Valuation appointments appear at their scheduled time in the unified calendar
+and can be filtered by assigned staff.
+
 ## Lettings lifecycle
 
 Tenant records and tenancy agreements are exposed through the versioned API.

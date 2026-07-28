@@ -38,9 +38,24 @@ class CalendarController extends Controller
         }
         if ($types->contains('valuation')) {
             $events = $events->concat(PropertyValuation::where('team_id', $teamId)
-                ->whereBetween('valuation_date', [$start->toDateString(), $end->toDateString()])
-                ->when($staffId, fn ($query) => $query->where('user_id', $staffId))
-                ->get()->map(fn ($record) => $this->event('valuation', $record->id, ucfirst($record->valuation_type).' valuation', $record->valuation_date, null, true, $record->status, $record->property_id)));
+                ->where(function ($query) use ($start, $end) {
+                    $query->whereBetween('scheduled_at', [$start, $end])
+                        ->orWhere(function ($query) use ($start, $end) {
+                            $query->whereNull('scheduled_at')
+                                ->whereBetween('valuation_date', [$start->toDateString(), $end->toDateString()]);
+                        });
+                })
+                ->when($staffId, fn ($query) => $query->where('assigned_to', $staffId))
+                ->get()->map(fn ($record) => $this->event(
+                    'valuation',
+                    $record->id,
+                    ucfirst($record->valuation_type).' valuation',
+                    $record->scheduled_at ?? $record->valuation_date,
+                    $record->completed_at,
+                    $record->scheduled_at === null,
+                    $record->status,
+                    $record->property_id
+                )));
         }
         if ($types->contains('inspection')) {
             $events = $events->concat(Inspection::where('team_id', $teamId)

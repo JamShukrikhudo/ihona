@@ -450,16 +450,48 @@ class CoreAgencyApiTest extends TestCase
     {
         [$user, $team] = $this->actingAsTeamMember();
         $property = Property::factory()->for($team)->create();
+        $comparable = Property::factory()->for($team)->create();
+        $scheduledAt = now()->addDays(2)->setTime(10, 30);
 
-        $this->postJson('/api/v1/valuations', [
+        $valuationResponse = $this->postJson('/api/v1/valuations', [
             'property_id' => $property->id,
             'valuation_type' => 'market',
             'estimated_value' => 425000,
-            'valuation_date' => now()->toDateString(),
+            'valuation_date' => $scheduledAt->toDateString(),
+            'scheduled_at' => $scheduledAt->toIso8601String(),
+            'follow_up_at' => $scheduledAt->copy()->addDay()->toIso8601String(),
             'confidence_level' => 85,
+            'comparable_properties' => [[
+                'property_id' => $comparable->id,
+                'value' => 410000,
+                'currency' => 'GBP',
+                'notes' => 'Similar floor area and condition.',
+            ]],
         ])->assertCreated()
             ->assertJsonPath('data.user_id', $user->id)
-            ->assertJsonPath('data.team_id', $team->id);
+            ->assertJsonPath('data.assigned_to', $user->id)
+            ->assertJsonPath('data.team_id', $team->id)
+            ->assertJsonPath('data.comparable_properties.0.property_id', $comparable->id);
+        $valuationId = $valuationResponse->json('data.id');
+
+        $this->getJson('/api/v1/calendar?'.http_build_query([
+            'start' => $scheduledAt->copy()->startOfDay()->toIso8601String(),
+            'end' => $scheduledAt->copy()->endOfDay()->toIso8601String(),
+            'types' => ['valuation'],
+            'staff_id' => $user->id,
+        ]))->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.id', "valuation:$valuationId")
+            ->assertJsonPath('data.0.all_day', false);
+
+        $this->patchJson("/api/v1/valuations/$valuationId", [
+            'status' => 'completed',
+            'completed_at' => $scheduledAt->copy()->addHour()->toIso8601String(),
+            'outcome' => 'instruction_won',
+            'outcome_notes' => 'Vendor instructed the agency.',
+        ])->assertOk()
+            ->assertJsonPath('data.status', 'completed')
+            ->assertJsonPath('data.outcome', 'instruction_won');
 
         $this->postJson('/api/v1/viewings', [
             'property_id' => $property->id,
@@ -470,6 +502,17 @@ class CoreAgencyApiTest extends TestCase
             ->assertJsonPath('data.status', 'scheduled');
 
         $otherProperty = Property::factory()->create();
+        $this->postJson('/api/v1/valuations', [
+            'property_id' => $property->id,
+            'valuation_type' => 'market',
+            'valuation_date' => now()->toDateString(),
+            'comparable_properties' => [[
+                'property_id' => $otherProperty->id,
+                'value' => 100000,
+            ]],
+        ])->assertUnprocessable()
+            ->assertJsonValidationErrors('comparable_properties.0.property_id');
+
         $this->postJson('/api/v1/viewings', [
             'property_id' => $otherProperty->id,
             'appointment_date' => now()->addDay()->toIso8601String(),
