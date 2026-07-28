@@ -715,9 +715,38 @@ class CoreAgencyApiTest extends TestCase
             ->assertJsonPath('data.monthly_rent', '1825.00');
     }
 
-    public function test_automation_rules_create_tasks_and_in_app_notifications_with_audit_runs(): void
+    public function test_automation_rules_create_tasks_and_deliver_notifications_across_configured_channels(): void
     {
         [$user, $team] = $this->actingAsTeamMember();
+        Mail::fake();
+
+        $this->putJson('/api/v1/notifications/preferences', [
+            'channels' => ['in_app', 'email', 'sms', 'push'],
+            'phone' => '+44 7700 900123',
+            'push_tokens' => ['private-device-token'],
+            'event_preferences' => ['offer.accepted' => true],
+        ])->assertOk()
+            ->assertJsonPath('data.push_token_count', 1)
+            ->assertJsonMissing(['private-device-token']);
+
+        ServiceIntegration::create([
+            'team_id' => $team->id,
+            'category' => 'sms',
+            'provider' => 'twilio',
+            'name' => 'Agency SMS',
+            'credentials' => ['secret' => 'never-return-this'],
+            'active' => true,
+            'is_default' => true,
+        ]);
+        ServiceIntegration::create([
+            'team_id' => $team->id,
+            'category' => 'push',
+            'provider' => 'firebase',
+            'name' => 'Agency Push',
+            'credentials' => ['secret' => 'never-return-this-either'],
+            'active' => true,
+            'is_default' => true,
+        ]);
 
         $automation = $this->postJson('/api/v1/automations', [
             'name' => 'Follow up accepted offers',
@@ -740,6 +769,7 @@ class CoreAgencyApiTest extends TestCase
                     'user_id' => $user->id,
                     'title' => 'Offer accepted',
                     'body' => 'Sales progression can now begin.',
+                    'channels' => ['in_app', 'email', 'sms', 'push'],
                 ],
             ],
         ])->assertCreated()
@@ -750,7 +780,8 @@ class CoreAgencyApiTest extends TestCase
             'context' => ['offer' => ['id' => 42, 'status' => 'accepted']],
         ])->assertOk()
             ->assertJsonPath('data.status', 'completed')
-            ->assertJsonCount(2, 'data.results');
+            ->assertJsonCount(2, 'data.results')
+            ->assertJsonCount(4, 'data.results.1.deliveries');
 
         $this->assertDatabaseHas('agency_tasks', [
             'team_id' => $team->id,
@@ -762,11 +793,33 @@ class CoreAgencyApiTest extends TestCase
         $notifications = $this->getJson('/api/v1/notifications?unread=1')
             ->assertOk()
             ->assertJsonPath('meta.unread_count', 1)
-            ->assertJsonPath('data.0.data.type', 'automation');
+            ->assertJsonPath('data.0.data.type', 'offer.accepted');
         $notificationId = $notifications->json('data.0.id');
         $this->patchJson("/api/v1/notifications/$notificationId/read")
             ->assertOk()
             ->assertJsonPath('data.read_at', fn ($value) => $value !== null);
+
+        $this->getJson('/api/v1/notifications/preferences')
+            ->assertOk()
+            ->assertJsonPath('data.channels.3', 'push')
+            ->assertJsonPath('data.push_token_count', 1)
+            ->assertJsonMissing(['private-device-token']);
+        $this->getJson('/api/v1/notifications/deliveries?event_type=offer.accepted')
+            ->assertOk()
+            ->assertJsonCount(4, 'data')
+            ->assertJsonFragment(['channel' => 'email', 'status' => 'sent'])
+            ->assertJsonFragment(['channel' => 'sms', 'status' => 'queued', 'provider' => 'twilio'])
+            ->assertJsonFragment(['channel' => 'push', 'status' => 'queued', 'provider' => 'firebase'])
+            ->assertJsonMissing(['never-return-this'])
+            ->assertJsonMissing(['private-device-token']);
+
+        $this->assertDatabaseHas('notification_deliveries', [
+            'team_id' => $team->id,
+            'user_id' => $user->id,
+            'event_type' => 'offer.accepted',
+            'channel' => 'in_app',
+            'status' => 'sent',
+        ]);
     }
 
     public function test_team_permissions_are_granular_and_api_tokens_are_self_managed(): void

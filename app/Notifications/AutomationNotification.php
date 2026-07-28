@@ -13,8 +13,8 @@ class AutomationNotification extends Notification
         private readonly string $title,
         private readonly ?string $body = null,
         private readonly array $data = [],
-    ) {
-    }
+        private readonly string $type = 'automation',
+    ) {}
 
     public function via(object $notifiable): array
     {
@@ -24,7 +24,7 @@ class AutomationNotification extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            'type' => 'automation',
+            'type' => $this->type,
             'title' => $this->title,
             'body' => $this->body,
             'data' => $this->data,

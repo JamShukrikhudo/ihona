@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\V1;
 use App\Models\AutomationRule;
 use App\Models\AutomationRun;
 use App\Services\AutomationEngine;
+use App\Services\NotificationDispatcher;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -13,13 +14,14 @@ use Illuminate\Validation\Rule;
 class AutomationController extends TenantCrudController
 {
     protected string $model = AutomationRule::class;
+
     protected string $routeParameter = 'automation';
+
     protected array $searchable = ['name', 'trigger'];
+
     protected array $filterable = ['trigger', 'active'];
 
-    public function __construct(private readonly AutomationEngine $engine)
-    {
-    }
+    public function __construct(private readonly AutomationEngine $engine) {}
 
     protected function rules(Request $request, ?Model $record = null): array
     {
@@ -36,6 +38,8 @@ class AutomationController extends TenantCrudController
             'actions.*.title' => ['required_if:actions.*.type,create_task,notify_user', 'string', 'max:255'],
             'actions.*.description' => ['nullable', 'string'],
             'actions.*.body' => ['nullable', 'string'],
+            'actions.*.channels' => ['nullable', 'array', 'min:1'],
+            'actions.*.channels.*' => ['required', Rule::in(NotificationDispatcher::CHANNELS)],
             'actions.*.priority' => ['nullable', Rule::in(['low', 'normal', 'high', 'urgent'])],
             'actions.*.due_in_days' => ['nullable', 'integer', 'between:0,3650'],
             'actions.*.assigned_to' => ['nullable', 'integer'],
@@ -48,6 +52,7 @@ class AutomationController extends TenantCrudController
     protected function prepareForCreate(Request $request, array $attributes): array
     {
         $attributes['created_by'] = $request->user()->id;
+
         return $attributes;
     }
 

@@ -129,17 +129,25 @@ without introducing bookkeeping into this application.
 
 Automation rules are managed through full CRUD at `/automations`. Each rule has
 a trigger name, optional context conditions, one or more actions, and an active
-state. Supported actions currently create assigned tasks, send in-app
-notifications, and update a property status.
+state. Supported actions currently create assigned tasks, send notifications
+through selected in-app, email, SMS, and push channels, and update a property
+status. Event names can cover enquiries, offers, viewing requests, tasks,
+maintenance, renewals, portal failures, and custom deployment events.
 
 - `POST /automations/{automation}/run` executes a rule against supplied event context.
 - `GET /automation-runs` exposes completed, skipped, and failed execution audits.
 - `GET /notifications` lists the authenticated user's notifications and unread count.
+- `GET|PUT /notifications/preferences` reads or updates the user's enabled
+  channels, event opt-outs, SMS number, and encrypted push tokens.
+- `GET /notifications/deliveries` exposes the user's channel delivery audit,
+  including sent, queued, and failed outcomes.
 - `PATCH /notifications/{notification}/read` marks one notification as read.
 - `POST /notifications/read-all` clears the user's unread notification state.
 
-Rules and execution records are organisation-scoped. Action targets are checked
-against organisation membership before any data is changed.
+Rules, preferences, delivery audits, and execution records are
+organisation-scoped. Action targets are checked against organisation membership
+before any data is changed. Provider credentials and push tokens are never
+serialized.
 
 ## Sales progression
 
@@ -393,9 +401,9 @@ Responses use Laravel's paginator format. Single records are returned under a
 ## Operational service integrations
 
 `/service-integrations` configures organisation-specific providers for email,
-calendars, maps, and SMS. Supported adapters include SMTP, Microsoft 365, Gmail,
+calendars, maps, SMS, and push. Supported adapters include SMTP, Microsoft 365, Gmail,
 Google Calendar, Microsoft Outlook, Google Maps, OpenStreetMap, Twilio,
-MessageBird, Vonage, and a custom SMS adapter.
+MessageBird, Vonage, Firebase, OneSignal, and custom SMS or push adapters.
 
 - `GET /service-integrations/options` returns the provider catalog.
 - `POST /service-integrations/{integration}/check` validates an active

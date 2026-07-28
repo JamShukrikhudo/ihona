@@ -7,13 +7,13 @@ use App\Models\AutomationRule;
 use App\Models\AutomationRun;
 use App\Models\Property;
 use App\Models\User;
-use App\Notifications\AutomationNotification;
-use Illuminate\Support\Arr;
 use RuntimeException;
 use Throwable;
 
 class AutomationEngine
 {
+    public function __construct(private readonly NotificationDispatcher $notifications) {}
+
     public function run(AutomationRule $rule, array $context, User $actor): AutomationRun
     {
         $run = AutomationRun::create([
@@ -30,6 +30,7 @@ class AutomationEngine
             }
             if (! $this->conditionsMatch($rule->conditions ?? [], $context)) {
                 $run->update(['status' => 'skipped', 'results' => [], 'completed_at' => now()]);
+
                 return $run->fresh();
             }
 
@@ -67,6 +68,7 @@ class AutomationEngine
                 return false;
             }
         }
+
         return true;
     }
 
@@ -95,6 +97,7 @@ class AutomationEngine
             'priority' => $action['priority'] ?? 'normal',
             'due_at' => isset($action['due_in_days']) ? now()->addDays((int) $action['due_in_days']) : null,
         ]);
+
         return ['type' => 'create_task', 'id' => $task->id];
     }
 
@@ -104,8 +107,17 @@ class AutomationEngine
         if (! $user->allTeams()->contains('id', $rule->team_id)) {
             throw new RuntimeException('Notification recipient does not belong to this organisation.');
         }
-        $user->notify(new AutomationNotification($action['title'], $action['body'] ?? null, Arr::except($context, ['secrets'])));
-        return ['type' => 'notify_user', 'user_id' => $user->id];
+        $deliveries = $this->notifications->dispatch(
+            $rule->team_id,
+            $user,
+            $rule->trigger,
+            $action['title'],
+            $action['body'] ?? null,
+            $context,
+            $action['channels'] ?? ['in_app'],
+        );
+
+        return ['type' => 'notify_user', 'user_id' => $user->id, 'deliveries' => $deliveries];
     }
 
     private function updateProperty(AutomationRule $rule, array $action, array $context): array
@@ -113,6 +125,7 @@ class AutomationEngine
         $propertyId = $action['property_id'] ?? data_get($context, 'property_id');
         $property = Property::where('team_id', $rule->team_id)->findOrFail($propertyId);
         $property->update(['status' => $action['status']]);
+
         return ['type' => 'update_property_status', 'property_id' => $property->id, 'status' => $property->status];
     }
 }

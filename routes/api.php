@@ -220,6 +220,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('portal-integrations/{portal_integration}/properties/{property}', [ApiPortalIntegrationController::class, 'publish'])->name('portal-integrations.properties.publish');
         Route::delete('portal-integrations/{portal_integration}/properties/{property}', [ApiPortalIntegrationController::class, 'unpublish'])->name('portal-integrations.properties.unpublish');
         Route::get('notifications', [ApiNotificationController::class, 'index'])->name('notifications.index');
+        Route::get('notifications/preferences', [ApiNotificationController::class, 'preferences'])->name('notifications.preferences');
+        Route::put('notifications/preferences', [ApiNotificationController::class, 'updatePreferences'])->name('notifications.preferences.update');
+        Route::get('notifications/deliveries', [ApiNotificationController::class, 'deliveries'])->name('notifications.deliveries');
         Route::patch('notifications/{notification}/read', [ApiNotificationController::class, 'read'])->name('notifications.read');
         Route::post('notifications/read-all', [ApiNotificationController::class, 'readAll'])->name('notifications.read-all');
         Route::apiResource('sales-progressions', ApiSalesProgressionController::class);

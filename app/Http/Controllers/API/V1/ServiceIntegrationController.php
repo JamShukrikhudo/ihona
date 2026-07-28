@@ -16,6 +16,7 @@ class ServiceIntegrationController extends TenantCrudController
         'calendar' => ['google_calendar', 'microsoft_outlook'],
         'maps' => ['google_maps', 'openstreetmap'],
         'sms' => ['twilio', 'messagebird', 'vonage', 'custom'],
+        'push' => ['firebase', 'onesignal', 'custom'],
     ];
 
     protected string $model = ServiceIntegration::class;
