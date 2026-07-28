@@ -30,6 +30,7 @@ use App\Http\Controllers\API\V1\PropertyController as ApiPropertyController;
 use App\Http\Controllers\API\V1\PropertyMatchController as ApiPropertyMatchController;
 use App\Http\Controllers\API\V1\PropertyMediaController as ApiPropertyMediaController;
 use App\Http\Controllers\API\V1\PublicWebsiteController as ApiPublicWebsiteController;
+use App\Http\Controllers\API\V1\RentalApplicationController as ApiRentalApplicationController;
 use App\Http\Controllers\API\V1\ReportController as ApiReportController;
 use App\Http\Controllers\API\V1\SalesProgressionController as ApiSalesProgressionController;
 use App\Http\Controllers\API\V1\SavedReportController as ApiSavedReportController;
@@ -200,6 +201,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('tasks/{task}/attachments/{attachment}', [ApiTaskCollaborationController::class, 'destroyAttachment'])->name('tasks.attachments.destroy');
         Route::patch('tasks/{task}/checklist/{item}', [ApiTaskCollaborationController::class, 'checklist'])->name('tasks.checklist.update');
         Route::apiResource('tenants', ApiTenantController::class);
+        Route::apiResource('rental-applications', ApiRentalApplicationController::class);
+        Route::patch('rental-applications/{rental_application}/screening', [ApiRentalApplicationController::class, 'screening'])->name('rental-applications.screening');
+        Route::post('rental-applications/{rental_application}/decision', [ApiRentalApplicationController::class, 'decide'])->name('rental-applications.decision');
         Route::apiResource('tenancy-agreements', ApiTenancyAgreementController::class);
         Route::post('tenancy-agreements/{tenancy_agreement}/renew', [ApiTenancyAgreementController::class, 'renew'])->name('tenancy-agreements.renew');
         Route::post('tenancy-agreements/{tenancy_agreement}/notice', [ApiTenancyAgreementController::class, 'notice'])->name('tenancy-agreements.notice');

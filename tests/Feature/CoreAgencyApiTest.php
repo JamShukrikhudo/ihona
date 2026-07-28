@@ -1399,6 +1399,85 @@ class CoreAgencyApiTest extends TestCase
         ])->assertUnprocessable()->assertJsonValidationErrors('property_id');
     }
 
+    public function test_rental_applications_cover_referencing_guarantors_and_decisions(): void
+    {
+        [$user, $team] = $this->actingAsTeamMember();
+        $property = Property::factory()->for($team)->create(['status' => 'to_let']);
+        $applicant = Contact::create([
+            'team_id' => $team->id,
+            'type' => 'applicant',
+            'first_name' => 'Morgan',
+            'last_name' => 'Renter',
+            'emails' => ['morgan@example.test'],
+        ]);
+
+        $response = $this->postJson('/api/v1/rental-applications', [
+            'property_id' => $property->id,
+            'applicant_id' => $applicant->id,
+            'employment_status' => 'employed',
+            'annual_income' => 72000,
+            'monthly_income' => 6000,
+            'desired_move_in_date' => now()->addMonth()->toDateString(),
+            'screening_consent_at' => now()->toIso8601String(),
+            'guarantors' => [[
+                'name' => 'Taylor Guarantor',
+                'email' => 'taylor@example.test',
+                'relationship' => 'parent',
+                'annual_income' => 85000,
+                'consent_received' => true,
+            ]],
+        ])->assertCreated()
+            ->assertJsonPath('data.team_id', $team->id)
+            ->assertJsonPath('data.status', 'submitted')
+            ->assertJsonPath('data.guarantors.0.name', 'Taylor Guarantor');
+        $applicationId = $response->json('data.id');
+
+        $this->patchJson("/api/v1/rental-applications/$applicationId", [
+            'status' => 'approved',
+        ])->assertUnprocessable()->assertJsonValidationErrors('status');
+
+        $this->patchJson("/api/v1/rental-applications/$applicationId/screening", [
+            'background_check_status' => 'passed',
+            'credit_report_status' => 'good',
+            'rental_history_status' => 'satisfactory',
+            'affordability_status' => 'passed',
+            'right_to_rent_status' => 'verified',
+            'employer_reference' => [
+                'status' => 'verified',
+                'referee_name' => 'Payroll Manager',
+                'referee_email' => 'payroll@example.test',
+            ],
+            'landlord_reference' => [
+                'status' => 'verified',
+                'referee_name' => 'Previous Landlord',
+            ],
+        ])->assertOk()
+            ->assertJsonPath('screening_complete', true)
+            ->assertJsonPath('screening_passed', true);
+
+        $this->postJson("/api/v1/rental-applications/$applicationId/decision", [
+            'decision' => 'approved',
+            'notes' => 'All references verified.',
+        ])->assertOk()
+            ->assertJsonPath('data.status', 'approved')
+            ->assertJsonPath('data.decided_by', $user->id)
+            ->assertJsonPath('data.decision_notes', 'All references verified.');
+
+        $this->patchJson("/api/v1/rental-applications/$applicationId/screening", [
+            'credit_report_status' => 'poor',
+        ])->assertUnprocessable()->assertJsonValidationErrors('status');
+
+        $otherApplicant = Contact::create([
+            'team_id' => Team::factory()->create()->id,
+            'type' => 'applicant',
+            'first_name' => 'Other',
+        ]);
+        $this->postJson('/api/v1/rental-applications', [
+            'property_id' => $property->id,
+            'applicant_id' => $otherApplicant->id,
+        ])->assertUnprocessable()->assertJsonValidationErrors('applicant_id');
+    }
+
     private function actingAsTeamMember(): array
     {
         $user = User::factory()->create();

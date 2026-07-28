@@ -16,6 +16,7 @@ The authenticated REST API exposes the central estate-agency records under
 | Branches | Full CRUD at `/branches` | Search by name, address, or email |
 | Buyers | Full CRUD at `/buyers` | `status`, budget, bedrooms, type, location, postal codes, features |
 | Tenants | Full CRUD at `/tenants` | Search by name, email, or phone |
+| Rental applications | Full CRUD at `/rental-applications` | property, applicant, status, screening states |
 | Tenancy agreements | Full CRUD at `/tenancy-agreements` | `property_id`, `tenant_id`, `landlord_id`, `status` |
 | Documents | Full CRUD at `/documents` | `property_id`, `file_type`, `is_signable` |
 | Maintenance | Full CRUD at `/maintenance` | `property_id`, `tenant_id`, `contractor_id`, `status`, `priority` |
@@ -83,6 +84,13 @@ Tenant records and tenancy agreements are exposed through the versioned API.
 Agreements track rent, payment frequency, protected-deposit scheme/reference,
 signatures, terms, and status.
 
+- `/rental-applications` records applicant income, desired move date, screening
+  consent, and one or more guarantors.
+- `PATCH /rental-applications/{application}/screening` records background,
+  credit, rental-history, affordability, right-to-rent, employer, and previous
+  landlord reference outcomes.
+- `POST /rental-applications/{application}/decision` records an approved or
+  rejected decision with the responsible staff member, timestamp, and notes.
 - `POST /tenancy-agreements/{agreement}/notice` records landlord, tenant, or
   mutual notice and its effective dates.
 - `POST /tenancy-agreements/{agreement}/renew` creates a linked renewal,
