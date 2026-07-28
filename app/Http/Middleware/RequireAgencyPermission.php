@@ -10,9 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RequireAgencyPermission
 {
-    public function __construct(private readonly AgencyPermissionService $permissions)
-    {
-    }
+    public function __construct(private readonly AgencyPermissionService $permissions) {}
 
     public function handle(Request $request, Closure $next): Response
     {
@@ -29,13 +27,15 @@ class RequireAgencyPermission
 
         $segments = $request->segments();
         $resource = $segments[2] ?? 'unknown';
-        $action = match ($request->method()) {
-            'GET', 'HEAD' => 'view',
-            'POST' => 'create',
-            'PUT', 'PATCH' => 'edit',
-            'DELETE' => 'delete',
-            default => 'view',
-        };
+        $action = str_ends_with((string) $request->route()?->getName(), '.export')
+            ? 'export'
+            : match ($request->method()) {
+                'GET', 'HEAD' => 'view',
+                'POST' => 'create',
+                'PUT', 'PATCH' => 'edit',
+                'DELETE' => 'delete',
+                default => 'view',
+            };
 
         if (! $this->permissions->can($user, $team, $resource, $action)) {
             return response()->json([

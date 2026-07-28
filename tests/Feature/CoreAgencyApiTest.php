@@ -381,6 +381,63 @@ class CoreAgencyApiTest extends TestCase
             ->assertJsonPath('data.properties.sold', 1);
     }
 
+    public function test_saved_reports_export_chart_data_and_dashboard_layouts_are_customisable(): void
+    {
+        [, $team] = $this->actingAsTeamMember();
+        Property::factory()->for($team)->create(['status' => 'available']);
+        Property::factory()->for($team)->create(['status' => 'sold']);
+
+        $report = $this->postJson('/api/v1/saved-reports', [
+            'name' => 'Monthly property pipeline',
+            'type' => 'pipeline',
+            'filters' => [
+                'from' => now()->subDay()->toDateString(),
+                'to' => now()->addDay()->toDateString(),
+            ],
+            'chart_type' => 'bar',
+            'is_shared' => true,
+        ])->assertCreated()
+            ->assertJsonPath('data.team_id', $team->id);
+        $reportId = $report->json('data.id');
+
+        $this->getJson("/api/v1/saved-reports/$reportId/run")
+            ->assertOk()
+            ->assertJsonPath('data.properties.available', 1)
+            ->assertJsonPath('data.properties.sold', 1)
+            ->assertJsonPath('meta.report.chart_type', 'bar')
+            ->assertJsonPath('meta.chart.0.label', 'properties');
+        $this->get("/api/v1/saved-reports/$reportId/export")
+            ->assertOk()
+            ->assertDownload("report-$reportId.csv")
+            ->assertHeader('content-type', 'text/csv; charset=UTF-8');
+
+        $first = $this->postJson('/api/v1/dashboard-layouts', [
+            'name' => 'Negotiator dashboard',
+            'is_default' => true,
+            'widgets' => [
+                ['type' => 'kpis', 'position' => ['x' => 0, 'y' => 0]],
+                ['type' => 'tasks', 'settings' => ['limit' => 10]],
+            ],
+        ])->assertCreated()
+            ->assertJsonPath('data.is_default', true)
+            ->assertJsonPath('data.widgets.1.type', 'tasks');
+        $firstId = $first->json('data.id');
+
+        $this->postJson('/api/v1/dashboard-layouts', [
+            'name' => 'Branch dashboard',
+            'is_default' => true,
+            'widgets' => [['type' => 'branch_statistics']],
+        ])->assertCreated();
+
+        $this->getJson('/api/v1/dashboard-layouts')
+            ->assertOk()
+            ->assertJsonCount(2, 'data');
+        $this->assertDatabaseHas('dashboard_layouts', [
+            'id' => $firstId,
+            'is_default' => false,
+        ]);
+    }
+
     public function test_buyers_can_be_matched_to_available_properties_and_notified(): void
     {
         Notification::fake();

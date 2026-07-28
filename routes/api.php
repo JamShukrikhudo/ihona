@@ -11,6 +11,7 @@ use App\Http\Controllers\API\V1\CalendarController as ApiCalendarController;
 use App\Http\Controllers\API\V1\CommunicationController as ApiCommunicationController;
 use App\Http\Controllers\API\V1\CompanyController as ApiCompanyController;
 use App\Http\Controllers\API\V1\ContactController as ApiContactController;
+use App\Http\Controllers\API\V1\DashboardLayoutController as ApiDashboardLayoutController;
 use App\Http\Controllers\API\V1\DocumentController as ApiDocumentController;
 use App\Http\Controllers\API\V1\DocumentWorkflowController as ApiDocumentWorkflowController;
 use App\Http\Controllers\API\V1\InspectionController as ApiInspectionController;
@@ -24,6 +25,7 @@ use App\Http\Controllers\API\V1\PropertyMatchController as ApiPropertyMatchContr
 use App\Http\Controllers\API\V1\PublicWebsiteController as ApiPublicWebsiteController;
 use App\Http\Controllers\API\V1\ReportController as ApiReportController;
 use App\Http\Controllers\API\V1\SalesProgressionController as ApiSalesProgressionController;
+use App\Http\Controllers\API\V1\SavedReportController as ApiSavedReportController;
 use App\Http\Controllers\API\V1\SearchController as ApiSearchController;
 use App\Http\Controllers\API\V1\SetupController as ApiSetupController;
 use App\Http\Controllers\API\V1\TaskCollaborationController as ApiTaskCollaborationController;
@@ -130,6 +132,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('search', ApiSearchController::class)->name('search');
         Route::get('reports/dashboard', [ApiReportController::class, 'dashboard'])->name('reports.dashboard');
         Route::get('reports/pipeline', [ApiReportController::class, 'pipeline'])->name('reports.pipeline');
+        Route::apiResource('saved-reports', ApiSavedReportController::class);
+        Route::get('saved-reports/{savedReport}/run', [ApiReportController::class, 'run'])->name('saved-reports.run');
+        Route::get('saved-reports/{savedReport}/export', [ApiReportController::class, 'export'])->name('saved-reports.export');
+        Route::apiResource('dashboard-layouts', ApiDashboardLayoutController::class);
         Route::apiResource('contacts', ApiContactController::class);
         Route::apiResource('companies', ApiCompanyController::class);
         Route::apiResource('communications', ApiCommunicationController::class);

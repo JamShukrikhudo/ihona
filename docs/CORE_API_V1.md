@@ -50,6 +50,14 @@ results per type.
   offers, viewings, tasks, maintenance, active sales, and valuations.
 - `GET /reports/pipeline` returns grouped property, offer, sales progression,
   valuation, and maintenance pipeline totals.
+- `/saved-reports` stores reusable dashboard or pipeline definitions with date
+  filters, selected columns, sharing controls, and chart types.
+- `GET /saved-reports/{report}/run` returns chart-ready labels and values.
+- `GET /saved-reports/{report}/export` downloads a tenant-authorised CSV.
+- `/dashboard-layouts` stores per-user widget layouts. Supported widgets include
+  KPIs, calendar, tasks, recent activity, sales, lettings, leads, property
+  pipeline, maintenance, and branch statistics. Setting a new default clears
+  the user's previous default layout.
 
 ## Property matching
 
