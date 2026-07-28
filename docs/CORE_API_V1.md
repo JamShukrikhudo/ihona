@@ -165,11 +165,17 @@ and schedule staff reminders in the unified diary. Event names can cover
 enquiries, instructions, offers, viewing requests, tasks, maintenance,
 renewals, portal failures, and custom deployment events.
 
+New enquiries, assigned tasks, viewing requests, maintenance requests, offer
+creation/decisions, and tenancy renewals dispatch first-class workflow
+notifications without requiring a custom automation rule. The recipient's
+channel and event preferences still control delivery.
+
 - `POST /automations/{automation}/run` executes a rule against supplied event context.
 - `GET /automation-runs` exposes completed, skipped, and failed execution audits.
 - `GET /notifications` lists the authenticated user's notifications and unread count.
+- `GET /notifications/options` exposes the stable channel and event catalog.
 - `GET|PUT /notifications/preferences` reads or updates the user's enabled
-  channels, event opt-outs, SMS number, and encrypted push tokens.
+  channels, validated event opt-outs, SMS number, and encrypted push tokens.
 - `GET /notifications/deliveries` exposes the user's channel delivery audit,
   including sent, queued, and failed outcomes.
 - `PATCH /notifications/{notification}/read` marks one notification as read.

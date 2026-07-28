@@ -10,6 +10,8 @@ use Throwable;
 
 class PortalSyncService
 {
+    public function __construct(private readonly WorkflowNotifier $notifications) {}
+
     public function sync(PortalIntegration $integration, ?User $requestedBy = null): PortalSyncRun
     {
         $run = PortalSyncRun::create([
@@ -57,6 +59,24 @@ class PortalSyncService
             'last_sync_status' => $status,
             'last_error' => $errors[0]['error'] ?? null,
         ]);
+        if ($failed > 0) {
+            $recipient = $requestedBy ?? $integration->team?->owner;
+            if ($recipient) {
+                $this->notifications->notify(
+                    (int) $integration->team_id,
+                    $recipient,
+                    'portal.failed',
+                    'Property portal synchronisation issue',
+                    "{$failed} listing(s) failed to synchronize with {$integration->provider}.",
+                    [
+                        'portal_integration_id' => $integration->id,
+                        'portal_sync_run_id' => $run->id,
+                        'failed' => $failed,
+                        'status' => $status,
+                    ],
+                );
+            }
+        }
 
         return $run->fresh();
     }

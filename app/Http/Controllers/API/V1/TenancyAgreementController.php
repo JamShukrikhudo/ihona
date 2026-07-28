@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Models\LeaseAgreement;
+use App\Models\User;
+use App\Services\WorkflowNotifier;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -11,9 +13,14 @@ use Illuminate\Validation\Rule;
 class TenancyAgreementController extends TenantCrudController
 {
     protected string $model = LeaseAgreement::class;
+
     protected string $routeParameter = 'tenancy_agreement';
+
     protected array $searchable = ['terms', 'terms_and_conditions'];
+
     protected array $filterable = ['property_id', 'tenant_id', 'landlord_id', 'status'];
+
+    public function __construct(private readonly WorkflowNotifier $notifications) {}
 
     protected function rules(Request $request, ?Model $record = null): array
     {
@@ -69,6 +76,19 @@ class TenancyAgreementController extends TenantCrudController
             'tenant_signed' => false,
         ])->save();
         $original->update(['status' => 'renewed']);
+        $recipient = User::find($original->landlord_id) ?? $request->user();
+        $this->notifications->notify(
+            $this->teamId($request),
+            $recipient,
+            'tenancy.renewed',
+            'Tenancy renewed',
+            "The tenancy now ends {$renewal->end_date->toDateString()}.",
+            [
+                'tenancy_agreement_id' => $renewal->id,
+                'renewal_of_id' => $original->id,
+                'property_id' => $renewal->property_id,
+            ],
+        );
 
         return response()->json(['data' => $renewal->fresh()], 201);
     }

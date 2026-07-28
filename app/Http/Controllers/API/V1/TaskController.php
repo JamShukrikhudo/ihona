@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Models\AgencyTask;
+use App\Models\User;
+use App\Services\WorkflowNotifier;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -16,6 +18,8 @@ class TaskController extends TenantCrudController
     protected array $searchable = ['title', 'description'];
 
     protected array $filterable = ['status', 'priority', 'assigned_to', 'branch_id'];
+
+    public function __construct(private readonly WorkflowNotifier $notifications) {}
 
     protected function rules(Request $request, ?Model $record = null): array
     {
@@ -44,5 +48,18 @@ class TaskController extends TenantCrudController
         $attributes['created_by'] = $request->user()->id;
 
         return $attributes;
+    }
+
+    protected function afterCreate(Request $request, Model $record): void
+    {
+        $recipient = User::find($record->assigned_to) ?? $request->user();
+        $this->notifications->notify(
+            $this->teamId($request),
+            $recipient,
+            'task.created',
+            'Task assigned',
+            $record->title,
+            ['task_id' => $record->getKey(), 'due_at' => $record->due_at?->toIso8601String()],
+        );
     }
 }

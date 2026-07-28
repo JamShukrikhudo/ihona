@@ -9,9 +9,20 @@ use App\Services\NotificationDispatcher;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class NotificationController extends Controller
 {
+    public function options(): JsonResponse
+    {
+        return response()->json([
+            'data' => [
+                'channels' => NotificationDispatcher::CHANNELS,
+                'events' => NotificationDispatcher::EVENTS,
+            ],
+        ]);
+    }
+
     public function index(Request $request): JsonResponse
     {
         $query = $request->user()->notifications()
@@ -74,6 +85,15 @@ class NotificationController extends Controller
             'event_preferences' => ['nullable', 'array'],
             'event_preferences.*' => ['boolean'],
         ]);
+        $unknownEvents = array_diff(
+            array_keys($validated['event_preferences'] ?? []),
+            NotificationDispatcher::EVENTS,
+        );
+        if ($unknownEvents !== []) {
+            throw ValidationException::withMessages([
+                'event_preferences' => ['Unsupported notification event: '.reset($unknownEvents)],
+            ]);
+        }
 
         $preference = NotificationPreference::updateOrCreate([
             'team_id' => $this->teamId($request),

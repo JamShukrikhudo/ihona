@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Models\MaintenanceRequest;
+use App\Services\WorkflowNotifier;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -16,6 +17,8 @@ class MaintenanceController extends TenantCrudController
     protected array $searchable = ['title', 'description'];
 
     protected array $filterable = ['property_id', 'tenant_id', 'vendor_id', 'status', 'priority'];
+
+    public function __construct(private readonly WorkflowNotifier $notifications) {}
 
     protected function rules(Request $request, ?Model $record = null): array
     {
@@ -37,5 +40,17 @@ class MaintenanceController extends TenantCrudController
             'payment_status' => ['nullable', Rule::in(['not_applicable', 'pending', 'paid', 'overdue'])],
             'completed_at' => ['nullable', 'date'],
         ];
+    }
+
+    protected function afterCreate(Request $request, Model $record): void
+    {
+        $this->notifications->notify(
+            $this->teamId($request),
+            $request->user(),
+            'maintenance.created',
+            'New maintenance request',
+            $record->title,
+            ['maintenance_id' => $record->getKey(), 'property_id' => $record->property_id],
+        );
     }
 }

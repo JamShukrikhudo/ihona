@@ -66,6 +66,13 @@ class CoreAgencyApiTest extends TestCase
             ->assertJsonPath('data.first_name', 'Amina');
 
         $contactId = $response->json('data.id');
+        $this->assertDatabaseHas('notification_deliveries', [
+            'team_id' => $team->id,
+            'user_id' => $user->id,
+            'event_type' => 'enquiry.created',
+            'channel' => 'in_app',
+            'status' => 'sent',
+        ]);
 
         $this->getJson('/api/v1/contacts?search=Amina')
             ->assertOk()
@@ -213,6 +220,18 @@ class CoreAgencyApiTest extends TestCase
             'negotiation_note' => 'Vendor accepted the revised offer.',
         ])->assertOk()
             ->assertJsonPath('data.status', 'accepted');
+        $this->assertDatabaseHas('notification_deliveries', [
+            'team_id' => $team->id,
+            'user_id' => $user->id,
+            'event_type' => 'offer.created',
+            'status' => 'sent',
+        ]);
+        $this->assertDatabaseHas('notification_deliveries', [
+            'team_id' => $team->id,
+            'user_id' => $user->id,
+            'event_type' => 'offer.accepted',
+            'status' => 'sent',
+        ]);
 
         $this->getJson("/api/v1/offers/$offerId/timeline")
             ->assertOk()
@@ -257,6 +276,12 @@ class CoreAgencyApiTest extends TestCase
         ])->assertCreated()
             ->assertJsonPath('data.team_id', $team->id)
             ->assertJsonPath('data.created_by', $user->id);
+        $this->assertDatabaseHas('notification_deliveries', [
+            'team_id' => $team->id,
+            'user_id' => $user->id,
+            'event_type' => 'task.created',
+            'status' => 'sent',
+        ]);
     }
 
     public function test_current_team_must_be_an_owned_or_joined_team(): void
@@ -1006,6 +1031,11 @@ class CoreAgencyApiTest extends TestCase
             ->assertJsonPath('data.renewal_of_id', $agreementId)
             ->assertJsonPath('data.status', 'draft')
             ->assertJsonPath('data.monthly_rent', '1825.00');
+        $this->assertDatabaseHas('notification_deliveries', [
+            'team_id' => $team->id,
+            'event_type' => 'tenancy.renewed',
+            'status' => 'sent',
+        ]);
     }
 
     public function test_automation_rules_create_tasks_and_deliver_notifications_across_configured_channels(): void
@@ -1021,6 +1051,15 @@ class CoreAgencyApiTest extends TestCase
         ])->assertOk()
             ->assertJsonPath('data.push_token_count', 1)
             ->assertJsonMissing(['private-device-token']);
+        $this->getJson('/api/v1/notifications/options')
+            ->assertOk()
+            ->assertJsonPath('data.channels', ['in_app', 'email', 'sms', 'push'])
+            ->assertJsonPath('data.events', fn ($events) => in_array('portal.failed', $events, true)
+                && in_array('tenancy.renewal_due', $events, true));
+        $this->putJson('/api/v1/notifications/preferences', [
+            'channels' => ['in_app'],
+            'event_preferences' => ['unknown.event' => true],
+        ])->assertUnprocessable()->assertJsonValidationErrors('event_preferences');
 
         ServiceIntegration::create([
             'team_id' => $team->id,

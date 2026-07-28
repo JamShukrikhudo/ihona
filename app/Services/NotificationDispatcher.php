@@ -16,6 +16,26 @@ class NotificationDispatcher
 {
     public const CHANNELS = ['in_app', 'email', 'sms', 'push'];
 
+    public const EVENTS = [
+        'enquiry.created',
+        'offer.created',
+        'offer.accepted',
+        'offer.rejected',
+        'offer.withdrawn',
+        'viewing.requested',
+        'viewing.reminder',
+        'task.created',
+        'task.due',
+        'maintenance.created',
+        'maintenance.updated',
+        'tenancy.renewed',
+        'tenancy.renewal_due',
+        'portal.failed',
+        'property.matched',
+        'instruction.accepted',
+        'listing.updated',
+    ];
+
     public function dispatch(
         int $teamId,
         User $user,

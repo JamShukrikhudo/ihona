@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Models\Contact;
+use App\Services\WorkflowNotifier;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -16,6 +17,8 @@ class ContactController extends TenantCrudController
     protected array $searchable = ['first_name', 'last_name', 'notes'];
 
     protected array $filterable = ['type', 'status', 'branch_id', 'company_id'];
+
+    public function __construct(private readonly WorkflowNotifier $notifications) {}
 
     protected function rules(Request $request, ?Model $record = null): array
     {
@@ -43,5 +46,17 @@ class ContactController extends TenantCrudController
             'status' => ['sometimes', Rule::in(['active', 'inactive', 'archived'])],
             'last_contacted_at' => ['nullable', 'date'],
         ];
+    }
+
+    protected function afterCreate(Request $request, Model $record): void
+    {
+        $this->notifications->notify(
+            $this->teamId($request),
+            $request->user(),
+            'enquiry.created',
+            'New enquiry',
+            trim("{$record->first_name} {$record->last_name}")." was added as {$record->type}.",
+            ['contact_id' => $record->getKey(), 'contact_type' => $record->type],
+        );
     }
 }

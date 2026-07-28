@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Models\Appointment;
+use App\Models\User;
 use App\Models\ViewingFeedback;
 use App\Services\ViewingFeedbackService;
+use App\Services\WorkflowNotifier;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -20,6 +22,8 @@ class ViewingController extends TenantCrudController
     protected array $searchable = ['name', 'contact', 'notes'];
 
     protected array $filterable = ['property_id', 'agent_id', 'staff_id', 'status', 'outcome'];
+
+    public function __construct(private readonly WorkflowNotifier $notifications) {}
 
     protected function rules(Request $request, ?Model $record = null): array
     {
@@ -49,6 +53,19 @@ class ViewingController extends TenantCrudController
         $attributes['user_id'] = $request->user()->id;
 
         return $attributes;
+    }
+
+    protected function afterCreate(Request $request, Model $record): void
+    {
+        $recipient = User::find($record->staff_id ?: $record->agent_id) ?? $request->user();
+        $this->notifications->notify(
+            $this->teamId($request),
+            $recipient,
+            'viewing.requested',
+            'New viewing request',
+            $record->appointment_date?->toDayDateTimeString(),
+            ['viewing_id' => $record->getKey(), 'property_id' => $record->property_id],
+        );
     }
 
     public function sendConfirmation(Request $request): JsonResponse

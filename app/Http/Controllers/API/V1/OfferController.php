@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Models\Offer;
+use App\Models\User;
+use App\Services\WorkflowNotifier;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -17,6 +19,8 @@ class OfferController extends TenantCrudController
     protected string $routeParameter = 'offer';
 
     protected array $filterable = ['property_id', 'contact_id', 'status', 'negotiator_id'];
+
+    public function __construct(private readonly WorkflowNotifier $notifications) {}
 
     protected function rules(Request $request, ?Model $record = null): array
     {
@@ -61,6 +65,7 @@ class OfferController extends TenantCrudController
 
             return $offer;
         });
+        $this->notify($request, $offer, 'offer.created');
 
         return response()->json(['data' => $offer->fresh()], 201);
     }
@@ -81,6 +86,9 @@ class OfferController extends TenantCrudController
                 $this->recordEvent($request, $offer, $before, $eventType, $note);
             }
         });
+        if ($offer->wasChanged('status') && in_array($offer->status, ['accepted', 'rejected', 'withdrawn'], true)) {
+            $this->notify($request, $offer, "offer.{$offer->status}");
+        }
 
         return response()->json(['data' => $offer->fresh()]);
     }
@@ -124,5 +132,18 @@ class OfferController extends TenantCrudController
             'changes' => $changes,
             'occurred_at' => now(),
         ]);
+    }
+
+    private function notify(Request $request, Offer $offer, string $event): void
+    {
+        $recipient = User::find($offer->negotiator_id) ?? $request->user();
+        $this->notifications->notify(
+            $this->teamId($request),
+            $recipient,
+            $event,
+            $event === 'offer.created' ? 'New property offer' : 'Offer '.ucfirst($offer->status),
+            "{$offer->currency} {$offer->amount}",
+            ['offer_id' => $offer->id, 'property_id' => $offer->property_id, 'status' => $offer->status],
+        );
     }
 }
