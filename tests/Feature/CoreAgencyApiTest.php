@@ -12,7 +12,9 @@ use App\Models\Document;
 use App\Models\Property;
 use App\Models\ServiceIntegration;
 use App\Models\Team;
+use App\Models\Tenant;
 use App\Models\User;
+use App\Models\Vendor;
 use App\Notifications\NewPropertyMatches;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -1207,6 +1209,118 @@ class CoreAgencyApiTest extends TestCase
         ]);
         $this->getJson("/api/v1/compliance-items/{$otherItem->id}")->assertNotFound();
         $this->getJson("/api/v1/compliance-items/{$otherItem->id}/documents")->assertNotFound();
+    }
+
+    public function test_contractor_quotes_and_work_orders_cover_the_maintenance_job_lifecycle(): void
+    {
+        [$user, $team] = $this->actingAsTeamMember();
+        $property = Property::factory()->for($team)->create();
+        $tenant = Tenant::create([
+            'team_id' => $team->id,
+            'name' => 'Jordan Tenant',
+            'email' => 'jordan.tenant@example.test',
+            'phone' => '+44 7700 900234',
+        ]);
+
+        $contractor = $this->postJson('/api/v1/contractors', [
+            'company_name' => 'North Star Plumbing',
+            'contact_person' => 'Alex Plumber',
+            'email' => 'jobs@north-star-plumbing.test',
+            'vendor_type' => 'plumber',
+            'specializations' => ['boilers', 'leaks'],
+            'insurance_valid_until' => now()->addYear()->toDateString(),
+            'preferred_vendor' => true,
+        ])->assertCreated()
+            ->assertJsonPath('data.team_id', $team->id)
+            ->assertJsonPath('data.added_by', $user->id)
+            ->assertJsonMissingPath('data.bank_details');
+        $contractorId = $contractor->json('data.id');
+
+        $maintenance = $this->postJson('/api/v1/maintenance', [
+            'property_id' => $property->id,
+            'tenant_id' => $tenant->id,
+            'vendor_id' => $contractorId,
+            'title' => 'Boiler pressure failure',
+            'description' => 'Boiler loses pressure overnight.',
+            'requested_date' => now()->toDateString(),
+            'priority' => 'high',
+        ])->assertCreated();
+        $maintenanceId = $maintenance->json('data.id');
+
+        $quote = $this->postJson('/api/v1/contractor-quotes', [
+            'vendor_id' => $contractorId,
+            'property_id' => $property->id,
+            'maintenance_request_id' => $maintenanceId,
+            'work_description' => 'Replace pressure relief valve.',
+            'quote_amount' => 360,
+            'labor_cost' => 180,
+            'materials_cost' => 180,
+            'quote_date' => now()->toDateString(),
+            'valid_until' => now()->addMonth()->toDateString(),
+            'estimated_duration' => 3,
+        ])->assertCreated()
+            ->assertJsonPath('data.team_id', $team->id)
+            ->assertJsonPath('data.status', 'pending');
+        $quoteId = $quote->json('data.id');
+
+        $this->postJson("/api/v1/contractor-quotes/$quoteId/decision", [
+            'decision' => 'accepted',
+        ])->assertOk()
+            ->assertJsonPath('data.status', 'accepted')
+            ->assertJsonPath('data.approved_by', $user->id);
+
+        $order = $this->postJson('/api/v1/work-orders', [
+            'property_id' => $property->id,
+            'maintenance_request_id' => $maintenanceId,
+            'vendor_id' => $contractorId,
+            'title' => 'Repair boiler pressure valve',
+            'description' => 'Complete the accepted quoted work.',
+            'work_type' => 'repair',
+            'priority' => 3,
+            'estimated_cost' => 360,
+            'estimated_hours' => 3,
+            'assigned_to' => $user->id,
+        ])->assertCreated()
+            ->assertJsonPath('data.created_by', $user->id);
+        $orderId = $order->json('data.id');
+
+        $this->postJson("/api/v1/work-orders/$orderId/updates", [
+            'update_type' => 'status_change',
+            'status_change' => 'in_progress',
+            'description' => 'Engineer has arrived.',
+            'progress_percentage' => 10,
+        ])->assertCreated();
+        $this->postJson("/api/v1/work-orders/$orderId/updates", [
+            'update_type' => 'completion',
+            'status_change' => 'completed',
+            'description' => 'Valve replaced and boiler tested.',
+            'progress_percentage' => 100,
+            'time_spent' => 2.5,
+        ])->assertCreated();
+
+        $this->getJson("/api/v1/work-orders/$orderId")
+            ->assertOk()
+            ->assertJsonPath('data.status', 'completed')
+            ->assertJsonPath('data.started_date', fn ($date) => $date !== null)
+            ->assertJsonPath('data.completed_date', fn ($date) => $date !== null);
+        $this->getJson("/api/v1/work-orders/$orderId/updates")
+            ->assertOk()
+            ->assertJsonCount(2, 'data')
+            ->assertJsonPath('data.0.progress_percentage', 100);
+
+        $otherVendor = Vendor::create([
+            'team_id' => Team::factory()->create()->id,
+            'added_by' => User::factory()->create()->id,
+            'company_name' => 'Other Agency Contractor',
+            'vendor_type' => 'electrician',
+        ]);
+        $this->postJson('/api/v1/work-orders', [
+            'property_id' => $property->id,
+            'vendor_id' => $otherVendor->id,
+            'title' => 'Invalid cross-team job',
+            'description' => 'Must be rejected.',
+            'work_type' => 'repair',
+        ])->assertUnprocessable()->assertJsonValidationErrors('vendor_id');
     }
 
     private function actingAsTeamMember(): array

@@ -41,7 +41,7 @@ class Vendor extends Model
         'added_by',
         'notes',
         'tax_number',
-        'bank_details'
+        'bank_details',
     ];
 
     protected $casts = [
@@ -54,8 +54,10 @@ class Vendor extends Model
         'certifications' => 'array',
         'service_areas' => 'array',
         'availability_hours' => 'array',
-        'bank_details' => 'array'
+        'bank_details' => 'array',
     ];
+
+    protected $hidden = ['bank_details'];
 
     public function team(): BelongsTo
     {
@@ -99,7 +101,7 @@ class Vendor extends Model
 
     public function isAvailableForEmergency(): bool
     {
-        return !empty($this->emergency_contact) && !empty($this->emergency_phone);
+        return ! empty($this->emergency_contact) && ! empty($this->emergency_phone);
     }
 
     public function servicesArea($area): bool
@@ -114,7 +116,7 @@ class Vendor extends Model
 
     public function getInsuranceStatus(): string
     {
-        if (!$this->insurance_valid_until) {
+        if (! $this->insurance_valid_until) {
             return 'No Insurance';
         }
 

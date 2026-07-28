@@ -28,15 +28,18 @@ class RequireAgencyPermission
 
         $segments = $request->segments();
         $resource = $segments[2] ?? 'unknown';
-        $action = str_ends_with((string) $request->route()?->getName(), '.export')
-            ? 'export'
-            : match ($request->method()) {
+        $routeName = (string) $request->route()?->getName();
+        $action = match (true) {
+            str_ends_with($routeName, '.export') => 'export',
+            str_ends_with($routeName, '.decision') => 'approve',
+            default => match ($request->method()) {
                 'GET', 'HEAD' => 'view',
                 'POST' => 'create',
                 'PUT', 'PATCH' => 'edit',
                 'DELETE' => 'delete',
                 default => 'view',
-            };
+            },
+        };
 
         $permission = "$resource.$action";
         $accessToken = $user->currentAccessToken();

@@ -20,6 +20,7 @@ class MaintenanceRequest extends Model
         'property_id',
         'team_id',
         'contractor_id',
+        'vendor_id',
         'priority',
         'photos',
         'quote_references',
@@ -48,6 +49,11 @@ class MaintenanceRequest extends Model
     public function workOrders(): HasMany
     {
         return $this->hasMany(WorkOrder::class);
+    }
+
+    public function contractor(): BelongsTo
+    {
+        return $this->belongsTo(Vendor::class, 'vendor_id');
     }
 
     public function team(): BelongsTo

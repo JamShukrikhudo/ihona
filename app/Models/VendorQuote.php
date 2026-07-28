@@ -11,8 +11,10 @@ class VendorQuote extends Model
     use HasFactory;
 
     protected $fillable = [
+        'team_id',
         'vendor_id',
         'property_id',
+        'maintenance_request_id',
         'work_description',
         'quote_amount',
         'labor_cost',
@@ -28,7 +30,7 @@ class VendorQuote extends Model
         'notes',
         'requested_by',
         'approved_by',
-        'rejection_reason'
+        'rejection_reason',
     ];
 
     protected $casts = [
@@ -40,7 +42,7 @@ class VendorQuote extends Model
         'labor_cost' => 'decimal:2',
         'materials_cost' => 'decimal:2',
         'additional_costs' => 'decimal:2',
-        'estimated_duration' => 'integer'
+        'estimated_duration' => 'integer',
     ];
 
     public function vendor(): BelongsTo
@@ -51,6 +53,16 @@ class VendorQuote extends Model
     public function property(): BelongsTo
     {
         return $this->belongsTo(Property::class);
+    }
+
+    public function team(): BelongsTo
+    {
+        return $this->belongsTo(Team::class);
+    }
+
+    public function maintenanceRequest(): BelongsTo
+    {
+        return $this->belongsTo(MaintenanceRequest::class);
     }
 
     public function requestedBy(): BelongsTo

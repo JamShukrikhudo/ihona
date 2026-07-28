@@ -22,6 +22,7 @@ class AgencyPermissionService
         'marketing-assets', 'email-campaigns',
         'property-media',
         'service-integrations',
+        'contractors', 'contractor-quotes', 'work-orders',
     ];
 
     public const ACTIONS = ['view', 'create', 'edit', 'delete', 'export', 'approve', 'publish', 'archive'];

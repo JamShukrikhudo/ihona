@@ -25,6 +25,9 @@ The authenticated REST API exposes the central estate-agency records under
 | Inspections | Full CRUD at `/inspections` | `property_id`, `tenant_id`, `type`, `status` |
 | Communications | Full CRUD at `/communications` | `channel`, `direction`, `status` |
 | Compliance items | Full CRUD at `/compliance-items` | `property_id`, type, status, priority, risk, assignee |
+| Contractors | Full CRUD at `/contractors` | type, status, preferred status |
+| Contractor quotes | Full CRUD at `/contractor-quotes` | contractor, property, maintenance request, status |
+| Work orders | Full CRUD at `/work-orders` | property, request, contractor, status, priority, assignee |
 
 ## Organisation setup
 
@@ -244,6 +247,27 @@ Files are stored on private application storage and downloads are authorised
 through the selected organisation. Verification records the responsible user
 and timestamp. Compliance records and documents cannot be accessed through a
 different agency.
+
+## Maintenance operations
+
+`/contractors` manages the agency's approved supplier directory, including
+trades, service areas, availability, insurance, certifications, rates, and
+preferred status. Sensitive banking data is never serialized by the API.
+
+Quotes at `/contractor-quotes` can be linked to a property and maintenance
+request. `POST /contractor-quotes/{quote}/decision` accepts or rejects a pending
+quote and requires the `contractor-quotes.approve` permission.
+
+Jobs are managed at `/work-orders` with contractor, scheduling, access and
+safety requirements, estimated and actual cost/hours, invoice references,
+payment state, and customer satisfaction. Progress history is available through:
+
+- `GET /work-orders/{workOrder}/updates`
+- `POST /work-orders/{workOrder}/updates`
+
+Status updates automatically record job start and completion timestamps.
+Contractors, quotes, work orders, and all linked records are validated against
+the selected organisation.
 
 ## Property marketing
 

@@ -14,6 +14,7 @@ class WorkOrder extends Model
 
     protected $fillable = [
         'property_id',
+        'maintenance_request_id',
         'vendor_id',
         'title',
         'description',
@@ -40,7 +41,7 @@ class WorkOrder extends Model
         'assigned_to',
         'approved_by',
         'invoice_number',
-        'payment_status'
+        'payment_status',
     ];
 
     protected $casts = [
@@ -56,12 +57,17 @@ class WorkOrder extends Model
         'emergency_job' => 'boolean',
         'requires_access' => 'boolean',
         'customer_satisfaction' => 'integer',
-        'safety_requirements' => 'array'
+        'safety_requirements' => 'array',
     ];
 
     public function property(): BelongsTo
     {
         return $this->belongsTo(Property::class);
+    }
+
+    public function maintenanceRequest(): BelongsTo
+    {
+        return $this->belongsTo(MaintenanceRequest::class);
     }
 
     public function vendor(): BelongsTo
@@ -96,7 +102,7 @@ class WorkOrder extends Model
 
     public function isOverdue(): bool
     {
-        return $this->scheduled_date < now() && !in_array($this->status, ['completed', 'cancelled']);
+        return $this->scheduled_date < now() && ! in_array($this->status, ['completed', 'cancelled']);
     }
 
     public function getDuration(): ?int
@@ -104,6 +110,7 @@ class WorkOrder extends Model
         if ($this->started_date && $this->completed_date) {
             return $this->started_date->diffInHours($this->completed_date);
         }
+
         return null;
     }
 
@@ -112,6 +119,7 @@ class WorkOrder extends Model
         if ($this->estimated_cost && $this->actual_cost) {
             return $this->actual_cost - $this->estimated_cost;
         }
+
         return 0;
     }
 
@@ -120,12 +128,13 @@ class WorkOrder extends Model
         if ($this->estimated_hours && $this->actual_hours) {
             return $this->actual_hours - $this->estimated_hours;
         }
+
         return 0;
     }
 
     public function getPriorityLevel(): string
     {
-        return match($this->priority) {
+        return match ($this->priority) {
             1 => 'Low',
             2 => 'Medium',
             3 => 'High',
@@ -147,7 +156,7 @@ class WorkOrder extends Model
     public function scopeOverdue($query)
     {
         return $query->where('scheduled_date', '<', now())
-                    ->whereNotIn('status', ['completed', 'cancelled']);
+            ->whereNotIn('status', ['completed', 'cancelled']);
     }
 
     public function scopeEmergency($query)
