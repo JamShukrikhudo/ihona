@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Laravel\Jetstream\Events\TeamCreated;
 use Laravel\Jetstream\Events\TeamDeleted;
 use Laravel\Jetstream\Events\TeamUpdated;
@@ -182,6 +183,41 @@ class Team extends JetstreamTeam
     public function properties(): HasMany
     {
         return $this->hasMany(Property::class);
+    }
+
+    public function contacts(): HasMany
+    {
+        return $this->hasMany(Contact::class);
+    }
+
+    public function companies(): HasMany
+    {
+        return $this->hasMany(Company::class);
+    }
+
+    public function agencyTasks(): HasMany
+    {
+        return $this->hasMany(AgencyTask::class);
+    }
+
+    public function offers(): HasMany
+    {
+        return $this->hasMany(Offer::class);
+    }
+
+    public function organisationProfile(): HasOne
+    {
+        return $this->hasOne(OrganisationProfile::class);
+    }
+
+    public function inspections(): HasMany
+    {
+        return $this->hasMany(Inspection::class);
+    }
+
+    public function communications(): HasMany
+    {
+        return $this->hasMany(Communication::class);
     }
     public function messages(): HasMany
     {

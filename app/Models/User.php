@@ -164,6 +164,16 @@ class User extends Authenticatable implements HasDefaultTenant, HasTenants, Fila
         return $this->hasMany(Appointment::class);
     }
 
+    public function assignedAgencyTasks()
+    {
+        return $this->hasMany(AgencyTask::class, 'assigned_to');
+    }
+
+    public function negotiatedOffers()
+    {
+        return $this->hasMany(Offer::class, 'negotiator_id');
+    }
+
     public function averageRating()
     {
         return $this->reviewsReceived()->avg('rating');
@@ -243,4 +253,3 @@ class User extends Authenticatable implements HasDefaultTenant, HasTenants, Fila
         return $service->getRecommendedAgentsForPropertySearch($this, $searchContext);
     }
 }
-

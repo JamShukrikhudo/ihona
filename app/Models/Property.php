@@ -246,6 +246,21 @@ class Property extends Model implements HasMedia
         return $this->hasMany(Booking::class);
     }
 
+    public function offers()
+    {
+        return $this->hasMany(Offer::class);
+    }
+
+    public function inspections()
+    {
+        return $this->hasMany(Inspection::class);
+    }
+
+    public function communications()
+    {
+        return $this->morphMany(Communication::class, 'communicable');
+    }
+
     public function rooms()
     {
         return $this->hasMany(Room::class);

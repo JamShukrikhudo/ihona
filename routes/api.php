@@ -2,6 +2,15 @@
 
 use App\Http\Controllers\API\MetricsController;
 use App\Http\Controllers\API\ModuleController;
+use App\Http\Controllers\API\V1\CommunicationController as ApiCommunicationController;
+use App\Http\Controllers\API\V1\CompanyController as ApiCompanyController;
+use App\Http\Controllers\API\V1\ContactController as ApiContactController;
+use App\Http\Controllers\API\V1\InspectionController as ApiInspectionController;
+use App\Http\Controllers\API\V1\OfferController as ApiOfferController;
+use App\Http\Controllers\API\V1\PropertyController as ApiPropertyController;
+use App\Http\Controllers\API\V1\SearchController as ApiSearchController;
+use App\Http\Controllers\API\V1\SetupController as ApiSetupController;
+use App\Http\Controllers\API\V1\TaskController as ApiTaskController;
 use App\Http\Controllers\API\VirtualStagingController;
 use App\Http\Controllers\API\VRPropertyDesignController;
 use App\Http\Controllers\ChatbotController;
@@ -9,6 +18,7 @@ use App\Http\Controllers\CommunityEventController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Middleware\ApplyOrganisationLocale;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -69,6 +79,20 @@ Route::middleware('throttle:chatbot')->prefix('chatbot')->group(function () {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::prefix('v1')->middleware(ApplyOrganisationLocale::class)->name('api.v1.')->group(function () {
+        Route::get('setup/options', [ApiSetupController::class, 'options'])->name('setup.options');
+        Route::get('setup/status', [ApiSetupController::class, 'status'])->name('setup.status');
+        Route::put('setup', [ApiSetupController::class, 'complete'])->name('setup.complete');
+        Route::get('search', ApiSearchController::class)->name('search');
+        Route::apiResource('contacts', ApiContactController::class);
+        Route::apiResource('companies', ApiCompanyController::class);
+        Route::apiResource('communications', ApiCommunicationController::class);
+        Route::apiResource('inspections', ApiInspectionController::class);
+        Route::apiResource('tasks', ApiTaskController::class);
+        Route::apiResource('offers', ApiOfferController::class);
+        Route::apiResource('properties', ApiPropertyController::class)->only(['index', 'show']);
+    });
+
     // Virtual Staging API Routes
     Route::prefix('properties/{property}')->group(function () {
         Route::post('images/upload', [VirtualStagingController::class, 'uploadImage']);
