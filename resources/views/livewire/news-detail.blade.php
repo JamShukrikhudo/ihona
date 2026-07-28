@@ -56,7 +56,7 @@
 
                 <!-- Content -->
                 <div class="prose prose-lg dark:prose-invert max-w-none">
-                    {!! $news->content !!}
+                    {!! $news->sanitized_content !!}
                 </div>
 
                 <!-- Footer -->

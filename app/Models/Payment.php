@@ -18,6 +18,7 @@ class Payment extends Model
         'tenant_id',
         'invoice_id',
         'accounting_id',
+        'payment_intent_id',
     ];
 
     protected $casts = [
@@ -27,7 +28,7 @@ class Payment extends Model
 
     public function tenant()
     {
-        return $this->belongsTo(Tenant::class);
+        return $this->belongsTo(User::class, 'tenant_id');
     }
 
     public function invoice()
@@ -40,7 +41,7 @@ class Payment extends Model
         parent::boot();
 
         static::creating(function ($payment) {
-            if (!$payment->tenant_id && auth()->check()) {
+            if (! $payment->tenant_id && auth()->check()) {
                 $payment->tenant_id = auth()->id();
             }
         });

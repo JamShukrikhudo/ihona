@@ -3,8 +3,9 @@
 namespace Tests\Unit;
 
 use App\Models\Property;
-use Tests\TestCase;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class PropertyTest extends TestCase
 {
@@ -35,12 +36,12 @@ class PropertyTest extends TestCase
     {
         $property = Property::factory()->create();
 
-        $this->assertInstanceOf(\Illuminate\Database\Eloquent\Collection::class, $property->appointments);
-        $this->assertInstanceOf(\Illuminate\Database\Eloquent\Collection::class, $property->transactions);
-        $this->assertInstanceOf(\Illuminate\Database\Eloquent\Collection::class, $property->reviews);
-        $this->assertInstanceOf(\Illuminate\Database\Eloquent\Collection::class, $property->features);
-        $this->assertInstanceOf(\Illuminate\Database\Eloquent\Collection::class, $property->images);
-        $this->assertInstanceOf(\Illuminate\Database\Eloquent\Collection::class, $property->bookings);
+        $this->assertInstanceOf(Collection::class, $property->appointments);
+        $this->assertInstanceOf(Collection::class, $property->transactions);
+        $this->assertInstanceOf(Collection::class, $property->reviews);
+        $this->assertInstanceOf(Collection::class, $property->features);
+        $this->assertInstanceOf(Collection::class, $property->images);
+        $this->assertInstanceOf(Collection::class, $property->bookings);
     }
 
     public function test_property_scopes()
@@ -143,10 +144,10 @@ class PropertyTest extends TestCase
     public function test_property_has_videos_media_collection()
     {
         $property = Property::factory()->create();
-        
+
         // Verify media collections are properly registered
         $property->registerMediaCollections();
-        
+
         // Test that the property can handle the videos collection
         $this->assertTrue($property->getMedia('videos')->isEmpty());
     }
@@ -235,14 +236,14 @@ class PropertyTest extends TestCase
         $this->assertTrue($property->hasVirtualTour());
     }
 
-    public function test_has_virtual_tour_with_embed_code()
+    public function test_does_not_accept_virtual_tour_embed_code()
     {
         $property = Property::factory()->create([
             'virtual_tour_url' => null,
             'virtual_tour_embed_code' => '<iframe src="https://example.com/tour"></iframe>',
         ]);
 
-        $this->assertTrue($property->hasVirtualTour());
+        $this->assertFalse($property->hasVirtualTour());
     }
 
     public function test_has_no_virtual_tour()
@@ -255,14 +256,14 @@ class PropertyTest extends TestCase
         $this->assertFalse($property->hasVirtualTour());
     }
 
-    public function test_get_virtual_tour_embed_with_custom_code()
+    public function test_does_not_render_custom_virtual_tour_embed_code()
     {
         $embedCode = '<iframe src="https://example.com/tour"></iframe>';
         $property = Property::factory()->create([
             'virtual_tour_embed_code' => $embedCode,
         ]);
 
-        $this->assertEquals($embedCode, $property->getVirtualTourEmbed());
+        $this->assertNull($property->getVirtualTourEmbed());
     }
 
     public function test_generate_embed_code_for_matterport()
@@ -290,19 +291,17 @@ class PropertyTest extends TestCase
         $this->assertStringContainsString('allowfullscreen', $embed);
     }
 
-    public function test_generate_generic_embed_code()
+    public function test_rejects_unapproved_virtual_tour_provider()
     {
         $property = Property::factory()->create([
             'virtual_tour_url' => 'https://example.com/virtual-tour',
         ]);
 
         $embed = $property->getVirtualTourEmbed();
-        $this->assertStringContainsString('iframe', $embed);
-        $this->assertStringContainsString('example.com/virtual-tour', $embed);
-        $this->assertStringContainsString('allowfullscreen', $embed);
+        $this->assertNull($embed);
     }
 
-    public function test_virtual_tour_fields_are_fillable()
+    public function test_only_safe_virtual_tour_fields_are_fillable()
     {
         $property = Property::factory()->create([
             'virtual_tour_url' => 'https://example.com/tour',
@@ -313,7 +312,7 @@ class PropertyTest extends TestCase
 
         $this->assertEquals('https://example.com/tour', $property->virtual_tour_url);
         $this->assertEquals('matterport', $property->virtual_tour_provider);
-        $this->assertStringContainsString('iframe', $property->virtual_tour_embed_code);
+        $this->assertNotContains('virtual_tour_embed_code', $property->getFillable());
         $this->assertTrue($property->live_tour_available);
     }
 
@@ -381,7 +380,7 @@ class PropertyTest extends TestCase
     public function test_virtual_tour_embed_escapes_special_characters()
     {
         $property = Property::factory()->create([
-            'virtual_tour_url' => 'https://example.com/tour?param=<script>alert("xss")</script>',
+            'virtual_tour_url' => 'https://my.matterport.com/tour?param=<script>alert("xss")</script>',
         ]);
 
         $embed = $property->getVirtualTourEmbed();

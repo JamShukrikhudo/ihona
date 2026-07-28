@@ -8,6 +8,7 @@ use App\Models\Property;
 use App\Services\VirtualStagingService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class VirtualStagingController extends Controller
@@ -21,16 +22,14 @@ class VirtualStagingController extends Controller
 
     /**
      * Upload and optionally stage an image for a property
-     *
-     * @param Request $request
-     * @param Property $property
-     * @return JsonResponse
      */
     public function uploadImage(Request $request, Property $property): JsonResponse
     {
+        $this->authorize('update', $property);
+
         $validator = Validator::make($request->all(), [
             'image' => 'required|image|mimes:jpeg,png,jpg|max:10240',
-            'staging_style' => 'nullable|string|in:' . implode(',', array_keys(VirtualStagingService::STAGING_STYLES)),
+            'staging_style' => 'nullable|string|in:'.implode(',', array_keys(VirtualStagingService::STAGING_STYLES)),
             'auto_stage' => 'nullable|boolean',
         ]);
 
@@ -57,25 +56,24 @@ class VirtualStagingController extends Controller
                 ],
             ], 201);
         } catch (\Exception $e) {
+            Log::error('Virtual staging image upload failed', ['exception' => $e]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to upload image',
-                'error' => $e->getMessage(),
             ], 500);
         }
     }
 
     /**
      * Stage an existing image
-     *
-     * @param Request $request
-     * @param Image $image
-     * @return JsonResponse
      */
     public function stageImage(Request $request, Image $image): JsonResponse
     {
+        $this->authorize('update', $image);
+
         $validator = Validator::make($request->all(), [
-            'staging_style' => 'required|string|in:' . implode(',', array_keys(VirtualStagingService::STAGING_STYLES)),
+            'staging_style' => 'required|string|in:'.implode(',', array_keys(VirtualStagingService::STAGING_STYLES)),
             'options' => 'nullable|array',
         ]);
 
@@ -108,22 +106,22 @@ class VirtualStagingController extends Controller
                 ],
             ], 201);
         } catch (\Exception $e) {
+            Log::error('Virtual staging operation failed', ['exception' => $e]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to stage image',
-                'error' => $e->getMessage(),
             ], 500);
         }
     }
 
     /**
      * Get images for a property
-     *
-     * @param Property $property
-     * @return JsonResponse
      */
     public function getPropertyImages(Property $property): JsonResponse
     {
+        $this->authorize('view', $property);
+
         $images = $this->stagingService->getPropertyImages($property, true);
 
         return response()->json([
@@ -138,8 +136,6 @@ class VirtualStagingController extends Controller
 
     /**
      * Get available staging styles
-     *
-     * @return JsonResponse
      */
     public function getStagingStyles(): JsonResponse
     {
@@ -153,12 +149,11 @@ class VirtualStagingController extends Controller
 
     /**
      * Delete an image
-     *
-     * @param Image $image
-     * @return JsonResponse
      */
     public function deleteImage(Image $image): JsonResponse
     {
+        $this->authorize('delete', $image);
+
         try {
             $this->stagingService->deleteImage($image);
 
@@ -167,19 +162,17 @@ class VirtualStagingController extends Controller
                 'message' => 'Image deleted successfully',
             ]);
         } catch (\Exception $e) {
+            Log::error('Virtual staging image deletion failed', ['exception' => $e]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to delete image',
-                'error' => $e->getMessage(),
             ], 500);
         }
     }
 
     /**
      * Format image response
-     *
-     * @param Image $image
-     * @return array
      */
     protected function formatImageResponse(Image $image): array
     {

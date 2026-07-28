@@ -4,8 +4,8 @@ namespace Tests\Feature;
 
 use App\Models\Property;
 use App\Models\PropertyValuation;
-use App\Models\User;
 use App\Models\Team;
+use App\Models\User;
 use App\Services\NeuralNetworkValuationService;
 use App\Services\PropertyValuationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -16,8 +16,11 @@ class NeuralNetworkValuationTest extends TestCase
     use RefreshDatabase;
 
     private $user;
+
     private $team;
+
     private $property;
+
     private $nnService;
 
     protected function setUp(): void
@@ -31,11 +34,13 @@ class NeuralNetworkValuationTest extends TestCase
         $this->user = User::factory()->create([
             'current_team_id' => $this->team->id,
         ]);
-        
+
         $this->user->teams()->attach($this->team);
 
         // Create a test property
         $this->property = Property::factory()->create([
+            'user_id' => $this->user->id,
+            'team_id' => $this->team->id,
             'title' => 'Test Property for Valuation',
             'location' => 'London, UK',
             'price' => 500000,
@@ -184,7 +189,7 @@ class NeuralNetworkValuationTest extends TestCase
         $response->assertJsonStructure([
             'success',
             'valuation',
-            'message'
+            'message',
         ]);
 
         $this->assertDatabaseHas('property_valuations', [
@@ -221,7 +226,7 @@ class NeuralNetworkValuationTest extends TestCase
         $response->assertStatus(200);
         $response->assertJsonStructure([
             'success',
-            'valuations'
+            'valuations',
         ]);
     }
 
@@ -240,7 +245,7 @@ class NeuralNetworkValuationTest extends TestCase
                 'property',
                 'valuation',
                 'comparables',
-            ]
+            ],
         ]);
     }
 

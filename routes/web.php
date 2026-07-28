@@ -1,50 +1,52 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HomeController;
+use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\ARTourController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CustomReportController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PropertyController;
+use App\Http\Controllers\PropertyValuationController;
 use App\Http\Controllers\TenancyApplicationController;
-use App\Livewire\PropertyList;
-use App\Livewire\PropertyBooking;
+use App\Http\Controllers\TenantController;
 use App\Livewire\BookingCalendar;
+use App\Livewire\CalculatorsComponent;
+use App\Livewire\HolographicViewer;
+use App\Livewire\NewsDetail;
+use App\Livewire\NewsList;
+use App\Livewire\PropertyBooking;
 use App\Livewire\PropertyComparison;
 use App\Livewire\PropertyDetail;
-use App\Livewire\RentalApplicationForm;
-use App\Livewire\ServicesComponent;
-use App\Livewire\CalculatorsComponent;
-use App\Livewire\About;
-use App\Livewire\TermsAndConditions;
-use App\Livewire\PrivacyPolicy;
-use App\Livewire\WishlistManager;
-use App\Livewire\NewsList;
-use App\Livewire\NewsDetail;
+use App\Livewire\PropertyList;
 use App\Livewire\PropertyValuationComponent;
-use App\Http\Controllers\PropertyValuationController;
-use App\Livewire\HolographicViewer;
+use App\Livewire\RentalApplicationForm;
+use App\Livewire\WishlistManager;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::get('/bookings/{booking}/calendar.ics', [BookingController::class, 'downloadIcs'])->name('booking.ics');
-Route::get('/appointments/{appointment}/calendar.ics', [App\Http\Controllers\AppointmentController::class, 'downloadIcs'])->name('appointment.ics');
-Route::post('/bookings', [BookingController::class, 'store']);
-Route::put('/bookings/{booking}', [BookingController::class, 'update']);
-Route::get('/bookings', [BookingController::class, 'index']);
+Route::post('/bookings', [BookingController::class, 'store'])->middleware('throttle:10,1');
+Route::middleware('auth')->group(function () {
+    Route::get('/bookings/{booking}/calendar.ics', [BookingController::class, 'downloadIcs'])->name('booking.ics');
+    Route::get('/appointments/{appointment}/calendar.ics', [AppointmentController::class, 'downloadIcs'])->name('appointment.ics');
+    Route::put('/bookings/{booking}', [BookingController::class, 'update']);
+    Route::get('/bookings', [BookingController::class, 'index']);
+});
 Route::get('/properties/{property}/book', PropertyBooking::class)->name('property.book');
-Route::post('/payments/session', [PaymentController::class, 'createSession']);
-Route::get('/payments/success', [PaymentController::class, 'handlePaymentSuccess']);
+Route::post('/payments/session', [PaymentController::class, 'createSession'])->middleware(['auth', 'throttle:10,1']);
+Route::get('/payments/success', [PaymentController::class, 'handlePaymentSuccess'])->middleware('auth');
 Route::get('/booking-calendar', BookingCalendar::class)->middleware('auth')->name('booking.calendar');
 Route::get('/properties', PropertyList::class)->name('property.list');
-Route::get('/properties/search', [App\Http\Controllers\PropertyController::class, 'search'])->name('property.search');
+Route::get('/properties/search', [PropertyController::class, 'search'])->name('property.search');
 Route::get('/properties/{propertyId}', PropertyDetail::class)->name('property.detail');
 Route::get('/properties/{propertyId}/holographic-tour', HolographicViewer::class)->name('property.holographic-tour');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/apply/{property}', RentalApplicationForm::class)->name('rental.apply');
-    Route::get('/applications', [App\Http\Controllers\TenantController::class, 'applications'])->name('tenant.applications');
+    Route::get('/applications', [TenantController::class, 'applications'])->name('tenant.applications');
     Route::get('/wishlist', WishlistManager::class)->name('wishlist');
     Route::get('/custom-reports', [CustomReportController::class, 'index'])->name('custom-reports.index');
     Route::post('/custom-reports/generate', [CustomReportController::class, 'generateReport'])->name('custom-reports.generate');
@@ -79,13 +81,13 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/valuation/train-model', [PropertyValuationController::class, 'trainModel'])->name('valuation.train');
 });
 
-Route::get('/properties/{property}/ar-tour/config', [\App\Http\Controllers\ARTourController::class, 'getConfig'])->name('property.ar-tour.config');
-Route::get('/properties/{property}/ar-tour/availability', [\App\Http\Controllers\ARTourController::class, 'checkAvailability'])->name('property.ar-tour.availability');
+Route::get('/properties/{property}/ar-tour/config', [ARTourController::class, 'getConfig'])->name('property.ar-tour.config');
+Route::get('/properties/{property}/ar-tour/availability', [ARTourController::class, 'checkAvailability'])->name('property.ar-tour.availability');
 
 Route::middleware(['auth'])->group(function () {
-    Route::post('/properties/{property}/ar-tour/enable', [\App\Http\Controllers\ARTourController::class, 'enable'])->name('property.ar-tour.enable');
-    Route::post('/properties/{property}/ar-tour/disable', [\App\Http\Controllers\ARTourController::class, 'disable'])->name('property.ar-tour.disable');
-    Route::put('/properties/{property}/ar-tour/settings', [\App\Http\Controllers\ARTourController::class, 'updateSettings'])->name('property.ar-tour.update-settings');
+    Route::post('/properties/{property}/ar-tour/enable', [ARTourController::class, 'enable'])->name('property.ar-tour.enable');
+    Route::post('/properties/{property}/ar-tour/disable', [ARTourController::class, 'disable'])->name('property.ar-tour.disable');
+    Route::put('/properties/{property}/ar-tour/settings', [ARTourController::class, 'updateSettings'])->name('property.ar-tour.update-settings');
 });
 
 require __DIR__.'/socialstream.php';

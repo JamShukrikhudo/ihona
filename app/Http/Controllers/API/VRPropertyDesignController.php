@@ -8,6 +8,7 @@ use App\Models\VRDesign;
 use App\Services\VRPropertyDesignService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -77,6 +78,8 @@ class VRPropertyDesignController extends Controller
      */
     public function getPropertyDesigns(Request $request, Property $property): JsonResponse
     {
+        $this->authorize('view', $property);
+
         $publicOnly = $request->boolean('public_only', false);
         $designs = $this->service->getPropertyDesigns($property, $publicOnly);
 
@@ -94,6 +97,8 @@ class VRPropertyDesignController extends Controller
      */
     public function getDesign(VRDesign $design): JsonResponse
     {
+        $this->authorize('view', $design);
+
         // Increment view count
         $design->incrementViewCount();
 
@@ -110,6 +115,8 @@ class VRPropertyDesignController extends Controller
      */
     public function createDesign(Request $request, Property $property): JsonResponse
     {
+        $this->authorize('update', $property);
+
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:1000',
@@ -145,9 +152,11 @@ class VRPropertyDesignController extends Controller
                 ],
             ], 201);
         } catch (\Exception $e) {
+            Log::error('VR design creation failed', ['exception' => $e]);
+
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to create design: ' . $e->getMessage(),
+                'message' => 'Failed to create design.',
             ], 500);
         }
     }
@@ -157,13 +166,7 @@ class VRPropertyDesignController extends Controller
      */
     public function updateDesign(Request $request, VRDesign $design): JsonResponse
     {
-        // Check authorization
-        if ($design->user_id !== $request->user()->id) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Unauthorized',
-            ], 403);
-        }
+        $this->authorize('update', $design);
 
         $validator = Validator::make($request->all(), [
             'name' => 'sometimes|string|max:255',
@@ -196,9 +199,11 @@ class VRPropertyDesignController extends Controller
                 ],
             ]);
         } catch (\Exception $e) {
+            Log::error('VR design update failed', ['exception' => $e]);
+
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to update design: ' . $e->getMessage(),
+                'message' => 'Failed to update design.',
             ], 500);
         }
     }
@@ -208,13 +213,7 @@ class VRPropertyDesignController extends Controller
      */
     public function deleteDesign(Request $request, VRDesign $design): JsonResponse
     {
-        // Check authorization
-        if ($design->user_id !== $request->user()->id) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Unauthorized',
-            ], 403);
-        }
+        $this->authorize('delete', $design);
 
         try {
             $this->service->deleteDesign($design);
@@ -224,9 +223,11 @@ class VRPropertyDesignController extends Controller
                 'message' => 'VR design deleted successfully',
             ]);
         } catch (\Exception $e) {
+            Log::error('VR design deletion failed', ['exception' => $e]);
+
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to delete design: ' . $e->getMessage(),
+                'message' => 'Failed to delete design.',
             ], 500);
         }
     }
@@ -236,13 +237,7 @@ class VRPropertyDesignController extends Controller
      */
     public function addFurniture(Request $request, VRDesign $design): JsonResponse
     {
-        // Check authorization
-        if ($design->user_id !== $request->user()->id) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Unauthorized',
-            ], 403);
-        }
+        $this->authorize('update', $design);
 
         $validator = Validator::make($request->all(), [
             'category' => 'required|string',
@@ -283,9 +278,11 @@ class VRPropertyDesignController extends Controller
                 ],
             ]);
         } catch (\Exception $e) {
+            Log::error('VR furniture creation failed', ['exception' => $e]);
+
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to add furniture: ' . $e->getMessage(),
+                'message' => 'Failed to add furniture.',
             ], 500);
         }
     }
@@ -295,13 +292,7 @@ class VRPropertyDesignController extends Controller
      */
     public function removeFurniture(Request $request, VRDesign $design, string $furnitureId): JsonResponse
     {
-        // Check authorization
-        if ($design->user_id !== $request->user()->id) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Unauthorized',
-            ], 403);
-        }
+        $this->authorize('update', $design);
 
         try {
             $design = $this->service->removeFurniture($design, $furnitureId);
@@ -314,9 +305,11 @@ class VRPropertyDesignController extends Controller
                 ],
             ]);
         } catch (\Exception $e) {
+            Log::error('VR furniture deletion failed', ['exception' => $e]);
+
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to remove furniture: ' . $e->getMessage(),
+                'message' => 'Failed to remove furniture.',
             ], 500);
         }
     }
@@ -326,6 +319,8 @@ class VRPropertyDesignController extends Controller
      */
     public function cloneDesign(Request $request, VRDesign $design): JsonResponse
     {
+        $this->authorize('view', $design);
+
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
         ]);
@@ -353,9 +348,11 @@ class VRPropertyDesignController extends Controller
                 ],
             ], 201);
         } catch (\Exception $e) {
+            Log::error('VR design clone failed', ['exception' => $e]);
+
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to clone design: ' . $e->getMessage(),
+                'message' => 'Failed to clone design.',
             ], 500);
         }
     }
@@ -382,13 +379,7 @@ class VRPropertyDesignController extends Controller
      */
     public function uploadThumbnail(Request $request, VRDesign $design): JsonResponse
     {
-        // Check authorization
-        if ($design->user_id !== $request->user()->id) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Unauthorized',
-            ], 403);
-        }
+        $this->authorize('update', $design);
 
         $validator = Validator::make($request->all(), [
             'thumbnail' => 'required|image|mimes:jpeg,png,jpg|max:5120',
@@ -413,9 +404,11 @@ class VRPropertyDesignController extends Controller
                 ],
             ]);
         } catch (\Exception $e) {
+            Log::error('VR thumbnail upload failed', ['exception' => $e]);
+
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to upload thumbnail: ' . $e->getMessage(),
+                'message' => 'Failed to upload thumbnail.',
             ], 500);
         }
     }
@@ -425,6 +418,8 @@ class VRPropertyDesignController extends Controller
      */
     public function exportDesign(Request $request, VRDesign $design): JsonResponse
     {
+        $this->authorize('view', $design);
+
         $format = $request->input('format', 'json');
 
         try {
@@ -435,9 +430,11 @@ class VRPropertyDesignController extends Controller
                 'data' => $data,
             ]);
         } catch (\Exception $e) {
+            Log::error('VR design export failed', ['exception' => $e]);
+
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to export design: ' . $e->getMessage(),
+                'message' => 'Failed to export design.',
             ], 500);
         }
     }

@@ -1,16 +1,16 @@
 <?php
+
 namespace App\Models;
 
+use App\Services\WalkScoreService;
 use DateTime;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
-
+use Illuminate\Support\Facades\Cache;
 /**
  * Represents a property in the real estate application.
  *
@@ -44,11 +44,12 @@ use Spatie\MediaLibrary\InteractsWithMedia;
  * @property-read Collection|Image[] $images
  * @property-read Collection|Booking[] $bookings
  */
-use Illuminate\Support\Facades\Cache;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
 class Property extends Model implements HasMedia
 {
-use HasFactory, SoftDeletes, InteractsWithMedia;
+    use HasFactory, InteractsWithMedia, SoftDeletes;
 
     protected $fillable = [
         'title',
@@ -78,7 +79,6 @@ use HasFactory, SoftDeletes, InteractsWithMedia;
         'agent_id',
         'virtual_tour_url',
         'virtual_tour_provider',
-        'virtual_tour_embed_code',
         'live_tour_available',
         'model_3d_url',
         'is_featured',
@@ -189,7 +189,7 @@ use HasFactory, SoftDeletes, InteractsWithMedia;
     {
         return $this->hasMany(Appointment::class, 'property_id');
     }
-    
+
     public function team(): BelongsTo
     {
         return $this->belongsTo(Team::class);
@@ -245,6 +245,7 @@ use HasFactory, SoftDeletes, InteractsWithMedia;
     {
         return $this->hasMany(Booking::class);
     }
+
     public function rooms()
     {
         return $this->hasMany(Room::class);
@@ -323,7 +324,7 @@ use HasFactory, SoftDeletes, InteractsWithMedia;
 
     public function getNearbyCommunityEvents($radius = 10)
     {
-        if (!$this->latitude || !$this->longitude) {
+        if (! $this->latitude || ! $this->longitude) {
             return collect([]);
         }
 
@@ -336,6 +337,7 @@ use HasFactory, SoftDeletes, InteractsWithMedia;
                 // Distance is already calculated by the nearby scope
                 // but we need to make it accessible as a property
                 $event->distance_from_property = $event->distance ?? 0;
+
                 return $event;
             });
     }
@@ -360,7 +362,7 @@ use HasFactory, SoftDeletes, InteractsWithMedia;
             'total' => $total,
             'completed' => $completed,
             'overdue' => $overdue,
-            'completion_rate' => $total > 0 ? ($completed / $total) * 100 : 0
+            'completion_rate' => $total > 0 ? ($completed / $total) * 100 : 0,
         ];
     }
 
@@ -386,13 +388,13 @@ use HasFactory, SoftDeletes, InteractsWithMedia;
      */
     public function updateWalkabilityScores()
     {
-        if (!$this->latitude || !$this->longitude) {
+        if (! $this->latitude || ! $this->longitude) {
             return;
         }
 
-        $walkScoreService = app(\App\Services\WalkScoreService::class);
-        $address = $this->location . ', ' . $this->postal_code;
-        
+        $walkScoreService = app(WalkScoreService::class);
+        $address = $this->location.', '.$this->postal_code;
+
         $scores = $walkScoreService->getWalkScore($address, $this->latitude, $this->longitude);
 
         if ($scores) {
@@ -415,7 +417,7 @@ use HasFactory, SoftDeletes, InteractsWithMedia;
      */
     public function needsWalkabilityUpdate()
     {
-        if (!$this->walkability_updated_at) {
+        if (! $this->walkability_updated_at) {
             return true;
         }
 
@@ -426,16 +428,16 @@ use HasFactory, SoftDeletes, InteractsWithMedia;
     public function scopeSearch(Builder $query, $search): Builder
     {
         return $query->where(function ($query) use ($search) {
-            $query->where('title', 'like', '%' . $search . '%')
-                  ->orWhere('description', 'like', '%' . $search . '%')
-                  ->orWhere('location', 'like', '%' . $search . '%')
-                  ->orWhere('postal_code', 'like', '%' . $search . '%');
+            $query->where('title', 'like', '%'.$search.'%')
+                ->orWhere('description', 'like', '%'.$search.'%')
+                ->orWhere('location', 'like', '%'.$search.'%')
+                ->orWhere('postal_code', 'like', '%'.$search.'%');
         });
     }
 
     public function scopePostalCode(Builder $query, $postalCode): Builder
     {
-        return $query->where('postal_code', 'like', $postalCode . '%');
+        return $query->where('postal_code', 'like', $postalCode.'%');
     }
 
     public function scopeNearby(Builder $query, $latitude, $longitude, $radius): Builder
@@ -486,7 +488,7 @@ use HasFactory, SoftDeletes, InteractsWithMedia;
     {
         return $query->where(function ($query) {
             $query->whereNull('last_synced_at')
-                  ->orWhere('updated_at', '>', 'last_synced_at');
+                ->orWhere('updated_at', '>', 'last_synced_at');
         });
     }
 
@@ -542,7 +544,7 @@ use HasFactory, SoftDeletes, InteractsWithMedia;
 
         for ($date = $startDate; $date <= $endDate; $date->addDay()) {
             $currentDate = $date->format('Y-m-d');
-            if (!in_array($currentDate, $bookedDates) && !in_array($currentDate, $teamBookings)) {
+            if (! in_array($currentDate, $bookedDates) && ! in_array($currentDate, $teamBookings)) {
                 $availableDates[] = $currentDate;
             }
         }
@@ -557,7 +559,7 @@ use HasFactory, SoftDeletes, InteractsWithMedia;
      */
     public function hasVirtualTour()
     {
-        return !empty($this->virtual_tour_url) || !empty($this->virtual_tour_embed_code);
+        return $this->generateEmbedCode($this->virtual_tour_url) !== null;
     }
 
     /**
@@ -567,11 +569,6 @@ use HasFactory, SoftDeletes, InteractsWithMedia;
      */
     public function getVirtualTourEmbed()
     {
-        if ($this->virtual_tour_embed_code) {
-            return $this->virtual_tour_embed_code;
-        }
-
-        // Auto-generate embed code for known providers
         if ($this->virtual_tour_url) {
             return $this->generateEmbedCode($this->virtual_tour_url);
         }
@@ -582,38 +579,29 @@ use HasFactory, SoftDeletes, InteractsWithMedia;
     /**
      * Generate embed code from URL for common virtual tour providers
      *
-     * @param string $url
+     * @param  string  $url
      * @return string|null
      */
     protected function generateEmbedCode($url)
     {
         // Validate URL
-        if (empty($url) || !filter_var($url, FILTER_VALIDATE_URL)) {
+        if (empty($url) || ! filter_var($url, FILTER_VALIDATE_URL)) {
             return null;
         }
 
-        // Matterport
-        if (str_contains($url, 'matterport.com')) {
-            return '<iframe width="100%" height="480" src="' . htmlspecialchars($url, ENT_QUOTES, 'UTF-8') . '" frameborder="0" allowfullscreen allow="xr-spatial-tracking"></iframe>';
+        $host = strtolower((string) parse_url($url, PHP_URL_HOST));
+        $allowedHosts = ['matterport.com', 'kuula.co', '3dvista.com', '3dv.st', 'seekbeak.com'];
+        $isAllowed = collect($allowedHosts)->contains(
+            fn (string $allowed) => $host === $allowed || str_ends_with($host, '.'.$allowed)
+        );
+
+        if (! $isAllowed || strtolower((string) parse_url($url, PHP_URL_SCHEME)) !== 'https') {
+            return null;
         }
 
-        // Kuula
-        if (str_contains($url, 'kuula.co')) {
-            return '<iframe width="100%" height="480" src="' . htmlspecialchars($url, ENT_QUOTES, 'UTF-8') . '" frameborder="0" allowfullscreen></iframe>';
-        }
+        $escapedUrl = htmlspecialchars($url, ENT_QUOTES, 'UTF-8');
 
-        // 3D Vista
-        if (str_contains($url, '3dvista.com') || str_contains($url, '3dv.st')) {
-            return '<iframe width="100%" height="480" src="' . htmlspecialchars($url, ENT_QUOTES, 'UTF-8') . '" frameborder="0" allowfullscreen></iframe>';
-        }
-
-        // Seekbeak
-        if (str_contains($url, 'seekbeak.com')) {
-            return '<iframe width="100%" height="480" src="' . htmlspecialchars($url, ENT_QUOTES, 'UTF-8') . '" frameborder="0" allowfullscreen></iframe>';
-        }
-
-        // Generic iframe embed for other providers
-        return '<iframe width="100%" height="480" src="' . htmlspecialchars($url, ENT_QUOTES, 'UTF-8') . '" frameborder="0" allowfullscreen></iframe>';
+        return '<iframe width="100%" height="480" src="'.$escapedUrl.'" frameborder="0" sandbox="allow-scripts allow-same-origin allow-presentation" referrerpolicy="no-referrer" allow="xr-spatial-tracking" allowfullscreen></iframe>';
     }
 
     public function registerMediaCollections(): void
@@ -632,12 +620,10 @@ use HasFactory, SoftDeletes, InteractsWithMedia;
 
     /**
      * Check if property has holographic tour available
-     *
-     * @return bool
      */
     public function hasHolographicTour(): bool
     {
-        return $this->holographic_enabled && !empty($this->holographic_tour_url);
+        return $this->holographic_enabled && ! empty($this->holographic_tour_url);
     }
 
     protected static function boot()
@@ -657,5 +643,8 @@ use HasFactory, SoftDeletes, InteractsWithMedia;
         });
     }
 
-    public function isHmo(): bool { return ($this->property_type ?? '') === 'HMO'; }
+    public function isHmo(): bool
+    {
+        return ($this->property_type ?? '') === 'HMO';
+    }
 }

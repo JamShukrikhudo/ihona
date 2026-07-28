@@ -1,13 +1,16 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\FavoriteController;
-use App\Http\Controllers\NewsController;
-use App\Http\Controllers\CommunityEventController;
-use App\Http\Controllers\ChatbotController;
 use App\Http\Controllers\API\MetricsController;
 use App\Http\Controllers\API\ModuleController;
+use App\Http\Controllers\API\VirtualStagingController;
+use App\Http\Controllers\API\VRPropertyDesignController;
+use App\Http\Controllers\ChatbotController;
+use App\Http\Controllers\CommunityEventController;
+use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\NewsController;
+use App\Http\Controllers\PaymentController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,6 +26,9 @@ use App\Http\Controllers\API\ModuleController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::post('/payments/webhook', [PaymentController::class, 'handleWebhook'])
+    ->middleware('throttle:60,1');
 
 // Public metrics endpoint (for k8s monitoring/control-panel)
 Route::get('/metrics', [MetricsController::class, 'index'])->name('api.metrics');
@@ -65,42 +71,42 @@ Route::middleware('throttle:chatbot')->prefix('chatbot')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     // Virtual Staging API Routes
     Route::prefix('properties/{property}')->group(function () {
-        Route::post('images/upload', [App\Http\Controllers\API\VirtualStagingController::class, 'uploadImage']);
-        Route::get('images', [App\Http\Controllers\API\VirtualStagingController::class, 'getPropertyImages']);
+        Route::post('images/upload', [VirtualStagingController::class, 'uploadImage']);
+        Route::get('images', [VirtualStagingController::class, 'getPropertyImages']);
     });
-    
+
     Route::prefix('images')->group(function () {
-        Route::post('{image}/stage', [App\Http\Controllers\API\VirtualStagingController::class, 'stageImage']);
-        Route::delete('{image}', [App\Http\Controllers\API\VirtualStagingController::class, 'deleteImage']);
+        Route::post('{image}/stage', [VirtualStagingController::class, 'stageImage']);
+        Route::delete('{image}', [VirtualStagingController::class, 'deleteImage']);
     });
-    
-    Route::get('staging/styles', [App\Http\Controllers\API\VirtualStagingController::class, 'getStagingStyles']);
-    
+
+    Route::get('staging/styles', [VirtualStagingController::class, 'getStagingStyles']);
+
     // VR Property Design API Routes
     Route::prefix('vr-design')->group(function () {
-        Route::get('styles', [App\Http\Controllers\API\VRPropertyDesignController::class, 'getStyles']);
-        Route::get('furniture-categories', [App\Http\Controllers\API\VRPropertyDesignController::class, 'getFurnitureCategories']);
-        Route::get('room-types', [App\Http\Controllers\API\VRPropertyDesignController::class, 'getRoomTypes']);
-        Route::get('devices', [App\Http\Controllers\API\VRPropertyDesignController::class, 'getSupportedDevices']);
-        Route::get('templates', [App\Http\Controllers\API\VRPropertyDesignController::class, 'getTemplates']);
+        Route::get('styles', [VRPropertyDesignController::class, 'getStyles']);
+        Route::get('furniture-categories', [VRPropertyDesignController::class, 'getFurnitureCategories']);
+        Route::get('room-types', [VRPropertyDesignController::class, 'getRoomTypes']);
+        Route::get('devices', [VRPropertyDesignController::class, 'getSupportedDevices']);
+        Route::get('templates', [VRPropertyDesignController::class, 'getTemplates']);
     });
-    
+
     Route::prefix('properties/{property}')->group(function () {
-        Route::post('vr-designs', [App\Http\Controllers\API\VRPropertyDesignController::class, 'createDesign']);
-        Route::get('vr-designs', [App\Http\Controllers\API\VRPropertyDesignController::class, 'getPropertyDesigns']);
+        Route::post('vr-designs', [VRPropertyDesignController::class, 'createDesign']);
+        Route::get('vr-designs', [VRPropertyDesignController::class, 'getPropertyDesigns']);
     });
-    
+
     Route::prefix('vr-designs')->group(function () {
-        Route::get('{design}', [App\Http\Controllers\API\VRPropertyDesignController::class, 'getDesign']);
-        Route::put('{design}', [App\Http\Controllers\API\VRPropertyDesignController::class, 'updateDesign']);
-        Route::delete('{design}', [App\Http\Controllers\API\VRPropertyDesignController::class, 'deleteDesign']);
-        Route::post('{design}/furniture', [App\Http\Controllers\API\VRPropertyDesignController::class, 'addFurniture']);
-        Route::delete('{design}/furniture/{furnitureId}', [App\Http\Controllers\API\VRPropertyDesignController::class, 'removeFurniture']);
-        Route::post('{design}/clone', [App\Http\Controllers\API\VRPropertyDesignController::class, 'cloneDesign']);
-        Route::post('{design}/thumbnail', [App\Http\Controllers\API\VRPropertyDesignController::class, 'uploadThumbnail']);
-        Route::get('{design}/export', [App\Http\Controllers\API\VRPropertyDesignController::class, 'exportDesign']);
+        Route::get('{design}', [VRPropertyDesignController::class, 'getDesign']);
+        Route::put('{design}', [VRPropertyDesignController::class, 'updateDesign']);
+        Route::delete('{design}', [VRPropertyDesignController::class, 'deleteDesign']);
+        Route::post('{design}/furniture', [VRPropertyDesignController::class, 'addFurniture']);
+        Route::delete('{design}/furniture/{furnitureId}', [VRPropertyDesignController::class, 'removeFurniture']);
+        Route::post('{design}/clone', [VRPropertyDesignController::class, 'cloneDesign']);
+        Route::post('{design}/thumbnail', [VRPropertyDesignController::class, 'uploadThumbnail']);
+        Route::get('{design}/export', [VRPropertyDesignController::class, 'exportDesign']);
     });
-    
+
     // Wishlist/Favorites routes
     Route::get('/favorites', [FavoriteController::class, 'index']);
     Route::post('/favorites', [FavoriteController::class, 'store']);

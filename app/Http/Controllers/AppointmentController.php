@@ -9,6 +9,8 @@ class AppointmentController extends Controller
 {
     public function downloadIcs(Appointment $appointment, CalendarIntegrationService $calendarService)
     {
+        $this->authorize('view', $appointment);
+
         $icsContent = $calendarService->generateAppointmentIcs($appointment);
 
         return response($icsContent, 200, [

@@ -2,137 +2,128 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\EnergyConsumption;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
-use Stripe\Stripe;
-use Stripe\PaymentIntent;
-use App\Models\Transaction;
-use App\Models\Property;
-use App\Models\Payment;
 use App\Models\Invoice;
-use App\Models\UtilityPayment;
-use Illuminate\Support\Facades\Auth;
-use App\Services\TransactionService;
+use App\Models\Payment;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Stripe\Exception\SignatureVerificationException;
+use Stripe\PaymentIntent;
+use Stripe\Stripe;
+use Stripe\Webhook;
+use Symfony\Component\HttpFoundation\Response;
 
 class PaymentController extends Controller
 {
-    protected $transactionService;
-
-    public function __construct(TransactionService $transactionService)
-    {
-        $this->transactionService = $transactionService;
-    }
-
     public function showPaymentPortal()
     {
         return view('tenant.payment-portal');
     }
 
-    public function createSession(Request $request)
+    public function createSession(Request $request): JsonResponse
     {
-        $this->validateCreateSessionRequest($request);
-        $this->setStripeApiKey();
-        $paymentIntent = $this->createPaymentIntent($request->amount, $request->invoice_id);
+        $validated = $request->validate([
+            'invoice_id' => 'required|integer|exists:invoices,id',
+        ]);
+
+        $invoice = Invoice::query()
+            ->whereKey($validated['invoice_id'])
+            ->where('tenant_id', $request->user()->id)
+            ->whereNotIn('status', ['paid', 'void'])
+            ->firstOrFail();
+
+        Stripe::setApiKey(config('stripe.secret_key'));
+        $paymentIntent = PaymentIntent::create([
+            'amount' => (int) round(((float) $invoice->amount) * 100),
+            'currency' => 'usd',
+            'metadata' => [
+                'invoice_id' => (string) $invoice->id,
+                'tenant_id' => (string) $invoice->tenant_id,
+            ],
+        ]);
 
         return response()->json(['clientSecret' => $paymentIntent->client_secret]);
     }
 
-    public function handlePaymentSuccess(Request $request){
-        $this->validateHandlePaymentSuccessRequest($request);
-    
-        if ($request->has('energy_consumption_id')) {
-            $payment = UtilityPayment::create([
-                'energy_consumption_id' => $request->energy_consumption_id,
-                'amount' => $request->amount,
-                'payment_date' => now(),
-                'payment_method' => $request->payment_method,
-                'notes' => $request->notes ?? null,
-            ]);
-    
-            $energyConsumption = EnergyConsumption::findOrFail($request->energy_consumption_id);
-            if ($energyConsumption->getRemainingBalanceAttribute() <= 0) {
-                $energyConsumption->update(['status' => 'paid']);
-            }
-    
-            return response()->json([
-                'message' => 'Utility payment successful and recorded.',
-                'payment_id' => $payment->id,
-            ]);
-        } else {
-            $payment = Payment::create([
-                'amount' => $request->amount,
-                'payment_date' => now(),
-                'status' => 'completed',
-                'payment_method' => $request->payment_method,
-                'tenant_id' => Auth::id(),
-                'invoice_id' => $request->invoice_id,
-            ]);
-    
-            $invoice = Invoice::findOrFail($request->invoice_id);
-            $invoice->update(['status' => 'paid']);
-    
-            return response()->json([
-                'message' => 'Payment successful and recorded.',
-                'payment_id' => $payment->id,
-            ]);
+    public function handlePaymentSuccess(): JsonResponse
+    {
+        return response()->json([
+            'message' => 'Payment received. Its status will update after provider verification.',
+        ]);
+    }
+
+    public function handleWebhook(Request $request): JsonResponse
+    {
+        try {
+            $event = Webhook::constructEvent(
+                $request->getContent(),
+                (string) $request->header('Stripe-Signature'),
+                (string) config('stripe.webhook_secret')
+            );
+        } catch (\UnexpectedValueException|SignatureVerificationException $exception) {
+            Log::warning('Rejected invalid Stripe webhook', ['reason' => $exception->getMessage()]);
+
+            return response()->json(['message' => 'Invalid webhook signature.'], Response::HTTP_BAD_REQUEST);
         }
-    }
-    
-    private function validateHandlePaymentSuccessRequest(Request $request)
-    {
-        $request->validate([
-            'amount' => 'required|numeric',
-            'payment_method' => 'required|string',
-            'invoice_id' => 'required_without:energy_consumption_id|integer',
-            'energy_consumption_id' => 'required_without:invoice_id|integer',
-            'notes' => 'nullable|string',
-        ]);
+
+        if ($event->type === 'payment_intent.succeeded') {
+            $this->recordSuccessfulPayment($event->data->object);
+        }
+
+        return response()->json(['received' => true]);
     }
 
-    /**
-     * Validates the request for the createSession method.
-     *
-     * @param Request $request
-     */
-    private function validateCreateSessionRequest(Request $request)
+    public function generateReceipt(Request $request, int $paymentId): JsonResponse
     {
-        $request->validate([
-            'invoice_id' => 'required|integer',
-            'amount' => 'required|numeric',
-        ]);
-    }
+        $payment = Payment::query()
+            ->whereKey($paymentId)
+            ->where('tenant_id', $request->user()->id)
+            ->firstOrFail();
 
-
-    /**
-     * Sets the Stripe API key.
-     */
-    private function setStripeApiKey()
-    {
-        Stripe::setApiKey(env('STRIPE_SECRET'));
-    }
-
-    /**
-     * Creates a payment intent.
-     *
-     * @param float $amount
-     * @param int $invoiceId
-     * @return PaymentIntent
-     */
-    private function createPaymentIntent($amount, $invoiceId)
-    {
-        return PaymentIntent::create([
-            'amount' => $amount * 100, // Convert amount to cents
-            'currency' => 'usd',
-            'metadata' => ['invoice_id' => $invoiceId],
-        ]);
-    }
-
-    public function generateReceipt($paymentId)
-    {
-        $payment = Payment::findOrFail($paymentId);
-        // Generate and return a PDF receipt
-        // This is a placeholder and should be implemented with a PDF generation library
         return response()->json(['message' => 'Receipt generated', 'payment' => $payment]);
+    }
+
+    private function recordSuccessfulPayment(object $intent): void
+    {
+        $invoiceId = filter_var($intent->metadata->invoice_id ?? null, FILTER_VALIDATE_INT);
+        $tenantId = filter_var($intent->metadata->tenant_id ?? null, FILTER_VALIDATE_INT);
+
+        if (! $invoiceId || ! $tenantId || ($intent->status ?? null) !== 'succeeded') {
+            Log::warning('Stripe payment intent has invalid application metadata', ['intent_id' => $intent->id ?? null]);
+
+            return;
+        }
+
+        DB::transaction(function () use ($intent, $invoiceId, $tenantId) {
+            $invoice = Invoice::query()->lockForUpdate()->find($invoiceId);
+
+            if (! $invoice || $invoice->tenant_id !== $tenantId) {
+                Log::warning('Stripe payment intent did not match an invoice owner', ['intent_id' => $intent->id]);
+
+                return;
+            }
+
+            $expectedAmount = (int) round(((float) $invoice->amount) * 100);
+            if ((int) $intent->amount_received !== $expectedAmount || strtolower((string) $intent->currency) !== 'usd') {
+                Log::warning('Stripe payment amount did not match invoice', ['intent_id' => $intent->id]);
+
+                return;
+            }
+
+            Payment::firstOrCreate(
+                ['payment_intent_id' => $intent->id],
+                [
+                    'amount' => $invoice->amount,
+                    'payment_date' => now(),
+                    'status' => 'completed',
+                    'payment_method' => 'stripe',
+                    'tenant_id' => $invoice->tenant_id,
+                    'invoice_id' => $invoice->id,
+                ]
+            );
+
+            $invoice->update(['status' => 'paid']);
+        });
     }
 }

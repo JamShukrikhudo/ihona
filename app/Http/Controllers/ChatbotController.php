@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ChatConversation;
 use App\Models\ChatMessage;
+use App\Models\User;
 use App\Services\ChatbotService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -23,16 +24,19 @@ class ChatbotController extends Controller
     public function startConversation(Request $request)
     {
         $sessionId = Str::uuid()->toString();
-        
+        $guestToken = Str::random(64);
+
         $conversation = ChatConversation::create([
             'user_id' => auth()->id(),
             'session_id' => $sessionId,
+            'guest_token_hash' => hash('sha256', $guestToken),
             'status' => 'active',
         ]);
 
         return response()->json([
             'conversation_id' => $conversation->id,
             'session_id' => $sessionId,
+            'access_token' => $guestToken,
             'message' => 'Welcome! How can I help you today?',
         ]);
     }
@@ -48,6 +52,7 @@ class ChatbotController extends Controller
         ]);
 
         $conversation = ChatConversation::where('session_id', $validated['session_id'])->firstOrFail();
+        $this->authorizeConversation($request, $conversation);
 
         // Check if conversation is escalated
         if ($conversation->isEscalated()) {
@@ -93,7 +98,8 @@ class ChatbotController extends Controller
     public function getHistory(Request $request, $sessionId)
     {
         $conversation = ChatConversation::where('session_id', $sessionId)->firstOrFail();
-        
+        $this->authorizeConversation($request, $conversation);
+
         $messages = $conversation->messages()
             ->orderBy('created_at', 'asc')
             ->get()
@@ -123,6 +129,7 @@ class ChatbotController extends Controller
         ]);
 
         $conversation = ChatConversation::where('session_id', $validated['session_id'])->firstOrFail();
+        $this->authorizeConversation($request, $conversation);
 
         if ($conversation->isEscalated()) {
             return response()->json([
@@ -132,7 +139,7 @@ class ChatbotController extends Controller
         }
 
         // Find available agent (simplified - just get first admin/staff user)
-        $agent = \App\Models\User::whereHas('roles', function($query) {
+        $agent = User::whereHas('roles', function ($query) {
             $query->whereIn('name', ['super_admin', 'admin', 'staff']);
         })->first();
 
@@ -168,12 +175,29 @@ class ChatbotController extends Controller
         ]);
 
         $conversation = ChatConversation::where('session_id', $validated['session_id'])->firstOrFail();
-        
+        $this->authorizeConversation($request, $conversation);
+
         $conversation->update(['status' => 'closed']);
 
         return response()->json([
             'message' => 'Conversation closed.',
             'success' => true,
         ]);
+    }
+
+    private function authorizeConversation(Request $request, ChatConversation $conversation): void
+    {
+        if ($request->user() && $conversation->user_id === $request->user()->id) {
+            return;
+        }
+
+        $token = $request->bearerToken() ?: $request->header('X-Chat-Token');
+        if (
+            ! is_string($token)
+            || ! $conversation->guest_token_hash
+            || ! hash_equals($conversation->guest_token_hash, hash('sha256', $token))
+        ) {
+            abort(403, 'Invalid conversation credentials.');
+        }
     }
 }

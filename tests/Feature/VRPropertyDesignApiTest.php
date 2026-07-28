@@ -3,9 +3,9 @@
 namespace Tests\Feature;
 
 use App\Models\Property;
+use App\Models\Team;
 use App\Models\User;
 use App\Models\VRDesign;
-use App\Models\Team;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -16,13 +16,15 @@ class VRPropertyDesignApiTest extends TestCase
     use RefreshDatabase;
 
     protected User $user;
+
     protected Property $property;
+
     protected Team $team;
 
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         $this->team = Team::factory()->create();
         $this->user = User::factory()->create([
             'current_team_id' => $this->team->id,
@@ -285,11 +287,7 @@ class VRPropertyDesignApiTest extends TestCase
                 'name' => 'Hacked Name',
             ]);
 
-        $response->assertStatus(403)
-            ->assertJson([
-                'success' => false,
-                'message' => 'Unauthorized',
-            ]);
+        $response->assertForbidden();
     }
 
     public function test_delete_design()

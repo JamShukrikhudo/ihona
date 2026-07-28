@@ -119,6 +119,7 @@ function chatbotWidget() {
         isEscalated: false,
         showEscalationOption: false,
         sessionId: null,
+        accessToken: null,
         conversationId: null,
         currentMessage: '',
         messages: [],
@@ -147,6 +148,7 @@ function chatbotWidget() {
 
                 const data = await response.json();
                 this.sessionId = data.session_id;
+                this.accessToken = data.access_token;
                 this.conversationId = data.conversation_id;
                 
                 this.messages.push({
@@ -185,6 +187,7 @@ function chatbotWidget() {
                     headers: {
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Authorization': `Bearer ${this.accessToken}`,
                     },
                     body: JSON.stringify({
                         session_id: this.sessionId,
@@ -228,6 +231,7 @@ function chatbotWidget() {
                     headers: {
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Authorization': `Bearer ${this.accessToken}`,
                     },
                     body: JSON.stringify({
                         session_id: this.sessionId,

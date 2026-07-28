@@ -18,16 +18,13 @@ class ARTourController extends Controller
 
     /**
      * Get AR tour configuration for a property
-     *
-     * @param Property $property
-     * @return JsonResponse
      */
     public function getConfig(Property $property): JsonResponse
     {
-        if (!$this->arTourService->isARTourAvailable($property)) {
+        if (! $this->arTourService->isARTourAvailable($property)) {
             return response()->json([
                 'available' => false,
-                'message' => 'AR tour is not available for this property.'
+                'message' => 'AR tour is not available for this property.',
             ], 404);
         }
 
@@ -40,15 +37,12 @@ class ARTourController extends Controller
                 'id' => $property->id,
                 'title' => $property->title,
                 'location' => $property->location,
-            ]
+            ],
         ]);
     }
 
     /**
      * Check if AR tour is available for a property
-     *
-     * @param Property $property
-     * @return JsonResponse
      */
     public function checkAvailability(Property $property): JsonResponse
     {
@@ -63,13 +57,11 @@ class ARTourController extends Controller
 
     /**
      * Enable AR tour for a property (Admin/Agent only)
-     *
-     * @param Request $request
-     * @param Property $property
-     * @return JsonResponse
      */
     public function enable(Request $request, Property $property): JsonResponse
     {
+        $this->authorize('update', $property);
+
         $settings = $request->validate([
             'ar_modes' => 'array',
             'enable_controls' => 'boolean',
@@ -80,45 +72,42 @@ class ARTourController extends Controller
 
         $success = $this->arTourService->enableARTour($property, $settings);
 
-        if (!$success) {
+        if (! $success) {
             return response()->json([
                 'success' => false,
-                'message' => 'Cannot enable AR tour. Property must have a 3D model first.'
+                'message' => 'Cannot enable AR tour. Property must have a 3D model first.',
             ], 400);
         }
 
         return response()->json([
             'success' => true,
             'message' => 'AR tour enabled successfully.',
-            'config' => $this->arTourService->getARTourConfig($property)
+            'config' => $this->arTourService->getARTourConfig($property),
         ]);
     }
 
     /**
      * Disable AR tour for a property (Admin/Agent only)
-     *
-     * @param Property $property
-     * @return JsonResponse
      */
     public function disable(Property $property): JsonResponse
     {
+        $this->authorize('update', $property);
+
         $this->arTourService->disableARTour($property);
 
         return response()->json([
             'success' => true,
-            'message' => 'AR tour disabled successfully.'
+            'message' => 'AR tour disabled successfully.',
         ]);
     }
 
     /**
      * Update AR tour settings (Admin/Agent only)
-     *
-     * @param Request $request
-     * @param Property $property
-     * @return JsonResponse
      */
     public function updateSettings(Request $request, Property $property): JsonResponse
     {
+        $this->authorize('update', $property);
+
         $settings = $request->validate([
             'ar_modes' => 'array',
             'enable_controls' => 'boolean',
@@ -137,7 +126,7 @@ class ARTourController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'AR tour settings updated successfully.',
-            'config' => $this->arTourService->getARTourConfig($property)
+            'config' => $this->arTourService->getARTourConfig($property),
         ]);
     }
 }

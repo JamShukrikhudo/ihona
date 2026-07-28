@@ -14,9 +14,14 @@ class ChatConversation extends Model
     protected $fillable = [
         'user_id',
         'session_id',
+        'guest_token_hash',
         'status',
         'assigned_agent_id',
         'escalated_at',
+    ];
+
+    protected $hidden = [
+        'guest_token_hash',
     ];
 
     protected $casts = [
