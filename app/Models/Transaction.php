@@ -3,8 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Transaction extends Model
 {
@@ -20,15 +20,21 @@ class Transaction extends Model
         'amount',
         'status',
         'commission_amount',
+        'transaction_type',
+        'completed_at',
     ];
 
     protected $casts = [
         'date' => 'datetime',
+        'completed_at' => 'datetime',
     ];
 
     const STATUS_PENDING = 'pending';
+
     const STATUS_IN_PROGRESS = 'in_progress';
+
     const STATUS_COMPLETED = 'completed';
+
     const STATUS_CANCELLED = 'cancelled';
 
     public function property()
@@ -64,14 +70,13 @@ class Transaction extends Model
         $this->save();
     }
 
-    public function scopeCompleted(Builder $query) : void
+    public function scopeCompleted(Builder $query): void
     {
         $query->where('status', self::STATUS_COMPLETED);
     }
 
-    public function scopePending(Builder $query) : void
+    public function scopePending(Builder $query): void
     {
         $query->where('status', self::STATUS_PENDING);
     }
 }
-

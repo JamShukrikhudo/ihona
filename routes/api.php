@@ -213,6 +213,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::patch('notifications/{notification}/read', [ApiNotificationController::class, 'read'])->name('notifications.read');
         Route::post('notifications/read-all', [ApiNotificationController::class, 'readAll'])->name('notifications.read-all');
         Route::apiResource('sales-progressions', ApiSalesProgressionController::class);
+        Route::get('sales-progressions/{sales_progression}/timeline', [ApiSalesProgressionController::class, 'timeline'])->name('sales-progressions.timeline');
+        Route::patch('sales-progressions/{sales_progression}/stage', [ApiSalesProgressionController::class, 'stage'])->name('sales-progressions.stage');
+        Route::patch('sales-progressions/{sales_progression}/checklist/{item}', [ApiSalesProgressionController::class, 'checklist'])->name('sales-progressions.checklist');
+        Route::post('sales-progressions/{sales_progression}/memorandum', [ApiSalesProgressionController::class, 'memorandum'])->name('sales-progressions.memorandum');
         Route::apiResource('valuations', ApiValuationController::class);
         Route::apiResource('viewings', ApiViewingController::class);
         Route::apiResource('properties', ApiPropertyController::class);

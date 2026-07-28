@@ -1323,6 +1323,82 @@ class CoreAgencyApiTest extends TestCase
         ])->assertUnprocessable()->assertJsonValidationErrors('vendor_id');
     }
 
+    public function test_sales_progression_tracks_memorandum_milestones_exchange_and_completion(): void
+    {
+        [$user, $team] = $this->actingAsTeamMember();
+        $property = Property::factory()->for($team)->create(['status' => 'available']);
+
+        $response = $this->postJson('/api/v1/sales-progressions', [
+            'property_id' => $property->id,
+            'agent_id' => $user->id,
+            'sale_price' => 425000,
+            'buyer_solicitor_name' => 'Buyer Legal LLP',
+            'seller_solicitor_name' => 'Seller Legal LLP',
+        ])->assertCreated()
+            ->assertJsonPath('data.team_id', $team->id)
+            ->assertJsonPath('data.stage', 'offer_accepted')
+            ->assertJsonCount(20, 'data.checklist_items');
+        $progressionId = $response->json('data.id');
+
+        $this->patchJson("/api/v1/sales-progressions/$progressionId", [
+            'stage' => 'completed',
+        ])->assertUnprocessable()->assertJsonValidationErrors('stage');
+
+        $this->postJson("/api/v1/sales-progressions/$progressionId/memorandum", [
+            'issued_at' => now()->toIso8601String(),
+            'reference' => 'MOS-2026-0042',
+            'recipients' => ['buyer-lawyer@example.test', 'seller-lawyer@example.test'],
+        ])->assertCreated()
+            ->assertJsonPath('data.event_type', 'memorandum_issued')
+            ->assertJsonPath('data.recorded_by', $user->id)
+            ->assertJsonPath('data.metadata.reference', 'MOS-2026-0042');
+
+        $this->patchJson("/api/v1/sales-progressions/$progressionId/checklist/mortgage_offer", [
+            'completed' => true,
+            'notes' => 'Formal mortgage offer received.',
+        ])->assertOk()
+            ->assertJsonPath('completion_percentage', 10);
+
+        $this->patchJson("/api/v1/sales-progressions/$progressionId/stage", [
+            'stage' => 'exchanged',
+        ])->assertUnprocessable()->assertJsonValidationErrors('effective_date');
+
+        $exchangeDate = now()->addWeek()->toDateString();
+        $this->patchJson("/api/v1/sales-progressions/$progressionId/stage", [
+            'stage' => 'exchanged',
+            'effective_date' => $exchangeDate,
+        ])->assertOk()
+            ->assertJsonPath('data.stage', 'exchanged');
+        $this->assertDatabaseHas('properties', [
+            'id' => $property->id,
+            'status' => 'exchanged',
+        ]);
+
+        $completionDate = now()->addMonth()->toDateString();
+        $this->patchJson("/api/v1/sales-progressions/$progressionId/stage", [
+            'stage' => 'completed',
+            'effective_date' => $completionDate,
+            'notes' => 'Completion confirmed and keys released.',
+        ])->assertOk()
+            ->assertJsonPath('data.stage', 'completed');
+        $this->assertDatabaseHas('properties', [
+            'id' => $property->id,
+            'status' => 'sold',
+            'sold_date' => $completionDate.' 00:00:00',
+        ]);
+
+        $this->getJson("/api/v1/sales-progressions/$progressionId/timeline")
+            ->assertOk()
+            ->assertJsonCount(5, 'data')
+            ->assertJsonPath('data.0.event_type', 'stage_changed')
+            ->assertJsonPath('data.0.to_stage', 'completed');
+
+        $otherProperty = Property::factory()->for(Team::factory()->create())->create();
+        $this->postJson('/api/v1/sales-progressions', [
+            'property_id' => $otherProperty->id,
+        ])->assertUnprocessable()->assertJsonValidationErrors('property_id');
+    }
+
     private function actingAsTeamMember(): array
     {
         $user = User::factory()->create();

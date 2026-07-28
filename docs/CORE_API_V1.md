@@ -107,6 +107,21 @@ notifications, and update a property status.
 Rules and execution records are organisation-scoped. Action targets are checked
 against organisation membership before any data is changed.
 
+## Sales progression
+
+Sales progressions initialise with the standard residential-sale checklist and
+retain an immutable, staff-attributed timeline of operational events.
+
+- `POST /sales-progressions/{progression}/memorandum` records the memorandum
+  reference, recipients, issue date, and marks its checklist item complete.
+- `PATCH /sales-progressions/{progression}/checklist/{item}` records milestone
+  completion and an optional note.
+- `PATCH /sales-progressions/{progression}/stage` moves the sale through
+  offer, searches, mortgage, exchange, and completion. Exchange and completion
+  require effective dates and synchronise the property and linked transaction.
+- `GET /sales-progressions/{progression}/timeline` returns the organisation-
+  scoped audit history with the staff member responsible for each event.
+
 ## Permissions and API tokens
 
 Organisation roles follow a fixed privilege hierarchy:
