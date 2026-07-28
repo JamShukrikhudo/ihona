@@ -11,10 +11,13 @@ use App\Models\ComplianceItem;
 use App\Models\Contact;
 use App\Models\Document;
 use App\Models\DocumentCategory;
+use App\Models\EmailCampaign;
 use App\Models\Neighborhood;
 use App\Models\Offer;
 use App\Models\OrganisationProfile;
 use App\Models\PortalIntegration;
+use App\Models\PortalListing;
+use App\Models\PortalSyncRun;
 use App\Models\Property;
 use App\Models\PropertyFeature;
 use App\Models\ServiceIntegration;
@@ -617,6 +620,105 @@ class CoreAgencyApiTest extends TestCase
             ->assertOk()
             ->assertJsonPath('data.properties.available', 1)
             ->assertJsonPath('data.properties.sold', 1);
+    }
+
+    public function test_performance_reports_cover_staff_branches_marketing_and_portals(): void
+    {
+        [$user, $team] = $this->actingAsTeamMember();
+        $branch = Branch::create(['team_id' => $team->id, 'name' => 'Central']);
+        $team->users()->updateExistingPivot($user->id, ['branch_id' => $branch->id]);
+        $contact = Contact::create([
+            'team_id' => $team->id,
+            'type' => 'buyer',
+            'first_name' => 'Report',
+        ]);
+        $property = Property::factory()->for($team)->create([
+            'agent_id' => $user->id,
+            'status' => 'available',
+        ]);
+        Offer::create([
+            'team_id' => $team->id,
+            'property_id' => $property->id,
+            'contact_id' => $contact->id,
+            'negotiator_id' => $user->id,
+            'amount' => 420000,
+            'status' => 'accepted',
+            'offered_at' => now(),
+        ]);
+        Appointment::create([
+            'team_id' => $team->id,
+            'property_id' => $property->id,
+            'staff_id' => $user->id,
+            'status' => 'completed',
+            'appointment_date' => now(),
+        ]);
+        EmailCampaign::create([
+            'team_id' => $team->id,
+            'created_by' => $user->id,
+            'name' => 'Launch',
+            'subject' => 'New instruction',
+            'content' => 'A new property is available.',
+            'status' => 'sent',
+            'recipients_count' => 20,
+            'delivered_count' => 18,
+            'opened_count' => 12,
+            'clicked_count' => 4,
+        ]);
+        $integration = PortalIntegration::create([
+            'team_id' => $team->id,
+            'branch_id' => $branch->id,
+            'provider' => 'rightmove',
+            'country' => 'GB',
+            'channel' => 'sales',
+            'active' => true,
+        ]);
+        PortalListing::create([
+            'team_id' => $team->id,
+            'portal_integration_id' => $integration->id,
+            'property_id' => $property->id,
+            'status' => 'published',
+        ]);
+        PortalSyncRun::create([
+            'team_id' => $team->id,
+            'portal_integration_id' => $integration->id,
+            'requested_by' => $user->id,
+            'status' => 'completed',
+            'processed' => 2,
+            'succeeded' => 1,
+            'failed' => 1,
+            'started_at' => now(),
+            'completed_at' => now(),
+        ]);
+
+        $performance = $this->getJson("/api/v1/reports/performance?branch_id={$branch->id}")
+            ->assertOk()
+            ->assertJsonPath('data.instructions.available', 1)
+            ->assertJsonPath('data.offers.accepted', 1)
+            ->assertJsonPath('data.viewings.completed', 1)
+            ->assertJsonPath('data.marketing_performance.delivered', 18)
+            ->assertJsonPath('data.portal_statistics.published_listings', 1)
+            ->assertJsonPath('data.portal_statistics.failed_items', 1);
+        $this->assertSame(3, $performance->json('data.staff_performance')["{$user->name} #{$user->id}"]);
+        $this->assertSame(3, $performance->json('data.branch_performance')["Central #{$branch->id}"]);
+
+        $otherBranch = Branch::create([
+            'team_id' => Team::factory()->create()->id,
+            'name' => 'Hidden',
+        ]);
+        $this->getJson("/api/v1/reports/performance?branch_id={$otherBranch->id}")
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors('branch_id');
+
+        $saved = $this->postJson('/api/v1/saved-reports', [
+            'name' => 'Central performance',
+            'type' => 'performance',
+            'filters' => ['branch_id' => $branch->id],
+            'chart_type' => 'bar',
+        ])->assertCreated();
+        $this->getJson("/api/v1/saved-reports/{$saved->json('data.id')}/run")
+            ->assertOk()
+            ->assertJsonPath('data.portal_statistics.listings', 1)
+            ->assertJsonPath('meta.chart.0.label', 'instructions');
     }
 
     public function test_saved_reports_export_chart_data_and_dashboard_layouts_are_customisable(): void

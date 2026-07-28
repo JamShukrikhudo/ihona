@@ -5,9 +5,14 @@ namespace App\Http\Controllers\API\V1;
 use App\Http\Controllers\Controller;
 use App\Models\AgencyTask;
 use App\Models\Appointment;
+use App\Models\Branch;
 use App\Models\Contact;
+use App\Models\EmailCampaign;
 use App\Models\MaintenanceRequest;
 use App\Models\Offer;
+use App\Models\PortalIntegration;
+use App\Models\PortalListing;
+use App\Models\PortalSyncRun;
 use App\Models\Property;
 use App\Models\PropertyValuation;
 use App\Models\SalesProgression;
@@ -15,6 +20,8 @@ use App\Models\SavedReport;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -30,12 +37,21 @@ class ReportController extends Controller
         return response()->json(['data' => $this->pipelineData($request)]);
     }
 
+    public function performance(Request $request): JsonResponse
+    {
+        $filters = $request->validate($this->performanceFilterRules($request));
+
+        return response()->json(['data' => $this->performanceData($request, $filters)]);
+    }
+
     public function run(Request $request, int $savedReport): JsonResponse
     {
         $report = $this->savedReport($request, $savedReport);
-        $data = $report->type === 'dashboard'
-            ? $this->dashboardData($request)
-            : $this->pipelineData($request, $report->filters ?? []);
+        $data = match ($report->type) {
+            'dashboard' => $this->dashboardData($request),
+            'performance' => $this->performanceData($request, $report->filters ?? []),
+            default => $this->pipelineData($request, $report->filters ?? []),
+        };
 
         return response()->json([
             'data' => $data,
@@ -46,9 +62,11 @@ class ReportController extends Controller
     public function export(Request $request, int $savedReport): StreamedResponse
     {
         $report = $this->savedReport($request, $savedReport);
-        $data = $report->type === 'dashboard'
-            ? $this->dashboardData($request)
-            : $this->pipelineData($request, $report->filters ?? []);
+        $data = match ($report->type) {
+            'dashboard' => $this->dashboardData($request),
+            'performance' => $this->performanceData($request, $report->filters ?? []),
+            default => $this->pipelineData($request, $report->filters ?? []),
+        };
 
         return response()->streamDownload(function () use ($data) {
             $output = fopen('php://output', 'w');
@@ -95,6 +113,109 @@ class ReportController extends Controller
             'sales_progression' => $this->grouped($this->filtered(SalesProgression::where('team_id', $teamId), $filters), 'stage'),
             'valuations' => $this->grouped($this->filtered(PropertyValuation::where('team_id', $teamId), $filters), 'status'),
             'maintenance' => $this->grouped($this->filtered(MaintenanceRequest::where('team_id', $teamId), $filters), 'status'),
+        ];
+    }
+
+    private function performanceData(Request $request, array $filters = []): array
+    {
+        $teamId = $this->teamId($request);
+        $branchId = isset($filters['branch_id']) ? (int) $filters['branch_id'] : null;
+        $members = DB::table('team_user')
+            ->join('users', 'users.id', '=', 'team_user.user_id')
+            ->where('team_user.team_id', $teamId)
+            ->when($branchId, fn ($query) => $query->where('team_user.branch_id', $branchId))
+            ->select(['users.id', 'users.name', 'team_user.branch_id'])
+            ->get();
+        $staffIds = $members->pluck('id')->map(fn ($id) => (int) $id)->all();
+
+        $properties = $this->filtered(Property::where('team_id', $teamId), $filters)
+            ->when($branchId, fn (Builder $query) => $query->whereIn('agent_id', $staffIds));
+        $offers = $this->filtered(Offer::where('team_id', $teamId), $filters)
+            ->when($branchId, fn (Builder $query) => $query->whereIn('negotiator_id', $staffIds));
+        $viewings = $this->filtered(Appointment::where('team_id', $teamId), $filters)
+            ->when($branchId, fn (Builder $query) => $query->whereIn('staff_id', $staffIds));
+        $valuations = $this->filtered(PropertyValuation::where('team_id', $teamId), $filters)
+            ->when($branchId, fn (Builder $query) => $query->whereIn('assigned_to', $staffIds));
+
+        $propertyCounts = (clone $properties)->whereNotNull('agent_id')
+            ->selectRaw('agent_id as staff_id, count(*) as total')->groupBy('agent_id')->pluck('total', 'staff_id');
+        $offerCounts = (clone $offers)->whereNotNull('negotiator_id')
+            ->selectRaw('negotiator_id as staff_id, count(*) as total')->groupBy('negotiator_id')->pluck('total', 'staff_id');
+        $viewingCounts = (clone $viewings)->whereNotNull('staff_id')
+            ->selectRaw('staff_id, count(*) as total')->groupBy('staff_id')->pluck('total', 'staff_id');
+        $valuationCounts = (clone $valuations)->whereNotNull('assigned_to')
+            ->selectRaw('assigned_to as staff_id, count(*) as total')->groupBy('assigned_to')->pluck('total', 'staff_id');
+
+        $staffPerformance = $members->mapWithKeys(fn ($member) => [
+            $member->name.' #'.$member->id => (int) ($propertyCounts[$member->id] ?? 0)
+                + (int) ($offerCounts[$member->id] ?? 0)
+                + (int) ($viewingCounts[$member->id] ?? 0)
+                + (int) ($valuationCounts[$member->id] ?? 0),
+        ])->all();
+
+        $branches = Branch::where('team_id', $teamId)
+            ->when($branchId, fn (Builder $query) => $query->whereKey($branchId))
+            ->orderBy('name')
+            ->get(['id', 'name']);
+        $branchPerformance = $branches->mapWithKeys(function (Branch $branch) use (
+            $members,
+            $propertyCounts,
+            $offerCounts,
+            $viewingCounts,
+            $valuationCounts,
+        ) {
+            $total = $members->where('branch_id', $branch->id)->sum(fn ($member) => (int) ($propertyCounts[$member->id] ?? 0)
+                + (int) ($offerCounts[$member->id] ?? 0)
+                + (int) ($viewingCounts[$member->id] ?? 0)
+                + (int) ($valuationCounts[$member->id] ?? 0));
+
+            return [$branch->name.' #'.$branch->id => $total];
+        })->all();
+
+        $campaigns = $this->filtered(EmailCampaign::where('team_id', $teamId), $filters);
+        $portalIntegrations = PortalIntegration::where('team_id', $teamId)
+            ->when($branchId, fn (Builder $query) => $query->where('branch_id', $branchId));
+        $integrationIds = (clone $portalIntegrations)->pluck('id');
+        $portalListings = $this->filtered(PortalListing::where('team_id', $teamId), $filters)
+            ->when($branchId, fn (Builder $query) => $query->whereIn('portal_integration_id', $integrationIds));
+        $portalRuns = $this->filtered(PortalSyncRun::where('team_id', $teamId), $filters)
+            ->when($branchId, fn (Builder $query) => $query->whereIn('portal_integration_id', $integrationIds));
+
+        return [
+            'instructions' => $this->grouped(clone $properties, 'status'),
+            'offers' => $this->grouped(clone $offers, 'status'),
+            'viewings' => $this->grouped(clone $viewings, 'status'),
+            'valuations' => $this->grouped(clone $valuations, 'status'),
+            'staff_performance' => $staffPerformance,
+            'branch_performance' => $branchPerformance,
+            'marketing_performance' => [
+                'campaigns' => (clone $campaigns)->count(),
+                'recipients' => (int) (clone $campaigns)->sum('recipients_count'),
+                'delivered' => (int) (clone $campaigns)->sum('delivered_count'),
+                'opened' => (int) (clone $campaigns)->sum('opened_count'),
+                'clicked' => (int) (clone $campaigns)->sum('clicked_count'),
+            ],
+            'portal_statistics' => [
+                'integrations' => (clone $portalIntegrations)->count(),
+                'active_integrations' => (clone $portalIntegrations)->where('active', true)->count(),
+                'listings' => (clone $portalListings)->count(),
+                'published_listings' => (clone $portalListings)->where('status', 'published')->count(),
+                'sync_runs' => (clone $portalRuns)->count(),
+                'failed_items' => (int) (clone $portalRuns)->sum('failed'),
+            ],
+        ];
+    }
+
+    private function performanceFilterRules(Request $request): array
+    {
+        return [
+            'from' => ['nullable', 'date'],
+            'to' => ['nullable', 'date', 'after_or_equal:from'],
+            'branch_id' => [
+                'nullable',
+                'integer',
+                Rule::exists('branches', 'id')->where('team_id', $this->teamId($request)),
+            ],
         ];
     }
 

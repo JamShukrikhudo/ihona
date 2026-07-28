@@ -80,8 +80,13 @@ self-referential, and cross-organisation links are rejected.
   offers, viewings, tasks, maintenance, active sales, and valuations.
 - `GET /reports/pipeline` returns grouped property, offer, sales progression,
   valuation, and maintenance pipeline totals.
-- `/saved-reports` stores reusable dashboard or pipeline definitions with date
-  filters, selected columns, sharing controls, and chart types.
+- `GET /reports/performance` reports instructions, offers, viewings,
+  valuations, staff and branch activity, campaign delivery/engagement, and
+  portal listing/synchronisation statistics. Date and organisation-owned branch
+  filters are supported.
+- `/saved-reports` stores reusable dashboard, pipeline, or performance
+  definitions with date filters, selected columns, sharing controls, and chart
+  types.
 - `GET /saved-reports/{report}/run` returns chart-ready labels and values.
 - `GET /saved-reports/{report}/export` downloads a tenant-authorised CSV.
 - `/dashboard-layouts` stores per-user widget layouts. Supported widgets include

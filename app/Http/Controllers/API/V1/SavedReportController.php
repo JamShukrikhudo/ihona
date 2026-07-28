@@ -30,11 +30,15 @@ class SavedReportController extends TenantCrudController
     {
         return [
             'name' => [$record ? 'sometimes' : 'required', 'string', 'max:255'],
-            'type' => [$record ? 'sometimes' : 'required', Rule::in(['dashboard', 'pipeline'])],
+            'type' => [$record ? 'sometimes' : 'required', Rule::in(['dashboard', 'pipeline', 'performance'])],
             'filters' => ['nullable', 'array'],
             'filters.from' => ['nullable', 'date'],
             'filters.to' => ['nullable', 'date', 'after_or_equal:filters.from'],
-            'filters.branch_id' => ['nullable', 'integer'],
+            'filters.branch_id' => [
+                'nullable',
+                'integer',
+                Rule::exists('branches', 'id')->where('team_id', $this->teamId($request)),
+            ],
             'columns' => ['nullable', 'array'],
             'columns.*' => ['string', 'max:100'],
             'chart_type' => ['nullable', Rule::in(['bar', 'line', 'pie', 'doughnut', 'table'])],

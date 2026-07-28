@@ -152,6 +152,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('search', ApiSearchController::class)->name('search');
         Route::get('reports/dashboard', [ApiReportController::class, 'dashboard'])->name('reports.dashboard');
         Route::get('reports/pipeline', [ApiReportController::class, 'pipeline'])->name('reports.pipeline');
+        Route::get('reports/performance', [ApiReportController::class, 'performance'])->name('reports.performance');
         Route::apiResource('saved-reports', ApiSavedReportController::class);
         Route::get('saved-reports/{savedReport}/run', [ApiReportController::class, 'run'])->name('saved-reports.run');
         Route::get('saved-reports/{savedReport}/export', [ApiReportController::class, 'export'])->name('saved-reports.export');
