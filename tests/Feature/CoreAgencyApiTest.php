@@ -568,6 +568,55 @@ class CoreAgencyApiTest extends TestCase
             ->assertJsonPath('permission', 'contacts.delete');
     }
 
+    public function test_portal_integrations_publish_and_audit_team_scoped_listing_exports(): void
+    {
+        [, $team] = $this->actingAsTeamMember();
+        $property = Property::factory()->for($team)->create([
+            'status' => 'available',
+            'title' => 'Portal Ready Home',
+            'postal_code' => 'YO1 1AA',
+        ]);
+
+        $integration = $this->postJson('/api/v1/portal-integrations', [
+            'provider' => 'rightmove',
+            'country' => 'GB',
+            'channel' => 'sales',
+            'sync_frequency' => 'daily',
+            'credentials' => ['api_key' => 'secret-value'],
+            'settings' => ['feed_type' => 'incremental'],
+        ])->assertCreated()
+            ->assertJsonMissingPath('data.credentials')
+            ->assertJsonPath('data.provider', 'rightmove');
+
+        $integrationId = $integration->json('data.id');
+        $this->putJson("/api/v1/portal-integrations/$integrationId/properties/{$property->id}")
+            ->assertCreated()
+            ->assertJsonPath('data.status', 'pending');
+
+        $this->postJson("/api/v1/portal-integrations/$integrationId/sync")
+            ->assertOk()
+            ->assertJsonPath('data.status', 'completed')
+            ->assertJsonPath('data.processed', 1)
+            ->assertJsonPath('data.succeeded', 1);
+
+        $this->assertDatabaseHas('portal_listings', [
+            'team_id' => $team->id,
+            'property_id' => $property->id,
+            'status' => 'published',
+        ]);
+        $this->getJson("/api/v1/portal-sync-runs?portal_integration_id=$integrationId")
+            ->assertOk()
+            ->assertJsonPath('data.0.status', 'completed');
+
+        $this->deleteJson("/api/v1/portal-integrations/$integrationId/properties/{$property->id}")
+            ->assertOk()
+            ->assertJsonPath('data.status', 'withdrawn');
+
+        $otherProperty = Property::factory()->create();
+        $this->putJson("/api/v1/portal-integrations/$integrationId/properties/{$otherProperty->id}")
+            ->assertNotFound();
+    }
+
     private function actingAsTeamMember(): array
     {
         $user = User::factory()->create();

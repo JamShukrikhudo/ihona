@@ -13,6 +13,7 @@ class AgencyPermissionService
         'offers', 'sales-progressions', 'valuations', 'viewings',
         'tenancy-agreements', 'property-matches', 'automations', 'automation-runs',
         'reports', 'notifications', 'permissions', 'api-tokens', 'setup',
+        'portal-integrations', 'portal-sync-runs',
     ];
 
     public const ACTIONS = ['view', 'create', 'edit', 'delete', 'export', 'approve', 'publish', 'archive'];

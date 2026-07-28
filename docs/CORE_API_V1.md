@@ -114,6 +114,25 @@ Users can list, create, and revoke their own scoped Sanctum credentials at
 `/api-tokens`. The plaintext token is returned only once when it is created;
 abilities and optional expiry dates are persisted with the token.
 
+## Property portals
+
+`/portal-integrations` provides unified, organisation-scoped configuration for
+country-specific portals such as Rightmove, Zoopla, OnTheMarket, Domain,
+realestate.com.au, Zillow, Realtor.com, and Trade Me Property. Credentials are
+encrypted at rest and never serialized in API responses.
+
+- `PUT /portal-integrations/{integration}/properties/{property}` queues a
+  property for publication.
+- `DELETE /portal-integrations/{integration}/properties/{property}` withdraws it.
+- `POST /portal-integrations/{integration}/sync` generates and synchronizes the
+  current listing payload.
+- `GET /portal-sync-runs` exposes processed, successful, failed, and partial
+  synchronization audits with per-listing errors.
+
+Portal payloads contain public listing and media information only; internal
+notes and credentials are excluded. Integrations support branch, sales/lettings
+channel, country, frequency, active state, and provider-specific settings.
+
 ## Public website integration
 
 Agency websites can consume published data without an authenticated back-office
