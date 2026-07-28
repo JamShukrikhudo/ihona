@@ -59,11 +59,18 @@ class PublicWebsiteController extends Controller
 
     public function staff(Team $team): JsonResponse
     {
-        $staff = $team->allUsers()
+        $staff = $team->users()
+            ->where('team_user.is_public', true)
+            ->orderBy('users.name')
+            ->get()
             ->map(fn ($user) => [
                 'id' => $user->id,
                 'name' => $user->name,
                 'profile_photo_url' => $user->profile_photo_url,
+                'job_title' => $user->membership->job_title,
+                'bio' => $user->membership->bio,
+                'branch_id' => $user->membership->branch_id,
+                'department_id' => $user->membership->department_id,
             ])
             ->values();
 

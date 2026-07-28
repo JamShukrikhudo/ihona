@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use JoelButcher\Socialstream\HasConnectedAccounts;
@@ -23,19 +22,21 @@ use Laravel\Jetstream\HasTeams;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable implements HasDefaultTenant, HasTenants, FilamentUser
+class User extends Authenticatable implements FilamentUser, HasDefaultTenant, HasTenants
 {
     use HasApiTokens;
-    // use HasConnectedAccounts;
-    use HasRoles;
+
     use HasFactory;
     use HasProfilePhoto {
         HasProfilePhoto::profilePhotoUrl as getPhotoUrl;
     }
+    // use HasConnectedAccounts;
+    use HasRoles;
+    use HasTeams;
+
     use Notifiable;
     // use SetsProfilePhotoFromUrl;
     use TwoFactorAuthenticatable;
-    use HasTeams;
 
     /**
      * The attributes that are mass assignable.
@@ -109,25 +110,27 @@ class User extends Authenticatable implements HasDefaultTenant, HasTenants, Fila
     public function canAccessPanel(Panel $panel): bool
     {
         $panelId = $panel->getId();
+
         return $this->canAccessPanelById($panelId);
     }
 
     private function canAccessPanelById(string $panelId): bool
     {
-        if ($panelId === "admin") {
+        if ($panelId === 'admin') {
             return $this->hasRole(['admin', 'super_admin']);
         }
-        if ($panelId === "app") {
-            return $this->hasRole(["staff", 'admin', 'super_admin']);
+        if ($panelId === 'app') {
+            return $this->hasRole(['staff', 'admin', 'super_admin']);
         }
         $allowedRoles = config("filament-shield.panels.$panelId", []);
-	    return $this->hasAnyRole($allowedRoles);
+
+        return $this->hasAnyRole($allowedRoles);
     }
+
     public function canAccessFilament(): bool
     {
         return true;
     }
-    
 
     public function getDefaultTenant(Panel $panel): ?Model
     {
@@ -142,7 +145,7 @@ class User extends Authenticatable implements HasDefaultTenant, HasTenants, Fila
     public function teams()
     {
         return $this->belongsToMany(Team::class, Membership::class)
-            ->withPivot(['role', 'permissions'])
+            ->withPivot(['role', 'permissions', 'branch_id', 'department_id', 'job_title', 'phone', 'bio', 'is_public'])
             ->withTimestamps()
             ->as('membership');
     }
@@ -227,37 +230,31 @@ class User extends Authenticatable implements HasDefaultTenant, HasTenants, Fila
 
     /**
      * Get recommended agents for this user
-     *
-     * @param int $limit
-     * @return Collection
      */
     public function getRecommendedAgents(int $limit = 5): Collection
     {
         $service = app(AgentMatchingService::class);
+
         return $service->findMatches($this, $limit);
     }
 
     /**
      * Generate and save agent matches for this user
-     *
-     * @param int $minScore
-     * @return Collection
      */
     public function generateAgentMatches(int $minScore = 60): Collection
     {
         $service = app(AgentMatchingService::class);
+
         return $service->generateMatchesForUser($this, $minScore);
     }
 
     /**
      * Get agents recommended for a specific property search
-     *
-     * @param array $searchContext
-     * @return Collection
      */
     public function getAgentsForPropertySearch(array $searchContext): Collection
     {
         $service = app(AgentMatchingService::class);
+
         return $service->getRecommendedAgentsForPropertySearch($this, $searchContext);
     }
 }

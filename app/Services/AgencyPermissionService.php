@@ -8,7 +8,7 @@ use App\Models\User;
 class AgencyPermissionService
 {
     public const RESOURCES = [
-        'properties', 'contacts', 'companies', 'buyers', 'tenants', 'branches',
+        'properties', 'contacts', 'companies', 'buyers', 'tenants', 'branches', 'departments', 'staff',
         'communications', 'documents', 'inspections', 'maintenance', 'tasks',
         'offers', 'sales-progressions', 'valuations', 'viewings',
         'tenancy-agreements', 'property-matches', 'automations', 'automation-runs',

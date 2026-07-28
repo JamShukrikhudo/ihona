@@ -10,29 +10,6 @@ use Laravel\Jetstream\Events\TeamDeleted;
 use Laravel\Jetstream\Events\TeamUpdated;
 use Laravel\Jetstream\Team as JetstreamTeam;
 
-use App\Models\Activity;
-use App\Models\Appointment;
-use App\Models\Booking;
-use App\Models\Branch;
-use App\Models\Contractor;
-use App\Models\DigitalSignature;
-use App\Models\Document;
-use App\Models\DocumentTemplate;
-use App\Models\Favorite;
-use App\Models\Image;
-use App\Models\KeyLocation;
-use App\Models\Lead;
-use App\Models\OnTheMarketSettings;
-use App\Models\Message;
-use App\Models\Property;
-use App\Models\PropertyFeature;
-use App\Models\Review;
-use App\Models\RightMoveSettings;
-use App\Models\SiteSettings;
-use App\Models\Tenant;
-use App\Models\Transaction;
-use App\Models\ZooplaSettings;
-
 class Team extends JetstreamTeam
 {
     use HasFactory;
@@ -78,9 +55,14 @@ class Team extends JetstreamTeam
     public function users()
     {
         return $this->belongsToMany(User::class, Membership::class)
-            ->withPivot(['role', 'permissions'])
+            ->withPivot(['role', 'permissions', 'branch_id', 'department_id', 'job_title', 'phone', 'bio', 'is_public'])
             ->withTimestamps()
             ->as('membership');
+    }
+
+    public function departments(): HasMany
+    {
+        return $this->hasMany(Department::class);
     }
 
     public function bookings(): HasMany
@@ -227,6 +209,7 @@ class Team extends JetstreamTeam
     {
         return $this->hasMany(Communication::class);
     }
+
     public function messages(): HasMany
     {
         return $this->hasMany(Message::class);
@@ -240,7 +223,7 @@ class Team extends JetstreamTeam
     public function members()
     {
         return $this->belongsToMany(User::class, 'team_user')
-                    ->withPivot('role')
-                    ->withTimestamps();
+            ->withPivot('role')
+            ->withTimestamps();
     }
 }

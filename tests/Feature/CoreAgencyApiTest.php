@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\AgencyTask;
+use App\Models\Branch;
 use App\Models\Buyer;
 use App\Models\Company;
 use App\Models\Contact;
@@ -975,6 +976,62 @@ class CoreAgencyApiTest extends TestCase
 
         $this->deleteJson("/api/v1/properties/{$property->id}/media/{$photoId}")->assertNoContent();
         Storage::disk('local')->assertMissing($photo->json('data.file_path'));
+    }
+
+    public function test_staff_profiles_and_departments_are_organisation_scoped(): void
+    {
+        [, $team] = $this->actingAsTeamMember();
+        $branch = $this->postJson('/api/v1/branches', [
+            'name' => 'City Office',
+        ])->assertCreated();
+
+        $department = $this->postJson('/api/v1/departments', [
+            'name' => 'Residential Sales',
+            'description' => 'Residential sales and progression',
+        ])->assertCreated()
+            ->assertJsonPath('data.team_id', $team->id);
+
+        $staffUser = User::factory()->create(['email' => 'negotiator@example.test']);
+        $staff = $this->postJson('/api/v1/staff', [
+            'email' => $staffUser->email,
+            'role' => 'editor',
+            'branch_id' => $branch->json('data.id'),
+            'department_id' => $department->json('data.id'),
+            'job_title' => 'Senior Negotiator',
+            'phone' => '+44 20 7946 0018',
+            'bio' => 'Specialist in city apartments.',
+            'is_public' => true,
+        ])->assertCreated()
+            ->assertJsonPath('data.id', $staffUser->id)
+            ->assertJsonPath('data.role', 'editor')
+            ->assertJsonPath('data.branch.name', 'City Office')
+            ->assertJsonPath('data.department.name', 'Residential Sales');
+
+        $this->getJson('/api/v1/staff?department_id='.$department->json('data.id'))
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.job_title', 'Senior Negotiator');
+
+        $this->patchJson("/api/v1/staff/{$staffUser->id}", [
+            'job_title' => 'Sales Manager',
+            'is_public' => false,
+        ])->assertOk()
+            ->assertJsonPath('data.job_title', 'Sales Manager')
+            ->assertJsonPath('data.is_public', false);
+
+        $otherBranch = Branch::create([
+            'team_id' => Team::factory()->create()->id,
+            'name' => 'Other Agency',
+        ]);
+        $this->patchJson("/api/v1/staff/{$staffUser->id}", [
+            'branch_id' => $otherBranch->id,
+        ])->assertUnprocessable()->assertJsonValidationErrors('branch_id');
+
+        $this->deleteJson("/api/v1/staff/{$staffUser->id}")->assertNoContent();
+        $this->assertDatabaseMissing('team_user', [
+            'team_id' => $team->id,
+            'user_id' => $staffUser->id,
+        ]);
     }
 
     private function actingAsTeamMember(): array

@@ -12,6 +12,7 @@ use App\Http\Controllers\API\V1\CommunicationController as ApiCommunicationContr
 use App\Http\Controllers\API\V1\CompanyController as ApiCompanyController;
 use App\Http\Controllers\API\V1\ContactController as ApiContactController;
 use App\Http\Controllers\API\V1\DashboardLayoutController as ApiDashboardLayoutController;
+use App\Http\Controllers\API\V1\DepartmentController as ApiDepartmentController;
 use App\Http\Controllers\API\V1\DocumentController as ApiDocumentController;
 use App\Http\Controllers\API\V1\DocumentWorkflowController as ApiDocumentWorkflowController;
 use App\Http\Controllers\API\V1\EmailCampaignController as ApiEmailCampaignController;
@@ -31,6 +32,7 @@ use App\Http\Controllers\API\V1\SalesProgressionController as ApiSalesProgressio
 use App\Http\Controllers\API\V1\SavedReportController as ApiSavedReportController;
 use App\Http\Controllers\API\V1\SearchController as ApiSearchController;
 use App\Http\Controllers\API\V1\SetupController as ApiSetupController;
+use App\Http\Controllers\API\V1\StaffController as ApiStaffController;
 use App\Http\Controllers\API\V1\TaskCollaborationController as ApiTaskCollaborationController;
 use App\Http\Controllers\API\V1\TaskController as ApiTaskController;
 use App\Http\Controllers\API\V1\TenancyAgreementController as ApiTenancyAgreementController;
@@ -143,6 +145,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('companies', ApiCompanyController::class);
         Route::apiResource('communications', ApiCommunicationController::class);
         Route::apiResource('branches', ApiBranchController::class);
+        Route::apiResource('departments', ApiDepartmentController::class);
+        Route::apiResource('staff', ApiStaffController::class)->parameters(['staff' => 'staff']);
         Route::apiResource('automations', ApiAutomationController::class);
         Route::post('automations/{automation}/run', [ApiAutomationController::class, 'run'])->name('automations.run');
         Route::get('automation-runs', [ApiAutomationController::class, 'runs'])->name('automation-runs.index');

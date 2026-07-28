@@ -105,6 +105,18 @@ against organisation membership before any data is changed.
 
 ## Permissions and API tokens
 
+## Staff and departments
+
+`/departments` provides organisation-scoped department CRUD with an optional
+manager selected from current team members. `/staff` manages registered users'
+membership in the selected organisation.
+
+Staff profiles are membership-specific and include role, branch, department,
+job title, phone number, biography, and public-profile visibility. This allows
+the same account to hold different assignments in different agencies. Staff
+search and filtering support branch and department views. Organisation owners
+cannot be changed or removed through the staff endpoint.
+
 Every authenticated v1 request is authorised against the selected organisation.
 Permissions use `{resource}.{action}` names, with the actions `view`, `create`,
 `edit`, `delete`, `export`, `approve`, `publish`, and `archive`.

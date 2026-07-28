@@ -13,7 +13,19 @@ class Membership extends JetstreamMembership
      */
     public $incrementing = true;
 
+    protected $fillable = [
+        'role',
+        'permissions',
+        'branch_id',
+        'department_id',
+        'job_title',
+        'phone',
+        'bio',
+        'is_public',
+    ];
+
     protected $casts = [
         'permissions' => 'array',
+        'is_public' => 'boolean',
     ];
 }
