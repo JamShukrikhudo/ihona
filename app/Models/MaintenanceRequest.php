@@ -18,10 +18,21 @@ class MaintenanceRequest extends Model
         'requested_date',
         'tenant_id',
         'property_id',
+        'team_id',
+        'contractor_id',
+        'priority',
+        'photos',
+        'quote_references',
+        'invoice_reference',
+        'payment_status',
+        'completed_at',
     ];
 
     protected $casts = [
         'requested_date' => 'date',
+        'photos' => 'array',
+        'quote_references' => 'array',
+        'completed_at' => 'datetime',
     ];
 
     public function tenant(): BelongsTo

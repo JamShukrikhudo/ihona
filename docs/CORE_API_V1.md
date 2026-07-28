@@ -12,7 +12,13 @@ The authenticated REST API exposes the central estate-agency records under
 | Companies | Full CRUD at `/companies` | `type`, `branch_id` |
 | Tasks | Full CRUD at `/tasks` | `status`, `priority`, `assigned_to`, `branch_id` |
 | Offers | Full CRUD at `/offers` | `property_id`, `contact_id`, `status`, `negotiator_id` |
-| Properties | List and detail at `/properties` | `status`, `property_type`, price, bedrooms, country |
+| Properties | Full CRUD at `/properties` | `status`, `property_type`, price, bedrooms, country |
+| Branches | Full CRUD at `/branches` | Search by name, address, or email |
+| Documents | Full CRUD at `/documents` | `property_id`, `file_type`, `is_signable` |
+| Maintenance | Full CRUD at `/maintenance` | `property_id`, `tenant_id`, `contractor_id`, `status`, `priority` |
+| Sales progression | Full CRUD at `/sales-progressions` | `property_id`, `agent_id`, `stage` |
+| Valuations | Full CRUD at `/valuations` | `property_id`, `valuation_type`, `status`, `user_id` |
+| Viewings | Full CRUD at `/viewings` | `property_id`, `agent_id`, `staff_id`, `status` |
 | Inspections | Full CRUD at `/inspections` | `property_id`, `tenant_id`, `type`, `status` |
 | Communications | Full CRUD at `/communications` | `channel`, `direction`, `status` |
 
@@ -35,7 +41,29 @@ viewings, tasks, offers, maintenance requests, and staff. Use repeated
 `types[]` parameters to restrict record types and `limit` to control the maximum
 results per type.
 
-List endpoints accept `search`, `filter[field]`, and `per_page` (maximum 100).
+## Reporting
+
+- `GET /reports/dashboard` returns organisation KPIs for properties, contacts,
+  offers, viewings, tasks, maintenance, active sales, and valuations.
+- `GET /reports/pipeline` returns grouped property, offer, sales progression,
+  valuation, and maintenance pipeline totals.
+
+## Public website integration
+
+Agency websites can consume published data without an authenticated back-office
+session:
+
+- `GET /api/v1/public/agencies/{team}/properties`
+- `GET /api/v1/public/agencies/{team}/properties/{property}`
+- `GET /api/v1/public/agencies/{team}/branches`
+- `GET /api/v1/public/agencies/{team}/staff`
+
+Property lists support featured, new, sold, property type, price, bedroom, and
+text-search filters. Draft, withdrawn, archived, and other internal records are
+never returned.
+
+Properties and every resource listed above expose full create, read, update, and
+delete operations. List endpoints accept `search`, `filter[field]`, and `per_page` (maximum 100).
 Responses use Laravel's paginator format. Single records are returned under a
 `data` key.
 

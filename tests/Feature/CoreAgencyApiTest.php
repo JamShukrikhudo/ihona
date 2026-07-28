@@ -271,6 +271,109 @@ class CoreAgencyApiTest extends TestCase
         $this->assertCount(1, $contact->communications()->get());
     }
 
+    public function test_property_crud_is_available_through_the_versioned_api(): void
+    {
+        [, $team] = $this->actingAsTeamMember();
+
+        $response = $this->postJson('/api/v1/properties', [
+            'title' => 'Harbour View',
+            'description' => 'A modern waterfront apartment.',
+            'location' => 'Bristol',
+            'price' => 450000,
+            'bedrooms' => 2,
+            'bathrooms' => 2,
+            'area_sqft' => 950,
+            'year_built' => 2022,
+            'property_type' => 'apartment',
+        ])->assertCreated()
+            ->assertJsonPath('data.team_id', $team->id)
+            ->assertJsonPath('data.status', 'draft');
+
+        $propertyId = $response->json('data.id');
+
+        $this->patchJson("/api/v1/properties/$propertyId", ['status' => 'available'])
+            ->assertOk()
+            ->assertJsonPath('data.status', 'available');
+
+        $this->deleteJson("/api/v1/properties/$propertyId")->assertNoContent();
+        $this->assertSoftDeleted('properties', ['id' => $propertyId]);
+    }
+
+    public function test_valuation_and_viewing_workflows_are_tenant_scoped(): void
+    {
+        [$user, $team] = $this->actingAsTeamMember();
+        $property = Property::factory()->for($team)->create();
+
+        $this->postJson('/api/v1/valuations', [
+            'property_id' => $property->id,
+            'valuation_type' => 'market',
+            'estimated_value' => 425000,
+            'valuation_date' => now()->toDateString(),
+            'confidence_level' => 85,
+        ])->assertCreated()
+            ->assertJsonPath('data.user_id', $user->id)
+            ->assertJsonPath('data.team_id', $team->id);
+
+        $this->postJson('/api/v1/viewings', [
+            'property_id' => $property->id,
+            'appointment_date' => now()->addDay()->toIso8601String(),
+            'name' => 'Prospective buyer',
+        ])->assertCreated()
+            ->assertJsonPath('data.user_id', $user->id)
+            ->assertJsonPath('data.status', 'scheduled');
+
+        $otherProperty = Property::factory()->create();
+        $this->postJson('/api/v1/viewings', [
+            'property_id' => $otherProperty->id,
+            'appointment_date' => now()->addDay()->toIso8601String(),
+        ])->assertUnprocessable()->assertJsonValidationErrors('property_id');
+    }
+
+    public function test_public_website_api_only_exposes_publishable_agency_properties(): void
+    {
+        $team = Team::factory()->create();
+        $published = Property::factory()->for($team)->create([
+            'title' => 'Published Home',
+            'status' => 'available',
+            'is_featured' => true,
+        ]);
+        Property::factory()->for($team)->create([
+            'title' => 'Internal Draft',
+            'status' => 'draft',
+        ]);
+        Property::factory()->create([
+            'title' => 'Another Agency Home',
+            'status' => 'available',
+        ]);
+
+        $this->getJson("/api/v1/public/agencies/{$team->id}/properties?featured=1")
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.id', $published->id);
+
+        $this->getJson("/api/v1/public/agencies/{$team->id}/properties/{$published->id}")
+            ->assertOk()
+            ->assertJsonPath('data.title', 'Published Home');
+    }
+
+    public function test_dashboard_and_pipeline_reports_are_team_scoped(): void
+    {
+        [, $team] = $this->actingAsTeamMember();
+        Property::factory()->for($team)->create(['status' => 'available']);
+        Property::factory()->for($team)->create(['status' => 'sold']);
+        Property::factory()->create(['status' => 'available']);
+
+        $this->getJson('/api/v1/reports/dashboard')
+            ->assertOk()
+            ->assertJsonPath('data.properties', 2)
+            ->assertJsonPath('data.available_properties', 1);
+
+        $this->getJson('/api/v1/reports/pipeline')
+            ->assertOk()
+            ->assertJsonPath('data.properties.available', 1)
+            ->assertJsonPath('data.properties.sold', 1);
+    }
+
     private function actingAsTeamMember(): array
     {
         $user = User::factory()->create();

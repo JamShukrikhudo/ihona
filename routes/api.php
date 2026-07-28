@@ -6,11 +6,19 @@ use App\Http\Controllers\API\V1\CommunicationController as ApiCommunicationContr
 use App\Http\Controllers\API\V1\CompanyController as ApiCompanyController;
 use App\Http\Controllers\API\V1\ContactController as ApiContactController;
 use App\Http\Controllers\API\V1\InspectionController as ApiInspectionController;
+use App\Http\Controllers\API\V1\BranchController as ApiBranchController;
+use App\Http\Controllers\API\V1\DocumentController as ApiDocumentController;
+use App\Http\Controllers\API\V1\MaintenanceController as ApiMaintenanceController;
 use App\Http\Controllers\API\V1\OfferController as ApiOfferController;
 use App\Http\Controllers\API\V1\PropertyController as ApiPropertyController;
+use App\Http\Controllers\API\V1\PublicWebsiteController as ApiPublicWebsiteController;
+use App\Http\Controllers\API\V1\ReportController as ApiReportController;
+use App\Http\Controllers\API\V1\SalesProgressionController as ApiSalesProgressionController;
 use App\Http\Controllers\API\V1\SearchController as ApiSearchController;
 use App\Http\Controllers\API\V1\SetupController as ApiSetupController;
 use App\Http\Controllers\API\V1\TaskController as ApiTaskController;
+use App\Http\Controllers\API\V1\ValuationController as ApiValuationController;
+use App\Http\Controllers\API\V1\ViewingController as ApiViewingController;
 use App\Http\Controllers\API\VirtualStagingController;
 use App\Http\Controllers\API\VRPropertyDesignController;
 use App\Http\Controllers\ChatbotController;
@@ -39,6 +47,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/payments/webhook', [PaymentController::class, 'handleWebhook'])
     ->middleware('throttle:60,1');
+
+Route::prefix('v1/public/agencies/{team}')->middleware('throttle:60,1')->name('api.v1.public.')->group(function () {
+    Route::get('properties', [ApiPublicWebsiteController::class, 'properties'])->name('properties');
+    Route::get('properties/{property}', [ApiPublicWebsiteController::class, 'property'])->name('property');
+    Route::get('branches', [ApiPublicWebsiteController::class, 'branches'])->name('branches');
+    Route::get('staff', [ApiPublicWebsiteController::class, 'staff'])->name('staff');
+});
 
 // Public metrics endpoint (for k8s monitoring/control-panel)
 Route::get('/metrics', [MetricsController::class, 'index'])->name('api.metrics');
@@ -84,13 +99,21 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('setup/status', [ApiSetupController::class, 'status'])->name('setup.status');
         Route::put('setup', [ApiSetupController::class, 'complete'])->name('setup.complete');
         Route::get('search', ApiSearchController::class)->name('search');
+        Route::get('reports/dashboard', [ApiReportController::class, 'dashboard'])->name('reports.dashboard');
+        Route::get('reports/pipeline', [ApiReportController::class, 'pipeline'])->name('reports.pipeline');
         Route::apiResource('contacts', ApiContactController::class);
         Route::apiResource('companies', ApiCompanyController::class);
         Route::apiResource('communications', ApiCommunicationController::class);
+        Route::apiResource('branches', ApiBranchController::class);
+        Route::apiResource('documents', ApiDocumentController::class);
         Route::apiResource('inspections', ApiInspectionController::class);
+        Route::apiResource('maintenance', ApiMaintenanceController::class);
         Route::apiResource('tasks', ApiTaskController::class);
         Route::apiResource('offers', ApiOfferController::class);
-        Route::apiResource('properties', ApiPropertyController::class)->only(['index', 'show']);
+        Route::apiResource('sales-progressions', ApiSalesProgressionController::class);
+        Route::apiResource('valuations', ApiValuationController::class);
+        Route::apiResource('viewings', ApiViewingController::class);
+        Route::apiResource('properties', ApiPropertyController::class);
     });
 
     // Virtual Staging API Routes
