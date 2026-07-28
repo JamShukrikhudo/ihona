@@ -75,6 +75,14 @@ class Team extends JetstreamTeam
         return $this->hasMany(Branch::class);
     }
 
+    public function users()
+    {
+        return $this->belongsToMany(User::class, Membership::class)
+            ->withPivot(['role', 'permissions'])
+            ->withTimestamps()
+            ->as('membership');
+    }
+
     public function bookings(): HasMany
     {
         return $this->hasMany(Booking::class);

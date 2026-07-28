@@ -8,12 +8,14 @@ use App\Http\Controllers\API\V1\ContactController as ApiContactController;
 use App\Http\Controllers\API\V1\InspectionController as ApiInspectionController;
 use App\Http\Controllers\API\V1\BranchController as ApiBranchController;
 use App\Http\Controllers\API\V1\AutomationController as ApiAutomationController;
+use App\Http\Controllers\API\V1\ApiTokenController as ApiTokenController;
 use App\Http\Controllers\API\V1\BuyerController as ApiBuyerController;
 use App\Http\Controllers\API\V1\DocumentController as ApiDocumentController;
 use App\Http\Controllers\API\V1\MaintenanceController as ApiMaintenanceController;
 use App\Http\Controllers\API\V1\PropertyMatchController as ApiPropertyMatchController;
 use App\Http\Controllers\API\V1\OfferController as ApiOfferController;
 use App\Http\Controllers\API\V1\NotificationController as ApiNotificationController;
+use App\Http\Controllers\API\V1\PermissionController as ApiPermissionController;
 use App\Http\Controllers\API\V1\PropertyController as ApiPropertyController;
 use App\Http\Controllers\API\V1\PublicWebsiteController as ApiPublicWebsiteController;
 use App\Http\Controllers\API\V1\ReportController as ApiReportController;
@@ -33,6 +35,7 @@ use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Middleware\ApplyOrganisationLocale;
+use App\Http\Middleware\RequireAgencyPermission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -100,7 +103,13 @@ Route::middleware('throttle:chatbot')->prefix('chatbot')->group(function () {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::prefix('v1')->middleware(ApplyOrganisationLocale::class)->name('api.v1.')->group(function () {
+    Route::prefix('v1')->middleware([ApplyOrganisationLocale::class, RequireAgencyPermission::class])->name('api.v1.')->group(function () {
+        Route::get('permissions/catalog', [ApiPermissionController::class, 'catalog'])->name('permissions.catalog');
+        Route::get('permissions/members', [ApiPermissionController::class, 'members'])->name('permissions.members');
+        Route::put('permissions/members/{member}', [ApiPermissionController::class, 'update'])->name('permissions.update');
+        Route::get('api-tokens', [ApiTokenController::class, 'index'])->name('api-tokens.index');
+        Route::post('api-tokens', [ApiTokenController::class, 'store'])->name('api-tokens.store');
+        Route::delete('api-tokens/{token}', [ApiTokenController::class, 'destroy'])->name('api-tokens.destroy');
         Route::get('setup/options', [ApiSetupController::class, 'options'])->name('setup.options');
         Route::get('setup/status', [ApiSetupController::class, 'status'])->name('setup.status');
         Route::put('setup', [ApiSetupController::class, 'complete'])->name('setup.complete');

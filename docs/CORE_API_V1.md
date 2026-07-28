@@ -95,6 +95,25 @@ notifications, and update a property status.
 Rules and execution records are organisation-scoped. Action targets are checked
 against organisation membership before any data is changed.
 
+## Permissions and API tokens
+
+Every authenticated v1 request is authorised against the selected organisation.
+Permissions use `{resource}.{action}` names, with the actions `view`, `create`,
+`edit`, `delete`, `export`, `approve`, `publish`, and `archive`.
+
+- Owners and organisation admins have unrestricted access.
+- Editors default to view, create, and edit.
+- Members default to view-only access.
+- Explicit membership permissions override role defaults and support
+  resource-specific grants.
+- `GET /permissions/catalog` returns all assignable permissions.
+- `GET /permissions/members` lists roles and overrides.
+- `PUT /permissions/members/{member}` updates a member's role and grants.
+
+Users can list, create, and revoke their own scoped Sanctum credentials at
+`/api-tokens`. The plaintext token is returned only once when it is created;
+abilities and optional expiry dates are persisted with the token.
+
 ## Public website integration
 
 Agency websites can consume published data without an authenticated back-office

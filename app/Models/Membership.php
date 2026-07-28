@@ -12,4 +12,8 @@ class Membership extends JetstreamMembership
      * @var bool
      */
     public $incrementing = true;
+
+    protected $casts = [
+        'permissions' => 'array',
+    ];
 }

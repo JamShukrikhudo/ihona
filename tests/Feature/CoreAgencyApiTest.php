@@ -525,6 +525,49 @@ class CoreAgencyApiTest extends TestCase
             ->assertJsonPath('data.read_at', fn ($value) => $value !== null);
     }
 
+    public function test_team_permissions_are_granular_and_api_tokens_are_self_managed(): void
+    {
+        $owner = User::factory()->create();
+        $team = Team::factory()->create(['user_id' => $owner->id]);
+        $member = User::factory()->create();
+        $team->users()->attach($owner, ['role' => 'admin']);
+        $team->users()->attach($member, ['role' => 'member']);
+        $owner->forceFill(['current_team_id' => $team->id])->save();
+        $member->forceFill(['current_team_id' => $team->id])->save();
+
+        Sanctum::actingAs($member);
+        $this->getJson('/api/v1/contacts')->assertOk();
+        $this->postJson('/api/v1/contacts', [
+            'type' => 'buyer',
+            'first_name' => 'Blocked',
+        ])->assertForbidden()->assertJsonPath('permission', 'contacts.create');
+
+        $token = $this->postJson('/api/v1/api-tokens', [
+            'name' => 'Mobile app',
+            'abilities' => ['properties.view', 'contacts.view'],
+            'expires_at' => now()->addMonth()->toIso8601String(),
+        ])->assertCreated()
+            ->assertJsonPath('data.name', 'Mobile app')
+            ->assertJsonPath('data.abilities.0', 'properties.view');
+        $this->assertNotEmpty($token->json('data.token'));
+
+        Sanctum::actingAs($owner);
+        $this->putJson("/api/v1/permissions/members/{$member->id}", [
+            'role' => 'member',
+            'permissions' => ['contacts.view', 'contacts.create'],
+        ])->assertOk()
+            ->assertJsonPath('data.permissions.1', 'contacts.create');
+
+        Sanctum::actingAs($member->fresh());
+        $this->postJson('/api/v1/contacts', [
+            'type' => 'buyer',
+            'first_name' => 'Allowed',
+        ])->assertCreated()->assertJsonPath('data.first_name', 'Allowed');
+        $this->deleteJson('/api/v1/contacts/999999')
+            ->assertForbidden()
+            ->assertJsonPath('permission', 'contacts.delete');
+    }
+
     private function actingAsTeamMember(): array
     {
         $user = User::factory()->create();
