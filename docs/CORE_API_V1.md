@@ -133,6 +133,23 @@ Portal payloads contain public listing and media information only; internal
 notes and credentials are excluded. Integrations support branch, sales/lettings
 channel, country, frequency, active state, and provider-specific settings.
 
+## Accounting boundary
+
+`/accounting-integrations` configures Liberu Accounting, QuickBooks Online,
+Xero, or Sage connections. Provider credentials are encrypted and omitted from
+responses. `/accounting-links` associates agency customers, suppliers, invoice
+references, and payment references with external identifiers.
+
+- Links store only external references, payment state, due date, currency,
+  amount, and provider metadata.
+- `POST /accounting-integrations/{integration}/sync` records a reconciliation run.
+- `GET /accounting-sync-runs` exposes synchronization audits.
+- `GET /accounting-summary` returns referenced totals by currency and payment
+  status, overdue counts, and outstanding amounts.
+
+No journals, ledgers, bank reconciliation, tax filing, or other bookkeeping is
+performed in this application.
+
 ## Public website integration
 
 Agency websites can consume published data without an authenticated back-office

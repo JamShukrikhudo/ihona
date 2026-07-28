@@ -617,6 +617,70 @@ class CoreAgencyApiTest extends TestCase
             ->assertNotFound();
     }
 
+    public function test_accounting_integrations_reference_external_finance_without_bookkeeping(): void
+    {
+        [, $team] = $this->actingAsTeamMember();
+        $contact = Contact::create([
+            'team_id' => $team->id,
+            'type' => 'landlord',
+            'first_name' => 'Alex',
+            'last_name' => 'Landlord',
+        ]);
+
+        $integration = $this->postJson('/api/v1/accounting-integrations', [
+            'provider' => 'xero',
+            'name' => 'Agency Xero',
+            'credentials' => ['tenant_id' => 'secret-tenant'],
+            'settings' => ['sync_customers' => true],
+        ])->assertCreated()
+            ->assertJsonMissingPath('data.credentials')
+            ->assertJsonPath('data.provider', 'xero');
+
+        $integrationId = $integration->json('data.id');
+        $link = $this->postJson('/api/v1/accounting-links', [
+            'accounting_integration_id' => $integrationId,
+            'link_type' => 'invoice',
+            'linkable_type' => 'contact',
+            'linkable_id' => $contact->id,
+            'external_id' => 'XERO-CONTACT-1',
+            'invoice_reference' => 'INV-1001',
+            'payment_status' => 'overdue',
+            'amount' => 1250,
+            'currency' => 'GBP',
+            'due_date' => now()->subDay()->toDateString(),
+        ])->assertCreated()
+            ->assertJsonPath('data.team_id', $team->id)
+            ->assertJsonPath('data.invoice_reference', 'INV-1001');
+
+        $this->getJson('/api/v1/accounting-summary')
+            ->assertOk()
+            ->assertJsonPath('data.overdue_count', 1)
+            ->assertJsonPath('data.outstanding_amount', 1250)
+            ->assertJsonPath('data.currency_totals.GBP', 1250);
+
+        $this->postJson("/api/v1/accounting-integrations/$integrationId/sync")
+            ->assertOk()
+            ->assertJsonPath('data.status', 'completed')
+            ->assertJsonPath('data.processed', 1);
+        $this->getJson("/api/v1/accounting-sync-runs?integration_id=$integrationId")
+            ->assertOk()
+            ->assertJsonPath('data.0.succeeded', 1);
+
+        $otherContact = Contact::create([
+            'team_id' => Team::factory()->create()->id,
+            'type' => 'landlord',
+            'first_name' => 'Hidden',
+        ]);
+        $this->postJson('/api/v1/accounting-links', [
+            'accounting_integration_id' => $integrationId,
+            'link_type' => 'customer',
+            'linkable_type' => 'contact',
+            'linkable_id' => $otherContact->id,
+        ])->assertUnprocessable()->assertJsonValidationErrors('linkable_id');
+
+        $this->deleteJson('/api/v1/accounting-links/'.$link->json('data.id'))->assertNoContent();
+    }
+
     private function actingAsTeamMember(): array
     {
         $user = User::factory()->create();
