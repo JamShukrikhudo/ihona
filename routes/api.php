@@ -7,8 +7,10 @@ use App\Http\Controllers\API\V1\CompanyController as ApiCompanyController;
 use App\Http\Controllers\API\V1\ContactController as ApiContactController;
 use App\Http\Controllers\API\V1\InspectionController as ApiInspectionController;
 use App\Http\Controllers\API\V1\BranchController as ApiBranchController;
+use App\Http\Controllers\API\V1\BuyerController as ApiBuyerController;
 use App\Http\Controllers\API\V1\DocumentController as ApiDocumentController;
 use App\Http\Controllers\API\V1\MaintenanceController as ApiMaintenanceController;
+use App\Http\Controllers\API\V1\PropertyMatchController as ApiPropertyMatchController;
 use App\Http\Controllers\API\V1\OfferController as ApiOfferController;
 use App\Http\Controllers\API\V1\PropertyController as ApiPropertyController;
 use App\Http\Controllers\API\V1\PublicWebsiteController as ApiPublicWebsiteController;
@@ -17,6 +19,8 @@ use App\Http\Controllers\API\V1\SalesProgressionController as ApiSalesProgressio
 use App\Http\Controllers\API\V1\SearchController as ApiSearchController;
 use App\Http\Controllers\API\V1\SetupController as ApiSetupController;
 use App\Http\Controllers\API\V1\TaskController as ApiTaskController;
+use App\Http\Controllers\API\V1\TenancyAgreementController as ApiTenancyAgreementController;
+use App\Http\Controllers\API\V1\TenantController as ApiTenantController;
 use App\Http\Controllers\API\V1\ValuationController as ApiValuationController;
 use App\Http\Controllers\API\V1\ViewingController as ApiViewingController;
 use App\Http\Controllers\API\VirtualStagingController;
@@ -105,15 +109,24 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('companies', ApiCompanyController::class);
         Route::apiResource('communications', ApiCommunicationController::class);
         Route::apiResource('branches', ApiBranchController::class);
+        Route::apiResource('buyers', ApiBuyerController::class);
         Route::apiResource('documents', ApiDocumentController::class);
         Route::apiResource('inspections', ApiInspectionController::class);
         Route::apiResource('maintenance', ApiMaintenanceController::class);
         Route::apiResource('tasks', ApiTaskController::class);
+        Route::apiResource('tenants', ApiTenantController::class);
+        Route::apiResource('tenancy-agreements', ApiTenancyAgreementController::class);
+        Route::post('tenancy-agreements/{tenancy_agreement}/renew', [ApiTenancyAgreementController::class, 'renew'])->name('tenancy-agreements.renew');
+        Route::post('tenancy-agreements/{tenancy_agreement}/notice', [ApiTenancyAgreementController::class, 'notice'])->name('tenancy-agreements.notice');
         Route::apiResource('offers', ApiOfferController::class);
         Route::apiResource('sales-progressions', ApiSalesProgressionController::class);
         Route::apiResource('valuations', ApiValuationController::class);
         Route::apiResource('viewings', ApiViewingController::class);
         Route::apiResource('properties', ApiPropertyController::class);
+        Route::get('property-matches', [ApiPropertyMatchController::class, 'index'])->name('property-matches.index');
+        Route::patch('property-matches/{property_match}', [ApiPropertyMatchController::class, 'update'])->name('property-matches.update');
+        Route::post('buyers/{buyer}/generate-matches', [ApiPropertyMatchController::class, 'forBuyer'])->name('buyers.generate-matches');
+        Route::post('properties/{property}/generate-matches', [ApiPropertyMatchController::class, 'forProperty'])->name('properties.generate-matches');
     });
 
     // Virtual Staging API Routes

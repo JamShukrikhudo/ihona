@@ -33,6 +33,14 @@ class LeaseAgreement extends Model
         'agreement_hash',
         'blockchain_network',
         'team_id',
+        'deposit_scheme',
+        'deposit_reference',
+        'renewal_of_id',
+        'notice_type',
+        'notice_served_at',
+        'notice_expires_at',
+        'ended_at',
+        'end_reason',
     ];
 
     protected $casts = [
@@ -44,6 +52,9 @@ class LeaseAgreement extends Model
         'contract_deployed_at' => 'datetime',
         'monthly_rent' => 'decimal:2',
         'security_deposit' => 'decimal:2',
+        'notice_served_at' => 'date',
+        'notice_expires_at' => 'date',
+        'ended_at' => 'date',
     ];
 
     public function tenant()
@@ -68,12 +79,12 @@ class LeaseAgreement extends Model
 
     public function setContentAttribute($value)
     {
-        $this->attributes['content'] = Crypt::encryptString($value);
+        $this->attributes['content'] = filled($value) ? Crypt::encryptString($value) : null;
     }
 
     public function getContentAttribute($value)
     {
-        return Crypt::decryptString($value);
+        return filled($value) ? Crypt::decryptString($value) : null;
     }
 
     // Helper methods for smart contract integration

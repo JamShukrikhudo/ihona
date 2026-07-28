@@ -14,6 +14,9 @@ The authenticated REST API exposes the central estate-agency records under
 | Offers | Full CRUD at `/offers` | `property_id`, `contact_id`, `status`, `negotiator_id` |
 | Properties | Full CRUD at `/properties` | `status`, `property_type`, price, bedrooms, country |
 | Branches | Full CRUD at `/branches` | Search by name, address, or email |
+| Buyers | Full CRUD at `/buyers` | `status`, budget, bedrooms, type, location, postal codes, features |
+| Tenants | Full CRUD at `/tenants` | Search by name, email, or phone |
+| Tenancy agreements | Full CRUD at `/tenancy-agreements` | `property_id`, `tenant_id`, `landlord_id`, `status` |
 | Documents | Full CRUD at `/documents` | `property_id`, `file_type`, `is_signable` |
 | Maintenance | Full CRUD at `/maintenance` | `property_id`, `tenant_id`, `contractor_id`, `status`, `priority` |
 | Sales progression | Full CRUD at `/sales-progressions` | `property_id`, `agent_id`, `stage` |
@@ -47,6 +50,34 @@ results per type.
   offers, viewings, tasks, maintenance, active sales, and valuations.
 - `GET /reports/pipeline` returns grouped property, offer, sales progression,
   valuation, and maintenance pipeline totals.
+
+## Property matching
+
+- Buyer requirements are managed through `/buyers`, including budget, bedroom,
+  bathroom, area, type, location, postal-code, and feature preferences.
+- `POST /buyers/{buyer}/generate-matches` scores available properties for one applicant.
+- `POST /properties/{property}/generate-matches` scores active applicants for a listing.
+- `GET /property-matches` filters persisted matches by buyer, property, status,
+  and minimum score.
+- `PATCH /property-matches/{match}` records interest, dismissal, viewing state,
+  and agent notes.
+
+Generated matches are organisation-scoped, de-duplicated, and create in-app
+notifications for buyers linked to a user account.
+
+## Lettings lifecycle
+
+Tenant records and tenancy agreements are exposed through the versioned API.
+Agreements track rent, payment frequency, protected-deposit scheme/reference,
+signatures, terms, and status.
+
+- `POST /tenancy-agreements/{agreement}/notice` records landlord, tenant, or
+  mutual notice and its effective dates.
+- `POST /tenancy-agreements/{agreement}/renew` creates a linked renewal,
+  preserves the original agreement, and resets signature state.
+
+Renewal, notice, ended, and terminated states support the full tenancy lifecycle
+without introducing bookkeeping into this application.
 
 ## Public website integration
 

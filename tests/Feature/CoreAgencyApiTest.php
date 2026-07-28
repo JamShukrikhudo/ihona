@@ -4,10 +4,13 @@ namespace Tests\Feature;
 
 use App\Models\Company;
 use App\Models\Contact;
+use App\Models\Buyer;
 use App\Models\Property;
 use App\Models\Team;
 use App\Models\User;
+use App\Notifications\NewPropertyMatches;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Notification;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
@@ -372,6 +375,100 @@ class CoreAgencyApiTest extends TestCase
             ->assertOk()
             ->assertJsonPath('data.properties.available', 1)
             ->assertJsonPath('data.properties.sold', 1);
+    }
+
+    public function test_buyers_can_be_matched_to_available_properties_and_notified(): void
+    {
+        Notification::fake();
+        [$user, $team] = $this->actingAsTeamMember();
+
+        $buyerResponse = $this->postJson('/api/v1/buyers', [
+            'name' => 'Jordan Buyer',
+            'email' => 'jordan@example.test',
+            'user_id' => $user->id,
+            'search_criteria' => [
+                'min_price' => 200000,
+                'max_price' => 400000,
+                'min_bedrooms' => 2,
+                'property_type' => 'house',
+                'location' => 'York',
+            ],
+        ])->assertCreated()->assertJsonPath('data.team_id', $team->id);
+
+        $buyer = Buyer::findOrFail($buyerResponse->json('data.id'));
+        $property = Property::factory()->for($team)->create([
+            'status' => 'available',
+            'price' => 300000,
+            'bedrooms' => 3,
+            'property_type' => 'house',
+            'location' => 'York city centre',
+        ]);
+        Property::factory()->create([
+            'status' => 'available',
+            'price' => 300000,
+            'bedrooms' => 3,
+            'property_type' => 'house',
+            'location' => 'York',
+        ]);
+
+        $generate = $this->postJson("/api/v1/buyers/{$buyer->id}/generate-matches")
+            ->assertOk()
+            ->assertJsonPath('meta.total', 1)
+            ->assertJsonPath('data.0.property_id', $property->id);
+
+        $matchId = $generate->json('data.0.id');
+        $this->patchJson("/api/v1/property-matches/$matchId", [
+            'status' => 'interested',
+            'buyer_interest_level' => 5,
+        ])->assertOk()
+            ->assertJsonPath('data.status', 'interested')
+            ->assertJsonPath('data.buyer_interest_level', 5);
+
+        Notification::assertSentTo($user, NewPropertyMatches::class);
+    }
+
+    public function test_tenancy_agreements_support_deposits_notices_and_renewals(): void
+    {
+        [, $team] = $this->actingAsTeamMember();
+        $property = Property::factory()->for($team)->create();
+
+        $tenantResponse = $this->postJson('/api/v1/tenants', [
+            'name' => 'Morgan Tenant',
+            'email' => 'morgan.tenant@example.test',
+            'phone' => '+44 7700 900123',
+        ])->assertCreated()->assertJsonPath('data.team_id', $team->id);
+
+        $agreementResponse = $this->postJson('/api/v1/tenancy-agreements', [
+            'tenant_id' => $tenantResponse->json('data.id'),
+            'property_id' => $property->id,
+            'start_date' => '2026-08-01',
+            'end_date' => '2027-07-31',
+            'monthly_rent' => 1750,
+            'security_deposit' => 2000,
+            'deposit_scheme' => 'DPS',
+            'deposit_reference' => 'DPS-12345',
+            'payment_frequency' => 'monthly',
+            'status' => 'active',
+        ])->assertCreated()
+            ->assertJsonPath('data.team_id', $team->id)
+            ->assertJsonPath('data.deposit_reference', 'DPS-12345');
+
+        $agreementId = $agreementResponse->json('data.id');
+        $this->postJson("/api/v1/tenancy-agreements/$agreementId/notice", [
+            'notice_type' => 'tenant',
+            'notice_served_at' => '2027-05-01',
+            'notice_expires_at' => '2027-07-31',
+            'end_reason' => 'Tenant is relocating.',
+        ])->assertOk()->assertJsonPath('data.status', 'notice_served');
+
+        $this->postJson("/api/v1/tenancy-agreements/$agreementId/renew", [
+            'start_date' => '2027-07-31',
+            'end_date' => '2028-07-30',
+            'monthly_rent' => 1825,
+        ])->assertCreated()
+            ->assertJsonPath('data.renewal_of_id', $agreementId)
+            ->assertJsonPath('data.status', 'draft')
+            ->assertJsonPath('data.monthly_rent', '1825.00');
     }
 
     private function actingAsTeamMember(): array
