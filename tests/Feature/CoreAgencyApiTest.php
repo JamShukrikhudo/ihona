@@ -373,6 +373,45 @@ class CoreAgencyApiTest extends TestCase
             ->assertJsonPath('data.US.legal_terms.lawyer', 'attorney');
     }
 
+    public function test_setup_supports_country_specific_language_selection(): void
+    {
+        $this->actingAsTeamMember();
+
+        $this->putJson('/api/v1/setup', [
+            'agency_name' => 'Immobilier Boréal',
+            'address' => [
+                'line_1' => '10 Rue Principale',
+                'city' => 'Montréal',
+                'region' => 'Québec',
+                'postal_code' => 'H2B 1X9',
+            ],
+            'operating_countries' => ['CA'],
+            'primary_country' => 'CA',
+            'language' => 'fr',
+        ])->assertCreated()
+            ->assertJsonPath('data.language', 'fr')
+            ->assertJsonPath('data.locale', 'fr_CA')
+            ->assertJsonPath('data.regional_settings.languages', ['en', 'fr']);
+
+        $this->assertSame('Propriété', trans('agency.property', [], 'fr'));
+        $this->getJson('/api/v1/setup/status')
+            ->assertOk()
+            ->assertJsonPath('data.runtime.language', 'fr')
+            ->assertJsonPath('data.runtime.timezone', 'America/Toronto');
+
+        $this->putJson('/api/v1/setup', [
+            'agency_name' => 'Immobilier Boréal',
+            'address' => [
+                'line_1' => '10 Rue Principale',
+                'city' => 'Montréal',
+                'postal_code' => 'H2B 1X9',
+            ],
+            'operating_countries' => ['CA'],
+            'primary_country' => 'CA',
+            'language' => 'de',
+        ])->assertUnprocessable()->assertJsonValidationErrors('language');
+    }
+
     public function test_regular_team_member_cannot_change_organisation_setup(): void
     {
         $team = Team::factory()->create();

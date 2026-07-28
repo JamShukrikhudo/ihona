@@ -46,7 +46,10 @@ property portals. They also expose phone and address formats, tax defaults, and
 regional legal terminology. The selected primary country's complete regional
 settings are snapshotted on the organisation profile, and its postal-code
 format is enforced during setup. Supported packs are GB, IE, AU, CA, US, ZA,
-and NZ.
+and NZ. Setup accepts a language from the selected country pack; authenticated
+v1 requests apply that language and timezone through organisation middleware.
+English and French application terminology catalogs support Canada's bilingual
+pack, with English available to every current pack.
 
 ## Property records
 

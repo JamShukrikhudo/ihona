@@ -33,6 +33,10 @@ class SetupController extends Controller
             'data' => [
                 'complete' => $profile?->isComplete() ?? false,
                 'profile' => $profile,
+                'runtime' => [
+                    'language' => app()->getLocale(),
+                    'timezone' => date_default_timezone_get(),
+                ],
             ],
         ]);
     }
@@ -67,11 +71,19 @@ class SetupController extends Controller
             ]);
         }
         $data['address']['postal_code'] = $postalCode;
+        $language = $data['language'] ?? $country['language'];
+        if (! in_array($language, $country['languages'], true)) {
+            throw ValidationException::withMessages([
+                'language' => ["The selected language is not supported by the {$country['name']} country pack."],
+            ]);
+        }
 
         $defaults = $this->countries->defaults($primaryCountry);
         $attributes = [
             ...$data,
             ...$defaults,
+            'language' => $language,
+            'locale' => $country['locales'][$language] ?? $country['locale'],
             'regional_settings' => $country,
             'operating_countries' => $operatingCountries,
             'primary_country' => $primaryCountry,
@@ -103,6 +115,7 @@ class SetupController extends Controller
             'branding.secondary_color' => ['nullable', 'hex_color'],
             'email' => ['nullable', 'email:rfc', 'max:255'],
             'phone' => ['nullable', 'string', 'max:50'],
+            'language' => ['nullable', 'string', 'max:10'],
             'address' => ['required', 'array'],
             'address.line_1' => ['required', 'string', 'max:255'],
             'address.city' => ['required', 'string', 'max:100'],
