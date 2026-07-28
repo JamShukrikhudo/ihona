@@ -14,7 +14,7 @@ class OrganisationProfile extends Model
         'team_id', 'agency_name', 'logo_path', 'branding', 'email', 'phone',
         'address', 'operating_countries', 'primary_country', 'currency',
         'locale', 'language', 'timezone', 'date_format', 'measurement_system',
-        'area_unit', 'setup_completed_at',
+        'area_unit', 'regional_settings', 'setup_completed_at',
     ];
 
     protected function casts(): array
@@ -23,6 +23,7 @@ class OrganisationProfile extends Model
             'branding' => 'array',
             'address' => 'array',
             'operating_countries' => 'array',
+            'regional_settings' => 'array',
             'setup_completed_at' => 'datetime',
         ];
     }

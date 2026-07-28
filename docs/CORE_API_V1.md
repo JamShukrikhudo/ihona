@@ -42,7 +42,11 @@ The first-time setup API is available at:
 
 Country packs configure the organisation's currency, locale, language, timezone,
 date format, measurement system, area unit, postal-code pattern, and available
-property portals. Supported packs are GB, IE, AU, CA, US, ZA, and NZ.
+property portals. They also expose phone and address formats, tax defaults, and
+regional legal terminology. The selected primary country's complete regional
+settings are snapshotted on the organisation profile, and its postal-code
+format is enforced during setup. Supported packs are GB, IE, AU, CA, US, ZA,
+and NZ.
 
 ## Property records
 

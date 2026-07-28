@@ -293,7 +293,12 @@ class CoreAgencyApiTest extends TestCase
         ])->assertCreated()
             ->assertJsonPath('data.currency', 'GBP')
             ->assertJsonPath('data.timezone', 'Europe/London')
-            ->assertJsonPath('data.measurement_system', 'metric');
+            ->assertJsonPath('data.measurement_system', 'metric')
+            ->assertJsonPath('data.address.postal_code', 'M1 1AA')
+            ->assertJsonPath('data.regional_settings.phone_format', '+44 #### ######')
+            ->assertJsonPath('data.regional_settings.tax_defaults.vat_rate', 20)
+            ->assertJsonPath('data.regional_settings.legal_terms.seller', 'vendor')
+            ->assertJsonPath('data.regional_settings.portals.0', 'rightmove');
 
         $this->assertDatabaseHas('teams', [
             'id' => $team->id,
@@ -319,6 +324,28 @@ class CoreAgencyApiTest extends TestCase
             'operating_countries' => ['IE'],
             'primary_country' => 'GB',
         ])->assertUnprocessable()->assertJsonValidationErrors('primary_country');
+    }
+
+    public function test_setup_validates_the_primary_country_postal_format(): void
+    {
+        $this->actingAsTeamMember();
+
+        $this->putJson('/api/v1/setup', [
+            'agency_name' => 'Atlantic Realty',
+            'address' => [
+                'line_1' => '1 Main Street',
+                'city' => 'Boston',
+                'postal_code' => 'SW1A 1AA',
+            ],
+            'operating_countries' => ['US'],
+            'primary_country' => 'US',
+        ])->assertUnprocessable()->assertJsonValidationErrors('address.postal_code');
+
+        $this->getJson('/api/v1/setup/options')
+            ->assertOk()
+            ->assertJsonPath('data.US.address_format.3', 'state')
+            ->assertJsonPath('data.US.tax_defaults.property_tax', 'local')
+            ->assertJsonPath('data.US.legal_terms.lawyer', 'attorney');
     }
 
     public function test_regular_team_member_cannot_change_organisation_setup(): void

@@ -10,6 +10,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class SetupController extends Controller
 {
@@ -58,10 +59,20 @@ class SetupController extends Controller
             ], 422);
         }
 
+        $country = $this->countries->get($primaryCountry);
+        $postalCode = strtoupper(trim($data['address']['postal_code']));
+        if (preg_match('/'.$country['postal_code_pattern'].'/i', $postalCode) !== 1) {
+            throw ValidationException::withMessages([
+                'address.postal_code' => ["Enter a valid {$country['name']} postal code."],
+            ]);
+        }
+        $data['address']['postal_code'] = $postalCode;
+
         $defaults = $this->countries->defaults($primaryCountry);
         $attributes = [
             ...$data,
             ...$defaults,
+            'regional_settings' => $country,
             'operating_countries' => $operatingCountries,
             'primary_country' => $primaryCountry,
             'setup_completed_at' => now(),
