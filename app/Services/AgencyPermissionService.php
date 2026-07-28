@@ -18,6 +18,7 @@ class AgencyPermissionService
         'calendar', 'task-comments', 'task-attachments',
         'saved-reports', 'dashboard-layouts',
         'marketing-assets', 'email-campaigns',
+        'property-media',
     ];
 
     public const ACTIONS = ['view', 'create', 'edit', 'delete', 'export', 'approve', 'publish', 'archive'];

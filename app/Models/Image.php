@@ -16,6 +16,9 @@ class Image extends Model
     protected $fillable = [
         'team_id',
         'property_id',
+        'type',
+        'title',
+        'alt_text',
         'is_staged',
         'original_image_id',
         'staging_style',
@@ -24,11 +27,24 @@ class Image extends Model
         'file_path',
         'file_name',
         'mime_type',
+        'disk',
+        'file_size',
+        'sort_order',
+        'is_primary',
+        'is_public',
+        'watermark',
+        'metadata',
     ];
 
     protected $casts = [
         'is_staged' => 'boolean',
         'staging_metadata' => 'array',
+        'is_primary' => 'boolean',
+        'is_public' => 'boolean',
+        'watermark' => 'boolean',
+        'metadata' => 'array',
+        'file_size' => 'integer',
+        'sort_order' => 'integer',
     ];
 
     public function property(): BelongsTo
@@ -64,8 +80,9 @@ class Image extends Model
     public function getUrlAttribute(): ?string
     {
         if ($this->file_path) {
-            return asset('storage/' . $this->file_path);
+            return asset('storage/'.$this->file_path);
         }
+
         return null;
     }
 }

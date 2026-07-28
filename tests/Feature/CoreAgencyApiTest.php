@@ -926,6 +926,57 @@ class CoreAgencyApiTest extends TestCase
         $this->getJson("/api/v1/marketing-assets/properties/{$otherProperty->id}/social")->assertNotFound();
     }
 
+    public function test_property_media_is_private_ordered_and_team_scoped(): void
+    {
+        Storage::fake('local');
+        [, $team] = $this->actingAsTeamMember();
+        $property = Property::factory()->for($team)->create();
+
+        $photo = $this->postJson("/api/v1/properties/{$property->id}/media", [
+            'file' => UploadedFile::fake()->image('front.webp'),
+            'type' => 'image',
+            'title' => 'Front elevation',
+            'alt_text' => 'Front of the property',
+            'is_primary' => true,
+            'watermark' => true,
+            'metadata' => ['photographer' => 'Agency Studio'],
+        ])->assertCreated()
+            ->assertJsonPath('data.team_id', $team->id)
+            ->assertJsonPath('data.type', 'image')
+            ->assertJsonPath('data.is_primary', true)
+            ->assertJsonPath('data.sort_order', 1);
+
+        $floorplan = $this->postJson("/api/v1/properties/{$property->id}/media", [
+            'file' => UploadedFile::fake()->create('floorplan.pdf', 120, 'application/pdf'),
+            'type' => 'floorplan',
+            'is_public' => false,
+        ])->assertCreated()
+            ->assertJsonPath('data.sort_order', 2)
+            ->assertJsonPath('data.is_public', false);
+
+        $photoId = $photo->json('data.image_id');
+        $floorplanId = $floorplan->json('data.image_id');
+        Storage::disk('local')->assertExists($photo->json('data.file_path'));
+
+        $this->putJson("/api/v1/properties/{$property->id}/media/reorder", [
+            'media' => [
+                ['id' => $floorplanId, 'sort_order' => 0],
+                ['id' => $photoId, 'sort_order' => 1],
+            ],
+        ])->assertOk()
+            ->assertJsonPath('data.0.image_id', $floorplanId);
+
+        $this->get("/api/v1/properties/{$property->id}/media/{$floorplanId}/download")
+            ->assertOk()
+            ->assertDownload('floorplan.pdf');
+
+        $otherProperty = Property::factory()->for(Team::factory()->create())->create();
+        $this->getJson("/api/v1/properties/{$otherProperty->id}/media")->assertNotFound();
+
+        $this->deleteJson("/api/v1/properties/{$property->id}/media/{$photoId}")->assertNoContent();
+        Storage::disk('local')->assertMissing($photo->json('data.file_path'));
+    }
+
     private function actingAsTeamMember(): array
     {
         $user = User::factory()->create();

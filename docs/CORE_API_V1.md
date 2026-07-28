@@ -194,6 +194,20 @@ the selected organisation.
 
 ## Property marketing
 
+## Property media
+
+`/properties/{property}/media` manages images, floorplans, EPC certificates,
+videos, virtual and 360 tours, documents, and brochures. Uploads are stored on
+private application storage and downloaded through an authenticated,
+organisation-scoped endpoint.
+
+- Media records include title, alt text, MIME type, byte size, public/primary
+  flags, watermark intent, and extensible metadata.
+- `PUT /properties/{property}/media/reorder` atomically updates display order.
+- `GET /properties/{property}/media/{medium}/download` authorises each download.
+- Only one primary item is retained for each media type when a new primary is
+  selected.
+
 Tenant-authorised marketing endpoints expose reusable assets without duplicating
 the existing property record:
 
