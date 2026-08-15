@@ -78,12 +78,44 @@ class ListingFilterDefaultsTest extends TestCase
      */
     public function test_no_maximum_filter_defaults_to_a_bound(): void
     {
-        $component = new \App\Livewire\PropertyList;
+        // Every component that feeds the range scopes, not just the one whose
+        // page happened to be under test when the bug was found.
+        $components = [\App\Livewire\PropertyList::class, \App\Livewire\AdvancedPropertySearch::class];
+
+        foreach ($components as $class) {
+            $component = new $class;
+
+            foreach (['maxPrice', 'maxBedrooms', 'maxBathrooms', 'maxArea'] as $filter) {
+                if (! property_exists($component, $filter)) {
+                    continue;
+                }
+
+                $this->assertNull(
+                    $component->{$filter},
+                    "[{$class}::\${$filter}] defaults to a bound, so it narrows a search nobody asked to narrow"
+                );
+            }
+        }
+    }
+
+    /**
+     * The advanced search renders no results of its own — it dispatches its
+     * filters into PropertyList, which applies them wholesale. So its defaults
+     * become the listings page's bounds the moment anyone uses that form, which
+     * is why fixing only PropertyList was not the root-cause fix it looked like.
+     */
+    public function test_the_advanced_search_does_not_push_bounds_into_the_listings(): void
+    {
+        $component = new \App\Livewire\AdvancedPropertySearch;
+        $method = (new \ReflectionClass($component))->getMethod('getFilters');
+        $method->setAccessible(true);
+        $filters = $method->invoke($component);
 
         foreach (['maxPrice', 'maxBedrooms', 'maxBathrooms', 'maxArea'] as $filter) {
+            $this->assertArrayHasKey($filter, $filters);
             $this->assertNull(
-                $component->{$filter},
-                "[{$filter}] defaults to a bound, so it narrows a search nobody asked to narrow"
+                $filters[$filter],
+                "the advanced search hands [{$filter}] to the listings page as a bound"
             );
         }
     }

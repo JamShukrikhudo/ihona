@@ -106,9 +106,22 @@ class PropertyDetailTest extends TestCase
 
         preg_match_all('/<model-viewer\b[^>]*/s', $view, $viewers);
 
+        // model-viewer accepts only auto|manual for reveal. An invented value
+        // silently disables every load gate, so the viewer stays a blank box —
+        // asserting the string alone would lock that in, which it once did.
+        $valid = ['auto', 'manual'];
+
         foreach ($viewers[0] as $viewer) {
-            $this->assertStringContainsString('reveal="interaction"', $viewer, 'a 3D model must wait to be asked for');
-            $this->assertStringContainsString('loading="lazy"', $viewer);
+            $this->assertStringContainsString('loading="lazy"', $viewer, 'a 3D model must wait to be asked for');
+
+            preg_match('/reveal="([^"]*)"/', $viewer, $reveal);
+
+            $this->assertNotEmpty($reveal, 'a 3D model needs an explicit reveal strategy');
+            $this->assertContains(
+                $reveal[1],
+                $valid,
+                "reveal=\"{$reveal[1]}\" is not a value model-viewer accepts (".implode('|', $valid).')'
+            );
         }
 
         preg_match_all('/<video\b[^>]*/s', $view, $videos);
@@ -117,6 +130,42 @@ class PropertyDetailTest extends TestCase
 
         foreach ($videos[0] as $video) {
             $this->assertStringContainsString('preload="none"', $video, 'a video must not preload');
+        }
+    }
+
+    /**
+     * The reveal strategy has to match the installed package, not a value that
+     * merely sounds right. Read it from the type definition rather than a
+     * literal, so an upgrade that changes the vocabulary fails here.
+     */
+    public function test_the_reveal_strategy_exists_in_the_installed_package(): void
+    {
+        $definition = base_path('node_modules/@google/model-viewer/lib/features/loading.d.ts');
+
+        if (! file_exists($definition)) {
+            $this->markTestSkipped('model-viewer is not installed');
+        }
+
+        preg_match(
+            "/RevealAttributeValue\s*=\s*([^;]+);/",
+            file_get_contents($definition),
+            $declared
+        );
+
+        $this->assertNotEmpty($declared, 'could not read the reveal vocabulary');
+
+        preg_match_all(
+            '/reveal="([^"]*)"/',
+            file_get_contents(resource_path('views/livewire/property-detail.blade.php')),
+            $used
+        );
+
+        foreach ($used[1] as $value) {
+            $this->assertStringContainsString(
+                "'".$value."'",
+                $declared[1],
+                "reveal=\"{$value}\" is not declared by the installed model-viewer"
+            );
         }
     }
 

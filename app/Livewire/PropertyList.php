@@ -145,7 +145,10 @@ class PropertyList extends Component
                     $query->country($this->country);
                 }
 
-                $query->with('features', 'images');
+                // 'media' is Spatie's relation, which the card reads for its
+                // photograph; 'images' is a separate hasMany and does not
+                // cover it.
+                $query->with('features', 'images', 'media');
 
                 $properties = $query->paginate(12);
 
@@ -210,6 +213,9 @@ class PropertyList extends Component
     private function getCacheKey()
     {
         return 'properties_' . md5(json_encode([
+            // The cached value is a paginator, so the page is part of what
+            // identifies it. Without this, page 2 served page 1's twelve cards.
+            $this->getPage(),
             $this->search,
             $this->minPrice,
             $this->maxPrice,

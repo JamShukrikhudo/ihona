@@ -33,7 +33,7 @@
                                     </div>
                                     <model-viewer
                                         loading="lazy"
-                                        reveal="interaction"
+                                        reveal="auto"
                                         src="{{ $property->getFirstMediaUrl('3d_models') }}"
                                         alt="3D model of {{ $property->title }}"
                                         @if($arTourAvailable && $arTourConfig)
@@ -1129,7 +1129,7 @@
                     <x-ui.button :href="route('property.book', $property->id)">
                         {{ __('Book a viewing') }}
                     </x-ui.button>
-                    <x-ui.button variant="secondary" href="#enquiry">
+                    <x-ui.button variant="secondary" :href="route('contact.show', ['property' => $property->id])">
                         {{ __('Ask a question') }}
                     </x-ui.button>
                 </div>

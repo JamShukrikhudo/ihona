@@ -168,7 +168,7 @@
             <x-ui.button size="sm" :href="route('property.book', $property->id)">
                 {{ __('Book a viewing') }}
             </x-ui.button>
-            <x-ui.button size="sm" variant="ghost" :href="route('property.detail', $property->id).'#enquiry'">
+            <x-ui.button size="sm" variant="ghost" :href="route('contact.show', ['property' => $property->id])">
                 {{ __('Ask a question') }}
             </x-ui.button>
         </div>
