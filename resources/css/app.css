@@ -1,3 +1,441 @@
 @import 'tailwindcss';
+
 @plugin "@tailwindcss/forms";
 @plugin "@tailwindcss/typography";
+
+/* --- Self-hosted, latin subset. No third-party request on a public page. --- */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 400 800;
+  font-stretch: 62% 125%;
+  font-display: swap;
+  src: url('/fonts/archivo-variable.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Instrument Sans';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/fonts/instrument-sans-variable.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/ibm-plex-mono-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/ibm-plex-mono-500.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/ibm-plex-mono-600.woff2') format('woff2');
+}
+
+/* ============================================================================
+   SURVEY SHEET — design system tokens
+   The interface as a surveyor's drawing set. Trust comes from disclosure, not
+   decoration: every number on the page is a fact the record already holds.
+   Full reference: docs/design/survey-sheet.html
+   ========================================================================= */
+
+@theme {
+  /* --- Colour. One definition per token: light-dark() picks the value from
+         the element's used color-scheme, which the stamp below controls. The
+         dark side is the night drawing — ink becomes ground, vellum ink. ---- */
+
+  /* Ground: drafting film. Cool green-grey, never cream. */
+  --color-sheet-000: light-dark(#FCFDFB, #1B2220);  /* card faces, inputs      */
+  --color-sheet-100: light-dark(#F1F3EE, #141A18);  /* page ground             */
+  --color-sheet-200: light-dark(#E4E8E0, #232C29);  /* wells, table stripes    */
+  --color-sheet-300: light-dark(#CFD5CA, #35403C);  /* hairlines, borders      */
+  --color-sheet-400: light-dark(#A9B2A6, #5D6B66);  /* placeholder text only   */
+
+  /* Ink: graphite. Green-black, never #000. */
+  --color-ink-900: light-dark(#121614, #F0F3EE);    /* headings — 15.9:1       */
+  --color-ink-700: light-dark(#262E2B, #DBE0DA);    /* body copy — 12.2:1      */
+  --color-ink-500: light-dark(#4E5A55, #A3ADA7);    /* labels — 6.3:1          */
+  --color-ink-400: light-dark(#64706B, #808C87);    /* annotation — 4.5:1      */
+
+  /* Survey orange: wayfinding + primary action. Budget: <=3% of pixels. */
+  --color-survey-700: light-dark(#A82D0C, #FFA187);
+  --color-survey-600: light-dark(#C93A12, #FF7A52); /* orange as text — 4.5:1  */
+  --color-survey-500: #EE4A1E;                      /* fills, focus ring       */
+  --color-survey-300: light-dark(#F8A98F, #8A3D22);
+  --color-survey-100: light-dark(#FCE7DF, #3A1B10);
+
+  /* Verdigris: verified, compliant, in hand. */
+  --color-verdigris-700: light-dark(#1F4E42, #8FD3BE);
+  --color-verdigris-600: light-dark(#2F6F5E, #4E9A85);
+  --color-verdigris-500: #3E8D77;
+  --color-verdigris-100: light-dark(#DDEBE5, #16302A);
+
+  /* Draft blue: informational annotation, inline links, map geometry. */
+  --color-draft-700: light-dark(#1B3A6B, #A9C6F2);
+  --color-draft-500: light-dark(#2E5DA6, #7CA7E8);
+  --color-draft-100: light-dark(#DEE6F2, #16233A);
+
+  /* Caution / Fault: compliance expiring, compliance failed. */
+  --color-caution-700: light-dark(#7A5106, #F0CE87);
+  --color-caution-600: light-dark(#9A6708, #E0AC45);
+  --color-caution-100: light-dark(#FBEED0, #33260A);
+  --color-fault-700: light-dark(#8B1D1D, #F5A9A2);
+  --color-fault-600: light-dark(#A82424, #E86B62);
+  --color-fault-100: light-dark(#F8E0DE, #35191A);
+
+  /* --- EPC statutory bands. Legally recognised — never restyle these. --- */
+  --color-epc-a: #008054;
+  --color-epc-b: #19B459;
+  --color-epc-c: #8DCE46;
+  --color-epc-d: #FFD500;
+  --color-epc-e: #FCAA65;
+  --color-epc-f: #EF8023;
+  --color-epc-g: #E9153B;
+
+  /* --- Typefaces: three roles, three jobs. ------------------------------ */
+  --font-display: 'Archivo', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* --- Type scale. Mono roles carry every measurement on the page. ------ */
+  --text-annotation: 0.6875rem;   --text-annotation--line-height: 1.2;
+  --text-annotation--letter-spacing: 0.09em;
+  --text-micro: 0.75rem;          --text-micro--line-height: 1.4;
+  --text-caption: 0.8125rem;      --text-caption--line-height: 1.5;
+  --text-body-s: 0.875rem;        --text-body-s--line-height: 1.6;
+  --text-body: 1rem;              --text-body--line-height: 1.65;
+  --text-body-l: 1.125rem;        --text-body-l--line-height: 1.6;
+  --text-h5: 1.25rem;             --text-h5--line-height: 1.3;
+  --text-h4: 1.5rem;              --text-h4--line-height: 1.25;
+  --text-h3: 2rem;                --text-h3--line-height: 1.15;
+  --text-h2: clamp(2.25rem, 1.6rem + 2.4vw, 3.25rem);
+  --text-h2--line-height: 1.06;   --text-h2--letter-spacing: -0.02em;
+  --text-h1: clamp(2.75rem, 1.5rem + 4.6vw, 5rem);
+  --text-h1--line-height: 0.98;   --text-h1--letter-spacing: -0.03em;
+  --text-mega: clamp(3.5rem, 1.4rem + 8vw, 8rem);
+  --text-mega--line-height: 0.9;  --text-mega--letter-spacing: -0.04em;
+
+  /* --- Spacing: 4px module. --spacing-sheet-* are layout-rhythm steps. -- */
+  --spacing: 0.25rem;
+  --spacing-gutter: 1.5rem;       /* column gap, card padding              */
+  --spacing-margin: 2rem;         /* sheet margin, mobile                  */
+  --spacing-margin-lg: 5.5rem;    /* sheet margin, desktop                 */
+  --spacing-band: 4rem;           /* between blocks inside a section       */
+  --spacing-section: 6rem;        /* between sections, mobile              */
+  --spacing-section-lg: 8rem;     /* between sections, desktop             */
+
+  --container-sheet: 77.5rem;     /* 1240px — the drawing sheet            */
+  --container-reading: 42rem;     /* 672px — ~65ch of body copy            */
+
+  /* --- Radii: near-square. The notch does the shape work, not the round. */
+  --radius-sheet: 0.1875rem;      /* 3px — cards, inputs, buttons          */
+  --radius-tag: 0.125rem;         /* 2px — chips, badges                   */
+  --radius-pill: 999px;           /* avatars, toggles only                 */
+
+  /* --- Elevation: ink-tinted, low. Paper resting on paper. ------------- */
+  --shadow-lift-1: 0 1px 0 0 rgb(18 22 20 / 0.04), 0 1px 2px 0 rgb(18 22 20 / 0.06);
+  --shadow-lift-2: 0 1px 0 0 rgb(18 22 20 / 0.05), 0 6px 16px -4px rgb(18 22 20 / 0.10);
+  --shadow-lift-3: 0 2px 0 0 rgb(18 22 20 / 0.05), 0 18px 40px -12px rgb(18 22 20 / 0.18);
+
+  /* --- Motion: a pen laid down, then lifted. --------------------------- */
+  --ease-draw: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-set: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-snap: cubic-bezier(0.4, 0, 0.2, 1);
+  --animate-duration-tick: 90ms;
+  --animate-duration-quick: 160ms;
+  --animate-duration-move: 280ms;
+  --animate-duration-reveal: 480ms;
+}
+
+/* --- Theme stamp. light-dark() above reads the used color-scheme, so the
+       whole palette flips from these three rules alone. Shadows are not a
+       <color> and cannot use light-dark(), so they are set per theme. ------ */
+@layer base {
+  :root {
+    color-scheme: light dark;
+  }
+  :root[data-theme='light'] { color-scheme: light; }
+  :root[data-theme='dark']  { color-scheme: dark; }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) {
+      --shadow-lift-1: 0 1px 0 0 rgb(0 0 0 / 0.3), 0 1px 2px 0 rgb(0 0 0 / 0.4);
+      --shadow-lift-2: 0 1px 0 0 rgb(0 0 0 / 0.3), 0 6px 16px -4px rgb(0 0 0 / 0.5);
+      --shadow-lift-3: 0 2px 0 0 rgb(0 0 0 / 0.3), 0 18px 40px -12px rgb(0 0 0 / 0.6);
+    }
+  }
+  :root[data-theme='dark'] {
+    --shadow-lift-1: 0 1px 0 0 rgb(0 0 0 / 0.3), 0 1px 2px 0 rgb(0 0 0 / 0.4);
+    --shadow-lift-2: 0 1px 0 0 rgb(0 0 0 / 0.3), 0 6px 16px -4px rgb(0 0 0 / 0.5);
+    --shadow-lift-3: 0 2px 0 0 rgb(0 0 0 / 0.3), 0 18px 40px -12px rgb(0 0 0 / 0.6);
+  }
+
+  html {
+    background: var(--color-sheet-100);
+    color: var(--color-ink-700);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* The viewer paints its own ground behind the page; body must be explicit. */
+  body {
+    background: var(--color-sheet-100);
+    color: var(--color-ink-700);
+  }
+
+  h1, h2, h3, .u-display {
+    font-family: var(--font-display);
+    font-stretch: 116%;
+    font-weight: 700;
+    color: var(--color-ink-900);
+    text-wrap: balance;
+  }
+
+  :where(a, button, input, select, textarea, [tabindex]):focus-visible {
+    outline: 2px solid var(--color-survey-500);
+    outline-offset: 2px;
+    border-radius: var(--radius-tag);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  /* --- The notch. Echoes the EPC chevron and the drawing sheet's cut
+         corner. One shape idiom, used sparingly, and never on two nested
+         elements at once. ------------------------------------------------ */
+  .notch-br { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%); }
+  .notch-tr { clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%); }
+
+  /* --- Annotation label. Every eyebrow, field label and unit on the page. */
+  .u-annotation {
+    font-family: var(--font-mono);
+    font-size: var(--text-annotation);
+    letter-spacing: var(--text-annotation--letter-spacing);
+    text-transform: uppercase;
+    color: var(--color-ink-400);
+  }
+
+  /* --- Dimension line. The section header device: a measured rule with
+         end ticks, the way a drawing marks a span. ------------------------ */
+  .dimension-line {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--color-ink-400);
+  }
+  .dimension-line::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--color-sheet-300);
+    box-shadow: 0 -3px 0 -2px var(--color-sheet-300), 0 3px 0 -2px var(--color-sheet-300);
+  }
+
+  /* --- Buttons ---------------------------------------------------------- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.6875rem 1.25rem;
+    border: 1px solid transparent;
+    border-radius: var(--radius-sheet);
+    font-family: var(--font-sans);
+    font-size: var(--text-body-s);
+    font-weight: 600;
+    line-height: 1;
+    cursor: pointer;
+    transition:
+      background-color var(--animate-duration-quick) var(--ease-snap),
+      border-color var(--animate-duration-quick) var(--ease-snap),
+      transform var(--animate-duration-tick) var(--ease-snap),
+      box-shadow var(--animate-duration-quick) var(--ease-snap);
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+  .btn-primary {
+    background: var(--color-survey-500);
+    color: #fff;
+    box-shadow: var(--shadow-lift-1);
+  }
+  .btn-primary:hover:not(:disabled) {
+    background: var(--color-survey-600);
+    box-shadow: var(--shadow-lift-2);
+  }
+
+  .btn-secondary {
+    background: var(--color-sheet-000);
+    color: var(--color-ink-900);
+    border-color: var(--color-sheet-300);
+  }
+  .btn-secondary:hover:not(:disabled) {
+    border-color: var(--color-ink-900);
+    background: var(--color-sheet-000);
+  }
+
+  .btn-ghost { background: transparent; color: var(--color-ink-500); }
+  .btn-ghost:hover:not(:disabled) {
+    background: var(--color-sheet-200);
+    color: var(--color-ink-900);
+  }
+
+  .btn-danger { background: var(--color-fault-600); color: #fff; }
+  .btn-danger:hover:not(:disabled) { background: var(--color-fault-700); }
+
+  /* --- Fields ----------------------------------------------------------- */
+  .field-label {
+    display: block;
+    margin-bottom: 0.375rem;
+    font-family: var(--font-mono);
+    font-size: var(--text-annotation);
+    letter-spacing: var(--text-annotation--letter-spacing);
+    text-transform: uppercase;
+    color: var(--color-ink-500);
+  }
+  .field {
+    width: 100%;
+    padding: 0.6875rem 0.875rem;
+    background: var(--color-sheet-000);
+    border: 1px solid var(--color-sheet-300);
+    border-radius: var(--radius-sheet);
+    color: var(--color-ink-900);
+    font-family: var(--font-sans);
+    font-size: var(--text-body-s);
+    transition:
+      border-color var(--animate-duration-quick) var(--ease-snap),
+      box-shadow var(--animate-duration-quick) var(--ease-snap);
+  }
+  .field::placeholder { color: var(--color-sheet-400); }
+  .field:hover:not(:disabled) { border-color: var(--color-ink-400); }
+  .field:focus {
+    outline: none;
+    border-color: var(--color-survey-500);
+    box-shadow: 0 0 0 3px var(--color-survey-100);
+  }
+  .field[aria-invalid='true'] {
+    border-color: var(--color-fault-600);
+    box-shadow: 0 0 0 3px var(--color-fault-100);
+  }
+  .field-hint  { margin-top: 0.375rem; font-size: var(--text-caption); color: var(--color-ink-400); }
+  .field-error { margin-top: 0.375rem; font-size: var(--text-caption); color: var(--color-fault-600); }
+
+  /* --- Property card ---------------------------------------------------- */
+  .card {
+    background: var(--color-sheet-000);
+    border: 1px solid var(--color-sheet-300);
+    border-radius: var(--radius-sheet);
+    box-shadow: var(--shadow-lift-1);
+    overflow: hidden;
+    transition:
+      box-shadow var(--animate-duration-move) var(--ease-set),
+      border-color var(--animate-duration-move) var(--ease-set),
+      transform var(--animate-duration-move) var(--ease-set);
+  }
+  .card:hover {
+    border-color: var(--color-ink-400);
+    box-shadow: var(--shadow-lift-3);
+    transform: translateY(-2px);
+  }
+  .card:hover .card-media img { transform: scale(1.03); }
+  .card-media { position: relative; overflow: hidden; aspect-ratio: 3 / 2; background: var(--color-sheet-200); }
+  .card-media img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+    transition: transform var(--animate-duration-reveal) var(--ease-set);
+  }
+
+  /* --- THE SIGNATURE: disclosure strip. A measured band of facts the
+         record already holds, sitting where every competitor puts a
+         "FEATURED!" badge. Mono, tabular, no adjectives. ------------------ */
+  .disclosure-strip {
+    display: flex;
+    align-items: stretch;
+    border-block: 1px solid var(--color-sheet-300);
+    background: var(--color-sheet-100);
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+  .disclosure-cell {
+    flex: 1;
+    padding: 0.5rem 0.4375rem;
+    border-inline-start: 1px solid var(--color-sheet-300);
+    min-width: 0;
+  }
+  .disclosure-cell:first-child { border-inline-start: 0; }
+  .disclosure-cell dt {
+    font-size: 0.59375rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-ink-400);
+    white-space: nowrap;
+  }
+  .disclosure-cell dd {
+    margin: 0.125rem 0 0;
+    font-size: 0.71875rem;
+    font-weight: 500;
+    color: var(--color-ink-900);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  /* Under 380px five cells stop fitting — keep EPC, £/sq ft, days listed. */
+  @media (max-width: 380px) {
+    .disclosure-strip .disclosure-cell:nth-child(n + 4) { display: none; }
+  }
+
+  /* --- EPC band. Statutory colours, chevron geometry. ------------------- */
+  .epc-band {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2rem;
+    padding: 0.1875rem 0.75rem 0.1875rem 0.5rem;
+    clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 50%, calc(100% - 8px) 100%, 0 100%);
+    font-family: var(--font-mono);
+    font-size: var(--text-micro);
+    font-weight: 600;
+    color: #fff;
+  }
+  .epc-a { background: var(--color-epc-a); }
+  .epc-b { background: var(--color-epc-b); }
+  .epc-c { background: var(--color-epc-c); color: var(--color-ink-900); }
+  .epc-d { background: var(--color-epc-d); color: var(--color-ink-900); }
+  .epc-e { background: var(--color-epc-e); color: var(--color-ink-900); }
+  .epc-f { background: var(--color-epc-f); }
+  .epc-g { background: var(--color-epc-g); }
+
+  /* --- Status chip ------------------------------------------------------ */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius-tag);
+    font-family: var(--font-mono);
+    font-size: var(--text-annotation);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .chip-verified { background: var(--color-verdigris-100); color: var(--color-verdigris-700); }
+  .chip-info     { background: var(--color-draft-100);     color: var(--color-draft-700); }
+  .chip-caution  { background: var(--color-caution-100);   color: var(--color-caution-700); }
+  .chip-fault    { background: var(--color-fault-100);     color: var(--color-fault-700); }
+  .chip-new      { background: var(--color-survey-100);    color: var(--color-survey-700); }
+}

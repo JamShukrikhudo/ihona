@@ -1,5 +1,4 @@
 <div>
-    @section('content')
         <div class="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-blue-900">
             <!-- Header -->
             <div class="bg-black/30 backdrop-blur-sm border-b border-white/10">
@@ -191,9 +190,9 @@
                 </div>
             </div>
         </div>
-    @endsection
 
     @push('scripts')
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
     @endpush
 </div>
+
