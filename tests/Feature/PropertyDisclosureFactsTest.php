@@ -204,9 +204,13 @@ class PropertyDisclosureFactsTest extends TestCase
         $this->assertSame('€', $this->property(['currency' => 'EUR'])->currencySymbol());
     }
 
+    /**
+     * A code is not a symbol: printed flush against the number it read
+     * "CHF1,234,000". It keeps a space until the code earns a symbol.
+     */
     public function test_an_unmapped_currency_falls_back_to_its_code(): void
     {
-        $this->assertSame('CHF', $this->property(['currency' => 'CHF'])->currencySymbol());
+        $this->assertSame('CHF ', $this->property(['currency' => 'CHF'])->currencySymbol());
     }
 
     public function test_energy_band_prefers_the_certificate_record(): void

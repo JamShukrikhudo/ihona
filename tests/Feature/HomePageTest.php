@@ -48,6 +48,54 @@ class HomePageTest extends TestCase
         $this->assertStringContainsString('postcode', strtolower($m[1]));
     }
 
+    /**
+     * The old form posted name="property_type", which PropertyList never bound,
+     * so the filter did nothing and the search returned everything. Correcting
+     * the name turned "does nothing" into "returns nothing": the options are
+     * lowercase and half the stock is stored title case.
+     *
+     * @return list<array{string, string}>
+     */
+    public static function storedTypeSpellings(): array
+    {
+        return [
+            'title case' => ['House', 'house'],
+            'lower case' => ['house', 'house'],
+            'villa' => ['Villa', 'villa'],
+            'hmo' => ['HMO', 'hmo'],
+        ];
+    }
+
+    #[\PHPUnit\Framework\Attributes\DataProvider('storedTypeSpellings')]
+    public function test_the_type_filter_finds_stock_however_it_was_stored(string $stored, string $searched): void
+    {
+        $property = Property::factory()->create([
+            'property_type' => $stored,
+            'title' => 'Type Probe House',
+            'status' => 'For Sale',
+        ]);
+
+        $html = $this->get('/properties?propertyType='.$searched)->assertOk()->getContent();
+
+        $this->assertStringContainsString(
+            $property->title,
+            $html,
+            "a property stored as [{$stored}] is unreachable when searching [{$searched}]"
+        );
+    }
+
+    public function test_every_type_the_form_offers_is_a_type_the_platform_stores(): void
+    {
+        $html = $this->get('/')->assertOk()->getContent();
+
+        preg_match('/<select[^>]*name="propertyType".*?<\/select>/s', $html, $select);
+        preg_match_all('/value="([^"]+)"/', $select[0] ?? '', $offered);
+
+        foreach (['house', 'apartment', 'condo', 'townhouse', 'villa', 'hmo'] as $type) {
+            $this->assertContains($type, $offered[1] ?? [], "[{$type}] stock cannot be searched for");
+        }
+    }
+
     public function test_featured_properties_render_as_the_property_card(): void
     {
         $this->featured();

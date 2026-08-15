@@ -61,7 +61,9 @@ Route::get('/properties/compare/{propertyIds}', PropertyComparison::class)->name
 
 Route::controller(ContactController::class)->group(function () {
     Route::get('/contact', 'show')->name('contact.show');
-    Route::post('/contact', 'submit')->name('contact.submit');
+    // Unauthenticated public write. Throttled so the enquiries table and the
+    // agency's inbox cannot be filled by anyone with a loop.
+    Route::post('/contact', 'submit')->name('contact.submit')->middleware('throttle:10,1');
 });
 
 // The Survey Sheet styleguide, rendered from the same components the public

@@ -24,8 +24,29 @@ class PropertyMap extends Component
     public function __construct($properties = null)
     {
         $this->properties = Collection::wrap(
-            $properties !== null ? $properties : self::mappable()->get()
+            $properties !== null ? $properties : self::defaults()
         )->map(fn ($property) => self::point($property))->values();
+    }
+
+    /**
+     * A Livewire component re-renders on every debounced keystroke, and this
+     * component sits inside one. Without memoising, each of those paid for a
+     * 500-row query and a full json_encode whose output wire:ignore then
+     * discarded.
+     *
+     * Held in the container rather than a static, so it lasts exactly one
+     * request. A static outlived the request under Octane and outlived the
+     * test that populated it, which is a stale map either way.
+     */
+    private static function defaults(): Collection
+    {
+        $key = self::class.':defaults';
+
+        if (! app()->bound($key)) {
+            app()->instance($key, self::mappable()->get());
+        }
+
+        return app($key);
     }
 
     /**

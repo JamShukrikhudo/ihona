@@ -519,9 +519,14 @@ class Property extends Model implements HasMedia
             ->when($max !== null && $max !== '', fn (Builder $q) => $q->where('area_sqft', '<=', $max));
     }
 
+    /**
+     * Matched without regard to case. The staff panel stores 'house' while the
+     * factory and seeder store 'House', so an exact match returned nothing for
+     * half the stock on any case-sensitive collation.
+     */
     public function scopePropertyType(Builder $query, $type): Builder
     {
-        return $query->where('property_type', $type);
+        return $query->whereRaw('LOWER(property_type) = ?', [strtolower(trim((string) $type))]);
     }
 
     public function scopeHasAmenities(Builder $query, array $amenities): Builder

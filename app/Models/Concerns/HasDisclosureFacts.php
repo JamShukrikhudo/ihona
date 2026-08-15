@@ -89,8 +89,14 @@ trait HasDisclosureFacts
         $symbols = ['GBP' => '£', 'EUR' => '€', 'USD' => '$', 'AUD' => '$', 'CAD' => '$', 'NZD' => '$'];
         $code = strtoupper(trim((string) $this->currency));
 
-        return $symbols[$code]
-            ?? ($code ?: (app(\App\Settings\GeneralSettings::class)->site_currency ?: '£'));
+        if (isset($symbols[$code])) {
+            return $symbols[$code];
+        }
+
+        // An unmapped code is a code, not a symbol: printing it flush against
+        // the number gave "JPY1,234,000". The trailing space keeps it readable
+        // until the code earns a symbol here.
+        return $code !== '' ? $code.' ' : (app(\App\Settings\GeneralSettings::class)->site_currency ?: '£');
     }
 
     /**
@@ -138,17 +144,35 @@ trait HasDisclosureFacts
     }
 
     /**
-     * Read from whichever record supplied the band. Choosing a source
-     * independently would let a band from the certificate be badged with a
-     * score from the legacy column — a band B wearing a band D's 55.
+     * The score has to belong to the band being shown, or a certificate's band
+     * B ends up wearing the legacy column's band-D 55.
+     *
+     * The certificate wins. Where it carries a rating but no score, the column
+     * is used only if it agrees on the band — that is the same reading, just
+     * recorded twice — and dropped when it contradicts.
      */
     public function energyScore(): ?int
     {
-        $score = $this->normaliseBand(data_get($this->epc, 'rating')) !== null
-            ? data_get($this->epc, 'score')
-            : $this->energy_score;
+        $certificateBand = $this->normaliseBand(data_get($this->epc, 'rating'));
+
+        if ($certificateBand === null) {
+            return is_numeric($this->energy_score) ? (int) $this->energy_score : null;
+        }
+
+        $score = data_get($this->epc, 'score');
+
+        if (! is_numeric($score) && $this->normaliseBand($this->energy_rating) === $certificateBand) {
+            $score = $this->energy_score;
+        }
 
         return is_numeric($score) ? (int) $score : null;
+    }
+
+    /** A listing dated in the future is not yet on the market. */
+    public function isComingSoon(): bool
+    {
+        return $this->list_date instanceof CarbonInterface
+            && $this->list_date->startOfDay()->greaterThan(now()->startOfDay());
     }
 
     private function normaliseBand(mixed $band): ?string

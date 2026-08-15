@@ -70,6 +70,34 @@ class PropertyMapTest extends TestCase
         $this->assertStringNotContainsString("'<strong>' + property.title", $html);
     }
 
+    /**
+     * Memoising the default query stops a Livewire re-render paying for it on
+     * every keystroke — but a static would outlive the request under Octane and
+     * outlive the test that populated it, serving a stale map either way.
+     */
+    public function test_the_memoised_map_does_not_outlive_the_request(): void
+    {
+        $key = \App\View\Components\PropertyMap::class.':defaults';
+
+        // Static methods are fine; a static *property* is the thing that would
+        // hold the memo past the end of the request.
+        $this->assertDoesNotMatchRegularExpression(
+            '/\b(private|protected|public)\s+static\s+[^(]*\$/',
+            file_get_contents(app_path('View/Components/PropertyMap.php')),
+            'a static property memo outlives the request'
+        );
+
+        $this->mapped(['title' => 'First render']);
+        $this->assertStringContainsString('First render', Blade::render('<x-property-map />'));
+        $this->assertTrue(app()->bound($key), 'the memo should live in the container');
+
+        // What the next request does: the container is rebuilt, so the memo goes.
+        app()->forgetInstance($key);
+        $this->mapped(['title' => 'Added later']);
+
+        $this->assertStringContainsString('Added later', Blade::render('<x-property-map />'));
+    }
+
     public function test_the_default_query_is_bounded(): void
     {
         $this->assertStringContainsString(

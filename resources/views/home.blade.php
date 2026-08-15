@@ -37,11 +37,19 @@
                 <label for="home-type" class="sr-only">{{ __('Property type') }}</label>
                 <select id="home-type" name="propertyType"
                         class="basis-40 rounded-sheet border border-sheet-300 bg-sheet-000 px-3 py-2.5 font-sans text-body-s text-ink-900">
+                    {{-- Every type the platform actually stores. Villa and HMO
+                         stock existed but had no way to be searched for. --}}
                     <option value="">{{ __('Any type') }}</option>
-                    <option value="house">{{ __('House') }}</option>
-                    <option value="apartment">{{ __('Apartment') }}</option>
-                    <option value="condo">{{ __('Condo') }}</option>
-                    <option value="townhouse">{{ __('Townhouse') }}</option>
+                    @foreach ([
+                        'house' => __('House'),
+                        'apartment' => __('Apartment'),
+                        'condo' => __('Condo'),
+                        'townhouse' => __('Townhouse'),
+                        'villa' => __('Villa'),
+                        'hmo' => __('HMO'),
+                    ] as $value => $label)
+                        <option value="{{ $value }}">{{ $label }}</option>
+                    @endforeach
                 </select>
 
                 <label for="home-beds" class="sr-only">{{ __('Minimum bedrooms') }}</label>

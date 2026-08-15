@@ -58,7 +58,8 @@
                     :error="$errors->first('phone')">
             <input type="tel" id="phone" name="phone" value="{{ old('phone') }}"
                    autocomplete="tel"
-                   aria-describedby="phone-hint"
+                   aria-describedby="phone-hint{{ $errors->has('phone') ? ' phone-error' : '' }}"
+                   @if ($errors->has('phone')) aria-invalid="true" @endif
                    class="{{ $control }}{{ $errors->has('phone') ? $invalid : '' }}">
         </x-ui.field>
 

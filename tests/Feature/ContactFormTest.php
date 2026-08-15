@@ -3,8 +3,11 @@
 namespace Tests\Feature;
 
 use App\Models\ContactMessage;
+use App\Mail\EnquiryReceived;
 use App\Models\Property;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\RateLimiter;
 use Tests\TestCase;
 
 /**
@@ -139,6 +142,48 @@ class ContactFormTest extends TestCase
         $confirmed = $this->get(route('contact.show'))->assertOk()->getContent();
 
         $this->assertStringContainsString('Message sent', $confirmed);
+    }
+
+    /**
+     * The form promises a reply within one working day. Nothing read the table
+     * it wrote to — no resource, no notification — so the promise had nothing
+     * behind it.
+     */
+    public function test_an_enquiry_reaches_someone(): void
+    {
+        Mail::fake();
+
+        $this->post(route('contact.submit'), $this->payload())->assertRedirect();
+
+        Mail::assertSent(EnquiryReceived::class, function (EnquiryReceived $mail) {
+            return $mail->hasTo(app(\App\Settings\GeneralSettings::class)->site_email)
+                && $mail->hasReplyTo('alex@example.com');
+        });
+    }
+
+    public function test_a_failed_notification_does_not_lose_the_enquiry(): void
+    {
+        Mail::shouldReceive('to')->andThrow(new \RuntimeException('mail is down'));
+
+        $this->post(route('contact.submit'), $this->payload())->assertRedirect();
+
+        $this->assertSame(1, ContactMessage::count(), 'the enquiry is saved before anyone is told');
+    }
+
+    /**
+     * An unauthenticated public write. Without a limit, anyone with a loop can
+     * fill the enquiries table and the agency's inbox.
+     */
+    public function test_submissions_are_rate_limited(): void
+    {
+        Mail::fake();
+        RateLimiter::clear('');
+
+        for ($i = 0; $i < 10; $i++) {
+            $this->post(route('contact.submit'), $this->payload())->assertRedirect();
+        }
+
+        $this->post(route('contact.submit'), $this->payload())->assertStatus(429);
     }
 
     public function test_what_the_visitor_typed_survives_a_failed_submission(): void

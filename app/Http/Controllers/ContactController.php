@@ -3,8 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\ContactMessage;
+use App\Mail\EnquiryReceived;
 use App\Models\Property;
+use App\Settings\GeneralSettings;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class ContactController extends Controller
 {
@@ -42,7 +46,21 @@ class ContactController extends Controller
             'property_id.exists' => __('That property is no longer listed. Send the question without it and we will find it.'),
         ]);
 
-        ContactMessage::create($validated);
+        $enquiry = ContactMessage::create($validated);
+
+        // The form promises a reply within one working day. Nothing read this
+        // table — no resource, no notification — so the promise had nothing
+        // behind it. The row is already saved, so a mail failure is logged
+        // rather than shown to someone who did nothing wrong.
+        try {
+            Mail::to(app(GeneralSettings::class)->site_email)
+                ->send(new EnquiryReceived($enquiry->load('property')));
+        } catch (\Throwable $e) {
+            Log::error('Could not send the enquiry notification', [
+                'enquiry' => $enquiry->id,
+                'exception' => $e->getMessage(),
+            ]);
+        }
 
         return redirect()
             ->route('contact.show')

@@ -34,7 +34,7 @@
             <x-property-elevation :seed="$property->id" />
         @endif
 
-        @if ($daysListed === 0)
+        @if ($daysListed === 0 && ! $property->sold_date)
             <div class="absolute left-2.5 top-2.5">
                 <x-ui.chip tone="new">{{ __('New — today') }}</x-ui.chip>
             </div>
@@ -53,7 +53,7 @@
             </button>
         @endif
 
-        @if ($daysListed !== null && $daysListed >= 1 && $daysListed <= 7)
+        @if (! $property->sold_date && $daysListed !== null && $daysListed >= 1 && $daysListed <= 7)
             <div class="absolute left-2.5 top-2.5">
                 {{-- A fact with a number, never a mood. --}}
                 <x-ui.chip tone="new">
@@ -102,7 +102,7 @@
          card normally carries a FEATURED flash. Mono and tabular so a column of
          results lines up down the page. Below 380px the last two cells drop and
          energy, price per square foot and days listed survive. --}}
-    <dl class="flex border-y border-sheet-300 bg-sheet-100 font-mono tabular-nums">
+    <dl class="relative z-10 flex border-y border-sheet-300 bg-sheet-100 font-mono tabular-nums">
         <div class="min-w-0 flex-1 px-[7px] py-2">
             <dt class="whitespace-nowrap text-[9.5px] uppercase tracking-[0.06em] text-ink-400">{{ __('EPC') }}</dt>
             <dd class="mt-0.5 flex h-[18px] items-center gap-1 text-[11.5px] font-medium text-ink-900">
@@ -130,7 +130,7 @@
         <div class="min-w-0 flex-1 border-l border-sheet-300 px-[7px] py-2">
             <dt class="whitespace-nowrap text-[9.5px] uppercase tracking-[0.06em] text-ink-400">{{ __('Listed') }}</dt>
             <dd class="mt-0.5 flex h-[18px] items-center truncate text-[11.5px] font-medium text-ink-900">
-                @if ($daysListed === 0)
+                @if ($daysListed === 0 && ! $property->sold_date)
                     {{ __('Today') }}
                 @elseif ($daysListed !== null)
                     {{ trans_choice(':count day|:count days', $daysListed, ['count' => $daysListed]) }}
