@@ -112,6 +112,96 @@ trait HasDisclosureFacts
     }
 
     /**
+     * The threshold below which a lease starts costing real money. Under 80
+     * years the freeholder can charge marriage value to extend, which is the
+     * difference between an inconvenience and a five-figure bill — so it is
+     * the number a buyer needs to see before they book a viewing.
+     */
+    public const SHORT_LEASE_YEARS = 80;
+
+    public function tenureForHumans(): ?string
+    {
+        $tenure = trim((string) $this->tenure);
+
+        if ($tenure === '') {
+            return null;
+        }
+
+        $label = match (strtolower(str_replace(['-', ' '], '_', $tenure))) {
+            'freehold' => __('Freehold'),
+            'leasehold' => __('Leasehold'),
+            'share_of_freehold' => __('Share of freehold'),
+            'commonhold' => __('Commonhold'),
+            default => ucfirst($tenure),
+        };
+
+        // Years only where they mean something. A freehold with a lease length
+        // left over from a previous record would otherwise print it.
+        if (! $this->isLeasehold() || $this->lease_years_remaining === null) {
+            return $label;
+        }
+
+        return __(':tenure, :count years remaining', [
+            'tenure' => $label,
+            'count' => number_format((int) $this->lease_years_remaining),
+        ]);
+    }
+
+    public function isLeasehold(): bool
+    {
+        return strtolower(trim((string) $this->tenure)) === 'leasehold';
+    }
+
+    public function hasShortLease(): bool
+    {
+        return $this->isLeasehold()
+            && $this->lease_years_remaining !== null
+            && (int) $this->lease_years_remaining < self::SHORT_LEASE_YEARS;
+    }
+
+    /**
+     * The certificate's own figure, or the sum of the costs it itemises.
+     * Adding up a certificate is arithmetic; producing a bill from a band
+     * alone would be invention, so that returns nothing.
+     */
+    public function annualEnergyCost(): ?float
+    {
+        $total = data_get($this->epc, 'annual_energy_cost');
+
+        if (is_numeric($total)) {
+            return (float) $total;
+        }
+
+        $items = array_filter([
+            data_get($this->epc, 'heating_cost'),
+            data_get($this->epc, 'hot_water_cost'),
+            data_get($this->epc, 'lighting_cost'),
+        ], 'is_numeric');
+
+        return $items === [] ? null : array_sum(array_map('floatval', $items));
+    }
+
+    /**
+     * Money the buyer pays every year. Zero is a fact — some leases genuinely
+     * carry no ground rent — so it is named rather than left to read as an
+     * empty cell.
+     */
+    public function annualCostForHumans(?string $amount): ?string
+    {
+        if ($amount === null || $amount === '') {
+            return null;
+        }
+
+        if ((float) $amount === 0.0) {
+            return __('Peppercorn');
+        }
+
+        return __(':amount a year', [
+            'amount' => $this->currencySymbol().number_format((float) $amount),
+        ]);
+    }
+
+    /**
      * Days on the market. Stops at the sale so a sold listing does not keep
      * ageing and read as stale stock.
      */

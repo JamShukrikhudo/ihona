@@ -100,6 +100,11 @@ class Property extends Model implements HasMedia
         'country',
         'energy_rating',
         'epc',
+        'council_tax_band',
+        'tenure',
+        'lease_years_remaining',
+        'service_charge',
+        'ground_rent',
         'energy_score',
         'energy_rating_date',
         'insurance_policy_id',
@@ -140,6 +145,9 @@ class Property extends Model implements HasMedia
         'parking' => 'array',
         'gardens' => 'array',
         'epc' => 'array',
+        'lease_years_remaining' => 'integer',
+        'service_charge' => 'decimal:2',
+        'ground_rent' => 'decimal:2',
     ];
 
     public function auctions()

@@ -14,6 +14,7 @@
     );
     $daysListed = $property->daysListed();
     $perSqFt = $property->pricePerSquareFootForHumans();
+    $energyCost = $property->annualEnergyCost();
 
     // Where a fact came from and when. A dated source outperforms any trust
     // badge and costs nothing but a join — and where the record holds nothing,
@@ -49,6 +50,39 @@
                 : __('No listing date recorded'),
             'value' => $daysListed !== null
                 ? ($daysListed === 0 ? __('Today') : trans_choice(':count day|:count days', $daysListed, ['count' => $daysListed]))
+                : null,
+        ],
+        [
+            'label' => __('Tenure'),
+            'source' => __('As recorded'),
+            'value' => $property->tenureForHumans(),
+        ],
+        [
+            'label' => __('Council tax'),
+            'source' => __('Band as recorded, not the bill'),
+            'value' => filled($property->council_tax_band)
+                ? __('Band :band', ['band' => strtoupper($property->council_tax_band)])
+                : null,
+        ],
+        [
+            'label' => __('Service charge'),
+            'source' => __('As recorded'),
+            'value' => $property->annualCostForHumans($property->service_charge),
+        ],
+        [
+            'label' => __('Ground rent'),
+            'source' => __('As recorded'),
+            'value' => $property->annualCostForHumans($property->ground_rent),
+        ],
+        [
+            'label' => __('Energy cost'),
+            // A band is not a bill: without a costed certificate this stays
+            // empty rather than being guessed from the rating.
+            'source' => $energyCost !== null
+                ? __('Estimated on the certificate')
+                : __('Not costed on the certificate'),
+            'value' => $energyCost !== null
+                ? __(':amount a year', ['amount' => $property->currencySymbol().number_format($energyCost)])
                 : null,
         ],
         [

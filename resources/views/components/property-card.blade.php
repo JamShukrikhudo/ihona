@@ -80,6 +80,17 @@
 
         <p class="text-caption text-ink-400">{{ $property->title }}</p>
 
+        {{-- Only when it is short. Below 80 years the freeholder can charge
+             marriage value to extend, so the number changes what the property
+             is worth; a 950-year lease is not news and would only add noise. --}}
+        @if ($property->hasShortLease())
+            <div class="relative z-10 mt-2">
+                <x-ui.chip tone="caution">
+                    {{ __(':count-year lease', ['count' => $property->lease_years_remaining]) }}
+                </x-ui.chip>
+            </div>
+        @endif
+
         <div class="mt-3 flex flex-wrap items-center gap-4 text-caption text-ink-500">
             <span class="inline-flex items-center gap-1.5">
                 <x-ui.icon name="bedrooms" class="size-4 text-ink-400" />{{ $property->bedrooms ?? '—' }}
