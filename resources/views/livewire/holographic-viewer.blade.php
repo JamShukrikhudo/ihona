@@ -106,7 +106,7 @@
                             <div class="space-y-3 text-sm">
                                 <div class="flex justify-between">
                                     <span class="text-gray-400">Price</span>
-                                    <span class="text-white font-medium">{{ app(\App\Settings\GeneralSettings::class)->site_currency }} {{ number_format($property->price, 2) }}</span>
+                                    <span class="text-white font-medium">{{ app(\App\Settings\GeneralSettings::class)->currencySymbol() }} {{ number_format($property->price, 2) }}</span>
                                 </div>
                                 <div class="flex justify-between">
                                     <span class="text-gray-400">Bedrooms</span>

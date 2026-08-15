@@ -13,7 +13,7 @@
     <div wire:ignore
          data-map
          data-properties="{{ json_encode($properties) }}"
-         data-currency="{{ app(\App\Settings\GeneralSettings::class)->site_currency }}"
+         data-currency="{{ app(\App\Settings\GeneralSettings::class)->currencySymbol() }}"
          class="h-[400px] w-full"
          role="application"
          aria-label="{{ __('Map of available properties') }}"></div>

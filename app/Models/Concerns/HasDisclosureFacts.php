@@ -86,17 +86,13 @@ trait HasDisclosureFacts
      */
     public function currencySymbol(): string
     {
-        $symbols = ['GBP' => '£', 'EUR' => '€', 'USD' => '$', 'AUD' => '$', 'CAD' => '$', 'NZD' => '$'];
-        $code = strtoupper(trim((string) $this->currency));
+        $code = trim((string) $this->currency);
 
-        if (isset($symbols[$code])) {
-            return $symbols[$code];
-        }
-
-        // An unmapped code is a code, not a symbol: printing it flush against
-        // the number gave "JPY1,234,000". The trailing space keeps it readable
-        // until the code earns a symbol here.
-        return $code !== '' ? $code.' ' : (app(\App\Settings\GeneralSettings::class)->site_currency ?: '£');
+        // One table for both, so a filter chip cannot show a different
+        // currency from the cards underneath it.
+        return $code !== ''
+            ? \App\Support\Currency::symbol($code)
+            : app(\App\Settings\GeneralSettings::class)->currencySymbol();
     }
 
     /**

@@ -12,7 +12,10 @@ class GeneralSettings extends Settings
     public ?string $site_phone = null;
     public ?string $site_address = null;
     public ?string $site_country = null;
-    public string $site_currency = '£';
+    // An ISO code, not a symbol, so it maps the same way a listing's does.
+    // '$' never said which dollar it meant, and the settings migration shipped
+    // '$' while this line said '£'.
+    public string $site_currency = 'GBP';
     public string $site_default_language = 'en';
     public ?string $facebook_url = null;
     public ?string $twitter_url = null;
@@ -34,6 +37,15 @@ class GeneralSettings extends Settings
     public ?string $ico_registration_number = null;
     public ?string $vat_number = null;
     public ?string $redress_scheme = null;
+
+    /**
+     * Everything with no listing to read from — a filter chip, a calculator, a
+     * price history — asks for this rather than the raw code.
+     */
+    public function currencySymbol(): string
+    {
+        return \App\Support\Currency::symbol($this->site_currency);
+    }
 
     public static function group(): string
     {

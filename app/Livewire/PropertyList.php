@@ -497,7 +497,7 @@ class PropertyList extends Component
 
     private function money($amount): string
     {
-        return (app(\App\Settings\GeneralSettings::class)->site_currency ?: '£')
+        return (app(\App\Settings\GeneralSettings::class)->currencySymbol())
             .number_format((float) $amount);
     }
 

@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Pages;
 use Filament\Schemas\Schema;
 use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use App\Settings\GeneralSettings;
 use Filament\Forms;
@@ -48,9 +49,12 @@ class ManageGeneralSettings extends SettingsPage
                         TextInput::make('site_country')
                             ->label('Country')
                             ->maxLength(255),
-                        TextInput::make('site_currency')
-                            ->label('Currency Symbol')
-                            ->maxLength(10),
+                        Select::make('site_currency')
+                            ->label('Currency')
+                            ->helperText('Used wherever there is no listing to read a currency from, such as a filter chip.')
+                            ->options(\App\Support\Currency::options())
+                            ->default(\App\Support\Currency::DEFAULT)
+                            ->required(),
                         TextInput::make('site_default_language')
                             ->label('Default Language')
                             ->maxLength(10)
