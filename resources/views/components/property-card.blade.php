@@ -4,6 +4,10 @@
     // Rendering it on a static page would give the visitor a dead button.
     'saveable' => false,
     'saved' => false,
+    // One primary per view. On a page that already has a primary action — the
+    // home page's search — a row of card CTAs would compete with it. The whole
+    // card is a link either way.
+    'actions' => true,
 ])
 
 @php
@@ -159,12 +163,14 @@
         </div>
     </dl>
 
-    <div class="relative z-10 flex items-center gap-2.5 p-3.5">
-        <x-ui.button size="sm" :href="route('property.book', $property->id)">
-            {{ __('Book a viewing') }}
-        </x-ui.button>
-        <x-ui.button size="sm" variant="ghost" :href="route('property.detail', $property->id).'#enquiry'">
-            {{ __('Ask a question') }}
-        </x-ui.button>
-    </div>
+    @if ($actions)
+        <div class="relative z-10 flex items-center gap-2.5 p-3.5">
+            <x-ui.button size="sm" :href="route('property.book', $property->id)">
+                {{ __('Book a viewing') }}
+            </x-ui.button>
+            <x-ui.button size="sm" variant="ghost" :href="route('property.detail', $property->id).'#enquiry'">
+                {{ __('Ask a question') }}
+            </x-ui.button>
+        </div>
+    @endif
 </article>

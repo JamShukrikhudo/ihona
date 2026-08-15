@@ -38,7 +38,7 @@
                      hiding this below sm left a phone visitor with no route to
                      registration at all. --}}
                 <a href="{{ Route::has('register') ? route('register') : url('/app/register') }}"
-                    class="inline-flex rounded-sheet bg-action px-4 py-2 text-body-s font-semibold text-white shadow-lift-1 transition-colors duration-[160ms] hover:bg-action-hover">
+                    class="inline-flex rounded-sheet border border-sheet-300 bg-sheet-000 px-4 py-2 text-body-s font-semibold text-ink-900 transition-colors duration-[160ms] hover:border-ink-900">
                     {{ __('Register') }}
                 </a>
             @endauth

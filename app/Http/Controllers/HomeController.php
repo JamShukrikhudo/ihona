@@ -4,15 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Models\Property;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class HomeController extends Controller
 {
     public function index()
     {
-        $featuredProperties = Property::where('is_featured', true)->take(3)->get() ?? [];
+        // Eager load media: every card reads its first image, which is a query
+        // per card otherwise.
+        $featuredProperties = Property::query()
+            ->with('media')
+            ->where('is_featured', true)
+            ->take(3)
+            ->get();
 
-        $mapProperties = Property::whereNotNull('latitude')
+        $mapProperties = Property::query()
+            ->select(['id', 'title', 'price', 'latitude', 'longitude', 'bedrooms', 'bathrooms', 'area_sqft'])
+            ->whereNotNull('latitude')
             ->whereNotNull('longitude')
             ->where('latitude', '!=', 0)
             ->where('longitude', '!=', 0)
@@ -29,8 +36,6 @@ class HomeController extends Controller
                     'area_sqft' => $property->area_sqft,
                 ];
             });
-
-        Log::info('Map properties count: ' . $mapProperties->count());
 
         return view('home', [
             'featuredProperties' => $featuredProperties,
