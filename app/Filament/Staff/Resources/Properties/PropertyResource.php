@@ -88,8 +88,9 @@ class PropertyResource extends Resource
                 TextInput::make('year_built')
                     ->required()
                     ->numeric()
-                    ->minValue(1800)
-                    ->maxValue(date('Y'))
+                    ->minValue(\App\Models\Property::EARLIEST_YEAR_BUILT)
+                    ->maxValue(\App\Models\Property::latestYearBuilt())
+                    ->helperText(\App\Models\Property::yearBuiltMessage())
                     ->label('Year Built'),
                 Select::make('property_type')
                     ->required()

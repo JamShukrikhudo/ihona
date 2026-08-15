@@ -192,6 +192,39 @@ class Property extends Model implements HasMedia
         $this->update(['status' => 'rejected']);
     }
 
+    /**
+     * British building stock predates the MySQL YEAR type by eight centuries.
+     * The floor is the Conquest — old enough for anything habitable, late
+     * enough to catch a typo — and the ceiling allows a new build sold before
+     * it is finished without accepting a year that cannot be a build year.
+     */
+    public const EARLIEST_YEAR_BUILT = 1066;
+
+    public static function latestYearBuilt(): int
+    {
+        return (int) now()->year + 2;
+    }
+
+    /**
+     * One rule, so the API, the staff panel and the public form cannot drift
+     * apart on what counts as a build year. They had: 1000, 1800 and 1800 with
+     * three different ceilings.
+     *
+     * @return list<string>
+     */
+    public static function yearBuiltRules(): array
+    {
+        return ['integer', 'min:'.self::EARLIEST_YEAR_BUILT, 'max:'.self::latestYearBuilt()];
+    }
+
+    public static function yearBuiltMessage(): string
+    {
+        return __('Enter a build year between :from and :to.', [
+            'from' => self::EARLIEST_YEAR_BUILT,
+            'to' => self::latestYearBuilt(),
+        ]);
+    }
+
     public function setYearBuiltAttribute($value)
     {
         $this->attributes['year_built'] = is_string($value) ? substr($value, 0, 4) : $value;
