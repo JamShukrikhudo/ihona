@@ -208,6 +208,21 @@ class Property extends Model implements HasMedia
      */
     public const EARLIEST_YEAR_BUILT = 1066;
 
+    /**
+     * One vocabulary for the public filter, the applied-filter chip and the
+     * staff panel. They had three: the filter offered villa and HMO, which the
+     * staff panel could not write, so both always returned nothing — and the
+     * chip rendered 'hmo' through ucfirst() as "Hmo".
+     */
+    public const TYPES = [
+        'house' => 'House',
+        'apartment' => 'Apartment',
+        'condo' => 'Condo',
+        'townhouse' => 'Townhouse',
+        'villa' => 'Villa',
+        'hmo' => 'HMO',
+    ];
+
     public static function latestYearBuilt(): int
     {
         return (int) now()->year + 2;
@@ -654,12 +669,16 @@ class Property extends Model implements HasMedia
         $from = now()->startOfDay();
         $to = now()->addMonths(3)->endOfDay();
         $taken = $this->bookedSlots($from, $to);
-        $slots = count(self::VIEWING_SLOTS);
         $available = [];
 
         for ($date = $from->copy(); $date <= $to; $date->addDay()) {
             $day = $date->format('Y-m-d');
-            $left = count(self::slotsFrom($day)) - count($taken[$day] ?? []);
+            // Intersected, not subtracted: the staff panel and
+            // VisitBookingService can write a booking at any hour, and enough
+            // of those off the nine offered would otherwise close a day whose
+            // viewing hours are all still free.
+            $offered = self::slotsFrom($day);
+            $left = count(array_diff($offered, $taken[$day] ?? []));
 
             if ($left > 0) {
                 $available[] = $day;

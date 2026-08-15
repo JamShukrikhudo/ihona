@@ -15,7 +15,7 @@
             </h1>
             <p class="mt-2 text-body-s text-verdigris-700">{{ $confirmation }}</p>
 
-            @if ($googleCalendarUrl || $outlookCalendarUrl || $confirmedBookingId)
+            @if ($googleCalendarUrl || $outlookCalendarUrl || ($confirmedBookingId && auth()->check()))
                 <div class="mt-4 flex flex-wrap gap-3">
                     @if ($googleCalendarUrl)
                         <x-ui.button size="sm" variant="secondary" :href="$googleCalendarUrl">
@@ -27,7 +27,8 @@
                             {{ __('Add to Outlook') }}
                         </x-ui.button>
                     @endif
-                    @if ($confirmedBookingId && Route::has('booking.ics'))
+                    {{-- Behind auth: offering it to a guest sends them to a login screen. --}}
+                    @if ($confirmedBookingId && auth()->check() && Route::has('booking.ics'))
                         <x-ui.button size="sm" variant="secondary" :href="route('booking.ics', $confirmedBookingId)">
                             {{ __('Add to Apple Calendar') }}
                         </x-ui.button>
@@ -46,10 +47,10 @@
             </p>
         </header>
 
-        @if (session('error'))
+        @if ($failure)
             <p role="alert"
                class="mt-6 rounded-sheet border border-fault-600 bg-fault-100 px-4 py-3 text-body-s text-fault-700">
-                {{ session('error') }}
+                {{ $failure }}
             </p>
         @endif
 

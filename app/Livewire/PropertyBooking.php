@@ -33,6 +33,10 @@ class PropertyBooking extends Component
     // page load, so the viewing confirmation turned up on whatever page the
     // visitor opened next.
     public $confirmation = null;
+    // Same reason as $confirmation: a flash set in a Livewire action survives
+    // to the next full page load, so a failed booking greeted the visitor
+    // again on whatever page they opened afterwards.
+    public $failure = null;
     public $confirmedBookingId = null;
     public $googleCalendarUrl = null;
     public $outlookCalendarUrl = null;
@@ -154,10 +158,13 @@ class PropertyBooking extends Component
             $this->googleCalendarUrl = $calendarService->getBookingGoogleCalendarUrl($booking);
             $this->outlookCalendarUrl = $calendarService->getBookingOutlookCalendarUrl($booking);
 
-            broadcast(new BookingCreated($booking))->toOthers();
+            // The row is committed. Telling anyone about it is best-effort
+            // from here: a broadcaster that is not configured must not put the
+            // visitor into the failure branch for a viewing that is booked.
+            rescue(fn () => broadcast(new BookingCreated($booking))->toOthers(), report: true);
 
             if (auth()->check()) {
-                auth()->user()->notify(new BookingNotification($booking, 'confirmed'));
+                rescue(fn () => auth()->user()->notify(new BookingNotification($booking, 'confirmed')), report: true);
             }
 
             // A guest has no account to be notified through, so the address
@@ -184,7 +191,8 @@ class PropertyBooking extends Component
                 // The unique index on the slot is the last word on who gets it:
                 // two visitors submitting the same hour both pass the check
                 // above, and only one insert can land.
-                $errorMessage .= str_contains($e->getMessage(), 'bookings_property_slot_unique')
+                $errorMessage .= (str_contains($e->getMessage(), 'bookings_property_slot_unique')
+                    || str_contains($e->getMessage(), 'slot_key'))
                     ? 'Someone booked that time while you were filling this in. Please choose another. '
                     : 'A database error occurred. ';
             } elseif ($e instanceof ValidationException) {
@@ -198,7 +206,7 @@ class PropertyBooking extends Component
             }
             $errorMessage .= 'Please try again or contact support if the problem persists.';
 
-            session()->flash('error', $errorMessage);
+            $this->failure = $errorMessage;
         }
     }
 

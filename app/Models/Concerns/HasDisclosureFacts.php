@@ -26,13 +26,45 @@ trait HasDisclosureFacts
      */
     private const RENTAL_STATUSES = ['for rent', 'rented', 'to let', 'let', 'let agreed'];
 
-    public function isRental(): bool
+    /**
+     * Statuses that mean the property is no longer on offer. Sale state lives
+     * here, not in `sold_date`, which is nullable and rarely written — the card
+     * gated on that alone and so advertised a sold property as new.
+     */
+    private const CLOSED_STATUSES = [
+        'sold' => 'Sold',
+        'sold stc' => 'Sold STC',
+        'rented' => 'Let',
+        'let' => 'Let',
+        'let agreed' => 'Let agreed',
+        'under offer' => 'Under offer',
+        'withdrawn' => 'Withdrawn',
+    ];
+
+    /**
+     * The label for that state, or null while the property is still on offer.
+     */
+    public function closedStateLabel(): ?string
+    {
+        return self::CLOSED_STATUSES[$this->normalisedStatus()] ?? ($this->sold_date ? __('Sold') : null);
+    }
+
+    public function isClosed(): bool
+    {
+        return $this->closedStateLabel() !== null;
+    }
+
+    private function normalisedStatus(): string
     {
         $status = strtolower(trim((string) $this->status));
         $status = str_replace(['_', '-'], ' ', $status);
-        $status = preg_replace('/\s+/', ' ', $status) ?? $status;
 
-        return in_array($status, self::RENTAL_STATUSES, strict: true);
+        return preg_replace('/\s+/', ' ', $status) ?? $status;
+    }
+
+    public function isRental(): bool
+    {
+        return in_array($this->normalisedStatus(), self::RENTAL_STATUSES, strict: true);
     }
 
     /**

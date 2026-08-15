@@ -37,10 +37,7 @@
         <select id="listing-type" wire:model.live="propertyType"
                 class="basis-40 rounded-sheet border border-sheet-300 bg-sheet-000 px-3 py-2.5 font-sans text-body-s text-ink-900">
             <option value="">{{ __('Any type') }}</option>
-            @foreach ([
-                'house' => __('House'), 'apartment' => __('Apartment'), 'condo' => __('Condo'),
-                'townhouse' => __('Townhouse'), 'villa' => __('Villa'), 'hmo' => __('HMO'),
-            ] as $value => $label)
+            @foreach (\App\Models\Property::TYPES as $value => $label)
                 <option value="{{ $value }}">{{ $label }}</option>
             @endforeach
         </select>

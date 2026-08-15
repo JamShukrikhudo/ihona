@@ -306,7 +306,9 @@ class PropertyList extends Component
         }
 
         if (filled($this->propertyType)) {
-            $applied['propertyType'] = ucfirst($this->propertyType);
+            // Never ucfirst(): it rendered 'hmo' as "Hmo".
+            $applied['propertyType'] = Property::TYPES[strtolower($this->propertyType)]
+                ?? ucfirst($this->propertyType);
         }
 
         if (filled($this->minBedrooms)) {

@@ -2,7 +2,10 @@
 
 @section('content')
     <x-prose-page eyebrow="Legal" title="Terms and Conditions"
-        :updated="now()->format('j F Y')">
+        {{-- A fixed date, edited when the wording is. now() made the document
+             claim to have been revised on whatever day it was read, and on a
+             privacy notice the revision date is the load-bearing part. --}}
+        updated="15 August 2026">
          
         <p>
             Welcome to our real estate platform. By using our services, you agree to comply with and be bound by the following terms and conditions:

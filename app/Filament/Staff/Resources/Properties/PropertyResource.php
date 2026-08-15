@@ -128,12 +128,7 @@ class PropertyResource extends Resource
                     ->step('0.01'),
                 Select::make('property_type')
                     ->required()
-                    ->options([
-                        'house' => 'House',
-                        'apartment' => 'Apartment',
-                        'condo' => 'Condo',
-                        'townhouse' => 'Townhouse',
-                    ]),
+                    ->options(\App\Models\Property::TYPES),
                 Select::make('status')
                     ->required()
                     ->options([

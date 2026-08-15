@@ -2,7 +2,10 @@
 
 @section('content')
     <x-prose-page eyebrow="Legal" title="Privacy Policy"
-        :updated="now()->format('j F Y')">
+        {{-- A fixed date, edited when the wording is. now() made the document
+             claim to have been revised on whatever day it was read, and on a
+             privacy notice the revision date is the load-bearing part. --}}
+        updated="15 August 2026">
          
         <p>
             At our real estate platform, we are committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your personal information.

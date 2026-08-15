@@ -7,7 +7,7 @@
 **{{ __('Property') }}:** {{ $booking->property->title }}
 @endif
 **{{ __('Date') }}:** {{ $booking->date?->format('l j F Y') }}
-**{{ __('Time') }}:** {{ $booking->time }}
+**{{ __('Time') }}:** {{ $booking->time?->format('H:i') }}
 
 @if ($booking->notes)
 **{{ __('Your note') }}:** {{ $booking->notes }}

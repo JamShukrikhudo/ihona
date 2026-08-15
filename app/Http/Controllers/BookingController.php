@@ -47,7 +47,21 @@ class BookingController extends Controller
         ]);
 
         $this->ensureEligibleStaff($validated['staff_id']);
-        $booking->update($validated);
+
+        // A unique index holds the slot, so moving a booking onto one already
+        // taken is a rejected request rather than a 500 with raw SQL in it.
+        try {
+            $booking->update($validated);
+        } catch (\Illuminate\Database\QueryException $e) {
+            if (! str_contains($e->getMessage(), 'bookings_property_slot_unique')
+                && ! str_contains($e->getMessage(), 'slot_key')) {
+                throw $e;
+            }
+
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'time' => __('That time is already booked for this property.'),
+            ]);
+        }
 
         return response()->json(['message' => 'Booking updated successfully', 'booking' => $booking], 200);
     }

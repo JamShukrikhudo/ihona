@@ -176,6 +176,47 @@ class TenureAndRunningCostsTest extends TestCase
         $this->assertNull($property->annualEnergyCost());
     }
 
+    /**
+     * Sale state lives in `status`; `sold_date` is nullable and rarely written,
+     * and the card gated everything on that alone. A property sold this morning
+     * with today's list date carried a green "New — today" chip and a live
+     * "Book a viewing" button.
+     */
+    public function test_a_sold_listing_is_not_advertised_as_new(): void
+    {
+        $this->property([
+            'status' => 'Sold',
+            'sold_date' => null,
+            'list_date' => now(),
+            'title' => 'Alexandra Road, Reading RG1',
+        ]);
+
+        $page = $this->get('/properties')->assertOk();
+
+        $page->assertDontSee('New — today', false);
+        $page->assertSee('Sold');
+    }
+
+    public function test_a_sold_listing_does_not_offer_a_viewing(): void
+    {
+        $property = $this->property(['status' => 'Sold', 'sold_date' => null, 'list_date' => now()]);
+
+        $html = $this->get('/properties')->assertOk()->getContent();
+
+        $this->assertStringNotContainsString(
+            route('property.book', $property->id),
+            $html,
+            'a sold property still offers a viewing'
+        );
+    }
+
+    public function test_a_listing_still_for_sale_keeps_its_booking_link(): void
+    {
+        $property = $this->property(['status' => 'For Sale', 'list_date' => now()]);
+
+        $this->get('/properties')->assertOk()->assertSee(route('property.book', $property->id), false);
+    }
+
     public function test_staff_can_edit_every_one_of_them(): void
     {
         $source = file_get_contents(app_path('Filament/Staff/Resources/Properties/PropertyResource.php'));

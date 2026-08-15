@@ -18,21 +18,14 @@ class VisitBookingService
         $this->calendarService = $calendarService;
     }
 
+    /**
+     * A third copy of the viewing hours lived here, and it disagreed with the
+     * public picker: it counted cancelled bookings as taken and offered hours
+     * that had already gone. The model owns the hours now.
+     */
     public function getAvailableTimeSlots(Property $property, $date)
     {
-        $workingHours = [
-            '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'
-        ];
-
-        $bookedSlots = Booking::where('property_id', $property->id)
-            ->whereDate('date', $date)
-            ->pluck('time')
-            ->map(function ($time) {
-                return Carbon::parse($time)->format('H:i');
-            })
-            ->toArray();
-
-        return array_diff($workingHours, $bookedSlots);
+        return $property->availableViewingSlots((string) $date);
     }
 
     public function createVisit(array $data)

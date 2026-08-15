@@ -278,6 +278,99 @@ class ViewingBookingTest extends TestCase
         $this->assertNotEmpty($component->get('confirmation'));
     }
 
+    /**
+     * Booking casts time through a Carbon accessor, so printing it raw gave
+     * "Time: 2026-08-15 14:00:00" — today's date, under a line already naming
+     * the viewing's date, in every confirmation email sent.
+     */
+    public function test_the_confirmation_email_states_the_hour_not_a_timestamp(): void
+    {
+        Mail::fake();
+
+        $this->form()->call('bookViewing')->assertHasNoErrors();
+
+        Mail::assertSent(ViewingBooked::class, function (ViewingBooked $mail) {
+            $body = $mail->render();
+
+            // Any timestamp at all: the markdown renders "**Time:**" as a
+            // tag, so anchoring on the label matched nothing and the check
+            // passed while the bug was still there.
+            $this->assertDoesNotMatchRegularExpression(
+                '/\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}/',
+                $body,
+                'the email prints a timestamp where an hour belongs'
+            );
+
+            return true;
+        });
+    }
+
+    /**
+     * The booking is committed before any of this runs. A broadcaster that is
+     * not configured must not tell someone their viewing failed when the row
+     * is in the diary.
+     */
+    public function test_a_failing_broadcast_does_not_unbook_a_booked_viewing(): void
+    {
+        Mail::fake();
+        \Illuminate\Support\Facades\Event::listen(\App\Events\BookingCreated::class, function () {
+            throw new \RuntimeException('broadcaster is down');
+        });
+
+        $component = $this->form()->call('bookViewing');
+
+        $this->assertSame(1, Booking::count(), 'the viewing was not kept');
+        $this->assertTrue($component->get('bookingConfirmed'), 'a booked viewing was reported as failed');
+    }
+
+    /**
+     * A flash set in a Livewire action survives to the next full page load, so
+     * a failed booking greeted the visitor again on whatever page they opened.
+     */
+    public function test_a_failure_does_not_follow_the_visitor_off_the_page(): void
+    {
+        $component = Livewire::test(PropertyBooking::class, ['propertyId' => $this->property->id])
+            ->set('selectedDate', now()->addDays(2)->format('Y-m-d'))
+            ->set('selectedTime', '03:00')
+            ->set('userName', 'Alex Whitmore')
+            ->set('userContact', '07700 900123')
+            ->call('bookViewing');
+
+        $this->assertNull(session('error'), 'the failure was flashed and will leak onto the next page');
+        $this->assertNotEmpty($component->get('failure'), 'the visitor was told nothing');
+    }
+
+    /**
+     * The .ics route sits behind auth, and this form is written for guests.
+     * Offering it sends them to a login screen from a confirmation page.
+     */
+    public function test_a_guest_is_not_offered_a_link_they_cannot_follow(): void
+    {
+        Mail::fake();
+
+        $this->form()->call('bookViewing')->assertDontSee(__('Add to Apple Calendar'));
+    }
+
+    /**
+     * A booking written at an hour outside the nine on offer — the staff panel
+     * and VisitBookingService can both do it — must not subtract from the count
+     * of hours that are.
+     */
+    public function test_a_booking_outside_the_offered_hours_does_not_close_the_day(): void
+    {
+        $day = now()->addDays(3)->format('Y-m-d');
+
+        foreach (['07:00', '08:00', '19:00', '20:00', '21:00', '22:00', '23:00', '06:00', '05:00'] as $hour) {
+            $this->book($this->property, $day, $hour);
+        }
+
+        $this->assertContains(
+            $day,
+            $this->property->fresh()->availableViewingDates(),
+            'off-grid bookings closed a day whose nine viewing hours are all free'
+        );
+    }
+
     public function test_the_confirmation_reuses_the_verb(): void
     {
         Mail::fake();

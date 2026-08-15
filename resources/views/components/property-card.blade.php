@@ -18,6 +18,9 @@
     $perSqFt = $property->pricePerSquareFootForHumans();
     $daysListed = $property->daysListed();
     $photo = $property->getFirstMediaUrl('images') ?: null;
+    // Sold, let, under offer. Read from status rather than sold_date, which is
+    // nullable and rarely written.
+    $closedState = $property->closedStateLabel();
 @endphp
 
 <article {{ $attributes->class([
@@ -34,7 +37,11 @@
             <x-property-elevation :seed="$property->id" />
         @endif
 
-        @if ($daysListed === 0 && ! $property->sold_date)
+        @if ($closedState)
+            <div class="absolute left-2.5 top-2.5">
+                <x-ui.chip tone="info">{{ $closedState }}</x-ui.chip>
+            </div>
+        @elseif ($daysListed === 0)
             <div class="absolute left-2.5 top-2.5">
                 <x-ui.chip tone="new">{{ __('New — today') }}</x-ui.chip>
             </div>
@@ -53,7 +60,7 @@
             </button>
         @endif
 
-        @if (! $property->sold_date && $daysListed !== null && $daysListed >= 1 && $daysListed <= 7)
+        @if (! $closedState && $daysListed !== null && $daysListed >= 1 && $daysListed <= 7)
             <div class="absolute left-2.5 top-2.5">
                 {{-- A fact with a number, never a mood. --}}
                 <x-ui.chip tone="new">
@@ -141,7 +148,7 @@
         <div class="min-w-0 flex-1 border-l border-sheet-300 px-[7px] py-2">
             <dt class="whitespace-nowrap text-[9.5px] uppercase tracking-[0.06em] text-ink-400">{{ __('Listed') }}</dt>
             <dd class="mt-0.5 flex h-[18px] items-center truncate text-[11.5px] font-medium text-ink-900">
-                @if ($daysListed === 0 && ! $property->sold_date)
+                @if ($daysListed === 0 && ! $closedState)
                     {{ __('Today') }}
                 @elseif ($daysListed !== null)
                     {{ trans_choice(':count day|:count days', $daysListed, ['count' => $daysListed]) }}
@@ -176,12 +183,21 @@
 
     @if ($actions)
         <div class="relative z-10 flex items-center gap-2.5 p-3.5">
+            @if ($closedState)
+                {{-- No viewing to offer on a property that is no longer for
+                     sale, and a live booking button on one reads as an
+                     available home. --}}
+                <x-ui.button size="sm" variant="secondary" :href="route('property.detail', $property->id)">
+                    {{ __('View details') }}
+                </x-ui.button>
+            @else
             <x-ui.button size="sm" :href="route('property.book', $property->id)">
                 {{ __('Book a viewing') }}
             </x-ui.button>
             <x-ui.button size="sm" variant="ghost" :href="route('contact.show', ['property' => $property->id])">
                 {{ __('Ask a question') }}
             </x-ui.button>
+            @endif
         </div>
     @endif
 </article>
