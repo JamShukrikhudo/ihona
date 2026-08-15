@@ -49,20 +49,15 @@
                 </div>
             </form>
 
+            {{-- <x-socialstream>, not <x-socialstream::components.socialstream>:
+                 a package tag resolves to `socialstream::components.<name>`, so
+                 that one asked for components.components.socialstream and threw
+                 on every render of this page. The component published into
+                 resources/views/components draws its own divider and prompt,
+                 which is why the hand-rolled one that used to sit here is
+                 gone — it was drawing a second identical rule. --}}
             @if (\JoelButcher\Socialstream\Socialstream::show())
-                <div class="mt-4">
-                    <div class="relative">
-                        <div class="absolute inset-0 flex items-center">
-                            <div class="w-full border-t border-gray-300"></div>
-                        </div>
-                        <div class="relative flex justify-center text-sm">
-                            <span class="px-2 bg-white text-gray-500">{{ config('socialstream.prompt', 'Or Login Via') }}</span>
-                        </div>
-                    </div>
-                    <div class="mt-4">
-                        <x-socialstream::components.socialstream />
-                    </div>
-                </div>
+                <x-socialstream />
             @endif
         </div>
     </div>
