@@ -27,7 +27,7 @@
  * gradient is skipped rather than guessed at: reporting it as white-on-white
  * would be a lie, and this sweep is only worth running if its output is true.
  */
-import { chromium } from '/home/tom/.npm/_npx/e41f203b7505f1fb/node_modules/playwright/index.mjs';
+import { chromium } from 'playwright';
 import { readdirSync } from 'fs';
 
 const pages = readdirSync('./tests/Browser/snapshots').filter(f => f.endsWith('.html')).map(f => f.replace('.html',''));
@@ -55,7 +55,10 @@ const CONTRAST = `() => {
     if (b && b.a>0.9) return b.c; n=n.parentElement; } const h=parse(getComputedStyle(document.body).backgroundColor); return h? h.c:[255,255,255]; };
   const bad=[];
   document.querySelectorAll('body *').forEach(el => {
-    if (!el.offsetParent && el.tagName!=='BODY') return;
+    const cs0=getComputedStyle(el);
+    if (cs0.display==='none' || cs0.visibility==='hidden' || cs0.opacity==='0') return;
+    const r=el.getBoundingClientRect();
+    if (r.width===0 || r.height===0) return;
     const text=[...el.childNodes].filter(n=>n.nodeType===3).map(n=>n.textContent.trim()).join('');
     if (!text) return;
     const cs=getComputedStyle(el);

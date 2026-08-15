@@ -13,9 +13,8 @@ class WishlistManager extends Component
 
     public $search = '';
     public $sortBy = 'created_at';
-    public $sortDirection = 'desc';
 
-    /** Confirmation for the last removal, shown once on the page. */
+    /** Confirmation for the last removal. Cleared by the next interaction. */
     public ?string $removed = null;
 
     protected $listeners = ['favoriteAdded' => '$refresh', 'favoriteRemoved' => '$refresh'];
@@ -23,11 +22,11 @@ class WishlistManager extends Component
     protected $queryString = [
         'search' => ['except' => ''],
         'sortBy' => ['except' => 'created_at'],
-        'sortDirection' => ['except' => 'desc'],
     ];
 
     public function updatingSearch()
     {
+        $this->removed = null;
         $this->resetPage();
     }
 
@@ -63,19 +62,21 @@ class WishlistManager extends Component
      */
     public function updatedSortBy(): void
     {
-        $this->sortDirection = $this->sortBy === 'created_at' ? 'desc' : 'asc';
+        $this->removed = null;
         $this->resetPage();
     }
 
-    public function sortByColumn($column)
+    /**
+     * Derived, not set by the hook. A hook only fires on a client-side update,
+     * so /wishlist?sortBy=title mounted with the 'desc' default and still
+     * sorted Z to A — the exact bug the hook was added to fix, reachable by
+     * anyone sharing a link.
+     */
+    private function directionFor(string $sort): string
     {
-        if ($this->sortBy === $column) {
-            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
-        } else {
-            $this->sortBy = $column;
-            $this->sortDirection = 'asc';
-        }
+        return $sort === 'created_at' ? 'desc' : 'asc';
     }
+
 
     public function render()
     {
@@ -96,15 +97,15 @@ class WishlistManager extends Component
 
         // Apply sorting
         if ($this->sortBy === 'price') {
-            $query->orderBy('price', $this->sortDirection);
+            $query->orderBy('price', $this->directionFor('price'));
         } elseif ($this->sortBy === 'title') {
-            $query->orderBy('title', $this->sortDirection);
+            $query->orderBy('title', $this->directionFor('title'));
         } else {
             // Sort by when it was saved. favoriteProperties() is a belongsToMany
             // through the same table, so joining it again made every favorites
             // column ambiguous — which meant the default sort, and therefore the
             // page's default view, threw.
-            $query->orderByPivot('created_at', $this->sortDirection);
+            $query->orderByPivot('created_at', $this->directionFor('created_at'));
         }
 
         $favorites = $query->paginate(12);

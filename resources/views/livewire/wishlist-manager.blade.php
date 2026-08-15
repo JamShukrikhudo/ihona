@@ -58,7 +58,23 @@
         <div class="mt-8">
             {{ $favorites->links() }}
         </div>
-    @elseif ($totalFavorites && filled($search))
+    @elseif ($totalFavorites && ! filled($search))
+        {{-- Saved homes exist but this page has none: an out-of-range page, or
+             a saved row whose property has since gone. --}}
+        <div class="mt-6 rounded-sheet border border-dashed border-sheet-300 bg-sheet-000 p-10 text-center">
+            <p class="font-display text-h4 font-bold tracking-tight text-ink-900">
+                {{ __('Nothing on this page') }}
+            </p>
+            <p class="mx-auto mt-2 max-w-reading text-body-s text-ink-500">
+                {{ __('Your shortlist starts again from the first page.') }}
+            </p>
+            <div class="mt-4">
+                <x-ui.button size="sm" type="button" wire:click="gotoPage(1)">
+                    {{ __('Back to the first page') }}
+                </x-ui.button>
+            </div>
+        </div>
+    @elseif ($totalFavorites)
         <div class="mt-6 rounded-sheet border border-dashed border-sheet-300 bg-sheet-000 p-10 text-center">
             <p class="font-display text-h4 font-bold tracking-tight text-ink-900">
                 {{ __('No saved homes match that search') }}

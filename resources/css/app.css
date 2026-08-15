@@ -91,8 +91,18 @@
      `bg-primary-*` usages remained across pages not yet restyled — every one
      of them rendering white text on no background at all. They are readable
      again, and on-system, until their own tickets replace them with the
-     button component. */
+     button component.
+
+     The whole ramp is defined, not the shades that happened to show up first
+     in a grep: Tailwind emits nothing for an undefined key, so a missing shade
+     is silently dead rather than merely off-palette. Unused entries cost
+     nothing — Tailwind only emits what a utility references. */
+  --color-primary-50: light-dark(#FEF4F1, #2A1309);
   --color-primary-100: light-dark(#FCE7DF, #3A1B10);
+  --color-primary-200: light-dark(#F9CFBF, #4E2415);
+  --color-primary-300: light-dark(#F8A98F, #8A3D22);
+  --color-primary-400: #F2703F;
+  --color-primary-500: #EE4A1E;
   --color-primary-600: #C93A12;
   --color-primary-700: #A82D0C;
   --color-primary-800: #8E2609;

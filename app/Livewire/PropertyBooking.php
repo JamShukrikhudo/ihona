@@ -43,7 +43,7 @@ class PropertyBooking extends Component
     public function mount($propertyId)
     {
         $this->propertyId = $propertyId;
-        $property = Property::with('team')->find($this->propertyId);
+        $property = Property::with('team')->findOrFail($this->propertyId);
         $this->availableDates = $property->getAvailableDatesForTeam();
     }
 

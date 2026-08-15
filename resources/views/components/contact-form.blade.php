@@ -74,7 +74,7 @@
                     'letting' => __('Letting a property'),
                     'other' => __('Something else'),
                 ] as $value => $label)
-                    <option value="{{ $value }}" @selected(old('interest') === $value)>{{ $label }}</option>
+                    <option value="{{ $value }}" @selected(old('interest', request('interest')) === $value)>{{ $label }}</option>
                 @endforeach
             </select>
         </x-ui.field>

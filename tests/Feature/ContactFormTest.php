@@ -75,6 +75,37 @@ class ContactFormTest extends TestCase
         $this->assertSame(0, ContactMessage::count());
     }
 
+    /**
+     * "Apply for tenancy" redirects here carrying interest=renting. Dropping it
+     * lands an applicant on a generic form showing "Choose one" — the one piece
+     * of intent the redirect existed to carry.
+     */
+    public function test_an_intent_in_the_url_arrives_preselected(): void
+    {
+        $html = $this->get(route('contact.show', ['interest' => 'renting']))
+            ->assertOk()
+            ->getContent();
+
+        $this->assertMatchesRegularExpression(
+            '/<option value="renting"[^>]*selected/',
+            $html,
+            'the interest carried in the URL should already be chosen'
+        );
+    }
+
+    public function test_applying_to_rent_arrives_with_its_intent(): void
+    {
+        $property = Property::factory()->create(['title' => 'Alexandra Road']);
+
+        $html = $this->followingRedirects()
+            ->get('/properties/'.$property->id.'/apply')
+            ->assertOk()
+            ->getContent();
+
+        $this->assertStringContainsString('Alexandra Road', $html);
+        $this->assertMatchesRegularExpression('/<option value="renting"[^>]*selected/', $html);
+    }
+
     public function test_every_field_has_a_real_label(): void
     {
         $html = $this->get(route('contact.show'))->assertOk()->getContent();

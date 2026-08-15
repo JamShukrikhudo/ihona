@@ -15,7 +15,8 @@
         "postcss-nesting": "^13.0.0",
         "sass-embedded": "^1.89.0",
         "tailwindcss": "^4.1.17",
-        "vite": "^8.0.14"
+        "vite": "^8.0.14",
+        "playwright": "^1.50.0"
     },
     "dependencies": {
         "@google/model-viewer": "^4.2.0",

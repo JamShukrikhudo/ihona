@@ -29,6 +29,7 @@ class PropertyComparison extends Component
         if (count($this->propertyIds) < 4 && !in_array($propertyId, $this->propertyIds)) {
             $this->propertyIds[] = $propertyId;
             $this->loadProperties();
+            $this->searchProperties();
         }
     }
 
@@ -36,6 +37,7 @@ class PropertyComparison extends Component
     {
         $this->propertyIds = array_diff($this->propertyIds, [$propertyId]);
         $this->loadProperties();
+        $this->searchProperties();
     }
 
     /**

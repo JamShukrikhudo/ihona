@@ -126,6 +126,21 @@ class ComparisonAndWishlistTest extends TestCase
      * The rate values carry each listing's own currency, so the row label must
      * not name one.
      */
+    /**
+     * A home already in the comparison stayed in the dropdown, where clicking
+     * it again did nothing at all thanks to the duplicate guard.
+     */
+    public function test_an_added_home_leaves_the_search_results(): void
+    {
+        $property = $this->home(['title' => 'Alexandra Road']);
+
+        Livewire::test(PropertyComparison::class, ['propertyIds' => ''])
+            ->set('searchTerm', 'Alexandra')
+            ->assertSee('Alexandra Road')
+            ->call('addProperty', $property->id)
+            ->assertSet('searchResults', fn ($results) => count($results) === 0);
+    }
+
     public function test_the_rate_row_does_not_name_a_currency(): void
     {
         $one = $this->home(['title' => 'Euro Home', 'currency' => 'EUR']);
@@ -239,6 +254,41 @@ class ComparisonAndWishlistTest extends TestCase
             ->call('removeFavorite', $property->id)
             ->assertDontSee('match that search')
             ->assertSee('Nothing saved yet');
+    }
+
+    /**
+     * A hook only fires on a client-side update, so a shared link mounted with
+     * the default direction and sorted the wrong way.
+     */
+    public function test_a_shared_sort_link_sorts_the_right_way(): void
+    {
+        $user = User::factory()->create();
+
+        foreach (['Zebra Road', 'Alpha Road'] as $title) {
+            $property = $this->home(['title' => $title]);
+            Favorite::create(['user_id' => $user->id, 'property_id' => $property->id]);
+        }
+
+        $html = $this->actingAs($user)->get('/wishlist?sortBy=title')->assertOk()->getContent();
+
+        $this->assertLessThan(
+            strpos($html, 'Zebra Road'),
+            strpos($html, 'Alpha Road'),
+            'a shared link must sort the same way the control does'
+        );
+    }
+
+    public function test_a_confirmation_does_not_outlive_the_next_interaction(): void
+    {
+        $user = User::factory()->create();
+        $property = $this->home(['title' => 'Saved Home']);
+        Favorite::create(['user_id' => $user->id, 'property_id' => $property->id]);
+
+        Livewire::actingAs($user)->test(WishlistManager::class)
+            ->call('removeFavorite', $property->id)
+            ->assertSee('Removed from your shortlist')
+            ->set('search', 'anything')
+            ->assertDontSee('Removed from your shortlist');
     }
 
     public function test_removing_a_home_says_so(): void
