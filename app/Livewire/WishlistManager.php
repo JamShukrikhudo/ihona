@@ -57,8 +57,9 @@ class WishlistManager extends Component
     {
         $user = Auth::user();
         
+        // 'media' is Spatie's relation, which the card reads for its photograph.
         $query = $user->favoriteProperties()
-            ->with(['images', 'neighborhood', 'features', 'category']);
+            ->with(['images', 'media', 'neighborhood', 'features', 'category']);
 
         if ($this->search) {
             $query->where(function ($q) {
@@ -75,11 +76,11 @@ class WishlistManager extends Component
         } elseif ($this->sortBy === 'title') {
             $query->orderBy('title', $this->sortDirection);
         } else {
-            // Default: sort by when it was added to favorites
-            $query->join('favorites', 'properties.id', '=', 'favorites.property_id')
-                  ->where('favorites.user_id', $user->id)
-                  ->orderBy('favorites.created_at', $this->sortDirection)
-                  ->select('properties.*', 'favorites.created_at as favorited_at');
+            // Sort by when it was saved. favoriteProperties() is a belongsToMany
+            // through the same table, so joining it again made every favorites
+            // column ambiguous — which meant the default sort, and therefore the
+            // page's default view, threw.
+            $query->orderByPivot('created_at', $this->sortDirection);
         }
 
         $favorites = $query->paginate(12);
