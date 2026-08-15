@@ -64,6 +64,16 @@ Route::controller(ContactController::class)->group(function () {
     Route::post('/contact', 'submit')->name('contact.submit');
 });
 
+// The Survey Sheet styleguide, rendered from the same components the public
+// site uses so it cannot drift into a lie. Not available in production, and
+// never indexed.
+if (! app()->environment('production')) {
+    Route::get('/design', fn () => response()
+        ->view('design.styleguide')
+        ->header('X-Robots-Tag', 'noindex, nofollow')
+    )->name('design.styleguide');
+}
+
 Route::get('/about', [PageController::class, 'about'])->name('about');
 Route::get('/terms-and-conditions', [PageController::class, 'terms'])->name('termsandconditions');
 Route::get('/privacy', [PageController::class, 'privacy'])->name('privacypolicy');

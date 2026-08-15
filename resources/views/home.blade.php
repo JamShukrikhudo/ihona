@@ -45,9 +45,18 @@
                         <h3 class="text-xl font-semibold mb-2">{{ $property->title }}</h3>
                         <p class="text-gray-600 mb-4">{{ Str::limit($property->description, 100) }}</p>
                         <div class="flex justify-between items-center text-sm text-gray-500 mb-4">
-                            <span><i class="fas fa-bed mr-1"></i> {{ $property->bedrooms }} bed</span>
-                            <span><i class="fas fa-bath mr-1"></i> {{ $property->bathrooms }} bath</span>
-                            <span><i class="fas fa-ruler-combined mr-1"></i> {{ $property->area_sqft }} sqft</span>
+                            <span class="inline-flex items-center gap-1.5">
+                                <x-ui.icon name="bedrooms" class="size-4 text-ink-400" />
+                                {{ $property->bedrooms }} bed
+                            </span>
+                            <span class="inline-flex items-center gap-1.5">
+                                <x-ui.icon name="bathrooms" class="size-4 text-ink-400" />
+                                {{ $property->bathrooms }} bath
+                            </span>
+                            <span class="inline-flex items-center gap-1.5">
+                                <x-ui.icon name="floor-area" class="size-4 text-ink-400" />
+                                {{ $property->area_sqft }} sq ft
+                            </span>
                         </div>
                         <div class="flex justify-between items-center">
                             <span class="text-xl font-bold text-green-600">&pound{{ number_format($property->price, 2) }}</span>
