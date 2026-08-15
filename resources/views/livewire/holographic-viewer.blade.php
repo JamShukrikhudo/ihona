@@ -192,7 +192,10 @@
         </div>
 
     @push('scripts')
-    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
+    {{-- model-viewer is bundled by resources/js/app.js at 4.2.0. This tag
+         pulled 3.3.0 from a third-party CDN on top of it, so the page loaded
+         two copies of the same custom element, at different versions, from a
+         host the rest of the site does not use. --}}
     @endpush
 </div>
 

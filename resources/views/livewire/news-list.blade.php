@@ -12,8 +12,7 @@
                     </p>
                 </div>
                 <div class="hidden lg:mt-0 lg:col-span-5 lg:flex">
-                    <img src="https://static.vecteezy.com/system/resources/previews/011/999/262/original/3d-render-online-news-concept-smartphone-with-newspaper-and-coffee-cup-illustration-png.png"
-                        alt="news">
+                    {{-- No stock illustration: the hero carries its own words. --}}
                 </div>
             </div>
         </div>

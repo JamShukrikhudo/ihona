@@ -3,44 +3,39 @@
 namespace App\Http\Controllers;
 
 use App\Models\Property;
-use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Role;
 
+/**
+ * Applying to rent is not built.
+ *
+ * What was here rendered a view that does not exist (a 500 on a page linked
+ * twice from the property detail page), and its store() created a user account
+ * with a password, assigned the tenant role, stored no application at all —
+ * the comment in place of that was "Here you would typically create a tenancy
+ * application record" — and redirected to a route name that does not exist.
+ * index() queried a tenancy_applications table that has never been migrated.
+ *
+ * Until the real form exists (ticket 19), an applicant is sent somewhere that
+ * works and reaches a person, rather than an error page.
+ */
 class TenancyApplicationController extends Controller
 {
-    public function create(Property $property)
+    public function create(Property $property): RedirectResponse
     {
-        return view('tenancy.apply', compact('property'));
+        // Built rather than taken from redirect(): once Livewire has rendered a
+        // component in the same process it swaps that binding for its own
+        // Redirector, which a plain controller cannot return — the response
+        // then fails as it is cast to content. Only surfaced by walking the
+        // whole site in one process.
+        return new RedirectResponse(route('contact.show', [
+            'property' => $property->id,
+            'interest' => 'renting',
+        ]));
     }
 
-    public function store(Request $request, Property $property)
+    public function store(Request $request, Property $property): RedirectResponse
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
-        ]);
-
-        $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
-        ]);
-
-        $tenantRole = Role::findByName('tenant');
-        $user->assignRole($tenantRole);
-
-        // Here you would typically create a tenancy application record
-        // associated with the user and property
-
-        return redirect()->route('properties.show', $property)->with('success', 'Tenancy application submitted successfully.');
-    }
-
-    public function index()
-    {
-        $applications = TenancyApplication::all();
-        return view('tenancy.applications.index', compact('applications'));
+        return $this->create($property);
     }
 }

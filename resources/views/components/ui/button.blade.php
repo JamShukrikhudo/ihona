@@ -24,7 +24,7 @@
         'primary' => 'border-action bg-action text-white shadow-lift-1 hover:border-action-hover hover:bg-action-hover hover:shadow-lift-2',
         'secondary' => 'border-sheet-300 bg-sheet-000 text-ink-900 hover:border-ink-900',
         'ghost' => 'border-transparent bg-transparent text-ink-500 hover:bg-sheet-200 hover:text-ink-900',
-        'danger' => 'border-fault-600 bg-fault-600 text-white hover:border-fault-700 hover:bg-fault-700',
+        'danger' => 'border-danger bg-danger text-white hover:border-danger-hover hover:bg-danger-hover',
     ];
 
     $sizes = [

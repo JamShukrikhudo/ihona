@@ -81,6 +81,23 @@
   --color-action: #C93A12;       /* white on this — 5.1:1                     */
   --color-action-hover: #A82D0C; /* white on this — 6.9:1                     */
 
+  /* Destructive fill, fixed for the same reason: white on the dark side of
+     fault-600 (#E86B62) is 3.1:1, under AA for a button label. */
+  --color-danger: #A82424;       /* white on this — 7.1:1                     */
+  --color-danger-hover: #8B1D1D; /* white on this — 8.6:1                     */
+
+  /* The old theme's `primary` ramp, kept alive and pointed at the action
+     colour. Replacing the palette in this rollout deleted it while 25-odd
+     `bg-primary-*` usages remained across pages not yet restyled — every one
+     of them rendering white text on no background at all. They are readable
+     again, and on-system, until their own tickets replace them with the
+     button component. */
+  --color-primary-100: light-dark(#FCE7DF, #3A1B10);
+  --color-primary-600: #C93A12;
+  --color-primary-700: #A82D0C;
+  --color-primary-800: #8E2609;
+  --color-primary-900: #6E1D07;
+
   /* Verdigris: verified, compliant, in hand. */
   --color-verdigris-700: light-dark(#1F4E42, #8FD3BE);
   --color-verdigris-600: light-dark(#2F6F5E, #4E9A85);
@@ -241,3 +258,61 @@
    silently captured the Bootstrap-idiom buttons in resources/views/bookings/*.
    They land in ticket 04 alongside the Blade components that use them.
    Reference: docs/design-survey-sheet.html */
+
+/* --- Compatibility, deliberately unlayered ---------------------------------
+   These have to beat Tailwind's utilities, and a layer loses to a later layer
+   whatever its specificity — so they sit outside @layer entirely.
+
+   Pages not yet moved onto the system hardcode bg-white on their containers.
+   Shipping dark mode site-wide turned those into a white card on the night
+   ground carrying near-white text, which is unreadable. Until each page's own
+   ticket lands, a legacy white surface becomes the sheet surface in dark; in
+   light nothing changes. Delete a line here as each page is restyled. */
+:root[data-theme='dark'] .bg-white,
+:root[data-theme='dark'] .bg-gray-50,
+:root[data-theme='dark'] .bg-gray-100 {
+  background-color: var(--color-sheet-000);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .bg-white,
+  :root:not([data-theme='light']) .bg-gray-50,
+  :root:not([data-theme='light']) .bg-gray-100 {
+    background-color: var(--color-sheet-000);
+  }
+}
+
+/* Flipping the surface alone made those pages worse, not better: their text is
+   a literal text-gray-900, so a dark card left dark ink on a dark ground. The
+   legacy ink scale has to move with the legacy surfaces. */
+:root[data-theme='dark'] .text-gray-900,
+:root[data-theme='dark'] .text-gray-800,
+:root[data-theme='dark'] .text-gray-700 {
+  color: var(--color-ink-900);
+}
+
+:root[data-theme='dark'] .text-gray-600,
+:root[data-theme='dark'] .text-gray-500 {
+  color: var(--color-ink-500);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .text-gray-900,
+  :root:not([data-theme='light']) .text-gray-800,
+  :root:not([data-theme='light']) .text-gray-700 {
+    color: var(--color-ink-900);
+  }
+
+  :root:not([data-theme='light']) .text-gray-600,
+  :root:not([data-theme='light']) .text-gray-500 {
+    color: var(--color-ink-500);
+  }
+}
+
+/* Leaflet ships its own attribution colour, which lands at 3.6:1 on the
+   control's translucent white ground. Its own selector is .leaflet-container a,
+   so this has to be at least as specific. */
+.leaflet-container .leaflet-control-attribution,
+.leaflet-container .leaflet-control-attribution a {
+  color: #2A2A2A;
+}

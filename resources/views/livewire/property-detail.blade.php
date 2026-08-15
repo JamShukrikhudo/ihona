@@ -978,7 +978,7 @@
 
                             @if ($isLettingsProperty)
                                 <div class="mt-8">
-                                    <a href="{{ route('tenancy.apply', $property->id) }}"
+                                    <a href="{{ route('contact.show', ['property' => $property->id, 'interest' => 'renting']) }}"
                                         class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">
                                         Apply for Tenancy
                                     </a>
@@ -1024,7 +1024,7 @@
 
                                 @if ($isLettingsProperty)
                                     <div class="mt-8">
-                                        <a href="{{ route('tenancy.apply', $property->id) }}"
+                                        <a href="{{ route('contact.show', ['property' => $property->id, 'interest' => 'renting']) }}"
                                             class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">
                                             Apply for Tenancy
                                         </a>

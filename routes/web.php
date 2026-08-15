@@ -35,7 +35,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/bookings/{booking}', [BookingController::class, 'update']);
     Route::get('/bookings', [BookingController::class, 'index']);
 });
-Route::get('/properties/{property}/book', PropertyBooking::class)->name('property.book');
+Route::get('/properties/{propertyId}/book', PropertyBooking::class)->name('property.book');
 Route::post('/payments/session', [PaymentController::class, 'createSession'])->middleware(['auth', 'throttle:10,1']);
 Route::get('/payments/success', [PaymentController::class, 'handlePaymentSuccess'])->middleware('auth');
 Route::get('/booking-calendar', BookingCalendar::class)->middleware('auth')->name('booking.calendar');

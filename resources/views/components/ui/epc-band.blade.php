@@ -13,11 +13,11 @@
     // `var(--color-epc-a)` would compile to nothing and paint white on white.
     $bands = [
         'A' => 'bg-epc-a text-white',
-        'B' => 'bg-epc-b text-white',
+        'B' => 'bg-epc-b text-[#121614]',
         'C' => 'bg-epc-c text-[#121614]',
         'D' => 'bg-epc-d text-[#121614]',
         'E' => 'bg-epc-e text-[#121614]',
-        'F' => 'bg-epc-f text-white',
+        'F' => 'bg-epc-f text-[#121614]',
         'G' => 'bg-epc-g text-white',
     ];
 
