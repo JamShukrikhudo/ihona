@@ -63,135 +63,21 @@
                         </form>
                     </div>
                 </div>
-                <div class="mb-4 grid gap-4 sm:grid-cols-2 md:mb-8 lg:grid-cols-3 xl:grid-cols-4">
-                    @forelse($properties as $property)
-                        <div
-                            class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
-                            <div class="h-56 w-full">
-                                <a href="{{ route('property.detail', $property->id) }}">
-                                    <img src="{{ $property->getFirstMediaUrl('images') ?: asset('build/images/property-placeholder.png') }}"
-                                        alt="{{ $property->title }}" class="mx-auto h-full dark:hidden">
-                                </a>
-                            </div>
-                            <div class="pt-6">
-                                <div class="mb-4 flex items-center justify-between gap-4">
-                                    <span
-                                        class="me-2 rounded bg-primary-100 px-2.5 py-0.5 text-md font-medium text-primary-800 dark:bg-primary-900 dark:text-primary-300">
-                                        {{ app(\App\Settings\GeneralSettings::class)->site_currency . ' ' . number_format($property->price, 2) }}
-                                    </span>
-                                    <div class="flex items-center justify-end gap-1">
-                                        <button type="button" data-tooltip-target="tooltip-quick-look"
-                                            class="rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                                            <span class="sr-only"> Quick look </span>
-                                            <svg class="h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                                width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                                <path stroke="currentColor" stroke-width="2"
-                                                    d="M21 12c0 1.2-4.03 6-9 6s-9-4.8-9-6c0-1.2 4.03-6 9-6s9 4.8 9 6Z" />
-                                                <path stroke="currentColor" stroke-width="2"
-                                                    d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                                            </svg>
-                                        </button>
-                                        <div id="tooltip-quick-look" role="tooltip"
-                                            class="tooltip invisible absolute z-10 inline-block rounded-lg bg-gray-900 px-3 py-2 text-sm font-medium text-white opacity-0 shadow-sm transition-opacity duration-300 dark:bg-gray-700"
-                                            data-popper-placement="top">
-                                            Quick look
-                                            <div class="tooltip-arrow" data-popper-arrow=""></div>
-                                        </div>
-
-                                        <button type="button" 
-                                            wire:click="toggleFavorite({{ $property->id }})"
-                                            data-tooltip-target="tooltip-add-to-favorites-{{ $property->id }}"
-                                            class="rounded-lg p-2 hover:bg-gray-100 dark:hover:bg-gray-700 
-                                            {{ $this->isFavorited($property->id) ? 'text-red-500' : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white' }}">
-                                            <span class="sr-only"> {{ $this->isFavorited($property->id) ? 'Remove from' : 'Add to' }} Favorites </span>
-                                            <svg class="h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                                fill="{{ $this->isFavorited($property->id) ? 'currentColor' : 'none' }}" viewBox="0 0 24 24">
-                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                                    stroke-width="2"
-                                                    d="M12 6C6.5 1 1 8 5.8 13l6.2 7 6.2-7C23 8 17.5 1 12 6Z" />
-                                            </svg>
-                                        </button>
-                                        <div id="tooltip-add-to-favorites-{{ $property->id }}" role="tooltip"
-                                            class="tooltip invisible absolute z-10 inline-block rounded-lg bg-gray-900 px-3 py-2 text-sm font-medium text-white opacity-0 shadow-sm transition-opacity duration-300 dark:bg-gray-700"
-                                            data-popper-placement="top">
-                                            {{ $this->isFavorited($property->id) ? 'Remove from wishlist' : 'Add to wishlist' }}
-                                            <div class="tooltip-arrow" data-popper-arrow=""></div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <a href="#"
-                                    class="text-lg font-semibold leading-tight text-gray-900 hover:underline dark:text-white">
-                                    {{ Str::limit($property->title, 25) }}</a>
-
-                                <p class="text-xs  text-gray-500 dark:text-gray-400">
-                                    {{ Str::limit($property->description, 70   ) }}
-                                </p>
-
-                                <ul class="mt-2">
-                                    <li class="flex items-center gap-2">
-                                        <svg class="h-4 w-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                                            xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                            fill="none" viewBox="0 0 24 24">
-                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                                stroke-width="2"
-                                                d="M9.143 4H4.857A.857.857 0 0 0 4 4.857v4.286c0 .473.384.857.857.857h4.286A.857.857 0 0 0 10 9.143V4.857A.857.857 0 0 0 9.143 4Zm10 0h-4.286a.857.857 0 0 0-.857.857v4.286c0 .473.384.857.857.857h4.286A.857.857 0 0 0 20 9.143V4.857A.857.857 0 0 0 19.143 4Zm-10 10H4.857a.857.857 0 0 0-.857.857v4.286c0 .473.384.857.857.857h4.286a.857.857 0 0 0 .857-.857v-4.286A.857.857 0 0 0 9.143 14Zm10 0h-4.286a.857.857 0 0 0-.857.857v4.286c0 .473.384.857.857.857h4.286a.857.857 0 0 0 .857-.857v-4.286a.857.857 0 0 0-.857-.857Z" />
-                                        </svg>
-
-                                        <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Bedrooms :
-                                            {{ $property->bedrooms }}</p>
-                                    </li>
-
-                                    <li class="flex items-center gap-2">
-                                        <svg class="h-4 w-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                                            xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                            fill="none" viewBox="0 0 24 24">
-                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                                stroke-width="2"
-                                                d="M8 8v8m0-8h8M8 8H6a2 2 0 1 1 2-2v2Zm0 8h8m-8 0H6a2 2 0 1 0 2 2v-2Zm8 0V8m0 8h2a2 2 0 1 1-2 2v-2Zm0-8h2a2 2 0 1 0-2-2v2Z" />
-                                        </svg>
-
-                                        <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Bathrooms :
-                                            {{ $property->bathrooms }}</p>
-                                    </li>
-
-                                    <li class="flex items-center gap-2">
-                                        <svg class="h-4 w-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                                            xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                            fill="none" viewBox="0 0 24 24">
-                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                                stroke-width="2"
-                                                d="M9 7H7m2 3H7m2 3H7m4 2v2m3-2v2m3-2v2M4 5v14a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1h-9a1 1 0 0 1-1-1V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1Z" />
-                                        </svg>
-
-                                        <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Square Foot :
-                                            {{ $property->area_sqft }}</p>
-                                    </li>
-                                </ul>
-
-
-                                <div class="mt-4 flex items-center justify-between gap-4">
-                                    <p class="text-sm font-extrabold leading-tight text-gray-900 dark:text-white">
-
-                                    </p>
-
-                                    <a href="{{ route('property.detail', $property->id) }}"
-                                        class="inline-flex items-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4  focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
-                                        <svg class="-ms-2 me-2 h-5 w-5" aria-hidden="true"
-                                            xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                            fill="none" viewBox="0 0 24 24">
-                                            <path stroke="currentColor" stroke-width="2"
-                                                d="M21 12c0 1.2-4.03 6-9 6s-9-4.8-9-6c0-1.2 4.03-6 9-6s9 4.8 9 6Z" />
-                                            <path stroke="currentColor" stroke-width="2"
-                                                d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                                        </svg>
-
-                                        VIEW DETAILS
-                                    </a>
-                                </div>
-                            </div>
+                {{-- One card component, used here and on the home page, so a
+                     change to the disclosure strip lands everywhere at once. --}}
+                <div class="mb-4 grid gap-5 sm:grid-cols-2 md:mb-8 lg:grid-cols-3">
+                    @forelse ($properties as $property)
+                        <x-property-card :property="$property" />
+                    @empty
+                        <div class="col-span-full rounded-sheet border border-dashed border-sheet-300 bg-sheet-000 p-10 text-center">
+                            <p class="font-display text-h4 font-bold tracking-tight text-ink-900">
+                                {{ __('No homes match these filters') }}
+                            </p>
+                            <p class="mx-auto mt-2 max-w-reading text-body-s text-ink-500">
+                                {{ __('Widening the price range or the radius is usually the quickest way back to a full page of results.') }}
+                            </p>
                         </div>
-                    @endforeach
+                    @endforelse
                 </div>
             </div>
         </div>

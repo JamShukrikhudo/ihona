@@ -49,7 +49,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 
 class Property extends Model implements HasMedia
 {
-    use HasFactory, InteractsWithMedia, SoftDeletes;
+    use Concerns\HasDisclosureFacts, HasFactory, InteractsWithMedia, SoftDeletes;
 
     protected $fillable = [
         'title',
