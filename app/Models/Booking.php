@@ -25,6 +25,7 @@ class Booking extends Model
         'property_id',
         'name',
         'contact',
+        'email',
         'team_id',
         'status',
         'visit_type',

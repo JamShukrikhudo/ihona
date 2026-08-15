@@ -2,7 +2,9 @@
 
 namespace App\Livewire;
 
+use App\Mail\ViewingBooked;
 use Exception;
+use Illuminate\Support\Facades\Mail;
 use Log;
 use Illuminate\Database\QueryException;
 use Illuminate\Validation\ValidationException;
@@ -30,6 +32,16 @@ class PropertyBooking extends Component
     public $confirmedBookingId = null;
     public $googleCalendarUrl = null;
     public $outlookCalendarUrl = null;
+
+    protected $messages = [
+        'selectedDate.required' => 'Pick a date that suits you.',
+        'selectedDate.after_or_equal' => 'Pick a date from today onwards.',
+        'selectedTime.required' => 'Pick a time on that day.',
+        'userName.required' => 'Add your name so the agent knows who to expect.',
+        'userEmail.email' => 'Add the part after the @ so we can send the confirmation.',
+        'userContact.required' => 'Add a phone number in case the agent needs to reach you on the day.',
+        'notes.max' => 'Keep it under 1,000 characters and tell us the rest on the day.',
+    ];
 
     protected $rules = [
         'selectedDate' => 'required|date|after_or_equal:today',
@@ -86,7 +98,15 @@ class PropertyBooking extends Component
         $this->validate();
 
         try {
-            $availableDates = Property::find($this->propertyId)->getAvailableDates();
+            // The same method that produced the list the visitor chose from.
+            // This called getAvailableDates(), which does not exist on Property
+            // — the only one is a private method on a different component — so
+            // every submission threw BadMethodCallException, the catch turned
+            // it into "an unexpected error occurred", and no viewing was ever
+            // booked. The route was broken until recently, so nothing exercised
+            // it.
+            $availableDates = Property::findOrFail($this->propertyId)->getAvailableDatesForTeam();
+
             if (!in_array($this->selectedDate, $availableDates)) {
                 throw new Exception('Selected date is no longer available.');
             }
@@ -95,7 +115,14 @@ class PropertyBooking extends Component
                 throw new Exception('Selected time slot is no longer available.');
             }
 
-            $defaultStaffId = User::role('staff')->first()->id ?? null;
+            // A missing staff role must not stop a visitor booking. Spatie
+            // throws RoleDoesNotExist rather than returning nothing, and the
+            // booking is perfectly valid unassigned.
+            $defaultStaffId = rescue(
+                fn () => User::role('staff')->first()?->id,
+                null,
+                report: false
+            );
 
             $booking = Booking::create([
                 'property_id' => $this->propertyId,
@@ -104,6 +131,9 @@ class PropertyBooking extends Component
                 'user_id' => auth()->id(),
                 'name' => $this->userName,
                 'contact' => $this->userContact,
+                // Collected and validated since this form was written, and
+                // never stored: for a guest it is the only way to reach them.
+                'email' => $this->userEmail,
                 'notes' => $this->notes,
                 'staff_id' => $defaultStaffId,
                 'status' => 'confirmed',
@@ -120,6 +150,21 @@ class PropertyBooking extends Component
 
             if (auth()->check()) {
                 auth()->user()->notify(new BookingNotification($booking, 'confirmed'));
+            }
+
+            // A guest has no account to be notified through, so the address
+            // they just gave us is the only route to them.
+            if (filled($this->userEmail)) {
+                try {
+                    Mail::to($this->userEmail)->send(new ViewingBooked($booking->load('property')));
+                } catch (\Throwable $e) {
+                    // The viewing is booked either way; losing the confirmation
+                    // email must not lose the booking with it.
+                    Log::error('Could not send the viewing confirmation', [
+                        'booking' => $booking->id,
+                        'exception' => $e->getMessage(),
+                    ]);
+                }
             }
 
             session()->flash('message', 'Viewing scheduled successfully for ' . Carbon::parse($this->selectedDate)->format('F j, Y') . ' at ' . $this->selectedTime);

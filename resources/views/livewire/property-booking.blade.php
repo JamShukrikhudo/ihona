@@ -1,136 +1,120 @@
-<div class="max-w-2xl mx-auto bg-white rounded-2xl shadow-lg p-8">
-    <div class="mb-6">
-        <h2 class="text-2xl font-bold text-gray-900">Book a Property Viewing</h2>
-        <p class="mt-1 text-sm text-gray-500">Select your preferred date and time to view this property.</p>
-    </div>
+@php
+    $control = 'w-full rounded-sheet border border-sheet-300 bg-sheet-000 px-3.5 py-[11px]'
+        .' font-sans text-body-s text-ink-900 placeholder:text-sheet-400'
+        .' transition-[border-color,box-shadow] duration-[160ms]'
+        .' hover:border-ink-400 focus:border-survey-500 focus:ring-0 focus:outline-none';
+    $invalid = ' border-fault-600';
+@endphp
 
-    @if (session()->has('message'))
-        <div class="mb-6 rounded-lg bg-green-50 border border-green-200 p-4 flex items-start gap-3">
-            <svg class="w-5 h-5 text-green-500 mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
-            <div>
-                <p class="text-sm font-medium text-green-800">{{ session('message') }}</p>
-                @if ($bookingConfirmed)
-                    <div class="mt-3 flex flex-wrap gap-2">
-                        @if ($googleCalendarUrl)
-                            <a href="{{ $googleCalendarUrl }}" target="_blank" rel="noopener"
-                               class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 transition">
-                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                                Add to Google Calendar
-                            </a>
-                        @endif
-                        @if ($outlookCalendarUrl)
-                            <a href="{{ $outlookCalendarUrl }}" target="_blank" rel="noopener"
-                               class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 transition">
-                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                                Add to Outlook
-                            </a>
-                        @endif
-                        @if ($confirmedBookingId)
-                            <a href="{{ route('booking.ics', $confirmedBookingId) }}"
-                               class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 transition">
-                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                                Download .ics (Apple / Other)
-                            </a>
-                        @endif
-                    </div>
-                @endif
-            </div>
+<div class="mx-auto max-w-2xl px-4 py-band">
+    @if ($bookingConfirmed)
+        {{-- The verb the button used, reused. --}}
+        <div class="rounded-sheet border border-verdigris-600 bg-verdigris-100 p-6" role="status">
+            <h1 class="font-display text-h3 font-bold tracking-tight text-verdigris-700">
+                {{ __('Viewing booked') }}
+            </h1>
+            <p class="mt-2 text-body-s text-verdigris-700">{{ session('message') }}</p>
+
+            @if ($googleCalendarUrl || $outlookCalendarUrl)
+                <div class="mt-4 flex flex-wrap gap-3">
+                    @if ($googleCalendarUrl)
+                        <x-ui.button size="sm" variant="secondary" :href="$googleCalendarUrl">
+                            {{ __('Add to Google Calendar') }}
+                        </x-ui.button>
+                    @endif
+                    @if ($outlookCalendarUrl)
+                        <x-ui.button size="sm" variant="secondary" :href="$outlookCalendarUrl">
+                            {{ __('Add to Outlook') }}
+                        </x-ui.button>
+                    @endif
+                </div>
+            @endif
         </div>
-    @endif
+    @else
+        <header>
+            <p class="font-mono text-annotation uppercase text-ink-400">{{ __('Arrange a visit') }}</p>
+            <h1 class="mt-3 font-display text-h2 font-bold tracking-tight text-ink-900">
+                {{ __('Book a viewing') }}
+            </h1>
+            <p class="mt-4 max-w-reading text-body-l text-ink-500">
+                {{ __('Pick a time that suits you. Booking one does not commit you to anything.') }}
+            </p>
+        </header>
 
-    @if (session()->has('error'))
-        <div class="mb-6 rounded-lg bg-red-50 border border-red-200 p-4 flex items-start gap-3">
-            <svg class="w-5 h-5 text-red-500 mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
-            <p class="text-sm text-red-700">{{ session('error') }}</p>
-        </div>
-    @endif
+        @if (session('error'))
+            <p role="alert"
+               class="mt-6 rounded-sheet border border-fault-600 bg-fault-100 px-4 py-3 text-body-s text-fault-700">
+                {{ session('error') }}
+            </p>
+        @endif
 
-    <form wire:submit.prevent="bookViewing" class="space-y-6">
-        {{-- Date & Time Selection --}}
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-                <label for="selectedDate" class="block text-sm font-medium text-gray-700 mb-1">
-                    Preferred Date <span class="text-red-500">*</span>
-                </label>
+        <form wire:submit.prevent="bookViewing" class="mt-8 grid gap-5 sm:grid-cols-2" novalidate>
+            <x-ui.field id="selectedDate" :label="__('Date')" :error="$errors->first('selectedDate')">
                 <select id="selectedDate" wire:model.live="selectedDate"
-                    class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                    <option value="">— Choose a date —</option>
-                    @foreach($availableDates as $date)
-                        <option value="{{ $date }}">{{ \Carbon\Carbon::parse($date)->format('D, d M Y') }}</option>
+                        @if ($errors->has('selectedDate')) aria-invalid="true" aria-describedby="selectedDate-error" @endif
+                        class="{{ $control }}{{ $errors->has('selectedDate') ? $invalid : '' }}">
+                    <option value="">{{ __('Choose a date') }}</option>
+                    @foreach ($availableDates as $date)
+                        <option value="{{ $date }}">
+                            {{ \Illuminate\Support\Carbon::parse($date)->format('l j F Y') }}
+                        </option>
                     @endforeach
                 </select>
-                @error('selectedDate') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
-            </div>
+            </x-ui.field>
 
-            <div>
-                <label for="selectedTime" class="block text-sm font-medium text-gray-700 mb-1">
-                    Preferred Time <span class="text-red-500">*</span>
-                </label>
+            <x-ui.field id="selectedTime" :label="__('Time')"
+                        :hint="$selectedDate ? null : __('Choose a date first.')"
+                        :error="$errors->first('selectedTime')">
                 <select id="selectedTime" wire:model="selectedTime"
-                    class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm
-                    {{ empty($availableTimeSlots) ? 'bg-gray-100 cursor-not-allowed' : '' }}"
-                    {{ empty($availableTimeSlots) ? 'disabled' : '' }}>
-                    <option value="">{{ $selectedDate ? '— Choose a time —' : '— Select a date first —' }}</option>
-                    @foreach($availableTimeSlots as $slot)
-                        <option value="{{ $slot }}">{{ \Carbon\Carbon::createFromFormat('H:i', $slot)->format('g:i A') }}</option>
+                        @disabled(! $selectedDate)
+                        @if ($errors->has('selectedTime')) aria-invalid="true" aria-describedby="selectedTime-error" @endif
+                        class="{{ $control }}{{ $errors->has('selectedTime') ? $invalid : '' }} disabled:cursor-not-allowed disabled:bg-sheet-200">
+                    <option value="">{{ __('Choose a time') }}</option>
+                    @foreach ($availableTimeSlots as $slot)
+                        <option value="{{ $slot }}">{{ $slot }}</option>
                     @endforeach
                 </select>
-                @error('selectedTime') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
+            </x-ui.field>
+
+            <x-ui.field id="userName" :label="__('Your name')" :error="$errors->first('userName')">
+                <input type="text" id="userName" wire:model="userName" autocomplete="name"
+                       @if ($errors->has('userName')) aria-invalid="true" aria-describedby="userName-error" @endif
+                       class="{{ $control }}{{ $errors->has('userName') ? $invalid : '' }}">
+            </x-ui.field>
+
+            <x-ui.field id="userContact" :label="__('Phone')"
+                        :hint="__('In case the agent needs you on the day.')"
+                        :error="$errors->first('userContact')">
+                <input type="tel" id="userContact" wire:model="userContact" autocomplete="tel"
+                       aria-describedby="userContact-hint"
+                       @if ($errors->has('userContact')) aria-invalid="true" @endif
+                       class="{{ $control }}{{ $errors->has('userContact') ? $invalid : '' }}">
+            </x-ui.field>
+
+            <x-ui.field id="userEmail" :label="__('Email')" class="sm:col-span-2"
+                        :hint="__('We send the confirmation here.')"
+                        :error="$errors->first('userEmail')">
+                <input type="email" id="userEmail" wire:model="userEmail" autocomplete="email"
+                       aria-describedby="userEmail-hint"
+                       @if ($errors->has('userEmail')) aria-invalid="true" @endif
+                       class="{{ $control }}{{ $errors->has('userEmail') ? $invalid : '' }}">
+            </x-ui.field>
+
+            <x-ui.field id="notes" :label="__('Anything the agent should know')" class="sm:col-span-2"
+                        :error="$errors->first('notes')">
+                <textarea id="notes" wire:model="notes" rows="3"
+                          placeholder="{{ __('Parking, access, or a question you want answered on the day.') }}"
+                          @if ($errors->has('notes')) aria-invalid="true" aria-describedby="notes-error" @endif
+                          class="{{ $control }}{{ $errors->has('notes') ? $invalid : '' }}"></textarea>
+            </x-ui.field>
+
+            <div class="flex flex-wrap items-center gap-4 sm:col-span-2">
+                <x-ui.button type="submit" wire:loading.attr="disabled">
+                    <span wire:loading.remove wire:target="bookViewing">{{ __('Book a viewing') }}</span>
+                    <span wire:loading wire:target="bookViewing">{{ __('Booking…') }}</span>
+                </x-ui.button>
+                <p class="text-caption text-ink-400">{{ __('Viewings run seven days a week.') }}</p>
             </div>
-        </div>
-
-        {{-- Divider --}}
-        <hr class="border-gray-200">
-
-        {{-- Personal Details --}}
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-                <label for="userName" class="block text-sm font-medium text-gray-700 mb-1">
-                    Full Name <span class="text-red-500">*</span>
-                </label>
-                <input type="text" id="userName" wire:model="userName" placeholder="John Smith"
-                    class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                @error('userName') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
-            </div>
-
-            <div>
-                <label for="userEmail" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                <input type="email" id="userEmail" wire:model="userEmail" placeholder="you@example.com"
-                    class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                @error('userEmail') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
-            </div>
-
-            <div class="sm:col-span-2">
-                <label for="userContact" class="block text-sm font-medium text-gray-700 mb-1">
-                    Phone Number <span class="text-red-500">*</span>
-                </label>
-                <input type="tel" id="userContact" wire:model="userContact" placeholder="+44 7700 900000"
-                    class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                @error('userContact') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
-            </div>
-
-            <div class="sm:col-span-2">
-                <label for="notes" class="block text-sm font-medium text-gray-700 mb-1">Additional Notes</label>
-                <textarea id="notes" wire:model="notes" rows="3" placeholder="Any special requirements or questions..."
-                    class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
-                @error('notes') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
-            </div>
-        </div>
-
-        <div class="flex items-center justify-between pt-2">
-            <p class="text-xs text-gray-500">Fields marked <span class="text-red-500">*</span> are required.</p>
-            <button type="submit"
-                class="inline-flex items-center gap-2 px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg shadow transition focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                wire:loading.attr="disabled" wire:loading.class="opacity-75 cursor-not-allowed">
-                <span wire:loading.remove>Book Viewing</span>
-                <span wire:loading class="flex items-center gap-1.5">
-                    <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
-                    </svg>
-                    Submitting...
-                </span>
-            </button>
-        </div>
-    </form>
+        </form>
+    @endif
 </div>
