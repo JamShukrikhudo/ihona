@@ -136,6 +136,9 @@ class PropertyBooking extends Component
                 'email' => $this->userEmail,
                 'notes' => $this->notes,
                 'staff_id' => $defaultStaffId,
+                // Without this a booking made here is invisible to the team
+                // availability query that is supposed to stop double-booking.
+                'team_id' => Property::find($this->propertyId)?->team_id,
                 'status' => 'confirmed',
                 'booking_type' => 'viewing',
             ]);

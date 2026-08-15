@@ -328,6 +328,41 @@ class ListingFiltersTest extends TestCase
             ->assertDontSee('No homes match these filters');
     }
 
+    /**
+     * The banner sat above the point where the list query runs, so a database
+     * failure rendered as "no homes match these filters" — an outage presented
+     * as an empty shop — and the real message surfaced on someone's next,
+     * healthy visit.
+     */
+    public function test_a_query_failure_is_reported_rather_than_read_as_no_stock(): void
+    {
+        $source = file_get_contents(resource_path('views/livewire/property-list.blade.php'));
+
+        $this->assertLessThan(
+            strpos($source, "session('error')"),
+            strpos($source, '$results = $this->properties'),
+            'the list has to be resolved before the banner that reports its failure'
+        );
+    }
+
+    public function test_the_page_counts_its_results_once(): void
+    {
+        Property::factory()->count(3)->create(['status' => 'For Sale']);
+
+        \DB::enableQueryLog();
+        $this->get('/properties')->assertOk();
+        $counts = collect(\DB::getQueryLog())
+            ->filter(fn ($q) => str_contains(strtolower($q['query']), 'count(*)'))
+            ->count();
+        \DB::disableQueryLog();
+
+        $this->assertLessThanOrEqual(
+            1,
+            $counts,
+            "the page ran {$counts} count queries with the same filters"
+        );
+    }
+
     public function test_the_page_loads_no_third_party_image(): void
     {
         $html = $this->get('/properties')->assertOk()->getContent();

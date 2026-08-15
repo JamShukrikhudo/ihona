@@ -2,10 +2,15 @@
     $applied = $this->appliedFilters();
     $labels = $this->filterLabels();
 
-    // Inside the same guard the list uses. Counting outside it meant a query
-    // failure was caught over there, rethrown here as the view rendered, and
-    // the flashed message never reached the page.
-    $count = rescue(fn () => $this->resultCount(), 0, report: true);
+    // Resolved before anything renders, so a query failure has already flashed
+    // by the time the banner below is reached. The banner used to sit above
+    // this point, so an outage rendered as "no homes match these filters" and
+    // the real message surfaced on someone's next, healthy visit.
+    $results = $this->properties;
+
+    // total() rather than a second COUNT with the same filters: paginate()
+    // has already counted them.
+    $count = $results->total();
 @endphp
 
 <div class="mx-auto max-w-(--breakpoint-xl) px-4 py-band md:px-margin">
@@ -93,9 +98,9 @@
 
     <div class="mt-6 grid gap-6 lg:grid-cols-12">
         <div class="lg:col-span-7 xl:col-span-8">
-            @if (count($this->properties))
+            @if (count($results))
                 <div class="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-                    @foreach ($this->properties as $property)
+                    @foreach ($results as $property)
                         <x-property-card :property="$property"
                                          saveable
                                          :saved="$this->isFavorited($property->id)" />
@@ -103,7 +108,7 @@
                 </div>
 
                 <div class="mt-8">
-                    {{ $this->properties->links() }}
+                    {{ $results->links() }}
                 </div>
             @elseif ($count)
                 {{-- Matches exist, just not on this page: an out-of-range page
@@ -126,7 +131,7 @@
                     </div>
                 </div>
             @else
-                @php $loosen = $this->mostRestrictiveFilter(); @endphp
+                @php $loosen = rescue(fn () => $this->mostRestrictiveFilter(), null, report: false); @endphp
 
                 {{-- An invitation, not a dead end: the move and what it returns. --}}
                 <div class="rounded-sheet border border-dashed border-sheet-300 bg-sheet-000 p-10 text-center">

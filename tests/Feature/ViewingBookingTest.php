@@ -94,6 +94,53 @@ class ViewingBookingTest extends TestCase
     /**
      * The control names the action and the confirmation reuses the verb.
      */
+    /**
+     * Booking casts `date`, so pluck() returns Carbon objects whose string form
+     * is 'Y-m-d H:i:s'. Comparing those against 'Y-m-d' never matched, so a day
+     * already booked was still offered — in the picker and in the check meant
+     * to catch it on submission.
+     */
+    public function test_a_booked_day_is_no_longer_offered(): void
+    {
+        Mail::fake();
+
+        $this->form()->call('bookViewing')->assertHasNoErrors();
+
+        $taken = Booking::sole()->date->format('Y-m-d');
+
+        $this->assertNotContains(
+            $taken,
+            $this->property->fresh()->getAvailableDatesForTeam(),
+            'a day with a viewing on it is still being offered'
+        );
+    }
+
+    /**
+     * A property with no team must not have its availability driven by every
+     * teamless booking on the platform: where('team_id', null) becomes
+     * whereNull and matches all of them.
+     */
+    public function test_a_teamless_property_is_not_blanked_by_other_bookings(): void
+    {
+        $mine = Property::factory()->create(['team_id' => null, 'status' => 'For Sale']);
+        $theirs = Property::factory()->create(['team_id' => null, 'status' => 'For Sale']);
+
+        Booking::create([
+            'property_id' => $theirs->id,
+            'date' => now()->addDays(3)->format('Y-m-d'),
+            'time' => '10:00',
+            'status' => 'confirmed',
+            'name' => 'Someone else',
+            'contact' => '07700 900999',
+        ]);
+
+        $this->assertContains(
+            now()->addDays(3)->format('Y-m-d'),
+            $mine->getAvailableDatesForTeam(),
+            "another property's booking should not blank this one"
+        );
+    }
+
     public function test_the_confirmation_reuses_the_verb(): void
     {
         Mail::fake();

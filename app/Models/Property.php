@@ -587,29 +587,48 @@ class Property extends Model implements HasMedia
         return $query->where('country', $country);
     }
 
+    /**
+     * Dates with no viewing already booked.
+     *
+     * The comparison used to be `in_array('Y-m-d', $plucked)`, but Booking
+     * casts `date`, so pluck() hands back Carbon objects whose string form is
+     * 'Y-m-d H:i:s'. Nothing ever matched, so every day for three months was
+     * reported free — in the picker and in the check on submission.
+     */
     public function getAvailableDatesForTeam()
     {
-        $bookedDates = $this->bookings()
-            ->where('team_id', $this->team_id)
+        $taken = $this->bookings()
             ->pluck('date')
-            ->toArray();
+            ->map(fn ($date) => $date instanceof \DateTimeInterface
+                ? $date->format('Y-m-d')
+                : (string) $date)
+            ->all();
 
-        $teamBookings = Booking::where('team_id', $this->team_id)
-            ->pluck('date')
-            ->toArray();
+        // Only when the property actually belongs to a team: team_id null would
+        // otherwise become whereNull and blank a date across every teamless
+        // property on the platform.
+        if ($this->team_id) {
+            $taken = array_merge($taken, Booking::query()
+                ->where('team_id', $this->team_id)
+                ->pluck('date')
+                ->map(fn ($date) => $date instanceof \DateTimeInterface
+                    ? $date->format('Y-m-d')
+                    : (string) $date)
+                ->all());
+        }
 
-        $availableDates = [];
-        $startDate = now();
-        $endDate = now()->addMonths(3);
+        $taken = array_flip($taken);
+        $available = [];
 
-        for ($date = $startDate; $date <= $endDate; $date->addDay()) {
-            $currentDate = $date->format('Y-m-d');
-            if (! in_array($currentDate, $bookedDates) && ! in_array($currentDate, $teamBookings)) {
-                $availableDates[] = $currentDate;
+        for ($date = now(); $date <= now()->addMonths(3); $date->addDay()) {
+            $day = $date->format('Y-m-d');
+
+            if (! isset($taken[$day])) {
+                $available[] = $day;
             }
         }
 
-        return $availableDates;
+        return $available;
     }
 
     /**
