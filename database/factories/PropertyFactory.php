@@ -24,6 +24,9 @@ class PropertyFactory extends Factory
             'year_built' => $this->faker->year,
             'property_type' => $this->faker->randomElement(['House', 'Apartment', 'Condo', 'Townhouse']),
             'status' => $this->faker->randomElement(['For Sale', 'For Rent', 'Sold', 'Rented']),
+            // Matches the column default, so a made model reads the same as a
+            // saved one rather than falling back to the site-wide symbol.
+            'currency' => 'GBP',
             'team_id' => Team::factory(),
             'user_id' => User::factory(),
         ];

@@ -130,7 +130,7 @@ class PropertyCardTest extends TestCase
 
         $this->assertStringContainsString('1,150', $html);
         $this->assertStringContainsString('pcm', $html);
-        $this->assertStringContainsString('£/sq ft pcm', $html);
+        $this->assertStringContainsString('£/sq ft', $html);
     }
 
     /**
@@ -165,6 +165,59 @@ class PropertyCardTest extends TestCase
         $html = $this->render(['list_date' => now()->subDays(90)]);
 
         $this->assertStringNotContainsString('New —', $html);
+    }
+
+    /**
+     * The card is used on Livewire pages and static ones. Rendering a wishlist
+     * button where nothing can handle the click would give the visitor a dead
+     * control, so it is opt-in.
+     */
+    public function test_the_wishlist_control_is_opt_in(): void
+    {
+        $property = Property::factory()->create();
+
+        $without = Blade::render('<x-property-card :property="$p" />', ['p' => $property]);
+        $with = Blade::render('<x-property-card :property="$p" saveable />', ['p' => $property]);
+
+        $this->assertStringNotContainsString('toggleFavorite', $without);
+        $this->assertStringContainsString('toggleFavorite('.$property->id.')', $with);
+        $this->assertStringContainsString('aria-pressed="false"', $with);
+    }
+
+    public function test_a_saved_property_shows_as_saved(): void
+    {
+        $property = Property::factory()->create();
+
+        $html = Blade::render(
+            '<x-property-card :property="$p" saveable :saved="true" />',
+            ['p' => $property]
+        );
+
+        $this->assertStringContainsString('aria-pressed="true"', $html);
+        $this->assertStringContainsString('Remove', $html);
+    }
+
+    /**
+     * Rewriting the results grid dropped this control once already, leaving
+     * PropertyList::toggleFavorite unreachable and no way to save a property
+     * while browsing.
+     */
+    public function test_the_listings_page_keeps_the_wishlist_reachable(): void
+    {
+        Property::factory()->count(2)->create(['status' => 'For Sale']);
+
+        $html = $this->get('/properties')->assertOk()->getContent();
+
+        $this->assertStringContainsString('toggleFavorite', $html);
+    }
+
+    public function test_a_listing_added_today_does_not_read_as_zero_days(): void
+    {
+        $html = $this->render(['list_date' => now()]);
+
+        $this->assertStringNotContainsString('0 days', $html);
+        $this->assertStringNotContainsString('New — 0', $html);
+        $this->assertStringContainsString('today', $html);
     }
 
     public function test_the_listings_page_renders_cards_in_the_sheet_grid(): void

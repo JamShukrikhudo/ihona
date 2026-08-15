@@ -1,4 +1,10 @@
-@props(['property'])
+@props([
+    'property',
+    // The wishlist control only appears where a Livewire parent can handle it.
+    // Rendering it on a static page would give the visitor a dead button.
+    'saveable' => false,
+    'saved' => false,
+])
 
 @php
     $currency = $property->currencySymbol();
@@ -11,9 +17,9 @@
 @endphp
 
 <article {{ $attributes->class([
-    'property-card group relative flex flex-col overflow-hidden rounded-sheet border border-sheet-300',
-    'bg-sheet-000 shadow-lift-1 transition-[box-shadow,border-color,transform] duration-[280ms] ease-set',
-    'hover:-translate-y-0.5 hover:border-ink-400 hover:shadow-lift-3',
+    'property-card @container group relative flex flex-col overflow-hidden rounded-sheet border border-sheet-300',
+    'bg-sheet-000 shadow-lift-1 dark:shadow-black/50 transition-[box-shadow,border-color,transform] duration-[280ms] ease-set',
+    'hover:-translate-y-0.5 hover:border-ink-400 hover:shadow-lift-3 dark:hover:shadow-black/60',
 ]) }}>
     <div class="relative aspect-3/2 overflow-hidden bg-sheet-200">
         @if ($photo)
@@ -24,7 +30,26 @@
             <x-property-elevation :seed="$property->id" />
         @endif
 
-        @if ($daysListed !== null && $daysListed <= 7)
+        @if ($daysListed === 0)
+            <div class="absolute left-2.5 top-2.5">
+                <x-ui.chip tone="new">{{ __('New — today') }}</x-ui.chip>
+            </div>
+        @endif
+
+        @if ($saveable)
+            <button type="button"
+                    wire:click.stop="toggleFavorite({{ $property->id }})"
+                    aria-pressed="{{ $saved ? 'true' : 'false' }}"
+                    aria-label="{{ $saved
+                        ? __('Remove :title from your wishlist', ['title' => $property->title])
+                        : __('Save :title to your wishlist', ['title' => $property->title]) }}"
+                    class="absolute right-2 top-2 z-10 grid size-9 place-items-center rounded-sheet bg-sheet-000 shadow-lift-1 transition-colors duration-[160ms] hover:bg-sheet-200">
+                <x-ui.icon name="bookmark"
+                           class="size-4 {{ $saved ? 'fill-survey-500 text-survey-500' : 'text-ink-900' }}" />
+            </button>
+        @endif
+
+        @if ($daysListed !== null && $daysListed >= 1 && $daysListed <= 7)
             <div class="absolute left-2.5 top-2.5">
                 {{-- A fact with a number, never a mood. --}}
                 <x-ui.chip tone="new">
@@ -101,7 +126,9 @@
         <div class="min-w-0 flex-1 border-l border-sheet-300 px-[7px] py-2">
             <dt class="whitespace-nowrap text-[9.5px] uppercase tracking-[0.06em] text-ink-400">{{ __('Listed') }}</dt>
             <dd class="mt-0.5 flex h-[18px] items-center truncate text-[11.5px] font-medium text-ink-900">
-                @if ($daysListed !== null)
+                @if ($daysListed === 0)
+                    {{ __('Today') }}
+                @elseif ($daysListed !== null)
                     {{ trans_choice(':count day|:count days', $daysListed, ['count' => $daysListed]) }}
                 @else
                     <x-ui.not-supplied />
@@ -109,7 +136,7 @@
             </dd>
         </div>
 
-        <div class="hidden min-w-0 flex-1 border-l border-sheet-300 px-[7px] py-2 min-[380px]:block">
+        <div class="hidden min-w-0 flex-1 border-l border-sheet-300 px-[7px] py-2 @[19rem]:block">
             <dt class="whitespace-nowrap text-[9.5px] uppercase tracking-[0.06em] text-ink-400">{{ __('Built') }}</dt>
             <dd class="mt-0.5 flex h-[18px] items-center truncate text-[11.5px] font-medium text-ink-900">
                 @if ($property->year_built)
@@ -120,7 +147,7 @@
             </dd>
         </div>
 
-        <div class="hidden min-w-0 flex-1 border-l border-sheet-300 px-[7px] py-2 min-[380px]:block">
+        <div class="hidden min-w-0 flex-1 border-l border-sheet-300 px-[7px] py-2 @[19rem]:block">
             <dt class="whitespace-nowrap text-[9.5px] uppercase tracking-[0.06em] text-ink-400">{{ __('Transit') }}</dt>
             <dd class="mt-0.5 flex h-[18px] items-center truncate text-[11.5px] font-medium text-ink-900">
                 @if ($property->transit_score !== null)

@@ -181,8 +181,7 @@
 }
 
 /* --- Theme stamp. light-dark() above reads the used color-scheme, so the
-       whole palette flips from these three rules alone. Shadows are not a
-       <color> and cannot use light-dark(), so they are set per theme. ------ */
+       whole palette flips from these three rules alone. ------------------- */
 @layer base {
   :root {
     color-scheme: light dark;
@@ -190,18 +189,12 @@
   :root[data-theme='light'] { color-scheme: light; }
   :root[data-theme='dark']  { color-scheme: dark; }
 
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme='light']) {
-      --shadow-lift-1: 0 1px 0 0 rgb(0 0 0 / 0.3), 0 1px 2px 0 rgb(0 0 0 / 0.4);
-      --shadow-lift-2: 0 1px 0 0 rgb(0 0 0 / 0.3), 0 6px 16px -4px rgb(0 0 0 / 0.5);
-      --shadow-lift-3: 0 2px 0 0 rgb(0 0 0 / 0.3), 0 18px 40px -12px rgb(0 0 0 / 0.6);
-    }
-  }
-  :root[data-theme='dark'] {
-    --shadow-lift-1: 0 1px 0 0 rgb(0 0 0 / 0.3), 0 1px 2px 0 rgb(0 0 0 / 0.4);
-    --shadow-lift-2: 0 1px 0 0 rgb(0 0 0 / 0.3), 0 6px 16px -4px rgb(0 0 0 / 0.5);
-    --shadow-lift-3: 0 2px 0 0 rgb(0 0 0 / 0.3), 0 18px 40px -12px rgb(0 0 0 / 0.6);
-  }
+  /* No per-theme --shadow-lift-* here. Tailwind bakes a @theme shadow value
+     into the utility at build time rather than emitting a var() reference, so
+     redefining the custom property changes nothing — the bundle carries the
+     literal ink tint. An elevated surface that needs a darker shadow on the
+     night ground pairs `shadow-lift-*` with a `dark:shadow-*` colour utility,
+     which sets --tw-shadow-color and does take effect. */
 
   html {
     background: var(--color-sheet-100);

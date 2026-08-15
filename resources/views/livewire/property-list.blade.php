@@ -67,7 +67,9 @@
                      change to the disclosure strip lands everywhere at once. --}}
                 <div class="mb-4 grid gap-5 sm:grid-cols-2 md:mb-8 lg:grid-cols-3">
                     @forelse ($properties as $property)
-                        <x-property-card :property="$property" />
+                        <x-property-card :property="$property"
+                                         saveable
+                                         :saved="$this->isFavorited($property->id)" />
                     @empty
                         <div class="col-span-full rounded-sheet border border-dashed border-sheet-300 bg-sheet-000 p-10 text-center">
                             <p class="font-display text-h4 font-bold tracking-tight text-ink-900">

@@ -26,6 +26,7 @@
         'alert' => ['M12 3 2 20h20z', 'M12 10v4M12 17h.01'],
         'search' => ['M4 11a7 7 0 1 0 14 0 7 7 0 1 0-14 0', 'M16 16l4 4'],
         'chevron-right' => ['M5 12h14M13 6l6 6-6 6'],
+        'bookmark' => ['M6 3h12v18l-6-5-6 5z'],
     ];
 
     if (! isset($paths[$name])) {
@@ -44,7 +45,11 @@
     // Only default the size when the caller did not set one: `size-4` and a
     // caller's `size-3.5` are the same utility, so source order would decide
     // the winner rather than the caller.
-    $classes = str_contains($attributes->get('class', ''), 'size-') ? '' : 'size-4';
+    $callerSetSize = (bool) preg_match(
+        '/(^|\s)(size|[wh])-/',
+        (string) $attributes->get('class', '')
+    );
+    $classes = $callerSetSize ? '' : 'size-4';
 @endphp
 
 @if (isset($paths[$name]))

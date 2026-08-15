@@ -70,7 +70,76 @@ class PropertyDisclosureFactsTest extends TestCase
         // the only part of a monthly rate anyone actually compares.
         $this->assertSame(1.69, $rental->pricePerSquareFoot());
         $this->assertSame('1.69', $rental->pricePerSquareFootForHumans());
-        $this->assertSame('£/sq ft pcm', $rental->pricePerSquareFootLabel());
+        $this->assertSame('£/sq ft', $rental->pricePerSquareFootLabel());
+    }
+
+    /**
+     * The platform writes statuses in more than one shape: the API and staff
+     * panel use snake_case, older rows carry the title-case forms. A rental
+     * missed here renders a monthly rent as though it were a sale price.
+     */
+    public function test_a_rental_is_recognised_in_every_spelling_the_app_writes(): void
+    {
+        foreach (['to_let', 'let_agreed', 'let', 'For Rent', 'for_rent', 'TO LET', 'Let Agreed'] as $status) {
+            $this->assertTrue(
+                $this->property(['status' => $status])->isRental(),
+                "[{$status}] should read as a rental"
+            );
+        }
+    }
+
+    public function test_a_sale_status_is_never_read_as_a_rental(): void
+    {
+        foreach (['for_sale', 'under_offer', 'sstc', 'exchanged', 'sold', 'For Sale'] as $status) {
+            $this->assertFalse(
+                $this->property(['status' => $status])->isRental(),
+                "[{$status}] should not read as a rental"
+            );
+        }
+    }
+
+    /**
+     * A euro-priced listing must not show a euro price above a cell labelled
+     * in pounds.
+     */
+    public function test_the_rate_label_carries_the_listing_currency(): void
+    {
+        $this->assertSame(
+            '€/sq ft',
+            $this->property(['currency' => 'EUR', 'status' => 'For Sale'])->pricePerSquareFootLabel()
+        );
+        $this->assertSame(
+            '€/sq ft',
+            $this->property(['currency' => 'EUR', 'status' => 'to_let'])->pricePerSquareFootLabel()
+        );
+    }
+
+    /**
+     * Band and score must come from the same record. Choosing independently
+     * badges a certificate's band B with a legacy column's band-D score.
+     */
+    public function test_the_score_comes_from_whichever_record_supplied_the_band(): void
+    {
+        $fromCertificate = $this->property([
+            'epc' => ['rating' => 'B'],
+            'energy_rating' => 'D',
+            'energy_score' => 55,
+        ]);
+
+        $this->assertSame('B', $fromCertificate->energyBand());
+        $this->assertNull(
+            $fromCertificate->energyScore(),
+            'a certificate without a score must not borrow the legacy column'
+        );
+
+        $fromColumn = $this->property([
+            'epc' => ['score' => 91],
+            'energy_rating' => 'C',
+            'energy_score' => 71,
+        ]);
+
+        $this->assertSame('C', $fromColumn->energyBand());
+        $this->assertSame(71, $fromColumn->energyScore());
     }
 
     public function test_a_sale_is_not_a_rental(): void

@@ -15,12 +15,24 @@ use Carbon\CarbonInterface;
  */
 trait HasDisclosureFacts
 {
-    /** Statuses that mean the price on the record is a monthly rent. */
+    /**
+     * Statuses that mean the price on the record is a monthly rent.
+     *
+     * The platform writes these in more than one shape: the API and the staff
+     * panel use snake_case ('to_let', 'let_agreed'), while older rows carry the
+     * title-case forms the factory still produces ('For Rent'). Separators are
+     * normalised before matching, so a new spelling of an existing status
+     * cannot quietly turn a rental back into a sale.
+     */
     private const RENTAL_STATUSES = ['for rent', 'rented', 'to let', 'let', 'let agreed'];
 
     public function isRental(): bool
     {
-        return in_array(strtolower(trim((string) $this->status)), self::RENTAL_STATUSES, strict: true);
+        $status = strtolower(trim((string) $this->status));
+        $status = str_replace(['_', '-'], ' ', $status);
+        $status = preg_replace('/\s+/', ' ', $status) ?? $status;
+
+        return in_array($status, self::RENTAL_STATUSES, strict: true);
     }
 
     /**
@@ -71,9 +83,17 @@ trait HasDisclosureFacts
             ?? ($code ?: (app(\App\Settings\GeneralSettings::class)->site_currency ?: '£'));
     }
 
+    /**
+     * Carries the listing's own currency, so a euro-priced property cannot show
+     * a euro price above a cell labelled in pounds.
+     *
+     * The period is deliberately not repeated here: the price line above the
+     * strip already reads "£1,150 pcm", and "£/sq ft pcm" is wider than the
+     * cell, so it overflowed across the next column's rule.
+     */
     public function pricePerSquareFootLabel(): string
     {
-        return $this->isRental() ? '£/sq ft pcm' : '£/sq ft';
+        return $this->currencySymbol().'/sq ft';
     }
 
     /**
@@ -104,17 +124,27 @@ trait HasDisclosureFacts
      */
     public function energyBand(): ?string
     {
-        $band = strtoupper(trim((string) (
-            data_get($this->epc, 'rating') ?: $this->energy_rating
-        )));
-
-        return in_array($band, ['A', 'B', 'C', 'D', 'E', 'F', 'G'], strict: true) ? $band : null;
+        return $this->normaliseBand(data_get($this->epc, 'rating')) ?? $this->normaliseBand($this->energy_rating);
     }
 
+    /**
+     * Read from whichever record supplied the band. Choosing a source
+     * independently would let a band from the certificate be badged with a
+     * score from the legacy column — a band B wearing a band D's 55.
+     */
     public function energyScore(): ?int
     {
-        $score = data_get($this->epc, 'score') ?? $this->energy_score;
+        $score = $this->normaliseBand(data_get($this->epc, 'rating')) !== null
+            ? data_get($this->epc, 'score')
+            : $this->energy_score;
 
         return is_numeric($score) ? (int) $score : null;
+    }
+
+    private function normaliseBand(mixed $band): ?string
+    {
+        $band = strtoupper(trim((string) $band));
+
+        return in_array($band, ['A', 'B', 'C', 'D', 'E', 'F', 'G'], strict: true) ? $band : null;
     }
 }
