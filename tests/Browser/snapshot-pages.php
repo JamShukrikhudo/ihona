@@ -66,11 +66,19 @@ $pages = [
     'design' => '/design',
 ];
 
+$broken = [];
+
 foreach ($pages as $name => $uri) {
     $response = app(Kernel::class)->handle(Request::create($uri, 'GET'));
 
     if ($response->getStatusCode() !== 200) {
-        echo "{$name} ({$uri}) returned {$response->getStatusCode()}\n";
+        // Delete the old copy rather than leave it. The sweep reads whatever
+        // is on disk, so a stale snapshot of a route that is currently broken
+        // is reported clean — the silent pass ticket 24 exists to warn about.
+        @unlink(base_path("tests/Browser/snapshots/{$name}.html"));
+        $broken[] = "{$name} ({$uri}) returned {$response->getStatusCode()}";
+
+        echo "{$name} FAILED — {$response->getStatusCode()}, stale snapshot deleted\n";
 
         continue;
     }
@@ -88,3 +96,7 @@ foreach ($pages as $name => $uri) {
 }
 
 DB::rollBack();
+
+if ($broken !== []) {
+    throw new RuntimeException("pages did not render:\n  ".implode("\n  ", $broken));
+}

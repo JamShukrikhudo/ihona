@@ -123,6 +123,91 @@ class ValuationPageTest extends TestCase
     }
 
     /**
+     * The public page speaks for the model only. A valuer's own figure for the
+     * same property — the API writes market, rental, commercial, insurance and
+     * mortgage valuations, with the valuer's name and notes on them — is not
+     * the agency's to publish, and would be rendered under a label saying a
+     * model produced it.
+     */
+    public function test_a_valuers_own_figure_is_not_published_as_the_models(): void
+    {
+        $property = $this->property();
+
+        $surveyed = PropertyValuation::factory()->create([
+            'property_id' => $property->id,
+            'valuation_type' => 'market',
+            'estimated_value' => 640000,
+            'confidence_level' => 90,
+            'valuer_name' => 'A Surveyor',
+        ]);
+
+        Livewire::test(PropertyValuationComponent::class, ['propertyId' => $property->id])
+            ->call('viewValuation', $surveyed->id)
+            ->assertSet('valuation', null)
+            ->assertDontSee('640,000');
+    }
+
+    public function test_an_estimate_past_its_validity_says_so(): void
+    {
+        $property = $this->property();
+
+        PropertyValuation::factory()->create([
+            'property_id' => $property->id,
+            'valuation_type' => 'neural_network',
+            'estimated_value' => 500000,
+            'confidence_level' => 80,
+            'valuation_date' => now()->subMonths(18),
+            'valid_until' => now()->subMonths(15),
+            'status' => 'active',
+        ]);
+
+        Livewire::test(PropertyValuationComponent::class, ['propertyId' => $property->id])
+            ->assertSee('Out of date');
+    }
+
+    /**
+     * `confidence_level` is NOT NULL with a default of 0, so a row written
+     * without one is indistinguishable from a model that is genuinely 0%
+     * confident — and printing "Confidence 0%" beside a figure reads as a
+     * measurement rather than an absence.
+     */
+    public function test_a_confidence_nobody_recorded_is_not_printed_as_zero(): void
+    {
+        $property = $this->property();
+
+        PropertyValuation::factory()->create([
+            'property_id' => $property->id,
+            'valuation_type' => 'neural_network',
+            'estimated_value' => 500000,
+            'confidence_level' => 0,
+            'valuation_date' => now(),
+            'valid_until' => now()->addMonths(3),
+            'status' => 'active',
+        ]);
+
+        Livewire::test(PropertyValuationComponent::class, ['propertyId' => $property->id])
+            ->assertSee('Confidence not recorded')
+            ->assertDontSee('Confidence 0%');
+    }
+
+    /**
+     * Re-running the estimate supersedes the agency's current row for the
+     * property. A registered buyer is not the agency.
+     */
+    public function test_a_customer_cannot_rerun_the_agency_estimate(): void
+    {
+        $property = $this->property();
+        $customer = \App\Models\User::factory()->create();
+
+        Livewire::actingAs($customer)
+            ->test(PropertyValuationComponent::class, ['propertyId' => $property->id])
+            ->call('generateValuation')
+            ->assertSet('valuation', null);
+
+        $this->assertSame(0, PropertyValuation::query()->where('property_id', $property->id)->count());
+    }
+
+    /**
      * viewValuation took any id and rendered it. On a public route that handed
      * every visitor the valuation history of any property by counting integers.
      */

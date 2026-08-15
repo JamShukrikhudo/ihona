@@ -55,24 +55,40 @@ class PropertyValuationComponent extends Component
         }
     }
     
+    /**
+     * Re-runs the model.
+     *
+     * Gated on the agency's own roles, not on being signed in at all: this
+     * supersedes the agency's current row for the property, so a registered
+     * buyer could overwrite the figure the agent is quoting from.
+     */
     public function generateValuation()
     {
-        if (!Auth::check()) {
-            $this->errorMessage = 'Please login to generate valuations';
+        $user = Auth::user();
+
+        if (! $user || ! $user->hasAnyRole(['staff', 'agent', 'admin', 'super_admin'])) {
+            $this->errorMessage = __('Only the agency can re-run this estimate.');
+
             return;
         }
-        
+
+        if (! $this->property) {
+            return;
+        }
+
         $this->isLoading = true;
         $this->errorMessage = '';
         
         try {
             $nnService = app(NeuralNetworkValuationService::class);
-            $user = Auth::user();
-            
+
+            // The property's own team, not a hardcoded 1: a valuation filed
+            // against team 1 by an agent who belongs to no team is filed
+            // against whichever agency happens to hold that id.
             $this->valuation = $nnService->createValuation(
                 $this->property,
                 $user->id,
-                $user->current_team_id ?? $user->teams()->first()->id ?? 1
+                $user->current_team_id ?? $user->teams()->first()->id ?? $this->property->team_id
             );
             
             $this->loadValuationHistory();
@@ -102,9 +118,16 @@ class PropertyValuationComponent extends Component
             return;
         }
 
+        // Type as well as property. A Livewire call carries whatever argument
+        // the client sends, and the same property's staff-entered market,
+        // rental, insurance and mortgage valuations sit in this table with the
+        // valuer's name and notes on them — none of them the agency's to
+        // publish, and all of them would render under a label saying a model
+        // produced the figure.
         $valuation = PropertyValuation::query()
             ->where('id', $valuationId)
             ->where('property_id', $this->property->id)
+            ->where('valuation_type', 'neural_network')
             ->first();
 
         if (! $valuation) {

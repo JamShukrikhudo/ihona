@@ -94,9 +94,26 @@
                     @endif
 
                     <div class="mt-4 flex flex-wrap items-center gap-2">
-                        <x-ui.chip :tone="$valuation->confidence_level >= 70 ? 'verified' : 'caution'">
-                            {{ __('Confidence :level%', ['level' => $valuation->confidence_level ?? 0]) }}
-                        </x-ui.chip>
+                        {{-- The column is NOT NULL and defaults to 0, so a row
+                             written without a confidence is indistinguishable
+                             from a model that is 0% sure. Either way "0%" beside
+                             a figure reads as a measurement rather than an
+                             absence; the band is already the widest one quoted. --}}
+                        @if (! $valuation->confidence_level)
+                            <x-ui.chip tone="caution">{{ __('Confidence not recorded') }}</x-ui.chip>
+                        @else
+                            <x-ui.chip :tone="$valuation->confidence_level >= 70 ? 'verified' : 'caution'">
+                                {{ __('Confidence :level%', ['level' => $valuation->confidence_level]) }}
+                            </x-ui.chip>
+                        @endif
+
+                        {{-- An estimate is stamped valid for three months. Past
+                             that it is still shown — it is the only figure
+                             there is — but it stops being presented as current. --}}
+                        @if ($valuation->valid_until && ! $valuation->isValid())
+                            <x-ui.chip tone="fault">{{ __('Out of date') }}</x-ui.chip>
+                        @endif
+
                         <span class="font-mono text-caption text-ink-500">
                             {{ __('The less sure the model is, the wider the range it quotes.') }}
                         </span>
@@ -164,12 +181,15 @@
                         {{ __('Book a valuation') }}
                     </x-ui.button>
 
-                    @auth
+                    {{-- Shown to the agency only, because only the agency can
+                         use it: re-running supersedes the row the agent is
+                         quoting from. --}}
+                    @if (auth()->user()?->hasAnyRole(['staff', 'agent', 'admin', 'super_admin']))
                         <x-ui.button variant="secondary" wire:click="generateValuation" wire:loading.attr="disabled">
                             <span wire:loading.remove wire:target="generateValuation">{{ __('Run the estimate again') }}</span>
                             <span wire:loading wire:target="generateValuation">{{ __('Estimating…') }}</span>
                         </x-ui.button>
-                    @endauth
+                    @endif
                 </div>
             </div>
 
