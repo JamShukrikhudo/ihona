@@ -39,7 +39,67 @@
 
                 function setUp(element) {
                     var map = null;
-                    var markers = [];
+                    // Keyed by listing id rather than a bare list: a card and
+                    // its pin have to find each other, and the id is the only
+                    // thing both sides hold.
+                    var markers = {};
+                    var raisedId = null;
+
+                    // Below 1024px the map is a collapsed <details> the reader
+                    // opens, and a "hover" on a touch screen is a tap on the
+                    // way to the listing. Nothing is paired there.
+                    var wide = window.matchMedia('(min-width: 1024px)');
+
+                    function cardFor(id) {
+                        var selector = window.CSS && CSS.escape ? CSS.escape(String(id)) : String(id);
+
+                        return document.querySelector('[data-property-id="' + selector + '"]');
+                    }
+
+                    function clear() {
+                        if (raisedId === null) return;
+
+                        var marker = markers[raisedId];
+
+                        if (marker) {
+                            marker.setZIndexOffset(0);
+
+                            var icon = marker.getElement();
+
+                            if (icon) icon.classList.remove('is-raised');
+                        }
+
+                        var card = cardFor(raisedId);
+
+                        if (card) card.removeAttribute('data-raised');
+
+                        raisedId = null;
+                    }
+
+                    function raise(id) {
+                        if (! wide.matches || id === null || id === undefined) return;
+                        if (String(id) === String(raisedId)) return;
+
+                        clear();
+
+                        raisedId = id;
+
+                        var marker = markers[id];
+
+                        if (marker) {
+                            // Above every other pin, or a raised marker can sit
+                            // behind the ones plotted after it.
+                            marker.setZIndexOffset(1000);
+
+                            var icon = marker.getElement();
+
+                            if (icon) icon.classList.add('is-raised');
+                        }
+
+                        var card = cardFor(id);
+
+                        if (card) card.setAttribute('data-raised', '');
+                    }
 
                     function draw() {
                         if (map) return;
@@ -78,7 +138,13 @@
                                 ));
                             }
 
-                            markers.push(L.marker(point).addTo(map).bindPopup(popup));
+                            var marker = L.marker(point).addTo(map).bindPopup(popup);
+
+                            if (property.id !== null && property.id !== undefined) {
+                                markers[property.id] = marker;
+                                marker.on('mouseover', function () { raise(property.id); });
+                                marker.on('mouseout', clear);
+                            }
                         });
 
                         if (bounds.length) {
@@ -118,10 +184,57 @@
 
                         if (! map) return;
 
-                        markers.forEach(function (marker) { map.removeLayer(marker); });
-                        markers = [];
+                        // Released while the marker it points at still exists.
+                        // Afterwards there is nothing to take the raised class
+                        // off, and the card stays lit with no pin to match it.
+                        clear();
+
+                        Object.keys(markers).forEach(function (id) {
+                            // off() before removeLayer: the handlers close over
+                            // this marker, and a marker that is no longer on the
+                            // map must not still be listening for a hover.
+                            markers[id].off();
+                            map.removeLayer(markers[id]);
+                        });
+
+                        markers = {};
                         plot(points);
                     });
+
+                    // Delegated from the document, never bound to a card. Cards
+                    // live inside Livewire's DOM and are replaced wholesale on
+                    // every filter change, page change and debounced keystroke,
+                    // so a listener bound to one dies with it — silently, which
+                    // is the failure this ticket exists to avoid.
+                    document.addEventListener('pointerover', function (event) {
+                        var card = event.target.closest && event.target.closest('[data-property-id]');
+
+                        if (card) {
+                            raise(card.dataset.propertyId);
+                        } else if (! (event.target.closest && event.target.closest('.leaflet-marker-icon'))) {
+                            clear();
+                        }
+                    });
+
+                    // Focus does exactly what hover does. The whole card is one
+                    // link, so the event fires on the anchor inside it.
+                    document.addEventListener('focusin', function (event) {
+                        var card = event.target.closest && event.target.closest('[data-property-id]');
+
+                        if (card) raise(card.dataset.propertyId);
+                    });
+
+                    document.addEventListener('focusout', function (event) {
+                        var card = event.target.closest && event.target.closest('[data-property-id]');
+
+                        if (card) clear();
+                    });
+
+                    // A narrowed window must not leave a pair lit that the
+                    // reader can no longer see either half of.
+                    if (wide.addEventListener) {
+                        wide.addEventListener('change', clear);
+                    }
 
                     // Only on request: a page must not ask where someone is on load.
                     var locate = element.parentElement.querySelector('[data-map-locate]');

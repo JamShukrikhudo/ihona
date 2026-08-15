@@ -23,7 +23,11 @@
     $closedState = $property->closedStateLabel();
 @endphp
 
-<article {{ $attributes->class([
+{{-- data-property-id is what pairs this card with its pin on the listings
+     map. Both sides key on the listing id, so a re-render replacing this
+     element cannot break the pairing. --}}
+<article data-property-id="{{ $property->id }}"
+         {{ $attributes->class([
     'property-card @container group relative flex flex-col overflow-hidden rounded-sheet border border-sheet-300',
     'bg-sheet-000 shadow-lift-1 dark:shadow-black/50 transition-[box-shadow,border-color,transform] duration-[280ms] ease-set',
     'hover:-translate-y-0.5 hover:border-ink-400 hover:shadow-lift-3 dark:hover:shadow-black/60',

@@ -326,3 +326,31 @@
 .leaflet-container .leaflet-control-attribution a {
   color: #2A2A2A;
 }
+
+/* --- Ticket 20: a result and its pin are the same home. --------------------
+   Toggled from JavaScript as an attribute and a plain class rather than a
+   Tailwind utility. Tailwind scans these files as text and emits nothing for a
+   class name it cannot see, so a utility added at runtime is a class with no
+   rule behind it — the trap that has already cost this rollout four bugs.
+
+   Only above 1024px, where the map holds its place beside the results. Below
+   it the map is a collapsed <details>, and lighting a card for a pin nobody
+   can see is a flicker with no cause. */
+@media (min-width: 64rem) {
+  [data-property-id][data-raised] {
+    border-color: var(--color-survey-500);
+    box-shadow: var(--shadow-lift-3);
+  }
+
+  /* The marker is an <img> Leaflet positions with its own transform. `scale`
+     is a separate property, so this composes with that instead of replacing
+     it — writing it into `transform` would drop the pin at the map's origin.
+     The drop shadow does the work colour alone should not: the pin visibly
+     lifts off the tile whether or not the reader can see the outline. */
+  .leaflet-marker-icon.is-raised {
+    scale: 1.3;
+    transform-origin: bottom center;
+    filter: drop-shadow(0 3px 5px rgb(18 22 20 / 0.45));
+    transition: scale 160ms var(--ease-snap);
+  }
+}
