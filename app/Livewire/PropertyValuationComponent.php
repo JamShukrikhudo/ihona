@@ -26,6 +26,12 @@ class PropertyValuationComponent extends Component
             $this->propertyId = $propertyId;
             $this->loadProperty();
             $this->loadValuationHistory();
+
+            // Show the most recent estimate rather than an empty page behind a
+            // button only a signed-in agent can press. A visitor arriving here
+            // asked what the home is worth; the answer already exists.
+            $this->valuation = collect($this->valuationHistory)->first();
+            $this->showReport = (bool) $this->valuation;
         }
     }
     
@@ -82,15 +88,31 @@ class PropertyValuationComponent extends Component
         }
     }
     
+    /**
+     * Scoped to the property in the URL.
+     *
+     * This took any id and rendered whatever came back. The route is public, so
+     * that handed every visitor the valuation history of every property — and
+     * the report carries the valuer's notes and the model's workings — by
+     * counting integers.
+     */
     public function viewValuation($valuationId)
     {
-        $this->valuation = PropertyValuation::find($valuationId);
+        if (! $this->property) {
+            return;
+        }
+
+        $valuation = PropertyValuation::query()
+            ->where('id', $valuationId)
+            ->where('property_id', $this->property->id)
+            ->first();
+
+        if (! $valuation) {
+            return;
+        }
+
+        $this->valuation = $valuation;
         $this->showReport = true;
-    }
-    
-    public function closeReport()
-    {
-        $this->showReport = false;
     }
     
     public function render()

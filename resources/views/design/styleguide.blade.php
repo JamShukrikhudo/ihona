@@ -269,7 +269,7 @@
             <div class="mt-8 flex flex-wrap items-center gap-3 rounded-sheet border border-sheet-300 bg-sheet-000 p-5">
                 <x-ui.chip tone="new">New — 2 days</x-ui.chip>
                 <x-ui.chip tone="verified">Chain-free</x-ui.chip>
-                <x-ui.chip tone="info">Auction</x-ui.chip>
+                <x-ui.chip tone="info">Sold STC</x-ui.chip>
                 <x-ui.chip tone="caution">Reduced £15k</x-ui.chip>
                 <x-ui.chip tone="fault">Gas safety overdue</x-ui.chip>
             </div>

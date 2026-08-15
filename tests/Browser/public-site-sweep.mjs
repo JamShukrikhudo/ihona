@@ -8,20 +8,14 @@
  * page/width/theme combinations.
  *
  * Usage:
- *   1. Snapshot the pages (a running server is not needed):
+ *   1. npx vite build            (the snapshots point at the built CSS)
+ *   2. php artisan tinker tests/Browser/snapshot-pages.php
+ *   3. node tests/Browser/public-site-sweep.mjs
  *
- *      php artisan tinker --execute='
- *        $root = "file://".public_path();
- *        foreach (["home" => "/", "properties" => "/properties", ...] as $name => $uri) {
- *            $res = app(Illuminate\Contracts\Http\Kernel::class)
- *                ->handle(Illuminate\Http\Request::create($uri, "GET"));
- *            file_put_contents(
- *                "tests/Browser/snapshots/{$name}.html",
- *                str_replace(["\"/build/", "\"/fonts/"], ["\"".$root."/build/", "\"".$root."/fonts/"], $res->getContent())
- *            );
- *        }'
- *
- *   2. node tests/Browser/public-site-sweep.mjs
+ * Step 2 needs no running server: it puts each page through the HTTP kernel in
+ * process and rewrites the asset URLs to file://. The recipe used to live in
+ * this comment as a one-line --execute, which is why it drifted out of date —
+ * it is a script now, and it builds its own fixtures.
  *
  * Contrast is measured against the nearest opaque ancestor background. A
  * gradient is skipped rather than guessed at: reporting it as white-on-white

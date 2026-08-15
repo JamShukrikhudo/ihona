@@ -152,21 +152,6 @@ class Property extends Model implements HasMedia
         'ground_rent' => 'decimal:2',
     ];
 
-    public function auctions()
-    {
-        return $this->hasMany(Auction::class);
-    }
-
-    public function currentAuction()
-    {
-        return $this->auctions()->where('status', 'active')->first();
-    }
-
-    public function isInAuction()
-    {
-        return $this->currentAuction() !== null;
-    }
-
     public function insurancePolicy()
     {
         return $this->belongsTo(InsurancePolicy::class);

@@ -78,6 +78,44 @@ class PropertyValuation extends Model
         return $this->valid_until >= now();
     }
 
+    /**
+     * The band this estimate is worth quoting to, or null when there is no
+     * figure to put a band around.
+     *
+     * A machine valuation is a guess with a width, and the width was being
+     * thrown away: the service computed a `price_range` on every call that
+     * nothing ever read or stored, and the page printed the midpoint to two
+     * decimal places. Derived rather than stored so every row already in the
+     * table gets one.
+     *
+     * @return array{low: float, high: float}|null
+     */
+    public function range(): ?array
+    {
+        if ($this->estimated_value === null) {
+            return null;
+        }
+
+        return self::rangeFor((float) $this->estimated_value, $this->confidence_level);
+    }
+
+    /**
+     * The band is widest when the model is least sure — the service had this
+     * the other way round (`confidence / 200`), so a model 90% confident
+     * published a ±45% band and one 20% confident published ±10%.
+     *
+     * @return array{low: float, high: float}
+     */
+    public static function rangeFor(float $value, ?int $confidence): array
+    {
+        $width = max(0.02, (100 - max(0, min(100, (int) $confidence))) / 400);
+
+        return [
+            'low' => round($value * (1 - $width)),
+            'high' => round($value * (1 + $width)),
+        ];
+    }
+
     public function getValuationAccuracy(): string
     {
         if ($this->confidence_level >= 90) {

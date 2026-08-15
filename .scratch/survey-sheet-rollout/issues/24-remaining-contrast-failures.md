@@ -23,7 +23,25 @@ the sweep could see.
 
 **Blocked by:** None — each is cleared by the page's own restyle ticket.
 
-**Status:** ready-for-agent
+**Status:** done — with one exception recorded below
+
+The sweep now reports no contrast failure on any of the 60 page/width/theme
+combinations. The detail entries went with ticket 17, the valuation "login" link
+with ticket 23.
+
+**The exception: the compatibility shims stay.** They remap `bg-white`,
+`bg-gray-50/100` and the `text-gray-*` ramp in dark, and 84 Blade files still
+depend on them — the auth screens, the Jetstream profile and team views, the
+dashboards. None of those is a public storefront page, so none is in this
+rollout; removing the shims before they are restyled would leave dark ink on a
+dark ground on every one of them. Delete a line as each of those pages moves,
+not before.
+
+Worth stating plainly: **the sweep only measures the first paint.** Four
+contrast failures found by hand in the previous round — the chatbot reply, the
+calculator's estimated value, its disclaimer, three unselected tabs — were all
+behind a result the sweep never triggers, and it reported clean throughout. A
+clean sweep means no failure on load, not no failure.
 
 - [ ] Every node the sweep reports is either fixed or has a recorded, justified exception
 - [ ] The sweep reports no contrast failure on any public page
