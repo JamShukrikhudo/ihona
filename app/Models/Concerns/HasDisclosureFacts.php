@@ -36,13 +36,15 @@ trait HasDisclosureFacts
     }
 
     /**
-     * Price per square foot. For a rental this reads monthly, because the price
-     * on the record is a monthly rent — quoting it against a sale price per
-     * square foot would be out by more than a hundredfold.
+     * Price per square foot, of whatever the price on the record represents.
      *
-     * Kept to two decimals below £10, because a monthly rent per square foot is
-     * usually between £1 and £3 and rounding it to whole pounds throws away the
+     * Kept to two decimals below 10, because a monthly rent per square foot is
+     * usually between 1 and 3 and rounding it to whole units throws away the
      * only part anyone compares.
+     *
+     * The period is not encoded here — see pricePerSquareFootForHumans(), which
+     * marks a rental rate as monthly. Without that mark a £12,000 pcm flat at
+     * 900 sq ft reads "13" and is indistinguishable from a £13/sq ft sale.
      */
     public function pricePerSquareFoot(): ?float
     {
@@ -58,7 +60,13 @@ trait HasDisclosureFacts
         return $rate < 10 ? round($rate, 2) : round($rate);
     }
 
-    /** Formatted for the disclosure strip, without the currency symbol. */
+    /**
+     * Formatted for the disclosure strip, without the currency symbol.
+     *
+     * A rental rate carries "pcm" on the value rather than in the label: the
+     * label has to stay identical across cards for the column to align, and
+     * "£/sq ft pcm" is wider than the cell.
+     */
     public function pricePerSquareFootForHumans(): ?string
     {
         $rate = $this->pricePerSquareFoot();
@@ -67,7 +75,9 @@ trait HasDisclosureFacts
             return null;
         }
 
-        return $rate < 10 ? number_format($rate, 2) : number_format($rate);
+        $formatted = $rate < 10 ? number_format($rate, 2) : number_format($rate);
+
+        return $this->isRental() ? $formatted.' '.__('pcm') : $formatted;
     }
 
     /**

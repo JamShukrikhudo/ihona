@@ -10,7 +10,8 @@
     button now, so the visitor chooses.
 --}}
 <div class="overflow-hidden rounded-sheet border border-sheet-300 bg-sheet-200">
-    <div data-map
+    <div wire:ignore
+         data-map
          data-properties="{{ json_encode($properties) }}"
          data-currency="{{ app(\App\Settings\GeneralSettings::class)->site_currency }}"
          class="h-[400px] w-full"
@@ -32,67 +33,79 @@
     @push('scripts')
         <script type="module">
             (function () {
-                var element = document.querySelector('[data-map]');
+                if (typeof L === 'undefined') return;
 
-                if (! element || typeof L === 'undefined') return;
+                document.querySelectorAll('[data-map]').forEach(setUp);
 
-                var map = null;
+                function setUp(element) {
+                    var map = null;
 
-                function draw() {
-                    if (map) return;
+                    function draw() {
+                        if (map) return;
 
-                    map = L.map(element, { doubleClickZoom: false }).setView([51.5, -0.09], 10);
+                        map = L.map(element, { doubleClickZoom: false }).setView([51.5, -0.09], 10);
 
-                    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                    }).addTo(map);
+                        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                        }).addTo(map);
 
-                    var properties = JSON.parse(element.dataset.properties || '[]');
-                    var currency = element.dataset.currency || '';
-                    var bounds = [];
+                        var properties = JSON.parse(element.dataset.properties || '[]');
+                        var currency = element.dataset.currency || '';
+                        var bounds = [];
 
-                    properties.forEach(function (property) {
-                        if (! property.latitude || ! property.longitude) return;
+                        properties.forEach(function (property) {
+                            if (! property.latitude || ! property.longitude) return;
 
-                        var point = [property.latitude, property.longitude];
-                        bounds.push(point);
+                            var point = [property.latitude, property.longitude];
+                            bounds.push(point);
 
-                        L.marker(point)
-                            .addTo(map)
-                            .bindPopup(
-                                '<strong>' + property.title + '</strong><br>' +
-                                currency + Number(property.price).toLocaleString()
-                            );
-                    });
+                            // Built as nodes, never concatenated into HTML: a
+                            // title is staff-entered and would otherwise be
+                            // stored XSS for everyone who opens the marker.
+                            var popup = document.createElement('div');
+                            var name = document.createElement('strong');
+                            name.textContent = property.title || '';
+                            popup.appendChild(name);
 
-                    if (bounds.length) {
-                        map.fitBounds(bounds, { padding: [40, 40], maxZoom: 15 });
+                            if (property.price !== null && property.price !== undefined && property.price !== '') {
+                                popup.appendChild(document.createElement('br'));
+                                popup.appendChild(document.createTextNode(
+                                    (property.currency || currency) + Number(property.price).toLocaleString()
+                                ));
+                            }
+
+                            L.marker(point).addTo(map).bindPopup(popup);
+                        });
+
+                        if (bounds.length) {
+                            map.fitBounds(bounds, { padding: [40, 40], maxZoom: 15 });
+                        }
                     }
-                }
 
-                if ('IntersectionObserver' in window) {
-                    var observer = new IntersectionObserver(function (entries) {
-                        entries.forEach(function (entry) {
-                            if (entry.isIntersecting) {
+                    if ('IntersectionObserver' in window) {
+                        var observer = new IntersectionObserver(function (entries) {
+                            entries.forEach(function (entry) {
+                                if (! entry.isIntersecting) return;
+
                                 draw();
                                 observer.disconnect();
-                            }
-                        });
-                    }, { rootMargin: '200px' });
+                            });
+                        }, { rootMargin: '200px' });
 
-                    observer.observe(element);
-                } else {
-                    draw();
-                }
-
-                // Only on request: a page must not ask where someone is on load.
-                var locate = document.querySelector('[data-map-locate]');
-
-                if (locate) {
-                    locate.addEventListener('click', function () {
+                        observer.observe(element);
+                    } else {
                         draw();
-                        map.locate({ setView: true, maxZoom: 15 });
-                    });
+                    }
+
+                    // Only on request: a page must not ask where someone is on load.
+                    var locate = element.parentElement.querySelector('[data-map-locate]');
+
+                    if (locate) {
+                        locate.addEventListener('click', function () {
+                            draw();
+                            map.locate({ setView: true, maxZoom: 15 });
+                        });
+                    }
                 }
             })();
         </script>

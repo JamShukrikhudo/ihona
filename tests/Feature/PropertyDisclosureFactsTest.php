@@ -69,7 +69,7 @@ class PropertyDisclosureFactsTest extends TestCase
         // 1150 / 682 = 1.686. Rounding that to a whole pound would throw away
         // the only part of a monthly rate anyone actually compares.
         $this->assertSame(1.69, $rental->pricePerSquareFoot());
-        $this->assertSame('1.69', $rental->pricePerSquareFootForHumans());
+        $this->assertSame('1.69 pcm', $rental->pricePerSquareFootForHumans());
         $this->assertSame('£/sq ft', $rental->pricePerSquareFootLabel());
     }
 
@@ -140,6 +140,19 @@ class PropertyDisclosureFactsTest extends TestCase
 
         $this->assertSame('C', $fromColumn->energyBand());
         $this->assertSame(71, $fromColumn->energyScore());
+    }
+
+    /**
+     * Without the mark, a high-value rental is indistinguishable from a sale:
+     * £12,000 pcm over 900 sq ft reads "13", exactly like a £13/sq ft sale.
+     */
+    public function test_a_high_value_rental_is_not_mistaken_for_a_sale_rate(): void
+    {
+        $rental = $this->property(['price' => 12000, 'area_sqft' => 900, 'status' => 'to_let']);
+        $sale = $this->property(['price' => 11700, 'area_sqft' => 900, 'status' => 'For Sale']);
+
+        $this->assertSame('13 pcm', $rental->pricePerSquareFootForHumans());
+        $this->assertSame('13', $sale->pricePerSquareFootForHumans());
     }
 
     public function test_a_sale_is_not_a_rental(): void

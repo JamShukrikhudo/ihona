@@ -19,7 +19,10 @@ class PropertyList extends Component
 
     public $search = '';
     public $minPrice = 0;
-    public $maxPrice = 1000000;
+    // No upper bound by default. This used to be 1000000, so the home
+    // page's search silently hid every listing over £1m, and the
+    // queryString below already disagreed with it by a factor of ten.
+    public $maxPrice = null;
     public $minBedrooms = 0;
     public $maxBedrooms = 10;
     public $minBathrooms = 0;
@@ -54,7 +57,7 @@ class PropertyList extends Component
     protected $queryString = [
         'search' => ['except' => ''],
         'minPrice' => ['except' => 0],
-        'maxPrice' => ['except' => 10000000],
+        'maxPrice' => ['except' => null],
         'minBedrooms' => ['except' => 0],
         'maxBedrooms' => ['except' => 10],
         'minBathrooms' => ['except' => 0],

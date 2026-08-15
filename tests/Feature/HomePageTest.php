@@ -83,7 +83,8 @@ class HomePageTest extends TestCase
         $html = $this->get('/')->assertOk()->getContent();
 
         $this->assertStringNotContainsString('property-card', $html);
-        $this->assertMatchesRegularExpression('/[Bb]rowse|[Ss]ee all/', $html);
+        $this->assertStringContainsString('Nothing is featured right now', $html);
+        $this->assertStringContainsString('The full list is still there', $html);
     }
 
     /**
@@ -132,13 +133,30 @@ class HomePageTest extends TestCase
      */
     public function test_featured_properties_do_not_query_per_card(): void
     {
-        $this->featured();
+        $count = fn () => tap(count(\DB::getQueryLog()), fn () => \DB::flushQueryLog());
 
         \DB::enableQueryLog();
+
+        $this->featured(1);
+        \DB::flushQueryLog();
         $this->get('/')->assertOk();
-        $queries = count(\DB::getQueryLog());
+        $withOne = $count();
+
+        $this->featured(4);
+        \DB::flushQueryLog();
+        $this->get('/')->assertOk();
+        $withFive = $count();
+
         \DB::disableQueryLog();
 
-        $this->assertLessThan(30, $queries, "the home page ran {$queries} queries");
+        // Featured is capped at three, so more rows must not cost more queries.
+        // Without eager loading each card adds its own media lookup. Compared
+        // for growth rather than equality: a settings cache warms between the
+        // two requests, so the second legitimately runs one fewer.
+        $this->assertLessThanOrEqual(
+            $withOne,
+            $withFive,
+            "1 featured property ran {$withOne} queries, 5 ran {$withFive} — the card count is driving the query count"
+        );
     }
 }

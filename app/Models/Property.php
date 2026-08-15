@@ -486,7 +486,12 @@ class Property extends Model implements HasMedia
 
     public function scopePriceRange(Builder $query, $min, $max): Builder
     {
-        return $query->whereBetween('price', [$min, $max]);
+        // A null bound means "no bound". whereBetween with a null max matched
+        // nothing, and a max that merely defaulted low hid dear properties
+        // without ever saying so.
+        return $query
+            ->when($min !== null && $min !== '', fn (Builder $q) => $q->where('price', '>=', $min))
+            ->when($max !== null && $max !== '', fn (Builder $q) => $q->where('price', '<=', $max));
     }
 
     public function scopeBedrooms(Builder $query, $min, $max): Builder

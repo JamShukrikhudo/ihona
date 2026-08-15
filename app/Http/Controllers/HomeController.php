@@ -17,29 +17,9 @@ class HomeController extends Controller
             ->take(3)
             ->get();
 
-        $mapProperties = Property::query()
-            ->select(['id', 'title', 'price', 'latitude', 'longitude', 'bedrooms', 'bathrooms', 'area_sqft'])
-            ->whereNotNull('latitude')
-            ->whereNotNull('longitude')
-            ->where('latitude', '!=', 0)
-            ->where('longitude', '!=', 0)
-            ->get()
-            ->map(function ($property) {
-                return [
-                    'id' => $property->id,
-                    'title' => $property->title,
-                    'price' => $property->price,
-                    'latitude' => $property->latitude,
-                    'longitude' => $property->longitude,
-                    'bedrooms' => $property->bedrooms,
-                    'bathrooms' => $property->bathrooms,
-                    'area_sqft' => $property->area_sqft,
-                ];
-            });
-
-        return view('home', [
-            'featuredProperties' => $featuredProperties,
-            'mapProperties' => $mapProperties
-        ]);
+        // The map is not fed from here: <x-property-map> owns that query, and
+        // duplicating it meant the controller's version was built, thrown away
+        // and replaced on every request.
+        return view('home', ['featuredProperties' => $featuredProperties]);
     }
 }

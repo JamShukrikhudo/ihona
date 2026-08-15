@@ -38,9 +38,10 @@
                 <select id="home-type" name="propertyType"
                         class="basis-40 rounded-sheet border border-sheet-300 bg-sheet-000 px-3 py-2.5 font-sans text-body-s text-ink-900">
                     <option value="">{{ __('Any type') }}</option>
-                    <option value="House">{{ __('House') }}</option>
-                    <option value="Apartment">{{ __('Apartment') }}</option>
-                    <option value="Townhouse">{{ __('Townhouse') }}</option>
+                    <option value="house">{{ __('House') }}</option>
+                    <option value="apartment">{{ __('Apartment') }}</option>
+                    <option value="condo">{{ __('Condo') }}</option>
+                    <option value="townhouse">{{ __('Townhouse') }}</option>
                 </select>
 
                 <label for="home-beds" class="sr-only">{{ __('Minimum bedrooms') }}</label>
@@ -107,7 +108,7 @@
                 <span class="h-px flex-1 bg-sheet-300" aria-hidden="true"></span>
             </div>
 
-            <x-property-map :properties="$mapProperties" />
+            <x-property-map />
         </section>
     </div>
 @endsection
