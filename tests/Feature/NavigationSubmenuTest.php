@@ -195,6 +195,29 @@ class NavigationSubmenuTest extends TestCase
         $this->assertSame(1, $xpath->query("//a[@href='/contact']")->length);
     }
 
+    /**
+     * The navbar renders the menu twice — the wide bar and the collapsed panel
+     * — and each render used to walk the tree again, a child query per item
+     * per render, on every public page.
+     */
+    public function test_the_navigation_does_not_walk_the_tree_twice(): void
+    {
+        $this->seedParentWithChildren();
+
+        foreach (range(1, 4) as $i) {
+            Menu::create(['name' => 'Top '.$i, 'url' => '/top-'.$i, 'order' => $i + 1]);
+        }
+
+        \DB::enableQueryLog();
+        $this->get('/')->assertOk();
+        $queries = collect(\DB::getQueryLog())
+            ->filter(fn ($q) => str_contains($q['query'], '"menus"') || str_contains($q['query'], '`menus`'))
+            ->count();
+        \DB::disableQueryLog();
+
+        $this->assertLessThanOrEqual(4, $queries, "the navigation ran {$queries} menu queries");
+    }
+
     public function test_the_navigation_carries_the_submenu_onto_the_page(): void
     {
         $this->seedParentWithChildren();

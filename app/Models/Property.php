@@ -651,8 +651,9 @@ class Property extends Model implements HasMedia
 
         for ($date = $from->copy(); $date <= $to; $date->addDay()) {
             $day = $date->format('Y-m-d');
+            $left = count(self::slotsFrom($day)) - count($taken[$day] ?? []);
 
-            if (count($taken[$day] ?? []) < $slots) {
+            if ($left > 0) {
                 $available[] = $day;
             }
         }
@@ -665,8 +666,28 @@ class Property extends Model implements HasMedia
         $day = Carbon::parse($date);
 
         return array_values(array_diff(
-            self::VIEWING_SLOTS,
+            self::slotsFrom($date),
             $this->bookedSlots($day->copy()->startOfDay(), $day->copy()->endOfDay())[$day->format('Y-m-d')] ?? []
+        ));
+    }
+
+    /**
+     * An hour that has already passed is not a slot. Nothing compared against
+     * the clock, and the date rule is only after_or_equal:today, so a visitor
+     * arriving at 18:00 was offered 09:00 that morning — and the booking, the
+     * calendar links and the confirmation email were all created for it.
+     *
+     * @return list<string>
+     */
+    private static function slotsFrom(string $date): array
+    {
+        if (! Carbon::parse($date)->isToday()) {
+            return self::VIEWING_SLOTS;
+        }
+
+        return array_values(array_filter(
+            self::VIEWING_SLOTS,
+            fn (string $slot) => Carbon::parse($slot)->isFuture()
         ));
     }
 

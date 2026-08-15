@@ -109,7 +109,10 @@ trait HasDisclosureFacts
      */
     public function pricePerSquareFootLabel(): string
     {
-        return $this->currencySymbol().'/sq ft';
+        // Trimmed: the trailing space on an unmapped code exists to separate it
+        // from a number, and there is no number here — the label read
+        // "JPY /sq ft".
+        return rtrim($this->currencySymbol()).'/sq ft';
     }
 
     /**

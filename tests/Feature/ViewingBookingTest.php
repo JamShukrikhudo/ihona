@@ -207,6 +207,77 @@ class ViewingBookingTest extends TestCase
         $this->assertNull(session('message'), 'the confirmation was flashed and will leak onto the next page');
     }
 
+    /**
+     * A slot that has already passed is not a slot. Nothing compared against
+     * the clock, and the date rule is only after_or_equal:today, so someone
+     * arriving at 18:00 was offered 09:00 this morning — and the booking, the
+     * calendar links and the confirmation email were all created for it.
+     */
+    public function test_an_hour_that_has_already_passed_is_not_offered(): void
+    {
+        $this->travelTo(now()->setTime(14, 30));
+
+        $today = now()->format('Y-m-d');
+        $slots = $this->property->availableViewingSlots($today);
+
+        $this->assertNotContains('09:00', $slots, 'this morning is still being offered this afternoon');
+        $this->assertNotContains('14:00', $slots, 'the hour already under way is still being offered');
+        $this->assertContains('15:00', $slots);
+    }
+
+    public function test_a_day_whose_hours_have_all_passed_drops_out(): void
+    {
+        $this->travelTo(now()->setTime(23, 0));
+
+        $this->assertNotContains(
+            now()->format('Y-m-d'),
+            $this->property->availableViewingDates(),
+            'today is still offered at 11pm'
+        );
+        $this->assertContains(now()->addDay()->format('Y-m-d'), $this->property->availableViewingDates());
+    }
+
+    /**
+     * Two visitors submitting the same slot at once both passed the check
+     * before either insert landed. The database has to be the arbiter.
+     */
+    public function test_the_same_slot_cannot_be_taken_twice(): void
+    {
+        $day = now()->addDays(3)->format('Y-m-d');
+
+        $this->book($this->property, $day, '14:00');
+
+        $this->expectException(\Illuminate\Database\QueryException::class);
+
+        $this->book($this->property, $day, '14:00');
+    }
+
+    public function test_a_cancelled_slot_can_be_taken_again(): void
+    {
+        $day = now()->addDays(3)->format('Y-m-d');
+
+        $this->book($this->property, $day, '14:00', 'cancelled');
+        $this->book($this->property, $day, '14:00');
+
+        $this->assertSame(2, Booking::count());
+    }
+
+    /**
+     * The panel says "Viewing booked" and reads its text from $confirmation.
+     * The flag was set before the broadcast and the notifications, so a throw
+     * in either left the panel showing a heading over an empty line, with the
+     * error rendered only in the branch the panel had replaced.
+     */
+    public function test_the_confirmation_panel_is_never_shown_empty(): void
+    {
+        Mail::fake();
+
+        $component = $this->form()->call('bookViewing');
+
+        $this->assertTrue($component->get('bookingConfirmed'));
+        $this->assertNotEmpty($component->get('confirmation'));
+    }
+
     public function test_the_confirmation_reuses_the_verb(): void
     {
         Mail::fake();

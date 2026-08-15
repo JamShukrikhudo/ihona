@@ -363,6 +363,66 @@ class ListingFiltersTest extends TestCase
         );
     }
 
+    /**
+     * The comment above $queryString says each except-value must equal the
+     * property default. It did not hold: the numeric filters defaulted to null
+     * while the controls that clear them submit '', so clearing "Any beds"
+     * left ?minBedrooms= in the URL and the cleared page was not shareable.
+     * Livewire also ignores an `except` of null outright.
+     */
+    public function test_every_cleared_filter_leaves_the_url(): void
+    {
+        $component = new \App\Livewire\PropertyList();
+
+        $queryString = (new \ReflectionProperty($component, 'queryString'))->getValue($component);
+        $defaults = (new \ReflectionClass($component))->getDefaultProperties();
+        $defaultFor = (new \ReflectionMethod($component, 'defaultFor'));
+
+        foreach ($queryString as $filter => $options) {
+            $this->assertArrayHasKey('except', $options, "[{$filter}] has no except value");
+
+            $this->assertNotNull(
+                $options['except'],
+                "[{$filter}] excepts null, which Livewire treats as unspecified"
+            );
+
+            $this->assertSame(
+                $defaults[$filter],
+                $options['except'],
+                "[{$filter}] excepts a value its property never holds"
+            );
+
+            $this->assertSame(
+                $defaults[$filter],
+                $defaultFor->invoke($component, $filter),
+                "[{$filter}] is cleared to something other than its default"
+            );
+        }
+    }
+
+    /**
+     * The empty state suggests the one filter worth loosening, which costs a
+     * COUNT per applied filter. With eighteen filters bound to a live search
+     * box that is a burst of queries per debounced keystroke.
+     */
+    public function test_the_empty_state_does_not_count_once_per_filter(): void
+    {
+        Property::factory()->count(3)->create(['status' => 'For Sale']);
+
+        \DB::enableQueryLog();
+        $this->get('/properties?search=nothingmatchesthis&minBedrooms=5&minPrice=99999999')->assertOk();
+        $counts = collect(\DB::getQueryLog())
+            ->filter(fn ($q) => str_contains(strtolower($q['query']), 'count(*)'))
+            ->count();
+        \DB::disableQueryLog();
+
+        $this->assertLessThanOrEqual(
+            6,
+            $counts,
+            "the empty state ran {$counts} count queries"
+        );
+    }
+
     public function test_the_page_loads_no_third_party_image(): void
     {
         $html = $this->get('/properties')->assertOk()->getContent();

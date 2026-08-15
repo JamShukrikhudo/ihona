@@ -26,13 +26,18 @@ class MenuService
      */
     private static int $submenus = 0;
 
+    /**
+     * The navbar renders this twice, for the wide bar and the collapsed panel,
+     * and each render walked the tree again: 2 x (1 + N) queries on every
+     * public page. The tree is the same both times.
+     */
     public function buildMenu()
     {
         $menu = SpatieMenu::new()
             ->addClass('lg:flex lg:items-center lg:gap-6')
             ->addItemClass(self::LINK);
 
-        Menu::whereNull('parent_id')->orderBy('order')->get()->each(function (Menu $item) use ($menu) {
+        $this->tree()->each(function (Menu $item) use ($menu) {
             if ($item->children->isEmpty()) {
                 $menu->add(Link::to($item->url, $item->name));
 
@@ -49,13 +54,25 @@ class MenuService
         return $menu;
     }
 
+    /**
+     * @return \Illuminate\Support\Collection<int, Menu>
+     */
+    private function tree(): \Illuminate\Support\Collection
+    {
+        return once(fn () => Menu::query()
+            ->whereNull('parent_id')
+            ->with('children.children.children')
+            ->orderBy('order')
+            ->get());
+    }
+
     private function parent(Menu $item): string
     {
         $id = 'submenu-'.(++self::$submenus);
 
         return $this->link($item, self::LINK.' pr-14 lg:pr-0')
             .$this->toggle($item, $id)
-            .$this->submenu($item->children()->orderBy('order')->get(), $id);
+            .$this->submenu($item->children->sortBy('order')->values(), $id);
     }
 
     /**
@@ -133,7 +150,7 @@ class MenuService
 
             $item = '<li>'.$this->link($child, self::SUBMENU_LINK.$indent).'</li>';
 
-            $nested = $child->children()->orderBy('order')->get();
+            $nested = $child->children->sortBy('order')->values();
 
             return $nested->isEmpty()
                 ? $item

@@ -21,14 +21,14 @@ class PropertyList extends Component
     // unconditionally — 1,000,000 / 10 beds / 10 baths / 10,000 sq ft — so an
     // untouched search silently dropped the largest and dearest homes on the
     // books, which are the ones an agency most wants seen.
-    public $minPrice = null;
-    public $maxPrice = null;
-    public $minBedrooms = null;
-    public $maxBedrooms = null;
-    public $minBathrooms = null;
-    public $maxBathrooms = null;
-    public $minArea = null;
-    public $maxArea = null;
+    public $minPrice = '';
+    public $maxPrice = '';
+    public $minBedrooms = '';
+    public $maxBedrooms = '';
+    public $minBathrooms = '';
+    public $maxBathrooms = '';
+    public $minArea = '';
+    public $maxArea = '';
     public $propertyType = '';
     public $selectedAmenities = [];
     public $yearBuilt = '';
@@ -59,14 +59,14 @@ class PropertyList extends Component
     // URL while it is actually narrowing the results.
     protected $queryString = [
         'search' => ['except' => ''],
-        'minPrice' => ['except' => null],
-        'maxPrice' => ['except' => null],
-        'minBedrooms' => ['except' => null],
-        'maxBedrooms' => ['except' => null],
-        'minBathrooms' => ['except' => null],
-        'maxBathrooms' => ['except' => null],
-        'minArea' => ['except' => null],
-        'maxArea' => ['except' => null],
+        'minPrice' => ['except' => ''],
+        'maxPrice' => ['except' => ''],
+        'minBedrooms' => ['except' => ''],
+        'maxBedrooms' => ['except' => ''],
+        'minBathrooms' => ['except' => ''],
+        'maxBathrooms' => ['except' => ''],
+        'minArea' => ['except' => ''],
+        'maxArea' => ['except' => ''],
         'propertyType' => ['except' => ''],
         'selectedAmenities' => ['except' => []],
         'energyRating' => ['except' => ''],
@@ -410,7 +410,9 @@ class PropertyList extends Component
     {
         return match ($filter) {
             'featuredOnly' => false,
-            'search', 'propertyType', 'energyRating', 'country' => '',
+            'search', 'propertyType', 'energyRating', 'country',
+            'minPrice', 'maxPrice', 'minBedrooms', 'maxBedrooms',
+            'minBathrooms', 'maxBathrooms', 'minArea', 'maxArea' => '',
             'selectedAmenities' => [],
             'minEnergyScore', 'minWalkabilityScore', 'minTransitScore', 'minBikeScore' => 0,
             default => null,
@@ -474,7 +476,11 @@ class PropertyList extends Component
     {
         $counts = [];
 
-        foreach (array_keys($this->appliedFilters()) as $filter) {
+        // ponytail: one COUNT per filter probed, capped. Eighteen filters are
+        // bound to a live search box, so an unbounded loop here is a burst of
+        // queries per debounced keystroke. Raise the cap only if a real search
+        // with more than five filters set turns out to need it.
+        foreach (array_slice(array_keys($this->appliedFilters()), 0, 5) as $filter) {
             $counts[$filter] = $this->countWithout($filter);
         }
 

@@ -15,6 +15,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        // One instance, so the navbar's two renders share the menu tree rather
+        // than walking it twice. once() is keyed on the instance, so without
+        // this the memoisation never applies.
+        $this->app->singleton(\App\Services\MenuService::class);
+
         // Register the module manager as a singleton
         $this->app->singleton(ModuleManager::class, function ($app) {
             return new ModuleManager();

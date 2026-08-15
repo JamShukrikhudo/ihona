@@ -90,8 +90,12 @@ class ListingFilterDefaultsTest extends TestCase
                     continue;
                 }
 
-                $this->assertNull(
+                // Either empty form is fine — '' is what the controls submit
+                // when cleared, null is what an untouched component holds — but
+                // 0 is a bound, not an absence, so assertEmpty will not do.
+                $this->assertContains(
                     $component->{$filter},
+                    [null, ''],
                     "[{$class}::\${$filter}] defaults to a bound, so it narrows a search nobody asked to narrow"
                 );
             }

@@ -80,6 +80,41 @@ class ContactFormTest extends TestCase
      * lands an applicant on a generic form showing "Choose one" — the one piece
      * of intent the redirect existed to carry.
      */
+    /**
+     * `exists:properties,id` matches a soft-deleted row, so a question about a
+     * withdrawn listing was filed against it silently and the message naming
+     * that outcome could never fire.
+     */
+    public function test_a_withdrawn_listing_is_reported_rather_than_used(): void
+    {
+        $property = Property::factory()->create(['status' => 'For Sale']);
+        $property->delete();
+
+        $this->post('/contact', [
+            'name' => 'Alex Whitmore',
+            'email' => 'alex@example.com',
+            'message' => 'Is this still available?',
+            'property_id' => $property->id,
+        ])->assertSessionHasErrors('property_id');
+    }
+
+    /**
+     * After asking about a listing the confirmation page has to keep it, or the
+     * "Asking about ..." panel and the hidden property_id go with the redirect
+     * and a second question is filed against nothing.
+     */
+    public function test_the_confirmation_page_keeps_the_property(): void
+    {
+        $property = Property::factory()->create(['status' => 'For Sale']);
+
+        $this->post('/contact', [
+            'name' => 'Alex Whitmore',
+            'email' => 'alex@example.com',
+            'message' => 'Is this still available?',
+            'property_id' => $property->id,
+        ])->assertRedirect(route('contact.show', ['property' => $property->id]));
+    }
+
     public function test_an_intent_in_the_url_arrives_preselected(): void
     {
         $html = $this->get(route('contact.show', ['interest' => 'renting']))

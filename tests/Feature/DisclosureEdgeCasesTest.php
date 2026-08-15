@@ -96,14 +96,15 @@ class DisclosureEdgeCasesTest extends TestCase
 
     /**
      * An unmapped code was printed where a symbol belongs, so a Japanese
-     * listing read "JPY1,234,000" and its rate label "JPY/sq ft".
+     * listing read "JPY1,234,000". The space that fixes it belongs against a
+     * number: the label has none, and "JPY /sq ft" just reads as a gap.
      */
     public function test_an_unmapped_currency_is_not_printed_as_a_symbol(): void
     {
         $property = $this->property(['currency' => 'JPY']);
 
         $this->assertSame('JPY ', $property->currencySymbol());
-        $this->assertSame('JPY /sq ft', $property->pricePerSquareFootLabel());
+        $this->assertSame('JPY/sq ft', $property->pricePerSquareFootLabel());
     }
 
     public function test_a_mapped_currency_still_has_no_gap(): void

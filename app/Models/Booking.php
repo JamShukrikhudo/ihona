@@ -34,6 +34,28 @@ class Booking extends Model
         'booking_type',
     ];
 
+    protected static function booted(): void
+    {
+        // Maintained rather than fillable: it exists only to hold the unique
+        // index that stops two people booking one slot, so it must always
+        // agree with the date, time and status beside it.
+        static::saving(fn (self $booking) => $booking->slot_key = $booking->slotKey());
+    }
+
+    /**
+     * Null once cancelled, because a cancelled viewing gives its hour back and
+     * nulls do not collide in a unique index.
+     */
+    public function slotKey(): ?string
+    {
+        if ($this->status === 'cancelled' || blank($this->date) || blank($this->time)) {
+            return null;
+        }
+
+        return \Carbon\Carbon::parse($this->date)->format('Y-m-d')
+            .' '.\Carbon\Carbon::parse($this->time)->format('H:i');
+    }
+
     protected $casts = [
         'date' => 'date',
     ];

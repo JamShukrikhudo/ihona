@@ -38,7 +38,10 @@ Route::middleware('auth')->group(function () {
 Route::get('/properties/{propertyId}/book', PropertyBooking::class)->name('property.book');
 Route::post('/payments/session', [PaymentController::class, 'createSession'])->middleware(['auth', 'throttle:10,1']);
 Route::get('/payments/success', [PaymentController::class, 'handlePaymentSuccess'])->middleware('auth');
-Route::get('/booking-calendar', BookingCalendar::class)->middleware('auth')->name('booking.calendar');
+// The component's mount() takes the appointment type, and the route had no
+// parameter to give it, so the page could never boot: "Unable to resolve
+// dependency [Parameter #0 $appointmentType]".
+Route::get('/booking-calendar/{appointmentType}', BookingCalendar::class)->middleware('auth')->name('booking.calendar');
 Route::get('/properties', PropertyList::class)->name('property.list');
 Route::get('/properties/search', [PropertyController::class, 'search'])->name('property.search');
 Route::get('/properties/{propertyId}', PropertyDetail::class)->name('property.detail');

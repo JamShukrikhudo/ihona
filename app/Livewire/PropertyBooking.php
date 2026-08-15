@@ -138,11 +138,21 @@ class PropertyBooking extends Component
                 'booking_type' => 'viewing',
             ]);
 
+            // Set together, and before anything that can throw. The flag alone
+            // used to be set here and the text eighteen lines further down,
+            // past a broadcast and two notifications, so a throw in any of them
+            // rendered the confirmation panel over an empty line — with the
+            // error in the branch the panel had just replaced.
+            $this->confirmation = __('Booked for :date at :time. The agent will call if anything changes.', [
+                'date' => Carbon::parse($this->selectedDate)->format('l j F Y'),
+                'time' => $this->selectedTime,
+            ]);
+            $this->bookingConfirmed = true;
+            $this->confirmedBookingId = $booking->id;
+
             $calendarService = app(CalendarIntegrationService::class);
             $this->googleCalendarUrl = $calendarService->getBookingGoogleCalendarUrl($booking);
             $this->outlookCalendarUrl = $calendarService->getBookingOutlookCalendarUrl($booking);
-            $this->confirmedBookingId = $booking->id;
-            $this->bookingConfirmed = true;
 
             broadcast(new BookingCreated($booking))->toOthers();
 
@@ -165,17 +175,18 @@ class PropertyBooking extends Component
                 }
             }
 
-            $this->confirmation = __('Booked for :date at :time. The agent will call if anything changes.', [
-                'date' => Carbon::parse($this->selectedDate)->format('l j F Y'),
-                'time' => $this->selectedTime,
-            ]);
             $this->reset(['selectedDate', 'selectedTime', 'userName', 'userEmail', 'userContact', 'notes', 'availableTimeSlots']);
         } catch (Exception $e) {
             Log::error('Booking failed: ' . $e->getMessage());
 
             $errorMessage = 'Failed to schedule viewing. ';
             if ($e instanceof QueryException) {
-                $errorMessage .= 'A database error occurred. ';
+                // The unique index on the slot is the last word on who gets it:
+                // two visitors submitting the same hour both pass the check
+                // above, and only one insert can land.
+                $errorMessage .= str_contains($e->getMessage(), 'bookings_property_slot_unique')
+                    ? 'Someone booked that time while you were filling this in. Please choose another. '
+                    : 'A database error occurred. ';
             } elseif ($e instanceof ValidationException) {
                 $errorMessage .= 'Please check your input and try again. ';
             } elseif ($e->getMessage() === 'Selected date is no longer available.') {

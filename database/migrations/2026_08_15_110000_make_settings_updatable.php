@@ -72,6 +72,19 @@ return new class extends Migration
 
     public function down(): void
     {
+        // Narrowing payload back to varchar(255) truncates or errors on exactly
+        // the rows this migration widened it for, so say which ones first.
+        $long = DB::table('settings')
+            ->select('group', 'name')
+            ->whereRaw('LENGTH(payload) > 255')
+            ->get();
+
+        if ($long->isNotEmpty()) {
+            logger()->warning('Reverting will not fit '.$long->count().' setting(s): '
+                .$long->map(fn ($s) => $s->group.'.'.$s->name)->implode(', ')
+                .'. Shorten them before rolling back.');
+        }
+
         Schema::table('settings', function (Blueprint $table) {
             $table->dropUnique('settings_group_name_unique');
             $table->string('payload')->nullable()->change();
