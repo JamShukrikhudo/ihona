@@ -60,13 +60,9 @@ class PublicSiteSweepTest extends TestCase
             $routes[$uri] = $uri;
         }
 
-        // Fortify owns these two, so the filter above — which keeps only
-        // App\Http\Controllers and App\Livewire actions — skipped them, and
-        // they are the pages the navigation and half the copy link to. A
-        // published Blade in this repo renders them, this repo can break them,
-        // and one did: `<x-socialstream::components.socialstream />` resolves
-        // to components.components.socialstream, so /login and /register threw
-        // on every request while the sweep reported the site clean.
+        // Fortify owns the auth pages, so the App\ filter above skipped them —
+        // and a published Blade in this repo renders them, so this repo can
+        // break them. One did, and the sweep reported clean.
         foreach (['login', 'register', 'password.request', 'password.reset'] as $name) {
             $route = app('router')->getRoutes()->getByName($name);
 

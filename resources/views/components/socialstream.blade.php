@@ -1,25 +1,12 @@
 @php
-    // Only the providers this deployment can actually complete a sign-in with.
-    //
-    // config/socialstream.php lists nine, including Bitbucket, GitLab and
-    // Slack, and config/services.php holds credentials for none of them — so
-    // the sign-in page offered nine buttons, every one of which led to
-    // Socialite throwing on a missing client id. A provider with no client id
-    // is not a way in, and a property audience being offered a GitLab login is
-    // its own kind of answer about who built the site.
+    // Only providers with credentials: without a client id Socialite throws on
+    // redirect, so an unconfigured button is not a way in.
     $providers = collect(\JoelButcher\Socialstream\Socialstream::providers())
         ->filter(fn (array $provider) => filled(config("services.{$provider['id']}.client_id")))
         ->values();
 @endphp
 
-{{--
-    The other ways in.
-
-    Published from the package and then left on its defaults, so it carried
-    grey-on-grey borders and Jetstream's ink scale onto every sign-in screen.
-    On the design system now, and the divider is drawn here rather than by the
-    page — both pages used to draw a second one above it.
---}}
+{{-- The other ways in. The divider is drawn here, not by the page. --}}
 @if ($providers->isNotEmpty())
     <div class="mt-6">
         <div class="flex items-center gap-4">

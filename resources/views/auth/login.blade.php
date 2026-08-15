@@ -36,12 +36,6 @@
             </div>
         </form>
 
-        {{-- <x-socialstream>, not <x-socialstream::components.socialstream>: a
-             package tag resolves to `socialstream::components.<name>`, so that
-             one asked for components.components.socialstream and threw on every
-             render of this page. The component draws its own divider and
-             prompt, which is why the hand-rolled one that used to sit above it
-             is gone — it was a second identical rule. --}}
         @if (\JoelButcher\Socialstream\Socialstream::show())
             <x-socialstream />
         @endif

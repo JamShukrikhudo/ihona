@@ -16,9 +16,6 @@
 
                 <div x-show="! recovery">
                     <x-ui.field id="code" :label="__('Authentication code')">
-                        {{-- One-time-code autocomplete and a numeric keypad: on a
-                             phone this is typed from a second app, and a full
-                             keyboard for six digits is a small cruelty. --}}
                         <x-ui.control id="code" type="text" name="code" inputmode="numeric"
                                       autocomplete="one-time-code" autofocus x-ref="code"
                                       class="font-mono tracking-[0.3em]"

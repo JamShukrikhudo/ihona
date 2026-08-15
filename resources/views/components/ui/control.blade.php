@@ -3,18 +3,8 @@
     'invalid' => false,
 ])
 
-{{--
-    One treatment for every control on the site.
-
-    The class string used to live inline in contact-form.blade.php, which meant
-    the next form either imported that file's opinion by hand or drifted from
-    it — and the auth pages, six forms, had drifted so far they were still on
-    the Jetstream defaults. `as` picks the element so an input, a select and a
-    textarea are the same control with different content.
-
-    The focus ring is not set here: app.css gives every focusable element the
-    same outline, and a ring utility on top of it would draw two.
---}}
+{{-- One treatment for every control. `as` picks the element. No focus ring
+     here — app.css already gives every focusable element one. --}}
 @php
     $classes = 'w-full rounded-sheet border border-sheet-300 bg-sheet-000 px-3.5 py-[11px]'
         .' font-sans text-body-s text-ink-900 placeholder:text-sheet-400'

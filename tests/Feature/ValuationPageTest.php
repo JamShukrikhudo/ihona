@@ -10,11 +10,8 @@ use Livewire\Livewire;
 use Tests\TestCase;
 
 /**
- * Ticket 23: what a visitor is told their home is worth.
- *
- * A machine valuation is a guess with a width. The page printed the midpoint to
- * two decimal places and threw the width away — the service computed a range on
- * every call and nothing ever read it.
+ * Ticket 23: what a visitor is told their home is worth. The page printed a
+ * midpoint and threw away the band the service had already computed.
  */
 class ValuationPageTest extends TestCase
 {
@@ -53,10 +50,7 @@ class ValuationPageTest extends TestCase
         $this->assertGreaterThan(500000, $range['high']);
     }
 
-    /**
-     * The service had this backwards: width was confidence/200, so a model that
-     * was 90% sure published a wider band than one that was 40% sure.
-     */
+    /** The service had this backwards: width was confidence/200. */
     public function test_more_confidence_means_a_narrower_band(): void
     {
         $property = $this->property();
@@ -122,13 +116,7 @@ class ValuationPageTest extends TestCase
             ->assertSee(route('contact.show', ['property' => $property->id, 'interest' => 'selling']));
     }
 
-    /**
-     * The public page speaks for the model only. A valuer's own figure for the
-     * same property — the API writes market, rental, commercial, insurance and
-     * mortgage valuations, with the valuer's name and notes on them — is not
-     * the agency's to publish, and would be rendered under a label saying a
-     * model produced it.
-     */
+    /** A valuer's own figure is not the agency's to publish, nor the model's. */
     public function test_a_valuers_own_figure_is_not_published_as_the_models(): void
     {
         $property = $this->property();
@@ -165,12 +153,7 @@ class ValuationPageTest extends TestCase
             ->assertSee('Out of date');
     }
 
-    /**
-     * `confidence_level` is NOT NULL with a default of 0, so a row written
-     * without one is indistinguishable from a model that is genuinely 0%
-     * confident — and printing "Confidence 0%" beside a figure reads as a
-     * measurement rather than an absence.
-     */
+    /** NOT NULL defaulting to 0, so "0%" cannot be told from unrecorded. */
     public function test_a_confidence_nobody_recorded_is_not_printed_as_zero(): void
     {
         $property = $this->property();
@@ -190,10 +173,7 @@ class ValuationPageTest extends TestCase
             ->assertDontSee('Confidence 0%');
     }
 
-    /**
-     * Re-running the estimate supersedes the agency's current row for the
-     * property. A registered buyer is not the agency.
-     */
+    /** Re-running supersedes the agency's current row. */
     public function test_a_customer_cannot_rerun_the_agency_estimate(): void
     {
         $property = $this->property();

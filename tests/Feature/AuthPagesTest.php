@@ -8,13 +8,8 @@ use Illuminate\Support\Facades\View;
 use Tests\TestCase;
 
 /**
- * The sign-in journey, on the design system.
- *
- * Four of these seven views referenced <x-guest-layout>, which this application
- * does not have — so the password reset link the site emails, the two-factor
- * challenge, the email verification notice and the password confirmation screen
- * all threw on render. Nothing walked them: the acceptance sweep keeps only
- * App\ routes, and these belong to Fortify.
+ * The sign-in journey. Four of these seven views referenced <x-guest-layout>,
+ * which this application does not have, and threw on render.
  */
 class AuthPagesTest extends TestCase
 {
@@ -47,11 +42,7 @@ class AuthPagesTest extends TestCase
         $this->assertStringContainsString('bg-sheet-000', $html, 'the panel is not on the design system');
     }
 
-    /**
-     * Checked against the source rather than the rendered page: the shared
-     * chrome — the chat bubble, mostly — still carries legacy utilities of its
-     * own, and this is about the sign-in screens, not about them.
-     */
+    /** Source rather than rendered page: the shared chrome still has its own. */
     public function test_no_sign_in_screen_is_still_on_the_old_utilities(): void
     {
         $files = array_merge(
@@ -81,11 +72,7 @@ class AuthPagesTest extends TestCase
         $this->assertSame([], $offenders, implode("\n", $offenders));
     }
 
-    /**
-     * These three are only reachable mid-journey — a session with a pending
-     * two-factor challenge, an unverified address, a password confirmation —
-     * so they are rendered directly rather than fetched.
-     */
+    /** Only reachable mid-journey, so rendered rather than fetched. */
     public static function journeyViews(): array
     {
         return [
@@ -137,11 +124,7 @@ class AuthPagesTest extends TestCase
         }
     }
 
-    /**
-     * config/socialstream.php lists nine providers and config/services.php
-     * holds credentials for none of them, so every one of those buttons led to
-     * Socialite throwing on a missing client id.
-     */
+    /** A provider with no client id throws on redirect. */
     public function test_only_a_provider_that_can_finish_a_sign_in_is_offered(): void
     {
         config(['services.google' => ['client_id' => 'id', 'client_secret' => 'secret', 'redirect' => '/']]);

@@ -1,15 +1,5 @@
-{{--
-    What a home is worth, according to a model.
-
-    The page used to open "Neural Network Property Valuation" and print one
-    figure to two decimal places in 36px blue — the most confident presentation
-    on the whole site, for the least certain number on it. The service had
-    computed a band on every call since it was written and nothing ever read it.
-
-    So: the band is the figure, the midpoint sits under it in a smaller size,
-    what the estimate was derived from is listed with the date of that evidence,
-    and the way to get a number a person will stand behind is on the page.
---}}
+{{-- What a home is worth, according to a model: the band is the figure, the
+     midpoint sits under it, and the evidence is listed with its date. --}}
 <div class="mx-auto max-w-(--breakpoint-lg) px-4 py-8 md:px-margin md:py-12">
     @php
         $currency = $property?->currencySymbol() ?? '';
@@ -68,8 +58,6 @@
             @endphp
 
             <section class="mt-6 rounded-sheet border border-sheet-300 bg-sheet-100 p-5 sm:p-6" aria-labelledby="estimate-heading">
-                {{-- No "Close": the estimate is what the page is for. It was a
-                     dismiss control on the only content the page has. --}}
                 <h2 id="estimate-heading" class="font-display text-h5 font-bold tracking-tight text-ink-900">
                     {{ __('Estimated value') }}
                 </h2>
@@ -80,9 +68,6 @@
 
                 <div class="mt-4 rounded-sheet border border-sheet-300 bg-sheet-000 p-5">
                     @if ($range)
-                        {{-- The range is the figure. The midpoint sits under it,
-                             smaller, so it cannot be read as the answer on its
-                             own — which is exactly how this page read before. --}}
                         <p class="font-display text-h3 font-bold tabular-nums tracking-tight text-ink-900">
                             {{ $currency }}{{ number_format($range['low']) }}&ndash;{{ $currency }}{{ number_format($range['high']) }}
                         </p>
@@ -94,11 +79,8 @@
                     @endif
 
                     <div class="mt-4 flex flex-wrap items-center gap-2">
-                        {{-- The column is NOT NULL and defaults to 0, so a row
-                             written without a confidence is indistinguishable
-                             from a model that is 0% sure. Either way "0%" beside
-                             a figure reads as a measurement rather than an
-                             absence; the band is already the widest one quoted. --}}
+                        {{-- The column is NOT NULL defaulting to 0, so "0%" cannot
+                             be told from an unrecorded confidence. --}}
                         @if (! $valuation->confidence_level)
                             <x-ui.chip tone="caution">{{ __('Confidence not recorded') }}</x-ui.chip>
                         @else
@@ -107,9 +89,7 @@
                             </x-ui.chip>
                         @endif
 
-                        {{-- An estimate is stamped valid for three months. Past
-                             that it is still shown — it is the only figure
-                             there is — but it stops being presented as current. --}}
+                        {{-- Past its three months it is still shown, but not as current. --}}
                         @if ($valuation->valid_until && ! $valuation->isValid())
                             <x-ui.chip tone="fault">{{ __('Out of date') }}</x-ui.chip>
                         @endif
@@ -120,9 +100,6 @@
                     </div>
                 </div>
 
-                {{-- What it was derived from, and how old that evidence is. A
-                     number with no provenance is a number nobody can argue
-                     with, which is the opposite of what this page owes. --}}
                 <h3 class="mt-6 font-mono text-annotation uppercase text-ink-500">{{ __('Derived from') }}</h3>
                 <dl class="mt-2 divide-y divide-sheet-300 rounded-sheet border border-sheet-300 bg-sheet-000">
                     @foreach ([
@@ -164,8 +141,6 @@
             </section>
         @endif
 
-        {{-- The action. A model is free and instant and wrong by a band this
-             wide; a valuer is neither free nor instant and worth the call. --}}
         <section class="mt-6 rounded-sheet border border-sheet-300 bg-sheet-000 p-5 sm:p-6">
             <div class="flex flex-wrap items-center justify-between gap-4">
                 <div class="max-w-reading">
@@ -181,9 +156,6 @@
                         {{ __('Book a valuation') }}
                     </x-ui.button>
 
-                    {{-- Shown to the agency only, because only the agency can
-                         use it: re-running supersedes the row the agent is
-                         quoting from. --}}
                     @if (auth()->user()?->hasAnyRole(['staff', 'agent', 'admin', 'super_admin']))
                         <x-ui.button variant="secondary" wire:click="generateValuation" wire:loading.attr="disabled">
                             <span wire:loading.remove wire:target="generateValuation">{{ __('Run the estimate again') }}</span>

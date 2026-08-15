@@ -27,9 +27,7 @@ class PropertyValuationComponent extends Component
             $this->loadProperty();
             $this->loadValuationHistory();
 
-            // Show the most recent estimate rather than an empty page behind a
-            // button only a signed-in agent can press. A visitor arriving here
-            // asked what the home is worth; the answer already exists.
+            // The visitor came to see a figure, not a button only staff can press.
             $this->valuation = collect($this->valuationHistory)->first();
             $this->showReport = (bool) $this->valuation;
         }
@@ -56,11 +54,7 @@ class PropertyValuationComponent extends Component
     }
     
     /**
-     * Re-runs the model.
-     *
-     * Gated on the agency's own roles, not on being signed in at all: this
-     * supersedes the agency's current row for the property, so a registered
-     * buyer could overwrite the figure the agent is quoting from.
+     * Re-runs the model. Staff only: this supersedes the agency's current row.
      */
     public function generateValuation()
     {
@@ -82,9 +76,7 @@ class PropertyValuationComponent extends Component
         try {
             $nnService = app(NeuralNetworkValuationService::class);
 
-            // The property's own team, not a hardcoded 1: a valuation filed
-            // against team 1 by an agent who belongs to no team is filed
-            // against whichever agency happens to hold that id.
+            // The property's team, not a hardcoded 1.
             $this->valuation = $nnService->createValuation(
                 $this->property,
                 $user->id,
@@ -105,12 +97,8 @@ class PropertyValuationComponent extends Component
     }
     
     /**
-     * Scoped to the property in the URL.
-     *
-     * This took any id and rendered whatever came back. The route is public, so
-     * that handed every visitor the valuation history of every property — and
-     * the report carries the valuer's notes and the model's workings — by
-     * counting integers.
+     * Scoped to the property in the URL: the route is public and this took any
+     * id, so any property's valuation history was reachable by counting.
      */
     public function viewValuation($valuationId)
     {
@@ -118,12 +106,8 @@ class PropertyValuationComponent extends Component
             return;
         }
 
-        // Type as well as property. A Livewire call carries whatever argument
-        // the client sends, and the same property's staff-entered market,
-        // rental, insurance and mortgage valuations sit in this table with the
-        // valuer's name and notes on them — none of them the agency's to
-        // publish, and all of them would render under a label saying a model
-        // produced the figure.
+        // Type too: staff-entered valuations for the same property carry the
+        // valuer's name and notes and are not the agency's to publish.
         $valuation = PropertyValuation::query()
             ->where('id', $valuationId)
             ->where('property_id', $this->property->id)

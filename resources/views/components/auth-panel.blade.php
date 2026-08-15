@@ -4,21 +4,9 @@
     'wide' => false,
 ])
 
-{{--
-    The shell every sign-in screen sits in.
-
-    There were two before: three views extended layouts.app and drew their own
-    white card, and four used <x-guest-layout>, which this application does not
-    have — so the password reset link the site emails, the two-factor challenge,
-    the verification notice and the password confirmation screen all threw on
-    render. One shell, inside the site's own chrome: someone deciding whether to
-    trust this agency with an account should not be handed a page that looks
-    like it belongs to a different company.
-
-    Errors are collected here rather than beside each field. Fortify reports a
-    failed sign-in against `email` with a message about the pair, so a message
-    pinned to the email box would be pointing at the wrong half of it.
---}}
+{{-- The shell every sign-in screen sits in. Errors are collected here rather
+     than per field: Fortify reports a failed sign-in against `email` with a
+     message about the pair. --}}
 <section class="mx-auto flex w-full flex-col items-center px-4 py-10 md:px-margin md:py-16">
     <div class="w-full {{ $wide ? 'max-w-lg' : 'max-w-sm' }}">
         @if ($title)

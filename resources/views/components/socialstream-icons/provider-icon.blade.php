@@ -1,6 +1,4 @@
-{{-- The icon inherits the colour of the control it sits in, so it moves
-     with the theme. It used to force text-gray-900, which on the night
-     ground was a black mark on a dark button. --}}
+{{-- No colour here: the icon inherits it, so it moves with the theme. --}}
 <div>
     @switch($provider)
         @case(\JoelButcher\Socialstream\Providers::bitbucket())

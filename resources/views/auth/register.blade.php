@@ -31,9 +31,6 @@
                               :invalid="$errors->has('password_confirmation')" />
             </x-ui.field>
 
-            {{-- The role decides which panel this person lands in after
-                 registering, so it is asked in their words rather than the
-                 application's. --}}
             <x-ui.field id="role" :label="__('What brings you here?')"
                         :hint="__('It sets what you see first. It can be changed later.')"
                         class="sm:col-span-2">
@@ -71,7 +68,6 @@
             </div>
         </form>
 
-        {{-- Same tag, same crash as the login page. See the note there. --}}
         @if (\JoelButcher\Socialstream\Socialstream::show())
             <x-socialstream />
         @endif

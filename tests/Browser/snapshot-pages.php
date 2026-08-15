@@ -6,10 +6,8 @@
  *   php artisan tinker tests/Browser/snapshot-pages.php
  *   node tests/Browser/public-site-sweep.mjs
  *
- * Asset URLs are rewritten to file:// so the sweep needs no running server.
- * The valuation fixture is written inside a transaction that is rolled back:
- * the sweep must see the estimate block, and the dev database must not grow a
- * row every time someone runs this.
+ * Asset URLs are rewritten to file:// so no server is needed. Fixtures are
+ * written inside a transaction that is rolled back.
  */
 
 use App\Models\Property;
@@ -64,9 +62,7 @@ $pages = [
     'privacy' => '/privacy',
     'terms' => '/terms-and-conditions',
     'design' => '/design',
-    // The sign-in journey. Four of these were on a shell this application does
-    // not have and threw on render, and no sweep — this one included — was
-    // walking them.
+    // The sign-in journey.
     'login' => '/login',
     'register' => '/register',
     'forgot-password' => '/forgot-password',
@@ -79,9 +75,8 @@ foreach ($pages as $name => $uri) {
     $response = app(Kernel::class)->handle(Request::create($uri, 'GET'));
 
     if ($response->getStatusCode() !== 200) {
-        // Delete the old copy rather than leave it. The sweep reads whatever
-        // is on disk, so a stale snapshot of a route that is currently broken
-        // is reported clean — the silent pass ticket 24 exists to warn about.
+        // Delete the old copy: the sweep reads what is on disk, and a stale
+        // snapshot of a broken route reports clean.
         @unlink(base_path("tests/Browser/snapshots/{$name}.html"));
         $broken[] = "{$name} ({$uri}) returned {$response->getStatusCode()}";
 

@@ -79,14 +79,8 @@ class PropertyValuation extends Model
     }
 
     /**
-     * The band this estimate is worth quoting to, or null when there is no
-     * figure to put a band around.
-     *
-     * A machine valuation is a guess with a width, and the width was being
-     * thrown away: the service computed a `price_range` on every call that
-     * nothing ever read or stored, and the page printed the midpoint to two
-     * decimal places. Derived rather than stored so every row already in the
-     * table gets one.
+     * The band this estimate is worth quoting to. Derived, not stored, so rows
+     * already in the table get one.
      *
      * @return array{low: float, high: float}|null
      */
@@ -100,9 +94,7 @@ class PropertyValuation extends Model
     }
 
     /**
-     * The band is widest when the model is least sure — the service had this
-     * the other way round (`confidence / 200`), so a model 90% confident
-     * published a ±45% band and one 20% confident published ±10%.
+     * Widest when the model is least sure. The service had this inverted.
      *
      * @return array{low: float, high: float}
      */

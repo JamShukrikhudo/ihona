@@ -10,10 +10,8 @@
             </p>
         @endif
 
-        {{-- Guarded on the routes existing: Fortify's email verification
-             feature is commented out in config/fortify.php, so verification.send
-             is not registered, and an unguarded route() call here would turn a
-             page about a problem into a second problem. --}}
+        {{-- Guarded: Fortify's email verification feature is off in config, so
+             verification.send is not registered. --}}
         <div class="flex flex-wrap items-center justify-between gap-3">
             @if (Route::has('verification.send'))
                 <form method="POST" action="{{ route('verification.send') }}">
