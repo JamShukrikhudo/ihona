@@ -13,9 +13,9 @@
             <h1 class="font-display text-h3 font-bold tracking-tight text-verdigris-700">
                 {{ __('Viewing booked') }}
             </h1>
-            <p class="mt-2 text-body-s text-verdigris-700">{{ session('message') }}</p>
+            <p class="mt-2 text-body-s text-verdigris-700">{{ $confirmation }}</p>
 
-            @if ($googleCalendarUrl || $outlookCalendarUrl)
+            @if ($googleCalendarUrl || $outlookCalendarUrl || $confirmedBookingId)
                 <div class="mt-4 flex flex-wrap gap-3">
                     @if ($googleCalendarUrl)
                         <x-ui.button size="sm" variant="secondary" :href="$googleCalendarUrl">
@@ -25,6 +25,11 @@
                     @if ($outlookCalendarUrl)
                         <x-ui.button size="sm" variant="secondary" :href="$outlookCalendarUrl">
                             {{ __('Add to Outlook') }}
+                        </x-ui.button>
+                    @endif
+                    @if ($confirmedBookingId && Route::has('booking.ics'))
+                        <x-ui.button size="sm" variant="secondary" :href="route('booking.ics', $confirmedBookingId)">
+                            {{ __('Add to Apple Calendar') }}
                         </x-ui.button>
                     @endif
                 </div>

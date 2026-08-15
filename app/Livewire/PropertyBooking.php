@@ -29,6 +29,10 @@ class PropertyBooking extends Component
     public $availableDates = [];
     public $availableTimeSlots = [];
     public $bookingConfirmed = false;
+    // Not a flash: a flash set in a Livewire action survives into the next full
+    // page load, so the viewing confirmation turned up on whatever page the
+    // visitor opened next.
+    public $confirmation = null;
     public $confirmedBookingId = null;
     public $googleCalendarUrl = null;
     public $outlookCalendarUrl = null;
@@ -56,7 +60,7 @@ class PropertyBooking extends Component
     {
         $this->propertyId = $propertyId;
         $property = Property::with('team')->findOrFail($this->propertyId);
-        $this->availableDates = $property->getAvailableDatesForTeam();
+        $this->availableDates = $property->availableViewingDates();
     }
 
     public function updatedSelectedDate($value)
@@ -71,19 +75,10 @@ class PropertyBooking extends Component
 
     private function getAvailableTimeSlots($date)
     {
-        $workingHours = [
-            '09:00', '10:00', '11:00', '12:00', '13:00',
-            '14:00', '15:00', '16:00', '17:00',
-        ];
-
-        $bookedSlots = Booking::where('property_id', $this->propertyId)
-            ->whereDate('date', $date)
-            ->whereNotIn('status', ['cancelled'])
-            ->pluck('time')
-            ->map(fn($t) => Carbon::parse($t)->format('H:i'))
-            ->toArray();
-
-        return array_values(array_diff($workingHours, $bookedSlots));
+        // The model owns this now. Two copies of "what hours can be booked"
+        // disagreed: the date picker dropped a whole day on the first booking,
+        // so the eight remaining slots this returns were unreachable.
+        return Property::findOrFail($this->propertyId)->availableViewingSlots($date);
     }
 
     public function selectDate($date)
@@ -105,13 +100,13 @@ class PropertyBooking extends Component
             // it into "an unexpected error occurred", and no viewing was ever
             // booked. The route was broken until recently, so nothing exercised
             // it.
-            $availableDates = Property::findOrFail($this->propertyId)->getAvailableDatesForTeam();
+            $property = Property::findOrFail($this->propertyId);
 
-            if (!in_array($this->selectedDate, $availableDates)) {
+            if (!in_array($this->selectedDate, $property->availableViewingDates())) {
                 throw new Exception('Selected date is no longer available.');
             }
 
-            if (!in_array($this->selectedTime, $this->getAvailableTimeSlots($this->selectedDate))) {
+            if (!in_array($this->selectedTime, $property->availableViewingSlots($this->selectedDate))) {
                 throw new Exception('Selected time slot is no longer available.');
             }
 
@@ -138,7 +133,7 @@ class PropertyBooking extends Component
                 'staff_id' => $defaultStaffId,
                 // Without this a booking made here is invisible to the team
                 // availability query that is supposed to stop double-booking.
-                'team_id' => Property::find($this->propertyId)?->team_id,
+                'team_id' => $property->team_id,
                 'status' => 'confirmed',
                 'booking_type' => 'viewing',
             ]);
@@ -170,7 +165,10 @@ class PropertyBooking extends Component
                 }
             }
 
-            session()->flash('message', 'Viewing scheduled successfully for ' . Carbon::parse($this->selectedDate)->format('F j, Y') . ' at ' . $this->selectedTime);
+            $this->confirmation = __('Booked for :date at :time. The agent will call if anything changes.', [
+                'date' => Carbon::parse($this->selectedDate)->format('l j F Y'),
+                'time' => $this->selectedTime,
+            ]);
             $this->reset(['selectedDate', 'selectedTime', 'userName', 'userEmail', 'userContact', 'notes', 'availableTimeSlots']);
         } catch (Exception $e) {
             Log::error('Booking failed: ' . $e->getMessage());

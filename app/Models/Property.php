@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Services\WalkScoreService;
+use Carbon\Carbon;
 use DateTime;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -588,47 +589,74 @@ class Property extends Model implements HasMedia
     }
 
     /**
-     * Dates with no viewing already booked.
-     *
-     * The comparison used to be `in_array('Y-m-d', $plucked)`, but Booking
-     * casts `date`, so pluck() hands back Carbon objects whose string form is
-     * 'Y-m-d H:i:s'. Nothing ever matched, so every day for three months was
-     * reported free — in the picker and in the check on submission.
+     * The hours a viewing can be booked into. Shared, because the date picker
+     * and the time picker have to agree on what a full day is — they did not,
+     * and the date picker won.
      */
-    public function getAvailableDatesForTeam()
+    public const VIEWING_SLOTS = [
+        '09:00', '10:00', '11:00', '12:00', '13:00',
+        '14:00', '15:00', '16:00', '17:00',
+    ];
+
+    /**
+     * Days this property has at least one viewing slot left on.
+     *
+     * Two bugs lived here. The comparison was `in_array('Y-m-d', $plucked)`,
+     * but Booking casts `date`, so pluck() returns Carbon objects whose string
+     * form is 'Y-m-d H:i:s' — nothing ever matched and every day for three
+     * months was reported free. Fixing that exposed the second: a day was
+     * dropped wholesale on the first booking, and team-wide at that, so one
+     * viewing at 09:00 closed every hour on every home the agency had.
+     */
+    public function availableViewingDates(): array
     {
-        $taken = $this->bookings()
-            ->pluck('date')
-            ->map(fn ($date) => $date instanceof \DateTimeInterface
-                ? $date->format('Y-m-d')
-                : (string) $date)
-            ->all();
-
-        // Only when the property actually belongs to a team: team_id null would
-        // otherwise become whereNull and blank a date across every teamless
-        // property on the platform.
-        if ($this->team_id) {
-            $taken = array_merge($taken, Booking::query()
-                ->where('team_id', $this->team_id)
-                ->pluck('date')
-                ->map(fn ($date) => $date instanceof \DateTimeInterface
-                    ? $date->format('Y-m-d')
-                    : (string) $date)
-                ->all());
-        }
-
-        $taken = array_flip($taken);
+        $from = now()->startOfDay();
+        $to = now()->addMonths(3)->endOfDay();
+        $taken = $this->bookedSlots($from, $to);
+        $slots = count(self::VIEWING_SLOTS);
         $available = [];
 
-        for ($date = now(); $date <= now()->addMonths(3); $date->addDay()) {
+        for ($date = $from->copy(); $date <= $to; $date->addDay()) {
             $day = $date->format('Y-m-d');
 
-            if (! isset($taken[$day])) {
+            if (count($taken[$day] ?? []) < $slots) {
                 $available[] = $day;
             }
         }
 
         return $available;
+    }
+
+    public function availableViewingSlots(string $date): array
+    {
+        $day = Carbon::parse($date);
+
+        return array_values(array_diff(
+            self::VIEWING_SLOTS,
+            $this->bookedSlots($day->copy()->startOfDay(), $day->copy()->endOfDay())[$day->format('Y-m-d')] ?? []
+        ));
+    }
+
+    /**
+     * Booked slots by day. Bounded by the window asked for — the whole booking
+     * history was being read to answer a question about the next three months
+     * — and cancelled viewings give their slot back.
+     *
+     * @return array<string, list<string>>
+     */
+    private function bookedSlots(Carbon $from, Carbon $to): array
+    {
+        return $this->bookings()
+            ->whereBetween('date', [$from, $to])
+            ->whereNot('status', 'cancelled')
+            ->get(['date', 'time'])
+            ->groupBy(fn (Booking $booking) => Carbon::parse($booking->date)->format('Y-m-d'))
+            ->map(fn ($bookings) => $bookings
+                ->map(fn (Booking $booking) => Carbon::parse($booking->time)->format('H:i'))
+                ->unique()
+                ->values()
+                ->all())
+            ->all();
     }
 
     /**
