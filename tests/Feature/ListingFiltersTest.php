@@ -162,6 +162,117 @@ class ListingFiltersTest extends TestCase
         $this->assertStringNotContainsString('Mapped Miss', $mapped, 'the map is showing filtered-out stock');
     }
 
+    /**
+     * The initial render was only half the story: wire:ignore means a filter
+     * change cannot re-render the pins, so they have to be pushed. Without it
+     * the map keeps the pre-filter set beside a narrowed list.
+     */
+    public function test_changing_a_filter_pushes_the_new_pins_to_the_map(): void
+    {
+        Property::factory()->create([
+            'title' => 'Mapped Match', 'bedrooms' => 4, 'status' => 'For Sale',
+            'latitude' => 51.45, 'longitude' => -0.97,
+        ]);
+        Property::factory()->create([
+            'title' => 'Mapped Miss', 'bedrooms' => 1, 'status' => 'For Sale',
+            'latitude' => 51.46, 'longitude' => -0.98,
+        ]);
+
+        Livewire::test(PropertyList::class)
+            ->set('minBedrooms', 4)
+            ->assertDispatched('property-map-updated', function (string $event, array $payload) {
+                $titles = array_column($payload['properties'], 'title');
+
+                return in_array('Mapped Match', $titles, true)
+                    && ! in_array('Mapped Miss', $titles, true);
+            });
+    }
+
+    /**
+     * Every filter that narrows the query has to appear in the applied set. One
+     * that does not is invisible, uncleavable by "Clear all", and makes the
+     * empty state claim nothing is listed when plenty is.
+     */
+    public function test_every_filter_that_narrows_the_query_is_visible(): void
+    {
+        $component = new PropertyList;
+        $bound = array_keys((new \ReflectionClass($component))->getDefaultProperties()['queryString']);
+
+        $reflected = new \ReflectionMethod($component, 'appliedFilters');
+        $source = file_get_contents((new \ReflectionClass($component))->getFileName());
+        $body = implode("\n", array_slice(
+            explode("\n", $source),
+            $reflected->getStartLine(),
+            $reflected->getEndLine() - $reflected->getStartLine()
+        ));
+
+        foreach ($bound as $filter) {
+            $this->assertStringContainsString(
+                '$this->'.$filter,
+                $body,
+                "[{$filter}] narrows the results but never shows as an applied filter"
+            );
+        }
+    }
+
+    public function test_clear_all_lifts_a_filter_that_has_no_chip_of_its_own(): void
+    {
+        $this->stock();
+
+        Livewire::test(PropertyList::class)
+            ->set('minTransitScore', 99)
+            ->set('country', 'ZZ')
+            ->call('clearFilters')
+            ->assertSee('Cheap Terrace')
+            ->assertSee('3 homes');
+    }
+
+    /**
+     * An empty page caused by a filter must never say nothing is listed.
+     */
+    public function test_an_empty_page_never_blames_the_stock_for_a_filter(): void
+    {
+        $this->stock();
+
+        Livewire::test(PropertyList::class)
+            ->set('country', 'ZZ')
+            ->assertDontSee('Nothing is listed right now')
+            ->assertSee('Clear');
+    }
+
+    /**
+     * A cleared filter should leave the URL as it was before it was applied,
+     * or a "cleared" page produces a link nobody can share cleanly.
+     */
+    public function test_clearing_a_text_filter_restores_its_default(): void
+    {
+        $this->stock();
+
+        $component = Livewire::test(PropertyList::class)
+            ->set('search', 'terrace')
+            ->call('clearFilter', 'search');
+
+        $this->assertSame('', $component->get('search'));
+
+        $component->set('propertyType', 'house')->call('clearFilter', 'propertyType');
+
+        $this->assertSame('', $component->get('propertyType'));
+    }
+
+    /**
+     * countWithout is reachable as a Livewire action from the browser, so it
+     * has to refuse a name that is not an applied filter.
+     */
+    public function test_counting_without_an_unknown_filter_is_refused(): void
+    {
+        $this->stock();
+
+        $component = Livewire::test(PropertyList::class);
+
+        $this->assertSame(0, $component->instance()->countWithout('nonsense'));
+        $this->assertSame(0, $component->instance()->countWithout('propertyFeatureService'));
+    }
+
     public function test_the_page_loads_no_third_party_image(): void
     {
         $html = $this->get('/properties')->assertOk()->getContent();

@@ -188,10 +188,28 @@ class PropertyList extends Component
                 session()->flash('error_details', $e->getMessage().' in '.$e->getFile().' on line '.$e->getLine());
             }
 
-            $properties = Property::paginate(0);
+            // paginate(0) does not mean "no rows": Builder::paginate falls back
+            // to the model's per-page, so this used to show fifteen arbitrary
+            // unfiltered listings under an error banner as if they matched.
+            $properties = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 12);
         }
 
         $this->dispatch('propertiesUpdated', $properties->items());
+
+        // wire:ignore keeps the map's DOM out of Livewire's hands, so a filter
+        // change cannot re-render its pins. Push them instead, or the map keeps
+        // showing the pre-filter set beside a narrowed list.
+        $mapped = $this->mappableResults();
+
+        $this->dispatch(
+            'property-map-updated',
+            properties: $mapped->all(),
+            label: trans_choice(
+                ':count property mapped|:count properties mapped',
+                $mapped->count(),
+                ['count' => $mapped->count()]
+            ),
+        );
 
         return $properties;
     }
@@ -243,10 +261,10 @@ class PropertyList extends Component
     
     public function render()
     {
-        return view('livewire.property-list', [
-            'properties' => $this->getPropertiesProperty(),
-            'amenities' => $this->propertyFeatureService->getFeatures(),
-        ])->layout('layouts.app');
+        // No view data: the blade reads $this->properties, which Livewire
+        // memoises. Passing it here as well ran the paginated query a second
+        // time and dispatched propertiesUpdated twice per render.
+        return view('livewire.property-list')->layout('layouts.app');
     }
     
     public function viewProperty($propertyId)
@@ -310,6 +328,38 @@ class PropertyList extends Component
             $applied['energyRating'] = __('EPC :band', ['band' => strtoupper($this->energyRating)]);
         }
 
+        if (filled($this->maxBedrooms)) {
+            $applied['maxBedrooms'] = __('Up to :count bedrooms', ['count' => $this->maxBedrooms]);
+        }
+
+        if (filled($this->maxBathrooms)) {
+            $applied['maxBathrooms'] = __('Up to :count bathrooms', ['count' => $this->maxBathrooms]);
+        }
+
+        if (filled($this->selectedAmenities)) {
+            $applied['selectedAmenities'] = __(':count features', ['count' => count($this->selectedAmenities)]);
+        }
+
+        if ($this->minEnergyScore > 0) {
+            $applied['minEnergyScore'] = __('Energy :score+', ['score' => $this->minEnergyScore]);
+        }
+
+        if ($this->minWalkabilityScore > 0) {
+            $applied['minWalkabilityScore'] = __('Walk :score+', ['score' => $this->minWalkabilityScore]);
+        }
+
+        if ($this->minTransitScore > 0) {
+            $applied['minTransitScore'] = __('Transit :score+', ['score' => $this->minTransitScore]);
+        }
+
+        if ($this->minBikeScore > 0) {
+            $applied['minBikeScore'] = __('Bike :score+', ['score' => $this->minBikeScore]);
+        }
+
+        if (filled($this->country)) {
+            $applied['country'] = strtoupper($this->country);
+        }
+
         if ($this->featuredOnly) {
             $applied['featuredOnly'] = __('Featured only');
         }
@@ -330,8 +380,32 @@ class PropertyList extends Component
             'minArea' => __('the minimum area'),
             'maxArea' => __('the maximum area'),
             'energyRating' => __('the energy rating'),
+            'maxBedrooms' => __('the bedroom maximum'),
+            'maxBathrooms' => __('the bathroom maximum'),
+            'selectedAmenities' => __('the feature filters'),
+            'minEnergyScore' => __('the energy score minimum'),
+            'minWalkabilityScore' => __('the walk score minimum'),
+            'minTransitScore' => __('the transit score minimum'),
+            'minBikeScore' => __('the bike score minimum'),
+            'country' => __('the country'),
             'featuredOnly' => __('the featured filter'),
         ];
+    }
+
+    /**
+     * Restores the filter's own default rather than a blanket null. The
+     * queryString except-values must match those defaults, or a cleared filter
+     * lingers in the URL as ?search= and the "cleared" page is not shareable.
+     */
+    private function defaultFor(string $filter): mixed
+    {
+        return match ($filter) {
+            'featuredOnly' => false,
+            'search', 'propertyType', 'energyRating', 'country' => '',
+            'selectedAmenities' => [],
+            'minEnergyScore', 'minWalkabilityScore', 'minTransitScore', 'minBikeScore' => 0,
+            default => null,
+        };
     }
 
     public function clearFilter(string $filter): void
@@ -340,14 +414,14 @@ class PropertyList extends Component
             return;
         }
 
-        $this->{$filter} = $filter === 'featuredOnly' ? false : null;
+        $this->{$filter} = $this->defaultFor($filter);
         $this->resetPage();
     }
 
     public function clearFilters(): void
     {
         foreach (array_keys($this->appliedFilters()) as $filter) {
-            $this->{$filter} = $filter === 'featuredOnly' ? false : null;
+            $this->{$filter} = $this->defaultFor($filter);
         }
 
         $this->resetPage();
@@ -359,8 +433,16 @@ class PropertyList extends Component
      */
     public function countWithout(string $filter): int
     {
+        // Reachable from the browser as a Livewire action, so it takes only a
+        // name that is currently applied. Anything else would touch an
+        // undeclared property, land in the dehydrated snapshot, and throw on a
+        // protected one.
+        if (! array_key_exists($filter, $this->appliedFilters())) {
+            return 0;
+        }
+
         $was = $this->{$filter};
-        $this->{$filter} = $filter === 'featuredOnly' ? false : null;
+        $this->{$filter} = $this->defaultFor($filter);
 
         try {
             return $this->buildQuery()->count();
@@ -373,7 +455,13 @@ class PropertyList extends Component
      * The single filter whose removal returns the most homes — the one worth
      * suggesting when nothing matches.
      */
-    public function mostRestrictiveFilter(): ?string
+    /**
+     * The single filter whose removal returns the most homes, with that count —
+     * returned together so the empty state does not run the counts twice.
+     *
+     * @return array{filter: string, count: int}|null
+     */
+    public function mostRestrictiveFilter(): ?array
     {
         $counts = [];
 
@@ -389,7 +477,7 @@ class PropertyList extends Component
 
         arsort($counts);
 
-        return array_key_first($counts);
+        return ['filter' => array_key_first($counts), 'count' => reset($counts)];
     }
 
     private function money($amount): string

@@ -19,7 +19,7 @@
          aria-label="{{ __('Map of available properties') }}"></div>
 
     <div class="flex items-center justify-between gap-3 border-t border-sheet-300 bg-sheet-000 px-3 py-2">
-        <p class="font-mono text-annotation uppercase text-ink-400">
+        <p data-map-count class="font-mono text-annotation uppercase text-ink-400">
             {{ trans_choice(':count property mapped|:count properties mapped', count($properties), ['count' => count($properties)]) }}
         </p>
         <button type="button" data-map-locate
@@ -39,6 +39,7 @@
 
                 function setUp(element) {
                     var map = null;
+                    var markers = [];
 
                     function draw() {
                         if (map) return;
@@ -49,7 +50,10 @@
                             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
                         }).addTo(map);
 
-                        var properties = JSON.parse(element.dataset.properties || '[]');
+                        plot(JSON.parse(element.dataset.properties || '[]'));
+                    }
+
+                    function plot(properties) {
                         var currency = element.dataset.currency || '';
                         var bounds = [];
 
@@ -74,7 +78,7 @@
                                 ));
                             }
 
-                            L.marker(point).addTo(map).bindPopup(popup);
+                            markers.push(L.marker(point).addTo(map).bindPopup(popup));
                         });
 
                         if (bounds.length) {
@@ -96,6 +100,28 @@
                     } else {
                         draw();
                     }
+
+                    // wire:ignore keeps Leaflet's DOM out of Livewire's hands,
+                    // which also means a re-render cannot update the pins. The
+                    // component pushes the new set instead, or the map would
+                    // keep showing the pre-filter results beside a filtered list.
+                    document.addEventListener('property-map-updated', function (event) {
+                        var points = (event.detail && event.detail.properties) || [];
+
+                        element.dataset.properties = JSON.stringify(points);
+
+                        var counter = element.parentElement.querySelector('[data-map-count]');
+
+                        if (counter) {
+                            counter.textContent = event.detail.label || '';
+                        }
+
+                        if (! map) return;
+
+                        markers.forEach(function (marker) { map.removeLayer(marker); });
+                        markers = [];
+                        plot(points);
+                    });
 
                     // Only on request: a page must not ask where someone is on load.
                     var locate = element.parentElement.querySelector('[data-map-locate]');

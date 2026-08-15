@@ -3,8 +3,15 @@
 @php
     $band = $property->energyBand();
     $score = $property->energyScore();
-    $assessed = data_get($property->epc, 'assessment_date');
-    $assessed = $assessed ? \Illuminate\Support\Carbon::parse($assessed) : null;
+    // epc is a free-form JSON column, so a value like "n/a" or "2026-13-45"
+    // would otherwise throw and take the whole public page down.
+    $assessed = rescue(
+        fn () => filled($raw = data_get($property->epc, 'assessment_date'))
+            ? \Illuminate\Support\Carbon::parse($raw)
+            : null,
+        null,
+        report: false
+    );
     $daysListed = $property->daysListed();
     $perSqFt = $property->pricePerSquareFootForHumans();
 

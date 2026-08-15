@@ -1,7 +1,11 @@
 @php
     $applied = $this->appliedFilters();
     $labels = $this->filterLabels();
-    $count = $this->resultCount();
+
+    // Inside the same guard the list uses. Counting outside it meant a query
+    // failure was caught over there, rethrown here as the view rendered, and
+    // the flashed message never reached the page.
+    $count = rescue(fn () => $this->resultCount(), 0, report: true);
 @endphp
 
 <div class="mx-auto max-w-(--breakpoint-xl) px-4 py-band md:px-margin">
@@ -111,16 +115,15 @@
                     </p>
 
                     @if ($loosen)
-                        @php $would = $this->countWithout($loosen); @endphp
                         <p class="mx-auto mt-2 max-w-reading text-body-s text-ink-500">
                             {{ __('Clear :filter and :count come back.', [
-                                'filter' => $labels[$loosen] ?? $loosen,
-                                'count' => trans_choice(':count home|:count homes', $would, ['count' => number_format($would)]),
+                                'filter' => $labels[$loosen['filter']] ?? $loosen['filter'],
+                                'count' => trans_choice(':count home|:count homes', $loosen['count'], ['count' => number_format($loosen['count'])]),
                             ]) }}
                         </p>
                         <div class="mt-4">
-                            <x-ui.button size="sm" type="button" wire:click="clearFilter('{{ $loosen }}')">
-                                {{ __('Clear :filter', ['filter' => $labels[$loosen] ?? $loosen]) }}
+                            <x-ui.button size="sm" type="button" wire:click="clearFilter('{{ $loosen['filter'] }}')">
+                                {{ __('Clear :filter', ['filter' => $labels[$loosen['filter']] ?? $loosen['filter']]) }}
                             </x-ui.button>
                         </div>
                     @else
