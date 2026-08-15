@@ -227,7 +227,11 @@
                     document.addEventListener('focusout', function (event) {
                         var card = event.target.closest && event.target.closest('[data-property-id]');
 
-                        if (card) clear();
+                        // Only when the card losing focus is the one that is
+                        // raised. Tabbing out of card B used to drop card A's
+                        // pairing while the pointer was still sitting on it,
+                        // and nothing re-raised it until the pointer moved.
+                        if (card && String(card.dataset.propertyId) === String(raisedId)) clear();
                     });
 
                     // A narrowed window must not leave a pair lit that the

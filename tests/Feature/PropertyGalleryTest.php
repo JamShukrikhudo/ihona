@@ -282,4 +282,38 @@ class PropertyGalleryTest extends TestCase
         $this->get('/properties/'.$property->id)->assertOk();
         $this->assertCount(0, $property->gallery());
     }
+    /**
+     * `is_public` defaults to true for every row the V1 media API writes, and
+     * that API also accepts `document`, `brochure` and `epc` onto the same
+     * private disk. Serving whatever type was asked for would have put internal
+     * paperwork behind a URL anyone could count their way to.
+     */
+    public function test_the_gated_route_refuses_paperwork(): void
+    {
+        Storage::fake('local');
+        $property = $this->property();
+
+        foreach (['document', 'brochure', 'epc', 'video'] as $type) {
+            $image = $this->image($property, ['type' => $type, 'disk' => 'local']);
+            Storage::disk('local')->put($image->file_path, 'x');
+
+            $this->get(route('property.media', ['property' => $property->id, 'medium' => $image->image_id]))
+                ->assertNotFound();
+        }
+    }
+
+    public function test_the_gated_route_refuses_the_media_of_a_withdrawn_listing(): void
+    {
+        Storage::fake('local');
+        $property = $this->property();
+        $image = $this->image($property, ['disk' => 'local']);
+        Storage::disk('local')->put($image->file_path, 'x');
+
+        $url = route('property.media', ['property' => $property->id, 'medium' => $image->image_id]);
+        $this->get($url)->assertOk();
+
+        $property->delete();
+
+        $this->get($url)->assertNotFound();
+    }
 }

@@ -437,9 +437,8 @@ class ViewingBookingTest extends TestCase
         try {
             $mine->reschedule($date, '14:00');
             $this->fail('rescheduling onto a taken slot was allowed');
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            $this->assertArrayHasKey('time', $e->errors());
-            $this->assertStringContainsString('another', strtolower(implode(' ', $e->errors()['time'])));
+        } catch (\App\Exceptions\SlotAlreadyBooked $e) {
+            $this->assertStringContainsString('another', strtolower($e->getMessage()));
         }
 
         $this->assertSame('14:00', $taken->fresh()->time->format('H:i'));
@@ -476,5 +475,23 @@ class ViewingBookingTest extends TestCase
 
         $component->assertHasErrors('selectedDate');
         $this->assertSame([], $component->get('availableTimeSlots'));
+    }
+
+    /**
+     * The model has no business knowing what a form calls its field. It threw a
+     * ValidationException keyed to `time`, and no caller has a field by that
+     * name — the staff panel binds `new_time` — so the error attached to
+     * nothing: the admin pressed Reschedule and the dialog sat there with no
+     * change and no reason given.
+     *
+     * (The other caller, a Livewire ManageBooking component, had no view, no
+     * route and no reference anywhere. It is gone.)
+     */
+    public function test_the_staff_panel_reports_the_clash_rather_than_swallowing_it(): void
+    {
+        $source = file_get_contents(app_path('Filament/Resources/BookingResource.php'));
+
+        $this->assertStringContainsString('SlotAlreadyBooked', $source, 'the reschedule action ignores the clash');
+        $this->assertStringContainsString('->halt()', $source, 'a failed reschedule must not report success');
     }
 }

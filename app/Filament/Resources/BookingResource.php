@@ -102,8 +102,17 @@ class BookingResource extends Resource
                         TimePicker::make('new_time')
                             ->required(),
                     ])
-                    ->action(function (Booking $record, array $data): void {
-                        $record->reschedule($data['new_date'], $data['new_time']);
+                    ->action(function (Booking $record, array $data, Action $action): void {
+                        try {
+                            $record->reschedule($data['new_date'], $data['new_time']);
+                        } catch (\App\Exceptions\SlotAlreadyBooked $e) {
+                            \Filament\Notifications\Notification::make()
+                                ->danger()
+                                ->title($e->getMessage())
+                                ->send();
+
+                            $action->halt();
+                        }
                     })
                     ->visible(fn (Booking $record) => $record->canBeRescheduled()),
             ])

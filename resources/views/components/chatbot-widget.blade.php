@@ -44,12 +44,12 @@
                         :class="message.sender_type === 'user' 
                             ? 'bg-blue-600 text-white' 
                             : message.sender_type === 'agent' 
-                                ? 'bg-green-100 text-ink-700' 
+                                ? 'bg-verdigris-100 text-ink-700' 
                                 : 'bg-sheet-200 text-ink-700'"
                         class="rounded-lg p-3 max-w-[80%] shadow-sm"
                     >
                         <template x-if="message.sender_type === 'agent'">
-                            <div class="text-xs font-semibold mb-1 text-green-700">Agent</div>
+                            <div class="text-xs font-semibold mb-1 text-verdigris-700">Agent</div>
                         </template>
                         <p class="text-sm whitespace-pre-wrap" x-text="message.message"></p>
                         <span class="text-xs opacity-70 mt-1 block" x-text="formatTime(message.created_at)"></span>

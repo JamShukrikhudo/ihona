@@ -20,7 +20,7 @@ trait HasGallery
      * `document` are paperwork — they belong in the disclosure panel, not in a
      * carousel of rooms.
      */
-    private const GALLERY_KINDS = [
+    public const GALLERY_KINDS = [
         'image' => 'photograph',
         'floorplan' => 'floor plan',
         'siteplan' => 'site plan',

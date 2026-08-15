@@ -51,6 +51,9 @@ class PropertyList extends Component
     // during one follows the visitor onto whatever full page they open next.
     public ?string $failure = null;
 
+    /** @var list<int>|null Resolved once per render; see isFavorited(). */
+    protected ?array $favouriteIds = null;
+
     protected $listeners = ['applyAdvancedFilters', 'favoriteAdded' => '$refresh', 'favoriteRemoved' => '$refresh'];
 
     public function mount()
@@ -525,6 +528,7 @@ class PropertyList extends Component
 
         if ($favorite) {
             $favorite->delete();
+            $this->favouriteIds = null;
             $this->dispatch('favoriteRemoved');
         } else {
             Favorite::create([
@@ -532,18 +536,33 @@ class PropertyList extends Component
                 'property_id' => $propertyId,
                 'team_id' => $user->currentTeam?->id,
             ]);
+            $this->favouriteIds = null;
             $this->dispatch('favoriteAdded');
         }
     }
 
-    public function isFavorited($propertyId)
+    /**
+     * One query per render, not one per card.
+     *
+     * The card calls this for each of the twelve results, so a signed-in
+     * visitor paid twelve `select exists` on top of the listing query, the
+     * count and the map query — on every debounced keystroke.
+     *
+     * Memoised on the instance rather than cached: it has to notice the
+     * favourite the visitor just added, and toggleFavorite() clears it.
+     */
+    public function isFavorited($propertyId): bool
     {
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             return false;
         }
-        
-        return Favorite::where('user_id', Auth::id())
-            ->where('property_id', $propertyId)
-            ->exists();
+
+        if ($this->favouriteIds === null) {
+            $this->favouriteIds = Favorite::where('user_id', Auth::id())
+                ->pluck('property_id')
+                ->all();
+        }
+
+        return in_array($propertyId, $this->favouriteIds);
     }
 }

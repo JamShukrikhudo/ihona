@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Image;
+use App\Models\Property;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -25,8 +26,17 @@ class PropertyMediaController extends Controller
         $image = Image::query()
             ->where('image_id', $medium)
             ->where('property_id', $property)
+            // Pictures of the property only. `is_public` defaults to true for
+            // every row the V1 media API writes, and that API also accepts
+            // `document`, `brochure` and `epc` onto the same private disk — so
+            // serving whatever type happens to be asked for would have put
+            // internal paperwork behind a URL anyone could count their way to.
+            ->whereIn('type', array_keys(Property::GALLERY_KINDS))
             ->where('is_public', true)
             ->whereNotNull('file_path')
+            // The relation carries the soft-delete scope; a plain column match
+            // would keep serving the media of a withdrawn listing.
+            ->whereHas('property')
             ->firstOrFail();
 
         $disk = Storage::disk($image->disk ?: 'public');

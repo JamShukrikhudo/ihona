@@ -3,10 +3,10 @@
     <h1 class="text-3xl font-bold mb-6">Property Calculators</h1>
 
     <div class="mb-6">
-        <button x-on:click="calculatorType = 'mortgage'" class="px-4 py-2 mr-2 mb-2" x-bind:class="calculatorType === 'mortgage' ? 'bg-action text-white' : 'bg-gray-200'">Mortgage Calculator</button>
-        <button x-on:click="calculatorType = 'costOfMoving'" class="px-4 py-2 mr-2 mb-2" x-bind:class="calculatorType === 'costOfMoving' ? 'bg-action text-white' : 'bg-gray-200'">Cost of Moving Calculator</button>
-        <button x-on:click="calculatorType = 'stampDuty'" class="px-4 py-2 mr-2 mb-2" x-bind:class="calculatorType === 'stampDuty' ? 'bg-action text-white' : 'bg-gray-200'">Stamp Duty Calculator</button>
-        <button x-on:click="calculatorType = 'homeValuation'" class="px-4 py-2 mb-2" x-bind:class="calculatorType === 'homeValuation' ? 'bg-action text-white' : 'bg-gray-200'">Home Valuation</button>
+        <button x-on:click="calculatorType = 'mortgage'" class="px-4 py-2 mr-2 mb-2" x-bind:class="calculatorType === 'mortgage' ? 'bg-action text-white' : 'bg-sheet-200 text-ink-700'">Mortgage Calculator</button>
+        <button x-on:click="calculatorType = 'costOfMoving'" class="px-4 py-2 mr-2 mb-2" x-bind:class="calculatorType === 'costOfMoving' ? 'bg-action text-white' : 'bg-sheet-200 text-ink-700'">Cost of Moving Calculator</button>
+        <button x-on:click="calculatorType = 'stampDuty'" class="px-4 py-2 mr-2 mb-2" x-bind:class="calculatorType === 'stampDuty' ? 'bg-action text-white' : 'bg-sheet-200 text-ink-700'">Stamp Duty Calculator</button>
+        <button x-on:click="calculatorType = 'homeValuation'" class="px-4 py-2 mb-2" x-bind:class="calculatorType === 'homeValuation' ? 'bg-action text-white' : 'bg-sheet-200 text-ink-700'">Home Valuation</button>
     </div>
 
     <div x-show="calculatorType === 'mortgage'" class="rounded-sheet border border-sheet-300 bg-sheet-000 p-6 mb-6">
@@ -219,10 +219,10 @@
 
     @if ($homeValuationResult)
         <div x-show="calculatorType === 'homeValuation'" class="bg-sheet-000 shadow-md rounded px-8 pt-6 pb-8 mt-4">
-            <h3 class="text-xl font-bold mb-4 text-blue-600">Home Valuation Results</h3>
+            <h3 class="text-xl font-bold mb-4 text-ink-900">Home Valuation Results</h3>
             
-            <div class="bg-sheet-100 border-l-4 border-blue-500 p-4 mb-4">
-                <p class="font-bold text-2xl text-blue-800">Estimated Value: {{ app(\App\Settings\GeneralSettings::class)->currencySymbol() }}{{ number_format($homeValuationResult['estimated_value'], 2) }}</p>
+            <div class="bg-sheet-100 border-l-4 border-survey-500 p-4 mb-4">
+                <p class="font-bold text-2xl text-ink-900">Estimated Value: {{ app(\App\Settings\GeneralSettings::class)->currencySymbol() }}{{ number_format($homeValuationResult['estimated_value'], 2) }}</p>
                 <p class="text-sm text-ink-500 mt-2">Value Range: {{ app(\App\Settings\GeneralSettings::class)->currencySymbol() }}{{ number_format($homeValuationResult['min_value'], 2) }} - {{ app(\App\Settings\GeneralSettings::class)->currencySymbol() }}{{ number_format($homeValuationResult['max_value'], 2) }}</p>
                 <p class="text-sm text-ink-500">Confidence Level: {{ $homeValuationResult['confidence_level'] }}%</p>
             </div>
@@ -267,7 +267,7 @@
                 </div>
             </div>
             
-            <div class="mt-4 p-3 bg-yellow-50 border-l-4 border-yellow-400">
+            <div class="mt-4 p-3 bg-caution-100 border-l-4 border-caution-600">
                 <p class="text-xs text-ink-700">
                     <strong>Note:</strong> This is an automated estimate based on the information provided. 
                     For a precise valuation, please contact a professional surveyor or estate agent.

@@ -470,4 +470,47 @@ class ListingFiltersTest extends TestCase
         $this->assertStringNotContainsString('getFile()', $source);
         $this->assertStringNotContainsString('error_details', $source);
     }
+    /**
+     * The card asked "is this one saved?" per result, so a signed-in visitor
+     * paid twelve `select exists` on top of the listing query, the count and
+     * the map query — on every debounced keystroke.
+     */
+    public function test_the_saved_state_costs_one_query_for_the_whole_page(): void
+    {
+        $user = \App\Models\User::factory()->create();
+        $properties = Property::factory()->count(5)->create(['status' => 'For Sale']);
+
+        \App\Models\Favorite::create([
+            'user_id' => $user->id,
+            'property_id' => $properties->first()->id,
+        ]);
+
+        $component = Livewire::actingAs($user)->test(PropertyList::class);
+
+        \DB::enableQueryLog();
+        $component->call('$refresh');
+        $favouriteQueries = collect(\DB::getQueryLog())
+            ->filter(fn ($q) => str_contains(strtolower($q['query']), 'favorites'))
+            ->count();
+        \DB::disableQueryLog();
+
+        $this->assertLessThanOrEqual(1, $favouriteQueries, "the page ran {$favouriteQueries} favourite queries");
+    }
+
+    public function test_saving_a_home_is_reflected_on_the_same_page(): void
+    {
+        $user = \App\Models\User::factory()->create();
+        $property = Property::factory()->create(['status' => 'For Sale']);
+
+        $component = Livewire::actingAs($user)->test(PropertyList::class);
+
+        $this->assertFalse($component->instance()->isFavorited($property->id));
+
+        $component->call('toggleFavorite', $property->id);
+
+        $this->assertTrue(
+            $component->instance()->isFavorited($property->id),
+            'the memoised list did not notice the favourite that was just added'
+        );
+    }
 }

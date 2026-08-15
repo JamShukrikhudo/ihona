@@ -178,9 +178,7 @@ class Booking extends Model
                 throw $e;
             }
 
-            throw \Illuminate\Validation\ValidationException::withMessages([
-                'time' => [__('Someone already has that time. Please choose another.')],
-            ]);
+            throw \App\Exceptions\SlotAlreadyBooked::make();
         }
 
         event(new BookingRescheduled($this));
