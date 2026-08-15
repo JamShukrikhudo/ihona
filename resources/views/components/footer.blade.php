@@ -11,6 +11,17 @@
         __('Country') => $settings->site_country,
     ]);
 
+    // Who the visitor is dealing with and what recourse they have. Most of
+    // these are a legal requirement on a UK property site, and every one is
+    // optional — array_filter drops what the agency does not hold, so a sole
+    // trader gets no empty "Company number" cell.
+    $credentials = array_filter([
+        __('Company number') => $settings->company_registration_number,
+        __('VAT number') => $settings->vat_number,
+        __('ICO registration') => $settings->ico_registration_number,
+        __('Redress scheme') => $settings->redress_scheme,
+    ], fn ($value) => filled($value));
+
     $social = array_filter([
         'Facebook' => $settings->facebook_url,
         'X' => $settings->twitter_url,
@@ -35,9 +46,9 @@
                  background through gap-px: most of these settings are null by
                  default, so a part-filled grid would paint the empty columns as
                  a solid slab. --}}
-            @if ($titleBlock)
+            @if ($titleBlock || $credentials)
                 <dl class="grid grid-cols-2 md:grid-cols-4">
-                    @foreach ($titleBlock as $label => $value)
+                    @foreach ($titleBlock + $credentials as $label => $value)
                         <div class="border-t border-sheet-300 p-4">
                             <dt class="font-mono text-[9.5px] uppercase tracking-[0.1em] text-ink-400">
                                 {{ $label }}

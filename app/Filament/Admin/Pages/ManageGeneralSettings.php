@@ -80,6 +80,28 @@ class ManageGeneralSettings extends SettingsPage
                     ])
                     ->columns(2),
 
+                Section::make('Registration and redress')
+                    ->description('Published in the footer of every public page. Leave anything the agency does not hold blank and it is left out entirely.')
+                    ->schema([
+                        TextInput::make('company_registration_number')
+                            ->label('Company registration number')
+                            ->helperText('Companies House number. Leave blank for a sole trader.')
+                            ->maxLength(50),
+                        TextInput::make('ico_registration_number')
+                            ->label('ICO registration number')
+                            ->helperText('Data protection register entry, e.g. ZA123456.')
+                            ->maxLength(50),
+                        TextInput::make('vat_number')
+                            ->label('VAT number')
+                            ->helperText('Leave blank if the business is under the threshold.')
+                            ->maxLength(50),
+                        TextInput::make('redress_scheme')
+                            ->label('Redress scheme')
+                            ->helperText('The scheme the agency belongs to, e.g. The Property Ombudsman.')
+                            ->maxLength(255),
+                    ])
+                    ->columns(2),
+
                 Section::make('Footer')
                     ->schema([
                         Textarea::make('footer_copyright')

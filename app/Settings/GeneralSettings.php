@@ -20,6 +20,21 @@ class GeneralSettings extends Settings
     public ?string $youtube_url = null;
     public string $footer_copyright = '© Liberu Real Estate. All rights reserved.';
 
+    /**
+     * Who the visitor is dealing with and what recourse they have. In UK
+     * property most of these are a legal requirement rather than a nicety: an
+     * agent must publish the redress scheme they belong to, and a limited
+     * company must publish its registration number.
+     *
+     * All optional — a sole trader has no company number, a business under the
+     * threshold has no VAT number — and the footer leaves out what is not held
+     * rather than printing an empty label.
+     */
+    public ?string $company_registration_number = null;
+    public ?string $ico_registration_number = null;
+    public ?string $vat_number = null;
+    public ?string $redress_scheme = null;
+
     public static function group(): string
     {
         return 'general';
