@@ -147,7 +147,7 @@
                     <x-ui.icon name="chevron-right" class="size-3.5 transition-transform group-open:rotate-90" />
                 </summary>
                 <div class="mt-3 lg:mt-0">
-                    <x-property-map :properties="$this->mappableResults()" />
+                    <x-property-map :properties="rescue(fn () => $this->mappableResults(), collect(), report: false)" />
                 </div>
             </details>
         </aside>

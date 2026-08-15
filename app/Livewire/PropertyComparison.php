@@ -38,6 +38,16 @@ class PropertyComparison extends Component
         $this->loadProperties();
     }
 
+    /**
+     * Named for the property it watches. It used to rely on a wire:keyup in
+     * the view, so when that went the search stopped running entirely and
+     * no home could be added to the comparison.
+     */
+    public function updatedSearchTerm()
+    {
+        $this->searchProperties();
+    }
+
     public function searchProperties()
     {
         if (strlen($this->searchTerm) >= 3) {

@@ -45,7 +45,7 @@ class ComparisonAndWishlistTest extends TestCase
         $html = Livewire::test(PropertyComparison::class, ['propertyIds' => $one->id.','.$two->id])
             ->html();
 
-        foreach (['Price', 'Energy', 'Floor area', '£/sq ft', 'Listed', 'Built'] as $row) {
+        foreach (['Price', 'Energy', 'Floor area', 'Per sq ft', 'Listed', 'Built'] as $row) {
             $this->assertStringContainsString($row, $html, "the table is missing the [{$row}] row");
         }
 
@@ -97,6 +97,49 @@ class ComparisonAndWishlistTest extends TestCase
         $this->assertStringContainsString(route('property.list'), $html);
     }
 
+    /**
+     * The rewrite dropped wire:keyup and there is no updated hook, so nothing
+     * ever called searchProperties(): typing showed nothing and no home could
+     * be added to the comparison at all.
+     */
+    public function test_typing_in_the_comparison_search_finds_homes(): void
+    {
+        $this->home(['title' => 'Alexandra Road']);
+
+        Livewire::test(PropertyComparison::class, ['propertyIds' => ''])
+            ->set('searchTerm', 'Alexandra')
+            ->assertSee('Alexandra Road');
+    }
+
+    public function test_a_found_home_can_be_added_to_the_comparison(): void
+    {
+        $property = $this->home(['title' => 'Alexandra Road']);
+
+        Livewire::test(PropertyComparison::class, ['propertyIds' => ''])
+            ->set('searchTerm', 'Alexandra')
+            ->call('addProperty', $property->id)
+            ->assertSee('Floor area')
+            ->assertDontSee('Nothing to compare yet');
+    }
+
+    /**
+     * The rate values carry each listing's own currency, so the row label must
+     * not name one.
+     */
+    public function test_the_rate_row_does_not_name_a_currency(): void
+    {
+        $one = $this->home(['title' => 'Euro Home', 'currency' => 'EUR']);
+
+        $html = Livewire::test(PropertyComparison::class, ['propertyIds' => (string) $one->id])->html();
+
+        $this->assertStringContainsString('€', $html, 'the price should be in euros');
+        $this->assertDoesNotMatchRegularExpression(
+            '/<th[^>]*>\s*£\/sq ft/',
+            $html,
+            'a euro listing must not sit under a row labelled in pounds'
+        );
+    }
+
     public function test_the_wishlist_shows_saved_homes_as_cards(): void
     {
         $user = User::factory()->create();
@@ -139,6 +182,74 @@ class ComparisonAndWishlistTest extends TestCase
                 ->assertOk()
                 ->assertSee('Saved Home');
         }
+    }
+
+    /**
+     * The select writes sortBy only, so the direction kept its 'desc' default:
+     * sorting by address ran Z to A and by price most-expensive first, with no
+     * control able to flip it.
+     */
+    public function test_sorting_by_address_runs_a_to_z(): void
+    {
+        $user = User::factory()->create();
+
+        foreach (['Zebra Road', 'Alpha Road'] as $title) {
+            $property = $this->home(['title' => $title]);
+            Favorite::create(['user_id' => $user->id, 'property_id' => $property->id]);
+        }
+
+        $html = Livewire::actingAs($user)->test(WishlistManager::class)
+            ->set('sortBy', 'title')
+            ->html();
+
+        $this->assertLessThan(
+            strpos($html, 'Zebra Road'),
+            strpos($html, 'Alpha Road'),
+            'A should come before Z'
+        );
+    }
+
+    public function test_sorting_by_price_runs_cheapest_first(): void
+    {
+        $user = User::factory()->create();
+
+        foreach ([['Dear House', 900000], ['Cheap House', 100000]] as [$title, $price]) {
+            $property = $this->home(['title' => $title, 'price' => $price]);
+            Favorite::create(['user_id' => $user->id, 'property_id' => $property->id]);
+        }
+
+        $html = Livewire::actingAs($user)->test(WishlistManager::class)
+            ->set('sortBy', 'price')
+            ->html();
+
+        $this->assertLessThan(strpos($html, 'Dear House'), strpos($html, 'Cheap House'));
+    }
+
+    /**
+     * An empty page after a removal is not a failed search, and saying so sends
+     * the reader to clear a search box that is already empty.
+     */
+    public function test_an_empty_page_after_a_removal_is_not_blamed_on_the_search(): void
+    {
+        $user = User::factory()->create();
+        $property = $this->home(['title' => 'Only Saved Home']);
+        Favorite::create(['user_id' => $user->id, 'property_id' => $property->id]);
+
+        Livewire::actingAs($user)->test(WishlistManager::class)
+            ->call('removeFavorite', $property->id)
+            ->assertDontSee('match that search')
+            ->assertSee('Nothing saved yet');
+    }
+
+    public function test_removing_a_home_says_so(): void
+    {
+        $user = User::factory()->create();
+        $property = $this->home(['title' => 'Saved Home']);
+        Favorite::create(['user_id' => $user->id, 'property_id' => $property->id]);
+
+        Livewire::actingAs($user)->test(WishlistManager::class)
+            ->call('removeFavorite', $property->id)
+            ->assertSee('Removed from your shortlist');
     }
 
     public function test_removing_a_home_from_the_wishlist_takes_effect_at_once(): void

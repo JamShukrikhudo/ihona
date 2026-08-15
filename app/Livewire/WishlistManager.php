@@ -15,6 +15,9 @@ class WishlistManager extends Component
     public $sortBy = 'created_at';
     public $sortDirection = 'desc';
 
+    /** Confirmation for the last removal, shown once on the page. */
+    public ?string $removed = null;
+
     protected $listeners = ['favoriteAdded' => '$refresh', 'favoriteRemoved' => '$refresh'];
 
     protected $queryString = [
@@ -38,9 +41,30 @@ class WishlistManager extends Component
 
         if ($favorite) {
             $favorite->delete();
-            session()->flash('success', 'Property removed from wishlist successfully');
+
+            // Held on the component, not flashed: a Livewire action does not
+            // redirect, so a flashed message survived to the next full page
+            // load and could surface somewhere unrelated.
+            $this->removed = __('Removed from your shortlist.');
+
+            // Removing the last item on a page would otherwise leave the
+            // reader on an empty page that still exists.
+            $this->resetPage();
+
             $this->dispatch('favoriteRemoved');
         }
+    }
+
+    /**
+     * Each column has a sensible direction of its own: addresses read A to Z,
+     * prices cheapest first, and "recently saved" newest first. The select
+     * writes only sortBy, so without this the direction kept its 'desc'
+     * default and sorting by address ran Z to A.
+     */
+    public function updatedSortBy(): void
+    {
+        $this->sortDirection = $this->sortBy === 'created_at' ? 'desc' : 'asc';
+        $this->resetPage();
     }
 
     public function sortByColumn($column)

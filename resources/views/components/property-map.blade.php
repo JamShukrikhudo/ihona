@@ -112,8 +112,8 @@
 
                         var counter = element.parentElement.querySelector('[data-map-count]');
 
-                        if (counter) {
-                            counter.textContent = event.detail.label || '';
+                        if (counter && event.detail && event.detail.label) {
+                            counter.textContent = event.detail.label;
                         }
 
                         if (! map) return;

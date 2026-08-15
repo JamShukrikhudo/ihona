@@ -6,7 +6,7 @@
         'price' => __('Price'),
         'energy' => __('Energy'),
         'area' => __('Floor area'),
-        'rate' => __('£/sq ft'),
+        'rate' => __('Per sq ft'),
         'bedrooms' => __('Bedrooms'),
         'bathrooms' => __('Bathrooms'),
         'listed' => __('Listed'),
@@ -109,8 +109,10 @@
                                             @break
 
                                         @case('rate')
-                                            {{ $property->pricePerSquareFootForHumans() ?? '' }}
-                                            @if ($property->pricePerSquareFootForHumans() === null)
+                                            @php $rate = $property->pricePerSquareFootForHumans(); @endphp
+                                            @if ($rate !== null)
+                                                {{ $property->currencySymbol() }}{{ $rate }}
+                                            @else
                                                 <x-ui.not-supplied />
                                             @endif
                                             @break

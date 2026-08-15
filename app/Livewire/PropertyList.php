@@ -196,21 +196,6 @@ class PropertyList extends Component
 
         $this->dispatch('propertiesUpdated', $properties->items());
 
-        // wire:ignore keeps the map's DOM out of Livewire's hands, so a filter
-        // change cannot re-render its pins. Push them instead, or the map keeps
-        // showing the pre-filter set beside a narrowed list.
-        $mapped = $this->mappableResults();
-
-        $this->dispatch(
-            'property-map-updated',
-            properties: $mapped->all(),
-            label: trans_choice(
-                ':count property mapped|:count properties mapped',
-                $mapped->count(),
-                ['count' => $mapped->count()]
-            ),
-        );
-
         return $properties;
     }
 
@@ -261,6 +246,25 @@ class PropertyList extends Component
     
     public function render()
     {
+        // wire:ignore keeps the map's DOM out of Livewire's hands, so a filter
+        // change cannot re-render its pins — they are pushed instead.
+        //
+        // Dispatched from here rather than from the properties getter: the view
+        // only reads that getter when there are results, so an empty result set
+        // never fired it and left the pre-filter pins beside "No homes match
+        // these filters" — the one moment the map is most obviously wrong.
+        $mapped = rescue(fn () => $this->mappableResults(), collect(), report: true);
+
+        $this->dispatch(
+            'property-map-updated',
+            properties: $mapped->all(),
+            label: trans_choice(
+                ':count property mapped|:count properties mapped',
+                $mapped->count(),
+                ['count' => $mapped->count()]
+            ),
+        );
+
         // No view data: the blade reads $this->properties, which Livewire
         // memoises. Passing it here as well ran the paginated query a second
         // time and dispatched propertiesUpdated twice per render.

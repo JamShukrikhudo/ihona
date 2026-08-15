@@ -273,6 +273,28 @@ class ListingFiltersTest extends TestCase
         $this->assertSame(0, $component->instance()->countWithout('propertyFeatureService'));
     }
 
+    /**
+     * The dispatch used to live in the properties getter, which the view only
+     * reads when there are results — so an empty result set left the pre-filter
+     * pins beside "No homes match these filters", the one moment the map is
+     * most obviously wrong.
+     */
+    public function test_an_empty_result_still_clears_the_map(): void
+    {
+        Property::factory()->create([
+            'title' => 'Mapped Home', 'bedrooms' => 2, 'status' => 'For Sale',
+            'latitude' => 51.45, 'longitude' => -0.97,
+        ]);
+
+        Livewire::test(PropertyList::class)
+            ->set('minBedrooms', 9)
+            ->assertSee('No homes match')
+            ->assertDispatched('property-map-updated', function (string $event, array $payload) {
+                return $payload['properties'] === []
+                    && str_contains($payload['label'], '0');
+            });
+    }
+
     public function test_the_page_loads_no_third_party_image(): void
     {
         $html = $this->get('/properties')->assertOk()->getContent();

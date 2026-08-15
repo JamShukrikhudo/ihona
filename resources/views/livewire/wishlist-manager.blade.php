@@ -12,6 +12,12 @@
         </p>
     </header>
 
+    @if ($removed)
+        <p role="status" class="mt-6 rounded-sheet border border-verdigris-600 bg-verdigris-100 px-4 py-3 text-body-s text-verdigris-700">
+            {{ $removed }}
+        </p>
+    @endif
+
     @if ($totalFavorites)
         <div class="mt-6 flex flex-wrap items-center gap-2">
             <label for="wishlist-search" class="sr-only">{{ __('Search your shortlist') }}</label>
@@ -52,7 +58,7 @@
         <div class="mt-8">
             {{ $favorites->links() }}
         </div>
-    @elseif ($totalFavorites)
+    @elseif ($totalFavorites && filled($search))
         <div class="mt-6 rounded-sheet border border-dashed border-sheet-300 bg-sheet-000 p-10 text-center">
             <p class="font-display text-h4 font-bold tracking-tight text-ink-900">
                 {{ __('No saved homes match that search') }}
