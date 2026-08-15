@@ -31,25 +31,22 @@
                 </div>
             </div>
 
-            <dl class="grid grid-cols-2 gap-px bg-sheet-300 md:grid-cols-4">
-                @foreach ($titleBlock as $label => $value)
-                    <div class="bg-sheet-000 p-4">
-                        <dt class="font-mono text-[9.5px] uppercase tracking-[0.1em] text-ink-400">
-                            {{ $label }}
-                        </dt>
-                        <dd class="mt-1 font-mono text-caption text-ink-900">{{ $value }}</dd>
-                    </div>
-                @endforeach
-
-                <div class="bg-sheet-000 p-4">
-                    <dt class="font-mono text-[9.5px] uppercase tracking-[0.1em] text-ink-400">
-                        {{ __('Updated') }}
-                    </dt>
-                    <dd class="mt-1 font-mono text-caption text-ink-900">
-                        {{ now()->format('d.m.Y') }}
-                    </dd>
-                </div>
-            </dl>
+            {{-- Hairlines are drawn per cell, not by showing a parent
+                 background through gap-px: most of these settings are null by
+                 default, so a part-filled grid would paint the empty columns as
+                 a solid slab. --}}
+            @if ($titleBlock)
+                <dl class="grid grid-cols-2 md:grid-cols-4">
+                    @foreach ($titleBlock as $label => $value)
+                        <div class="border-t border-sheet-300 p-4">
+                            <dt class="font-mono text-[9.5px] uppercase tracking-[0.1em] text-ink-400">
+                                {{ $label }}
+                            </dt>
+                            <dd class="mt-1 font-mono text-caption text-ink-900">{{ $value }}</dd>
+                        </div>
+                    @endforeach
+                </dl>
+            @endif
         </div>
 
         <div class="mt-6 flex flex-wrap items-center justify-between gap-4">

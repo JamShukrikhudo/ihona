@@ -156,6 +156,22 @@
   --animate-duration-reveal: 480ms;
 }
 
+/* --- Tailwind's `dark:` variant must answer to the same stamp as the tokens.
+       Left on its default it stays keyed to prefers-color-scheme, so clicking
+       Night on a light OS would flip the palette while every `dark:bg-*` in the
+       existing markup stayed light — near-white ink on a white block. There are
+       111 such utilities in the views, so this has to move with the switch. --- */
+@custom-variant dark {
+  &:where([data-theme='dark'], [data-theme='dark'] *) {
+    @slot;
+  }
+  @media (prefers-color-scheme: dark) {
+    &:where(:not([data-theme='light'], [data-theme='light'] *)) {
+      @slot;
+    }
+  }
+}
+
 /* --- Theme stamp. light-dark() above reads the used color-scheme, so the
        whole palette flips from these three rules alone. Shadows are not a
        <color> and cannot use light-dark(), so they are set per theme. ------ */
@@ -200,242 +216,27 @@
     text-wrap: balance;
   }
 
+  /* No border-radius here: the outline already follows the element's own
+     radius, and setting it would square off round controls while focused. */
   :where(a, button, input, select, textarea, [tabindex]):focus-visible {
     outline: 2px solid var(--color-survey-500);
     outline-offset: 2px;
-    border-radius: var(--radius-tag);
   }
 
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
+      /* Duration alone is not enough: an infinite animation restarts forever. */
       animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
       scroll-behavior: auto !important;
     }
   }
 }
 
-@layer components {
-  /* --- The notch. Echoes the EPC chevron and the drawing sheet's cut
-         corner. One shape idiom, used sparingly, and never on two nested
-         elements at once. ------------------------------------------------ */
-  .notch-br { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%); }
-  .notch-tr { clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%); }
-
-  /* --- Annotation label. Every eyebrow, field label and unit on the page. */
-  .u-annotation {
-    font-family: var(--font-mono);
-    font-size: var(--text-annotation);
-    letter-spacing: var(--text-annotation--letter-spacing);
-    text-transform: uppercase;
-    color: var(--color-ink-400);
-  }
-
-  /* --- Dimension line. The section header device: a measured rule with
-         end ticks, the way a drawing marks a span. ------------------------ */
-  .dimension-line {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    color: var(--color-ink-400);
-  }
-  .dimension-line::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--color-sheet-300);
-    box-shadow: 0 -3px 0 -2px var(--color-sheet-300), 0 3px 0 -2px var(--color-sheet-300);
-  }
-
-  /* --- Buttons ---------------------------------------------------------- */
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 0.6875rem 1.25rem;
-    border: 1px solid transparent;
-    border-radius: var(--radius-sheet);
-    font-family: var(--font-sans);
-    font-size: var(--text-body-s);
-    font-weight: 600;
-    line-height: 1;
-    cursor: pointer;
-    transition:
-      background-color var(--animate-duration-quick) var(--ease-snap),
-      border-color var(--animate-duration-quick) var(--ease-snap),
-      transform var(--animate-duration-tick) var(--ease-snap),
-      box-shadow var(--animate-duration-quick) var(--ease-snap);
-  }
-  .btn:active { transform: translateY(1px); }
-  .btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
-
-  .btn-primary {
-    background: var(--color-survey-500);
-    color: #fff;
-    box-shadow: var(--shadow-lift-1);
-  }
-  .btn-primary:hover:not(:disabled) {
-    background: var(--color-survey-600);
-    box-shadow: var(--shadow-lift-2);
-  }
-
-  .btn-secondary {
-    background: var(--color-sheet-000);
-    color: var(--color-ink-900);
-    border-color: var(--color-sheet-300);
-  }
-  .btn-secondary:hover:not(:disabled) {
-    border-color: var(--color-ink-900);
-    background: var(--color-sheet-000);
-  }
-
-  .btn-ghost { background: transparent; color: var(--color-ink-500); }
-  .btn-ghost:hover:not(:disabled) {
-    background: var(--color-sheet-200);
-    color: var(--color-ink-900);
-  }
-
-  .btn-danger { background: var(--color-fault-600); color: #fff; }
-  .btn-danger:hover:not(:disabled) { background: var(--color-fault-700); }
-
-  /* --- Fields ----------------------------------------------------------- */
-  .field-label {
-    display: block;
-    margin-bottom: 0.375rem;
-    font-family: var(--font-mono);
-    font-size: var(--text-annotation);
-    letter-spacing: var(--text-annotation--letter-spacing);
-    text-transform: uppercase;
-    color: var(--color-ink-500);
-  }
-  .field {
-    width: 100%;
-    padding: 0.6875rem 0.875rem;
-    background: var(--color-sheet-000);
-    border: 1px solid var(--color-sheet-300);
-    border-radius: var(--radius-sheet);
-    color: var(--color-ink-900);
-    font-family: var(--font-sans);
-    font-size: var(--text-body-s);
-    transition:
-      border-color var(--animate-duration-quick) var(--ease-snap),
-      box-shadow var(--animate-duration-quick) var(--ease-snap);
-  }
-  .field::placeholder { color: var(--color-sheet-400); }
-  .field:hover:not(:disabled) { border-color: var(--color-ink-400); }
-  .field:focus {
-    outline: none;
-    border-color: var(--color-survey-500);
-    box-shadow: 0 0 0 3px var(--color-survey-100);
-  }
-  .field[aria-invalid='true'] {
-    border-color: var(--color-fault-600);
-    box-shadow: 0 0 0 3px var(--color-fault-100);
-  }
-  .field-hint  { margin-top: 0.375rem; font-size: var(--text-caption); color: var(--color-ink-400); }
-  .field-error { margin-top: 0.375rem; font-size: var(--text-caption); color: var(--color-fault-600); }
-
-  /* --- Property card ---------------------------------------------------- */
-  .card {
-    background: var(--color-sheet-000);
-    border: 1px solid var(--color-sheet-300);
-    border-radius: var(--radius-sheet);
-    box-shadow: var(--shadow-lift-1);
-    overflow: hidden;
-    transition:
-      box-shadow var(--animate-duration-move) var(--ease-set),
-      border-color var(--animate-duration-move) var(--ease-set),
-      transform var(--animate-duration-move) var(--ease-set);
-  }
-  .card:hover {
-    border-color: var(--color-ink-400);
-    box-shadow: var(--shadow-lift-3);
-    transform: translateY(-2px);
-  }
-  .card:hover .card-media img { transform: scale(1.03); }
-  .card-media { position: relative; overflow: hidden; aspect-ratio: 3 / 2; background: var(--color-sheet-200); }
-  .card-media img {
-    width: 100%; height: 100%; object-fit: cover; display: block;
-    transition: transform var(--animate-duration-reveal) var(--ease-set);
-  }
-
-  /* --- THE SIGNATURE: disclosure strip. A measured band of facts the
-         record already holds, sitting where every competitor puts a
-         "FEATURED!" badge. Mono, tabular, no adjectives. ------------------ */
-  .disclosure-strip {
-    display: flex;
-    align-items: stretch;
-    border-block: 1px solid var(--color-sheet-300);
-    background: var(--color-sheet-100);
-    font-family: var(--font-mono);
-    font-variant-numeric: tabular-nums;
-  }
-  .disclosure-cell {
-    flex: 1;
-    padding: 0.5rem 0.4375rem;
-    border-inline-start: 1px solid var(--color-sheet-300);
-    min-width: 0;
-  }
-  .disclosure-cell:first-child { border-inline-start: 0; }
-  .disclosure-cell dt {
-    font-size: 0.59375rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--color-ink-400);
-    white-space: nowrap;
-  }
-  .disclosure-cell dd {
-    margin: 0.125rem 0 0;
-    font-size: 0.71875rem;
-    font-weight: 500;
-    color: var(--color-ink-900);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  /* Under 380px five cells stop fitting — keep EPC, £/sq ft, days listed. */
-  @media (max-width: 380px) {
-    .disclosure-strip .disclosure-cell:nth-child(n + 4) { display: none; }
-  }
-
-  /* --- EPC band. Statutory colours, chevron geometry. ------------------- */
-  .epc-band {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 2rem;
-    padding: 0.1875rem 0.75rem 0.1875rem 0.5rem;
-    clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 50%, calc(100% - 8px) 100%, 0 100%);
-    font-family: var(--font-mono);
-    font-size: var(--text-micro);
-    font-weight: 600;
-    color: #fff;
-  }
-  .epc-a { background: var(--color-epc-a); }
-  .epc-b { background: var(--color-epc-b); }
-  .epc-c { background: var(--color-epc-c); color: var(--color-ink-900); }
-  .epc-d { background: var(--color-epc-d); color: var(--color-ink-900); }
-  .epc-e { background: var(--color-epc-e); color: var(--color-ink-900); }
-  .epc-f { background: var(--color-epc-f); }
-  .epc-g { background: var(--color-epc-g); }
-
-  /* --- Status chip ------------------------------------------------------ */
-  .chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.375rem;
-    padding: 0.25rem 0.5rem;
-    border-radius: var(--radius-tag);
-    font-family: var(--font-mono);
-    font-size: var(--text-annotation);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    font-weight: 500;
-  }
-  .chip-verified { background: var(--color-verdigris-100); color: var(--color-verdigris-700); }
-  .chip-info     { background: var(--color-draft-100);     color: var(--color-draft-700); }
-  .chip-caution  { background: var(--color-caution-100);   color: var(--color-caution-700); }
-  .chip-fault    { background: var(--color-fault-100);     color: var(--color-fault-700); }
-  .chip-new      { background: var(--color-survey-100);    color: var(--color-survey-700); }
-}
+/* The Survey Sheet component classes (.card, .btn, .disclosure-strip, .epc-band,
+   .chip, .field, .notch-*, .dimension-line) are deliberately NOT here yet. They
+   had no consumer, shipped ~220 unpurged lines in the bundle, and .btn/.btn-primary
+   silently captured the Bootstrap-idiom buttons in resources/views/bookings/*.
+   They land in ticket 04 alongside the Blade components that use them.
+   Reference: docs/design-survey-sheet.html */

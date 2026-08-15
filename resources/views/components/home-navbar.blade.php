@@ -14,10 +14,11 @@
             </span>
         </a>
 
-        <div class="hidden w-full items-center justify-between lg:flex lg:w-auto" id="navbar-cta">
-            <ul class="flex flex-col text-body-s font-medium lg:flex-row lg:items-center">
-                {!! app(App\Services\MenuService::class)->buildMenu() !!}
-            </ul>
+        {{-- buildMenu() emits its own <ul>; wrapping it in another produces
+             <ul><ul><li>, which is invalid and swallows the wrapper's classes. --}}
+        <div class="hidden w-full items-center justify-between text-body-s font-medium lg:flex lg:w-auto"
+             id="navbar-cta">
+            {!! app(App\Services\MenuService::class)->buildMenu() !!}
         </div>
 
         <div class="flex items-center gap-3 rtl:space-x-reverse">
@@ -51,10 +52,8 @@
         </div>
     </div>
 
-    <div class="hidden border-t border-sheet-300 lg:hidden" id="menuToggle">
-        <ul class="flex flex-col p-4 text-body-s font-medium">
-            {!! app(App\Services\MenuService::class)->buildMenu() !!}
-        </ul>
+    <div class="hidden border-t border-sheet-300 p-4 text-body-s font-medium lg:hidden" id="menuToggle">
+        {!! app(App\Services\MenuService::class)->buildMenu() !!}
     </div>
 </nav>
 

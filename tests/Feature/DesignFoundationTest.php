@@ -73,6 +73,48 @@ class DesignFoundationTest extends TestCase
         $this->assertGreaterThan(20, substr_count($css, 'light-dark('));
     }
 
+    /**
+     * The theme switch flips `data-theme`. Tailwind's `dark:` variant defaults
+     * to prefers-color-scheme, so without this the switch would invert the
+     * palette while 111 `dark:*` utilities in the views stayed on the OS
+     * setting — near-white ink on a white block.
+     */
+    public function test_the_dark_variant_answers_to_the_theme_stamp(): void
+    {
+        $css = $this->stylesheet();
+
+        $this->assertStringContainsString('@custom-variant dark', $css);
+        $this->assertMatchesRegularExpression(
+            "/@custom-variant dark\s*\{.*\[data-theme='dark'\].*\}/s",
+            $css
+        );
+        $this->assertMatchesRegularExpression(
+            "/@custom-variant dark\s*\{.*prefers-color-scheme: dark.*\[data-theme='light'\].*\}/s",
+            $css,
+            'an explicit light choice must beat a dark operating system'
+        );
+    }
+
+    /**
+     * Component classes ship unpurged from @layer components. They also captured
+     * the Bootstrap-idiom `.btn btn-primary` buttons in the bookings views. They
+     * land with the markup that uses them, not before.
+     */
+    public function test_no_component_classes_ship_without_a_consumer(): void
+    {
+        $css = $this->stylesheet();
+
+        foreach (['.disclosure-strip', '.epc-band', '.dimension-line', '.card-media'] as $orphan) {
+            $this->assertStringNotContainsString($orphan.' {', $css);
+        }
+
+        $this->assertDoesNotMatchRegularExpression(
+            '/^\s*\.btn\s*\{/m',
+            $css,
+            'a bare .btn rule silently restyles the Bootstrap-idiom bookings buttons'
+        );
+    }
+
     public function test_ground_and_ink_come_from_tokens(): void
     {
         $css = $this->stylesheet();
