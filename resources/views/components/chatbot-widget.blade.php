@@ -20,7 +20,7 @@
         x-transition:leave="transition ease-in duration-150"
         x-transition:leave-start="opacity-100 transform scale-100"
         x-transition:leave-end="opacity-0 transform scale-95"
-        class="bg-white rounded-lg shadow-2xl w-96 h-[600px] flex flex-col"
+        class="flex h-[600px] w-96 flex-col rounded-sheet border border-sheet-300 bg-sheet-000 shadow-lift-3"
         style="display: none;"
     >
         <!-- Header -->
@@ -44,8 +44,8 @@
                         :class="message.sender_type === 'user' 
                             ? 'bg-blue-600 text-white' 
                             : message.sender_type === 'agent' 
-                                ? 'bg-green-100 text-gray-800' 
-                                : 'bg-gray-100 text-gray-800'"
+                                ? 'bg-green-100 text-ink-700' 
+                                : 'bg-sheet-200 text-ink-700'"
                         class="rounded-lg p-3 max-w-[80%] shadow-sm"
                     >
                         <template x-if="message.sender_type === 'agent'">
@@ -59,7 +59,7 @@
             
             <!-- Typing Indicator -->
             <div x-show="isTyping" class="flex justify-start">
-                <div class="bg-gray-100 rounded-lg p-3 shadow-sm">
+                <div class="bg-sheet-200 rounded-lg p-3 shadow-sm">
                     <div class="flex space-x-1">
                         <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
                         <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
@@ -88,14 +88,14 @@
         </div>
 
         <!-- Input Area -->
-        <div class="p-4 border-t border-gray-200">
+        <div class="p-4 border-t border-sheet-300">
             <form @submit.prevent="sendMessage()" class="flex gap-2">
                 <input 
                     type="text" 
                     x-model="currentMessage" 
                     :disabled="isEscalated"
                     placeholder="Type your message..." 
-                    class="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600 disabled:bg-gray-100"
+                    class="flex-1 border border-sheet-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600 disabled:bg-sheet-200"
                 />
                 <button 
                     type="submit" 
