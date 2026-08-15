@@ -79,27 +79,35 @@ class Image extends Model
     }
 
     /**
-     * A public URL, or null when the file lives somewhere the site cannot
-     * serve from.
+     * A URL the browser can fetch, or null when there is nothing to fetch.
      *
      * This used to return asset('storage/…') for every row regardless of disk.
-     * The V1 media API stores to `local`, which is private and has no public
-     * path, so every image uploaded through it produced a URL that 404s — a
-     * broken image icon where a room should be. A disk with no `url` in its
-     * config has no public address, and saying so is better than inventing one.
+     * The V1 media API stores to `local` — which is also the column default —
+     * and `local` is private with no public path, so every image the app itself
+     * writes produced a URL that 404s.
+     *
+     * A disk with a public URL is addressed directly. Anything else goes
+     * through the route, which checks `is_public` before it serves a byte.
      */
     public function getUrlAttribute(): ?string
     {
-        if (! $this->file_path) {
+        if (blank($this->file_path)) {
             return null;
         }
 
         $disk = $this->disk ?: 'public';
 
-        if (! config("filesystems.disks.{$disk}.url")) {
+        if (config("filesystems.disks.{$disk}.url")) {
+            return Storage::disk($disk)->url($this->file_path);
+        }
+
+        if (! $this->is_public || blank($this->image_id) || blank($this->property_id)) {
             return null;
         }
 
-        return Storage::disk($disk)->url($this->file_path);
+        return route('property.media', [
+            'property' => $this->property_id,
+            'medium' => $this->image_id,
+        ]);
     }
 }

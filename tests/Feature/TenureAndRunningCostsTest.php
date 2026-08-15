@@ -225,4 +225,55 @@ class TenureAndRunningCostsTest extends TestCase
             $this->assertStringContainsString("'{$field}'", $source, "[{$field}] cannot be edited by staff");
         }
     }
+
+    /**
+     * The canonical status the API writes for "sold subject to contract" is
+     * `sstc`, not `sold_stc` — so normalising underscores to spaces never
+     * matched it. A property sold via the API kept a live "Book a viewing"
+     * button, and a "New — today" chip if it was listed the same day.
+     *
+     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('closedStatuses')]
+    public function test_every_status_that_closes_a_listing_closes_it(string $status, string $label): void
+    {
+        $property = $this->property([
+            'status' => $status,
+            'sold_date' => null,
+            'list_date' => now(),
+        ]);
+
+        $this->assertSame($label, $property->closedStateLabel(), "[{$status}] does not read as closed");
+
+        $page = $this->get('/properties')->assertOk();
+        $page->assertDontSee('New — today', false);
+        $this->assertStringNotContainsString(
+            route('property.book', $property->id),
+            $page->getContent(),
+            "[{$status}] still offers a viewing"
+        );
+    }
+
+    public static function closedStatuses(): array
+    {
+        return [
+            'sstc' => ['sstc', 'Sold STC'],
+            'sold stc' => ['sold_stc', 'Sold STC'],
+            'exchanged' => ['exchanged', 'Exchanged'],
+            'archived' => ['archived', 'Withdrawn'],
+            'under offer' => ['under_offer', 'Under offer'],
+            'let agreed' => ['let_agreed', 'Let agreed'],
+            'sold' => ['sold', 'Sold'],
+            'withdrawn' => ['withdrawn', 'Withdrawn'],
+        ];
+    }
+
+    public function test_a_listing_still_on_offer_is_not_closed(): void
+    {
+        foreach (['available', 'to_let', 'coming_soon', 'For Sale'] as $status) {
+            $this->assertNull(
+                $this->property(['status' => $status])->closedStateLabel(),
+                "[{$status}] wrongly reads as closed"
+            );
+        }
+    }
 }

@@ -2,10 +2,10 @@
     $applied = $this->appliedFilters();
     $labels = $this->filterLabels();
 
-    // Resolved before anything renders, so a query failure has already flashed
-    // by the time the banner below is reached. The banner used to sit above
-    // this point, so an outage rendered as "no homes match these filters" and
-    // the real message surfaced on someone's next, healthy visit.
+    // Resolved before anything renders, so $failure is already set by the time
+    // the banner below is reached. The banner used to sit above this point, so
+    // an outage rendered as "no homes match these filters" — and, while the
+    // message was still a flash, surfaced on someone's next, healthy visit.
     $results = $this->properties;
 
     // total() rather than a second COUNT with the same filters: paginate()
@@ -87,9 +87,9 @@
         @endif
     </div>
 
-    @if (session('error'))
+    @if ($failure)
         <p role="alert" class="mt-4 rounded-sheet border border-fault-600 bg-fault-100 px-4 py-3 text-body-s text-fault-700">
-            {{ session('error') }}
+            {{ $failure }}
         </p>
     @endif
 

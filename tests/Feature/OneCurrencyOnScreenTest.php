@@ -115,4 +115,57 @@ class OneCurrencyOnScreenTest extends TestCase
         $this->assertSame('£', Currency::symbol('£'));
         $this->assertSame('$', Currency::symbol('$'));
     }
+
+    /**
+     * The tax estimator and the calculators sit under a price the listing sets
+     * the currency for. The estimator printed the site-wide symbol and the
+     * calculators a hardcoded pound sign, so a euro listing read "€465,000" in
+     * the header and "£465,000" in the panel below it.
+     */
+    public function test_the_tax_estimator_follows_the_listing(): void
+    {
+        $settings = app(GeneralSettings::class);
+        $settings->site_currency = 'GBP';
+        $settings->save();
+
+        $property = Property::factory()->create([
+            'status' => 'For Sale',
+            'currency' => 'EUR',
+            'price' => 465000,
+        ]);
+
+        $html = $this->get('/properties/'.$property->id)->assertOk()->getContent();
+
+        $this->assertStringContainsString('€465,000.00', $html, 'the tax estimator is in another currency');
+        $this->assertStringNotContainsString('£', $html);
+    }
+
+    public function test_no_public_view_hardcodes_a_currency_symbol(): void
+    {
+        $offenders = [];
+
+        // The views the public site renders. Panel dashboards and the AST
+        // template are out of scope: a tenancy agreement's rent is stated in
+        // the currency the contract is written in, not the site's.
+        $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator(resource_path('views/livewire')));
+
+        foreach ($files as $file) {
+            if ($file->isDir() || ! str_ends_with($file->getFilename(), '.blade.php')) {
+                continue;
+            }
+
+            $source = file_get_contents($file->getPathname());
+
+            // A symbol immediately in front of a printed number is a currency
+            // that cannot follow the listing. A symbol inside a label — "Price
+            // (£)" — is prose and stays.
+            if (preg_match('/[£€$]\s*\{\{/u', $source)) {
+                $offenders[] = str_replace(base_path().'/', '', $file->getPathname());
+            }
+        }
+
+        sort($offenders);
+
+        $this->assertSame([], $offenders, 'these print a fixed symbol in front of a number');
+    }
 }

@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Image;
 use App\Models\Property;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 /**
@@ -33,7 +34,8 @@ class PropertyGalleryTest extends TestCase
             'property_id' => $property->id,
             'team_id' => $property->team_id,
             'type' => 'image',
-            'disk' => 'public',
+            // The column default, and what the only writer in the app sets.
+            'disk' => 'local',
             'file_path' => 'property-media/'.uniqid().'.jpg',
             'file_name' => 'DSC_4417.jpg',
             'mime_type' => 'image/jpeg',
@@ -132,14 +134,66 @@ class PropertyGalleryTest extends TestCase
     }
 
     /**
-     * The V1 media API stores to the private `local` disk, which has no public
-     * URL at all. Rendering one gives the visitor a broken image icon where a
-     * room should be.
+     * The V1 media API stores to the private `local` disk, and `local` is also
+     * the column default — so this is where every row written by the app
+     * actually lands. That disk has no public URL, so `asset('storage/…')` gave
+     * a path that 404s and dropping the row instead hid the whole gallery. The
+     * site serves it through a route that checks `is_public` first.
      */
-    public function test_a_file_the_site_cannot_serve_is_skipped(): void
+    public function test_a_file_on_the_private_disk_is_served_through_the_gated_route(): void
     {
         $property = $this->property();
-        $this->image($property, ['disk' => 'local']);
+        $image = $this->image($property, ['disk' => 'local', 'title' => 'Kitchen']);
+
+        $this->assertSame(
+            route('property.media', ['property' => $property->id, 'medium' => $image->image_id]),
+            $property->gallery()->first()->url
+        );
+    }
+
+    public function test_the_gated_route_serves_a_public_file(): void
+    {
+        Storage::fake('local');
+        $property = $this->property();
+        $image = $this->image($property, ['disk' => 'local', 'file_path' => 'media/kitchen.jpg']);
+        Storage::disk('local')->put('media/kitchen.jpg', 'not-really-a-jpeg');
+
+        $this->get(route('property.media', ['property' => $property->id, 'medium' => $image->image_id]))
+            ->assertOk()
+            ->assertHeader('content-type', 'image/jpeg');
+    }
+
+    /**
+     * `is_public` is the agency's own switch, and the route is the only thing
+     * standing between a private floor plan and anyone who can count.
+     */
+    public function test_the_gated_route_refuses_a_private_file(): void
+    {
+        Storage::fake('local');
+        $property = $this->property();
+        $image = $this->image($property, ['disk' => 'local', 'is_public' => false]);
+        Storage::disk('local')->put($image->file_path, 'x');
+
+        $this->get(route('property.media', ['property' => $property->id, 'medium' => $image->image_id]))
+            ->assertNotFound();
+    }
+
+    public function test_the_gated_route_refuses_media_belonging_to_another_property(): void
+    {
+        Storage::fake('local');
+        $mine = $this->property();
+        $theirs = $this->property(['title' => 'Alexandra Road, Reading RG1']);
+        $image = $this->image($theirs, ['disk' => 'local']);
+        Storage::disk('local')->put($image->file_path, 'x');
+
+        $this->get(route('property.media', ['property' => $mine->id, 'medium' => $image->image_id]))
+            ->assertNotFound();
+    }
+
+    public function test_a_row_with_no_file_at_all_is_skipped(): void
+    {
+        $property = $this->property();
+        $this->image($property, ['file_path' => null]);
 
         $this->assertCount(0, $property->gallery());
     }

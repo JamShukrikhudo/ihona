@@ -421,4 +421,60 @@ class ViewingBookingTest extends TestCase
         $this->assertStringNotContainsString('text-gray-', $source);
         $this->assertStringNotContainsString('bg-indigo-', $source);
     }
+
+    /**
+     * The unique index on the slot is the last word on who gets an hour, but a
+     * reschedule went straight to save() — so moving onto an hour someone else
+     * already holds threw a QueryException and 500'd the page instead of
+     * telling the customer to pick another.
+     */
+    public function test_rescheduling_onto_a_taken_slot_is_refused_not_a_500(): void
+    {
+        $date = now()->addWeek()->format('Y-m-d');
+        $taken = $this->book($this->property, $date, '14:00');
+        $mine = $this->book($this->property, $date, '15:00');
+
+        try {
+            $mine->reschedule($date, '14:00');
+            $this->fail('rescheduling onto a taken slot was allowed');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            $this->assertArrayHasKey('time', $e->errors());
+            $this->assertStringContainsString('another', strtolower(implode(' ', $e->errors()['time'])));
+        }
+
+        $this->assertSame('14:00', $taken->fresh()->time->format('H:i'));
+        $this->assertSame('15:00', $mine->fresh()->time->format('H:i'), 'the losing booking kept its own hour');
+    }
+
+    public function test_rescheduling_onto_a_free_slot_still_works(): void
+    {
+        $date = now()->addWeek()->format('Y-m-d');
+        $booking = $this->book($this->property, $date, '15:00');
+
+        $this->assertTrue($booking->reschedule($date, '16:00'));
+        $this->assertSame('16:00', $booking->fresh()->time->format('H:i'));
+    }
+
+    /**
+     * `selectedDate` is bound to an input, so anything can arrive in it. The
+     * hook parsed it with Carbon before any rule had run, and an unparseable
+     * string took the whole component down with a 500.
+     */
+    public function test_a_date_that_is_not_a_date_does_not_take_the_page_down(): void
+    {
+        $component = Livewire::test(PropertyBooking::class, ['propertyId' => $this->property->id])
+            ->set('selectedDate', 'not-a-date');
+
+        $component->assertHasErrors('selectedDate');
+        $this->assertSame([], $component->get('availableTimeSlots'));
+    }
+
+    public function test_a_date_in_the_past_offers_no_hours(): void
+    {
+        $component = Livewire::test(PropertyBooking::class, ['propertyId' => $this->property->id])
+            ->set('selectedDate', now()->subWeek()->format('Y-m-d'));
+
+        $component->assertHasErrors('selectedDate');
+        $this->assertSame([], $component->get('availableTimeSlots'));
+    }
 }

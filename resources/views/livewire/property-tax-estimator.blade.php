@@ -8,7 +8,7 @@
             <div class="space-y-4">
                 <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">
                     Estimate your property taxes and additional costs based on the purchase price of 
-                    <strong>{{ app(\App\Settings\GeneralSettings::class)->currencySymbol() }} {{ number_format($property->price, 2) }}</strong>
+                    <strong>{{ $property->currencySymbol() }}{{ number_format($property->price, 2) }}</strong>
                     @if($country === 'UK' || $country === 'GB')
                         in the United Kingdom
                     @endif
@@ -80,7 +80,7 @@
                                         {{ $label }}
                                     </td>
                                     <td class="px-4 py-3 text-sm text-right text-gray-900 dark:text-gray-100">
-                                        {{ app(\App\Settings\GeneralSettings::class)->currencySymbol() }} {{ number_format($amount, 2) }}
+                                        {{ $property->currencySymbol() }}{{ number_format($amount, 2) }}
                                     </td>
                                 </tr>
                             @endforeach
@@ -93,7 +93,7 @@
                     <div class="bg-blue-50 dark:bg-blue-900 p-4 rounded-lg">
                         <p class="text-sm text-gray-600 dark:text-gray-300">Total Tax</p>
                         <p class="text-2xl font-bold text-gray-900 dark:text-white">
-                            {{ app(\App\Settings\GeneralSettings::class)->currencySymbol() }} {{ number_format($estimatedTax['total_tax'], 2) }}
+                            {{ $property->currencySymbol() }}{{ number_format($estimatedTax['total_tax'], 2) }}
                         </p>
                     </div>
                     <div class="bg-green-50 dark:bg-green-900 p-4 rounded-lg">

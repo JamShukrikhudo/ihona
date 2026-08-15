@@ -13,7 +13,10 @@
 --}}
 <div>
     @php
-        $currency = app(\App\Settings\GeneralSettings::class)->currencySymbol();
+        // The listing's own currency, not the site-wide setting: every figure
+        // on this page is about this property, and two symbols on one page is
+        // the bug ticket 21 fixed everywhere else.
+        $currency = $property->currencySymbol();
     @endphp
 
     <section class="mx-auto max-w-(--breakpoint-xl) px-4 py-8 md:px-margin md:py-12">

@@ -34,11 +34,17 @@ trait HasDisclosureFacts
     private const CLOSED_STATUSES = [
         'sold' => 'Sold',
         'sold stc' => 'Sold STC',
+        // The canonical status the API writes. It is not `sold_stc`, so
+        // normalising underscores to spaces never reached it and a property
+        // sold subject to contract kept a live "Book a viewing" button.
+        'sstc' => 'Sold STC',
+        'exchanged' => 'Exchanged',
         'rented' => 'Let',
         'let' => 'Let',
         'let agreed' => 'Let agreed',
         'under offer' => 'Under offer',
         'withdrawn' => 'Withdrawn',
+        'archived' => 'Withdrawn',
     ];
 
     /**

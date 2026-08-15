@@ -27,7 +27,7 @@
                     </div>
                     <div>
                         <p class="text-gray-600 text-sm">Current Price</p>
-                        <p class="font-semibold text-lg">£{{ number_format($property->price, 2) }}</p>
+                        <p class="font-semibold text-lg">{{ $property->currencySymbol() }}{{ number_format($property->price, 2) }}</p>
                     </div>
                 </div>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
@@ -93,7 +93,7 @@
                     <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6 mb-6">
                         <div class="text-center">
                             <p class="text-gray-700 text-sm mb-2">Estimated Market Value</p>
-                            <p class="text-4xl font-bold text-blue-600">£{{ number_format($valuation->estimated_value ?? 0, 2) }}</p>
+                            <p class="text-4xl font-bold text-blue-600">{{ $property->currencySymbol() }}{{ number_format($valuation->estimated_value ?? 0, 2) }}</p>
                             <div class="mt-4">
                                 <div class="flex justify-center items-center space-x-2">
                                     <span class="text-sm text-gray-600">Confidence Level:</span>
@@ -228,7 +228,7 @@
                                             {{ $hist->valuation_date?->format('M d, Y') }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
-                                            £{{ number_format($hist->estimated_value ?? 0, 2) }}
+                                            {{ $property->currencySymbol() }}{{ number_format($hist->estimated_value ?? 0, 2) }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <div class="flex items-center">

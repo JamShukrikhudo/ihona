@@ -1,6 +1,6 @@
 <div>
     <h2>{{ $auction->property->title }} Auction</h2>
-    <p>Current Bid: ${{ number_format($currentBid, 2) }}</p>
+    <p>Current Bid: {{ app(\App\Settings\GeneralSettings::class)->currencySymbol() }}{{ number_format($currentBid, 2) }}</p>
     <p>Time Remaining: {{ $timeRemaining }}</p>
 
     <form wire:submit.prevent="placeBid">
@@ -24,7 +24,7 @@
     <h3>Bid History</h3>
     <ul>
         @foreach ($auction->bids()->orderBy('created_at', 'desc')->take(5)->get() as $bid)
-            <li>${{ number_format($bid->amount, 2) }} by {{ $bid->user->name }} at {{ $bid->created_at->format('M d, Y H:i:s') }}</li>
+            <li>{{ app(\App\Settings\GeneralSettings::class)->currencySymbol() }}{{ number_format($bid->amount, 2) }} by {{ $bid->user->name }} at {{ $bid->created_at->format('M d, Y H:i:s') }}</li>
         @endforeach
     </ul>
 </div>

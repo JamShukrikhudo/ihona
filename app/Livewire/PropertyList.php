@@ -47,6 +47,10 @@ class PropertyList extends Component
     public $featuredOnly = false;
     public $country = '';
 
+    // Never a flash. A Livewire request does not redirect, so a message set
+    // during one follows the visitor onto whatever full page they open next.
+    public ?string $failure = null;
+
     protected $listeners = ['applyAdvancedFilters', 'favoriteAdded' => '$refresh', 'favoriteRemoved' => '$refresh'];
 
     public function mount()
@@ -175,6 +179,8 @@ class PropertyList extends Component
         // of whichever request built it, and holding one for fifteen minutes
         // meant a newly published or re-priced listing was invisible for that
         // long. The query itself is a single indexed select.
+        $this->failure = null;
+
         try {
             // 'media' is Spatie's relation, which the card reads for its
             // photograph; 'images' is a separate hasMany and does not cover it.
@@ -182,11 +188,14 @@ class PropertyList extends Component
                 ->with('features', 'images', 'media')
                 ->paginate(12);
         } catch (Exception $e) {
-            session()->flash('error', __('Something went wrong finding those homes. Try the search again.'));
-
-            if (app()->environment('local')) {
-                session()->flash('error_details', $e->getMessage().' in '.$e->getFile().' on line '.$e->getLine());
-            }
+            // Component state, never a flash. A Livewire request does not
+            // redirect, so a flash set while the visitor was typing in a filter
+            // is still in the session when they open their next full page and
+            // surfaces there as a red banner about a search they have left.
+            // The detail goes to the log, where a stack trace belongs; it used
+            // to go into the banner itself whenever APP_DEBUG was on.
+            $this->failure = __('Something went wrong finding those homes. Try the search again.');
+            Log::error('Listing query failed: '.$e->getMessage(), ['exception' => $e]);
 
             // paginate(0) does not mean "no rows": Builder::paginate falls back
             // to the model's per-page, so this used to show fifteen arbitrary
@@ -516,7 +525,6 @@ class PropertyList extends Component
 
         if ($favorite) {
             $favorite->delete();
-            session()->flash('message', 'Property removed from wishlist');
             $this->dispatch('favoriteRemoved');
         } else {
             Favorite::create([
@@ -524,7 +532,6 @@ class PropertyList extends Component
                 'property_id' => $propertyId,
                 'team_id' => $user->currentTeam?->id,
             ]);
-            session()->flash('message', 'Property added to wishlist');
             $this->dispatch('favoriteAdded');
         }
     }

@@ -44,6 +44,10 @@ Route::get('/payments/success', [PaymentController::class, 'handlePaymentSuccess
 Route::get('/booking-calendar/{appointmentType}', BookingCalendar::class)->middleware('auth')->name('booking.calendar');
 Route::get('/properties', PropertyList::class)->name('property.list');
 Route::get('/properties/search', [PropertyController::class, 'search'])->name('property.search');
+// Before the catch-all detail route, or {propertyId} swallows it.
+Route::get('/properties/{property}/media/{medium}', \App\Http\Controllers\PropertyMediaController::class)
+    ->whereNumber(['property', 'medium'])
+    ->name('property.media');
 Route::get('/properties/{propertyId}', PropertyDetail::class)->name('property.detail');
 Route::get('/properties/{propertyId}/holographic-tour', HolographicViewer::class)->name('property.holographic-tour');
 

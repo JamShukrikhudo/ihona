@@ -124,16 +124,68 @@ class Booking extends Model
         return false;
     }
 
+    /**
+     * A collision with the unique index on the slot, whichever database threw
+     * it. MySQL names the constraint, SQLite names the columns, so both are
+     * checked — keying on the MySQL name alone left every SQLite deployment
+     * showing the generic error for the one case with a message written for it.
+     */
+    public static function isSlotCollision(\Throwable $e): bool
+    {
+        return $e instanceof \Illuminate\Database\QueryException
+            && (str_contains($e->getMessage(), 'bookings_property_slot_unique')
+                || str_contains($e->getMessage(), 'slot_key'));
+    }
+
+    /**
+     * Whether a live booking already holds that hour on that property.
+     *
+     * The unique index is still the last word — two writes racing both pass
+     * this — but it lets a form say "pick another" instead of letting the
+     * database throw at whoever loses.
+     */
+    public static function slotIsTaken(int $propertyId, $date, $time, ?int $exceptId = null): bool
+    {
+        if (blank($propertyId) || blank($date) || blank($time)) {
+            return false;
+        }
+
+        $key = (new self(['date' => $date, 'time' => $time, 'status' => 'confirmed']))->slotKey();
+
+        return self::query()
+            ->where('property_id', $propertyId)
+            ->where('slot_key', $key)
+            ->when($exceptId, fn ($query) => $query->whereKeyNot($exceptId))
+            ->exists();
+    }
+
     public function reschedule($newDate, $newTime)
     {
-        if ($this->canBeRescheduled()) {
-            $this->date = $newDate;
-            $this->time = $newTime;
-            $this->save();
-            event(new BookingRescheduled($this));
-            return true;
+        if (! $this->canBeRescheduled()) {
+            return false;
         }
-        return false;
+
+        $this->date = $newDate;
+        $this->time = $newTime;
+
+        try {
+            $this->save();
+        } catch (\Throwable $e) {
+            // Went straight to save() before: moving onto an hour someone else
+            // already holds threw a raw QueryException and 500'd the page the
+            // customer was standing on.
+            if (! self::isSlotCollision($e)) {
+                throw $e;
+            }
+
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'time' => [__('Someone already has that time. Please choose another.')],
+            ]);
+        }
+
+        event(new BookingRescheduled($this));
+
+        return true;
     }
 
     public function canBeCancelled()

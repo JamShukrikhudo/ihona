@@ -339,7 +339,7 @@ class ListingFiltersTest extends TestCase
         $source = file_get_contents(resource_path('views/livewire/property-list.blade.php'));
 
         $this->assertLessThan(
-            strpos($source, "session('error')"),
+            strpos($source, '@if ($failure)'),
             strpos($source, '$results = $this->properties'),
             'the list has to be resolved before the banner that reports its failure'
         );
@@ -430,5 +430,44 @@ class ListingFiltersTest extends TestCase
         foreach (['vecteezy.com', 'unsplash.com', 'placeholder.com', 'via.placeholder'] as $host) {
             $this->assertStringNotContainsString($host, $html, "the page hotlinks {$host}");
         }
+    }
+
+    /**
+     * A Livewire request never redirects, so a flash set during one is still
+     * sitting in the session when the visitor opens their next full page — and
+     * surfaces there as a red banner about a search they have already left.
+     * Same reason the booking form stopped flashing.
+     */
+    public function test_no_message_is_flashed_from_a_livewire_request(): void
+    {
+        $source = file_get_contents(app_path('Livewire/PropertyList.php'));
+
+        $this->assertStringNotContainsString(
+            'session()->flash',
+            $source,
+            'a flash set here follows the visitor onto whatever page they open next'
+        );
+    }
+
+    public function test_a_failed_query_says_so_on_the_page_it_failed_on(): void
+    {
+        $component = Livewire::test(PropertyList::class);
+
+        $component->set('failure', 'Something went wrong finding those homes. Try the search again.')
+            ->assertSee('Try the search again');
+
+        $this->assertNull(session('error'), 'the failure was put in the session as well');
+    }
+
+    /**
+     * The message carried the exception file and line when APP_DEBUG was on.
+     * That is a stack trace in a red banner on a public listing page.
+     */
+    public function test_the_failure_never_carries_a_file_path(): void
+    {
+        $source = file_get_contents(app_path('Livewire/PropertyList.php'));
+
+        $this->assertStringNotContainsString('getFile()', $source);
+        $this->assertStringNotContainsString('error_details', $source);
     }
 }

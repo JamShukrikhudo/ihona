@@ -45,9 +45,9 @@
     @if ($mortgageResult)
         <div x-show="calculatorType === 'mortgage'" class="rounded-sheet border border-verdigris-600 bg-verdigris-100 p-4 mt-4 text-verdigris-700" role="alert">
             <p class="font-display text-h5 font-bold tracking-tight text-ink-900">Mortgage Calculation Results:</p>
-            <p class="flex justify-between gap-6 py-0.5"><span class="text-ink-500">Monthly Payment</span><span class="font-mono font-medium tabular-nums text-ink-900">£{{ number_format($mortgageResult['monthly_payment'], 2) }}</span></p>
-            <p class="flex justify-between gap-6 py-0.5"><span class="text-ink-500">Total Payment</span><span class="font-mono font-medium tabular-nums text-ink-900">£{{ number_format($mortgageResult['total_payment'], 2) }}</span></p>
-            <p class="flex justify-between gap-6 py-0.5"><span class="text-ink-500">Total Interest</span><span class="font-mono font-medium tabular-nums text-ink-900">£{{ number_format($mortgageResult['total_interest'], 2) }}</span></p>
+            <p class="flex justify-between gap-6 py-0.5"><span class="text-ink-500">Monthly Payment</span><span class="font-mono font-medium tabular-nums text-ink-900">{{ app(\App\Settings\GeneralSettings::class)->currencySymbol() }}{{ number_format($mortgageResult['monthly_payment'], 2) }}</span></p>
+            <p class="flex justify-between gap-6 py-0.5"><span class="text-ink-500">Total Payment</span><span class="font-mono font-medium tabular-nums text-ink-900">{{ app(\App\Settings\GeneralSettings::class)->currencySymbol() }}{{ number_format($mortgageResult['total_payment'], 2) }}</span></p>
+            <p class="flex justify-between gap-6 py-0.5"><span class="text-ink-500">Total Interest</span><span class="font-mono font-medium tabular-nums text-ink-900">{{ app(\App\Settings\GeneralSettings::class)->currencySymbol() }}{{ number_format($mortgageResult['total_interest'], 2) }}</span></p>
         
             <p class="mt-3 border-t border-sheet-300 pt-3 text-caption text-ink-500">{{ __("Assumes: A capital-and-interest repayment over the full term, at a rate that does not change. A real offer will differ.") }}</p>
         </div>
@@ -86,12 +86,12 @@
     @if ($costOfMovingResult)
         <div x-show="calculatorType === 'costOfMoving'" class="rounded-sheet border border-verdigris-600 bg-verdigris-100 p-4 mt-4 text-verdigris-700" role="alert">
             <p class="font-display text-h5 font-bold tracking-tight text-ink-900">Cost of Moving Calculation Results:</p>
-            <p class="flex justify-between gap-6 py-0.5"><span class="text-ink-500">Estate Agent Fee</span><span class="font-mono font-medium tabular-nums text-ink-900">£{{ number_format($costOfMovingResult['estate_agent_fee'], 2) }}</span></p>
-            <p class="flex justify-between gap-6 py-0.5"><span class="text-ink-500">Conveyancing Fee</span><span class="font-mono font-medium tabular-nums text-ink-900">£{{ number_format($costOfMovingResult['conveyancing_fee'], 2) }}</span></p>
-            <p class="flex justify-between gap-6 py-0.5"><span class="text-ink-500">Survey Fee</span><span class="font-mono font-medium tabular-nums text-ink-900">£{{ number_format($costOfMovingResult['survey_fee'], 2) }}</span></p>
-            <p class="flex justify-between gap-6 py-0.5"><span class="text-ink-500">Removals</span><span class="font-mono font-medium tabular-nums text-ink-900">£{{ number_format($costOfMovingResult['removals'], 2) }}</span></p>
-            <p class="flex justify-between gap-6 py-0.5"><span class="text-ink-500">Energy Performance Certificate</span><span class="font-mono font-medium tabular-nums text-ink-900">£{{ number_format($costOfMovingResult['energy_performance_certificate'], 2) }}</span></p>
-            <p class="flex justify-between gap-6 py-0.5"><span class="text-ink-500">Total Cost</span><span class="font-mono font-medium tabular-nums text-ink-900">£{{ number_format($costOfMovingResult['total_cost'], 2) }}</span></p>
+            <p class="flex justify-between gap-6 py-0.5"><span class="text-ink-500">Estate Agent Fee</span><span class="font-mono font-medium tabular-nums text-ink-900">{{ app(\App\Settings\GeneralSettings::class)->currencySymbol() }}{{ number_format($costOfMovingResult['estate_agent_fee'], 2) }}</span></p>
+            <p class="flex justify-between gap-6 py-0.5"><span class="text-ink-500">Conveyancing Fee</span><span class="font-mono font-medium tabular-nums text-ink-900">{{ app(\App\Settings\GeneralSettings::class)->currencySymbol() }}{{ number_format($costOfMovingResult['conveyancing_fee'], 2) }}</span></p>
+            <p class="flex justify-between gap-6 py-0.5"><span class="text-ink-500">Survey Fee</span><span class="font-mono font-medium tabular-nums text-ink-900">{{ app(\App\Settings\GeneralSettings::class)->currencySymbol() }}{{ number_format($costOfMovingResult['survey_fee'], 2) }}</span></p>
+            <p class="flex justify-between gap-6 py-0.5"><span class="text-ink-500">Removals</span><span class="font-mono font-medium tabular-nums text-ink-900">{{ app(\App\Settings\GeneralSettings::class)->currencySymbol() }}{{ number_format($costOfMovingResult['removals'], 2) }}</span></p>
+            <p class="flex justify-between gap-6 py-0.5"><span class="text-ink-500">Energy Performance Certificate</span><span class="font-mono font-medium tabular-nums text-ink-900">{{ app(\App\Settings\GeneralSettings::class)->currencySymbol() }}{{ number_format($costOfMovingResult['energy_performance_certificate'], 2) }}</span></p>
+            <p class="flex justify-between gap-6 py-0.5"><span class="text-ink-500">Total Cost</span><span class="font-mono font-medium tabular-nums text-ink-900">{{ app(\App\Settings\GeneralSettings::class)->currencySymbol() }}{{ number_format($costOfMovingResult['total_cost'], 2) }}</span></p>
         
             <p class="mt-3 border-t border-sheet-300 pt-3 text-caption text-ink-500">{{ __("Assumes: Typical fees for a sale of this value. Your solicitor, surveyor and remover will quote their own.") }}</p>
         </div>
@@ -124,7 +124,7 @@
     @if ($stampDutyResult)
         <div x-show="calculatorType === 'stampDuty'" class="rounded-sheet border border-verdigris-600 bg-verdigris-100 p-4 mt-4 text-verdigris-700" role="alert">
             <p class="font-display text-h5 font-bold tracking-tight text-ink-900">Stamp Duty Calculation Results:</p>
-            <p class="flex justify-between gap-6 py-0.5"><span class="text-ink-500">Stamp Duty</span><span class="font-mono font-medium tabular-nums text-ink-900">£{{ number_format($stampDutyResult['stamp_duty'], 2) }}</span></p>
+            <p class="flex justify-between gap-6 py-0.5"><span class="text-ink-500">Stamp Duty</span><span class="font-mono font-medium tabular-nums text-ink-900">{{ app(\App\Settings\GeneralSettings::class)->currencySymbol() }}{{ number_format($stampDutyResult['stamp_duty'], 2) }}</span></p>
             <p class="flex justify-between gap-6 py-0.5"><span class="text-ink-500">Effective Tax Rate</span><span class="font-mono font-medium tabular-nums text-ink-900">{{ number_format($stampDutyResult['effective_tax_rate'], 2) }}%</span></p>
         
             <p class="mt-3 border-t border-sheet-300 pt-3 text-caption text-ink-500">{{ __("Assumes: England and Northern Ireland rates for the current year. Scotland and Wales charge differently.") }}</p>
@@ -222,8 +222,8 @@
             <h3 class="text-xl font-bold mb-4 text-blue-600">Home Valuation Results</h3>
             
             <div class="bg-sheet-100 border-l-4 border-blue-500 p-4 mb-4">
-                <p class="font-bold text-2xl text-blue-800">Estimated Value: £{{ number_format($homeValuationResult['estimated_value'], 2) }}</p>
-                <p class="text-sm text-ink-500 mt-2">Value Range: £{{ number_format($homeValuationResult['min_value'], 2) }} - £{{ number_format($homeValuationResult['max_value'], 2) }}</p>
+                <p class="font-bold text-2xl text-blue-800">Estimated Value: {{ app(\App\Settings\GeneralSettings::class)->currencySymbol() }}{{ number_format($homeValuationResult['estimated_value'], 2) }}</p>
+                <p class="text-sm text-ink-500 mt-2">Value Range: {{ app(\App\Settings\GeneralSettings::class)->currencySymbol() }}{{ number_format($homeValuationResult['min_value'], 2) }} - {{ app(\App\Settings\GeneralSettings::class)->currencySymbol() }}{{ number_format($homeValuationResult['max_value'], 2) }}</p>
                 <p class="text-sm text-ink-500">Confidence Level: {{ $homeValuationResult['confidence_level'] }}%</p>
             </div>
             
@@ -248,7 +248,7 @@
                 <p class="text-sm font-semibold text-ink-700 mb-2">Valuation Breakdown</p>
                 <div class="grid grid-cols-2 gap-2 text-sm">
                     <p class="text-ink-500">Base Value:</p>
-                    <p class="text-ink-900 font-medium">£{{ number_format($homeValuationResult['breakdown']['base_value'], 2) }}</p>
+                    <p class="text-ink-900 font-medium">{{ app(\App\Settings\GeneralSettings::class)->currencySymbol() }}{{ number_format($homeValuationResult['breakdown']['base_value'], 2) }}</p>
                     
                     <p class="text-ink-500">Type Multiplier:</p>
                     <p class="text-ink-900 font-medium">{{ $homeValuationResult['breakdown']['type_multiplier'] }}x</p>
@@ -263,7 +263,7 @@
                     <p class="text-ink-900 font-medium">{{ $homeValuationResult['breakdown']['age_adjustment'] }}x</p>
                     
                     <p class="text-ink-500">Room Bonus:</p>
-                    <p class="text-ink-900 font-medium">£{{ number_format($homeValuationResult['breakdown']['room_bonus'], 2) }}</p>
+                    <p class="text-ink-900 font-medium">{{ app(\App\Settings\GeneralSettings::class)->currencySymbol() }}{{ number_format($homeValuationResult['breakdown']['room_bonus'], 2) }}</p>
                 </div>
             </div>
             

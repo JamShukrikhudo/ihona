@@ -70,11 +70,18 @@ class PropertyBooking extends Component
     public function updatedSelectedDate($value)
     {
         $this->selectedTime = null;
-        if ($value) {
-            $this->availableTimeSlots = $this->getAvailableTimeSlots($value);
-        } else {
-            $this->availableTimeSlots = [];
+        $this->availableTimeSlots = [];
+
+        if (blank($value)) {
+            return;
         }
+
+        // The rule runs before the parse, not after. Carbon::parse() on an
+        // unparseable string throws, and this hook is reachable from the bound
+        // input with anything in it — which took the whole component down.
+        $this->validateOnly('selectedDate', ['selectedDate' => $this->rules['selectedDate']]);
+
+        $this->availableTimeSlots = $this->getAvailableTimeSlots($value);
     }
 
     private function getAvailableTimeSlots($date)
@@ -190,9 +197,10 @@ class PropertyBooking extends Component
             if ($e instanceof QueryException) {
                 // The unique index on the slot is the last word on who gets it:
                 // two visitors submitting the same hour both pass the check
-                // above, and only one insert can land.
-                $errorMessage .= (str_contains($e->getMessage(), 'bookings_property_slot_unique')
-                    || str_contains($e->getMessage(), 'slot_key'))
+                // above, and only one insert can land. The model owns the
+                // detection so a reschedule and a staff edit read it the same
+                // way.
+                $errorMessage .= Booking::isSlotCollision($e)
                     ? 'Someone booked that time while you were filling this in. Please choose another. '
                     : 'A database error occurred. ';
             } elseif ($e instanceof ValidationException) {
