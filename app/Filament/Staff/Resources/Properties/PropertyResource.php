@@ -201,8 +201,12 @@ class PropertyResource extends Resource
                             ->maxLength(255),
                     ])
                     ->columnSpanFull(),
+                // The collection the model registers, and the one every public
+                // view reads. Uploading to 'property_images' stored the files
+                // where nothing looks: a property photographed by staff showed
+                // no photograph on the site.
                 SpatieMediaLibraryFileUpload::make('images')
-                    ->collection('property_images')
+                    ->collection('images')
                     ->multiple()
                     ->maxFiles(5)
                     ->label('Property Images')
@@ -258,7 +262,7 @@ class PropertyResource extends Resource
         return $table
             ->columns([
                 SpatieMediaLibraryImageColumn::make('images')
-                    ->collection('property_images')
+                    ->collection('images')
                     ->label('Preview')
                     ->circular()
                     ->stacked()

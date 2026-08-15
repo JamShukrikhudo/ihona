@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 
 class Image extends Model
 {
@@ -77,12 +78,28 @@ class Image extends Model
         return $this->stagedVersions()->exists();
     }
 
+    /**
+     * A public URL, or null when the file lives somewhere the site cannot
+     * serve from.
+     *
+     * This used to return asset('storage/…') for every row regardless of disk.
+     * The V1 media API stores to `local`, which is private and has no public
+     * path, so every image uploaded through it produced a URL that 404s — a
+     * broken image icon where a room should be. A disk with no `url` in its
+     * config has no public address, and saying so is better than inventing one.
+     */
     public function getUrlAttribute(): ?string
     {
-        if ($this->file_path) {
-            return asset('storage/'.$this->file_path);
+        if (! $this->file_path) {
+            return null;
         }
 
-        return null;
+        $disk = $this->disk ?: 'public';
+
+        if (! config("filesystems.disks.{$disk}.url")) {
+            return null;
+        }
+
+        return Storage::disk($disk)->url($this->file_path);
     }
 }

@@ -50,11 +50,12 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 
 class Property extends Model implements HasMedia
 {
-    use Concerns\HasDisclosureFacts, HasFactory, InteractsWithMedia, SoftDeletes;
+    use Concerns\HasDisclosureFacts, Concerns\HasGallery, HasFactory, InteractsWithMedia, SoftDeletes;
 
     protected $fillable = [
         'title',
         'description',
+        'description_generated_at',
         'internal_notes',
         'property_template_id',
         'location',
@@ -135,6 +136,7 @@ class Property extends Model implements HasMedia
         'latitude' => 'float',
         'longitude' => 'float',
         'walkability_updated_at' => 'datetime',
+        'description_generated_at' => 'datetime',
         'floor_plan_data' => 'array',
         'ar_tour_enabled' => 'boolean',
         'ar_tour_settings' => 'array',

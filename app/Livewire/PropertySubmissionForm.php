@@ -92,6 +92,12 @@ class PropertySubmissionForm extends Component
         $property = Property::create([
             'title' => $this->title,
             'description' => $this->description,
+            // Only if the sentences that were saved are the ones the model
+            // produced. Someone who rewrote them owns them, and labelling their
+            // copy as generated would be as wrong as not labelling the model's.
+            'description_generated_at' => $this->description === $this->aiDescription && filled($this->aiDescription)
+                ? now()
+                : null,
             'location' => $this->location,
             'price' => $this->price,
             'bedrooms' => $this->bedrooms,

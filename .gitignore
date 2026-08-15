@@ -24,3 +24,6 @@ Homestead.json
 .phpunit.cache
 rr
 .rr.yaml
+.lerd.yaml
+.php-version
+.idea

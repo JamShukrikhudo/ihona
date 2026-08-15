@@ -17,7 +17,7 @@
                 @if($country === 'UK' || $country === 'GB')
                     <div>
                         <label for="buyerType" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Buyer Type <span class="text-red-500">*</span>
+                            Buyer Type <span class="text-fault-600" aria-hidden="true">*</span><span class="sr-only">{{ __('(required)') }}</span>
                         </label>
                         <select wire:model="buyerType" id="buyerType" 
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
@@ -26,7 +26,7 @@
                             <option value="additional_property">Additional Property / Buy-to-Let</option>
                         </select>
                         @error('buyerType') 
-                            <span class="text-red-500 text-sm">{{ $message }}</span>
+                            <span class="text-fault-600 text-sm">{{ $message }}</span>
                         @enderror
                         
                         <div class="mt-2 text-xs text-gray-500 dark:text-gray-400">

@@ -4,15 +4,11 @@
 still reports so it is not quietly forgotten, and so each page's restyle ticket
 knows what it has to clear.
 
-About twenty text nodes fall between 2.6:1 and 4.3:1 against a 4.5:1
+Tickets 10 and 19 cleared the calculators, news, book and search entries. What remains falls between 2.6:1 and 4.3:1 against a 4.5:1
 requirement. Every one is on a page not yet moved onto the design system, and
 every one is a pre-existing colour choice rather than something the rollout
 introduced:
 
-- `book` — the required-field asterisk, 3.8:1 light / 4.3:1 dark (ticket 19)
-- `search` — "Search Properties" button, 3.8:1 (ticket 19)
-- `calculators` — "Calculate" button, 3.8:1 (ticket 10)
-- `news` — "Check back later for updates", 4.3:1 (ticket 10)
 - `detail` — "AI-Powered Insights" 2.6:1, and a rate figure at 3.1:1 (ticket 17)
 - `valuation` — a "login" link at 3.4:1 (ticket 23)
 

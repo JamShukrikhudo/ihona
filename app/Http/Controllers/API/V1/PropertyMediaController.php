@@ -17,7 +17,10 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 class PropertyMediaController
 {
     private const TYPES = [
-        'image', 'floorplan', 'epc', 'video', 'virtual_tour', 'tour_360', 'document', 'brochure',
+        // `siteplan` is the drawing of the plot rather than the building: the
+        // boundary, the parking, the outbuildings. There was nowhere to put one
+        // and it is the second thing a buyer of a house asks to see.
+        'image', 'floorplan', 'siteplan', 'epc', 'video', 'virtual_tour', 'tour_360', 'document', 'brochure',
     ];
 
     public function __construct(private readonly PropertyMediaProcessor $processor) {}
