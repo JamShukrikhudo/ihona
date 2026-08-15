@@ -18,17 +18,18 @@ class PropertyList extends Component
     use WithPagination;
 
     public $search = '';
-    public $minPrice = 0;
-    // No upper bound by default. This used to be 1000000, so the home
-    // page's search silently hid every listing over £1m, and the
-    // queryString below already disagreed with it by a factor of ten.
+    // Every maximum is unset by default. These used to be real bounds applied
+    // unconditionally — 1,000,000 / 10 beds / 10 baths / 10,000 sq ft — so an
+    // untouched search silently dropped the largest and dearest homes on the
+    // books, which are the ones an agency most wants seen.
+    public $minPrice = null;
     public $maxPrice = null;
-    public $minBedrooms = 0;
-    public $maxBedrooms = 10;
-    public $minBathrooms = 0;
-    public $maxBathrooms = 10;
-    public $minArea = 0;
-    public $maxArea = 10000;
+    public $minBedrooms = null;
+    public $maxBedrooms = null;
+    public $minBathrooms = null;
+    public $maxBathrooms = null;
+    public $minArea = null;
+    public $maxArea = null;
     public $propertyType = '';
     public $selectedAmenities = [];
     public $yearBuilt = '';
@@ -54,16 +55,19 @@ class PropertyList extends Component
         $this->resetPage();
     }
     
+    // Each except-value must equal the property default above, or the filter
+    // is either applied while it looks unset in the URL, or dropped from the
+    // URL while it is actually narrowing the results.
     protected $queryString = [
         'search' => ['except' => ''],
-        'minPrice' => ['except' => 0],
+        'minPrice' => ['except' => null],
         'maxPrice' => ['except' => null],
-        'minBedrooms' => ['except' => 0],
-        'maxBedrooms' => ['except' => 10],
-        'minBathrooms' => ['except' => 0],
-        'maxBathrooms' => ['except' => 10],
-        'minArea' => ['except' => 0],
-        'maxArea' => ['except' => 10000],
+        'minBedrooms' => ['except' => null],
+        'maxBedrooms' => ['except' => null],
+        'minBathrooms' => ['except' => null],
+        'maxBathrooms' => ['except' => null],
+        'minArea' => ['except' => null],
+        'maxArea' => ['except' => null],
         'propertyType' => ['except' => ''],
         'selectedAmenities' => ['except' => []],
         'energyRating' => ['except' => ''],

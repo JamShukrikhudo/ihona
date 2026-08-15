@@ -496,17 +496,27 @@ class Property extends Model implements HasMedia
 
     public function scopeBedrooms(Builder $query, $min, $max): Builder
     {
-        return $query->whereBetween('bedrooms', [$min, $max]);
+        // A null bound means "no bound". A default maximum applied
+        // unconditionally hid the largest homes on the books.
+        return $query
+            ->when($min !== null && $min !== '', fn (Builder $q) => $q->where('bedrooms', '>=', $min))
+            ->when($max !== null && $max !== '', fn (Builder $q) => $q->where('bedrooms', '<=', $max));
     }
 
     public function scopeBathrooms(Builder $query, $min, $max): Builder
     {
-        return $query->whereBetween('bathrooms', [$min, $max]);
+        // A null bound means "no bound". A default maximum applied
+        // unconditionally hid the largest homes on the books.
+        return $query
+            ->when($min !== null && $min !== '', fn (Builder $q) => $q->where('bathrooms', '>=', $min))
+            ->when($max !== null && $max !== '', fn (Builder $q) => $q->where('bathrooms', '<=', $max));
     }
 
     public function scopeAreaRange(Builder $query, $min, $max): Builder
     {
-        return $query->whereBetween('area_sqft', [$min, $max]);
+        return $query
+            ->when($min !== null && $min !== '', fn (Builder $q) => $q->where('area_sqft', '>=', $min))
+            ->when($max !== null && $max !== '', fn (Builder $q) => $q->where('area_sqft', '<=', $max));
     }
 
     public function scopePropertyType(Builder $query, $type): Builder

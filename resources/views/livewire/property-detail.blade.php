@@ -31,7 +31,9 @@
                                             </span>
                                         @endif
                                     </div>
-                                    <model-viewer 
+                                    <model-viewer
+                                        loading="lazy"
+                                        reveal="interaction"
                                         src="{{ $property->getFirstMediaUrl('3d_models') }}"
                                         alt="3D model of {{ $property->title }}"
                                         @if($arTourAvailable && $arTourConfig)
@@ -250,7 +252,7 @@
                                             stroke-width="2"
                                             d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                     </svg>
-                                    Schedule a viewing
+                                    Book a viewing
                                 </a>
 
                                 <a href="#" title="" data-modal-target="bookValuationModal"
@@ -278,6 +280,11 @@
                                     AI Valuation
                                 </a>
                             </div>
+
+                            {{-- What the record holds, each fact with a dated
+                                 source. This is the block a buyer decides on,
+                                 so it sits above the tours and the gallery. --}}
+                            <x-property-disclosure :property="$property" class="mt-6" />
 
                             <!-- Virtual Tour Section -->
                             @if($property->hasVirtualTour())
@@ -904,7 +911,7 @@
                                 <video 
                                     class="absolute top-0 left-0 w-full h-full rounded-lg shadow-lg"
                                     controls
-                                    preload="metadata"
+                                    preload="none"
                                     aria-label="Property video tour for {{ $property->title }}">
                                     <source src="{{ $video->getUrl() }}" type="{{ $video->mime_type }}">
                                     Your browser does not support the video tag.
@@ -927,7 +934,7 @@
                     <div class="w-full mb-8">
                         <h2 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Property Video</h2>
                         <div class="max-w-4xl mx-auto">
-                            <video controls class="w-full rounded-lg shadow-lg" controlsList="nodownload" aria-label="Property video">
+                            <video controls preload="none" class="w-full rounded-lg shadow-lg" controlsList="nodownload" aria-label="Property video">
                                 <source src="{{ $property->getFirstMediaUrl('videos') }}">
                                 Your browser does not support the video tag.
                             </video>
@@ -1104,5 +1111,28 @@
             </div>
             @endif
         </section>
-    
+
+        {{-- The same action again at the end of the page. A visitor who has
+             read to the bottom should not have to scroll back up to act, and
+             the verb matches the confirmation they will be shown. --}}
+        <section class="mx-auto max-w-(--breakpoint-xl) px-4 pb-band md:px-margin">
+            <div class="flex flex-wrap items-center justify-between gap-4 rounded-sheet border border-sheet-300 bg-sheet-000 p-6">
+                <div>
+                    <p class="font-display text-h4 font-bold tracking-tight text-ink-900">
+                        {{ __('Seen enough?') }}
+                    </p>
+                    <p class="mt-1 max-w-reading text-body-s text-ink-500">
+                        {{ __('Viewings run seven days a week. Booking one does not commit you to anything.') }}
+                    </p>
+                </div>
+                <div class="flex flex-wrap items-center gap-3">
+                    <x-ui.button :href="route('property.book', $property->id)">
+                        {{ __('Book a viewing') }}
+                    </x-ui.button>
+                    <x-ui.button variant="secondary" href="#enquiry">
+                        {{ __('Ask a question') }}
+                    </x-ui.button>
+                </div>
+            </div>
+        </section>
 </div>
