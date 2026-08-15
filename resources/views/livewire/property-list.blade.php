@@ -1,107 +1,177 @@
-    <div class="">
-        <div class="bg-white dark:bg-gray-900">
-            <div class="grid max-w-(--breakpoint-xl) px-4 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:grid-cols-12">
-                <div class="mr-auto place-self-center lg:col-span-7">
-                    <h1
-                        class="max-w-2xl mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl xl:text-6xl dark:text-white">
-                        Properties for Sale & Rent</h1>
-                    <p class="max-w-2xl mb-6 font-light text-gray-500 lg:mb-8 md:text-lg lg:text-xl dark:text-gray-400">
-                        Welcome to our comprehensive real estate platform, where you can explore an extensive range of
-                        properties available for sale and rent. Our goal is to provide a seamless and efficient experience
-                        for
-                        buyers, sellers, landlords, and tenants alike. Whether you're looking for your dream home, an
-                        investment
-                        property, or a rental residence, we have a diverse selection to cater to your needs</p>
-                    <a href="/contact"
-                        class="inline-flex items-center justify-center px-5 py-3 mr-3 text-base font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900">
-                        Contact us
-                        <svg class="w-5 h-5 ml-2 -mr-1" fill="currentColor" viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd"
-                                d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                                clip-rule="evenodd"></path>
-                        </svg>
-                    </a>
-                </div>
-                <div class="hidden lg:mt-0 lg:col-span-5 lg:flex">
-                    <img src="https://static.vecteezy.com/system/resources/previews/025/442/517/original/house-for-rent-real-estate-business-concept-with-houses-tiny-real-estate-agent-or-broker-looking-for-house-in-website-modern-flat-cartoon-style-illustration-on-white-background-vector.jpg"
-                        alt="mockup">
-                </div>
-            </div>
+@php
+    $applied = $this->appliedFilters();
+    $labels = $this->filterLabels();
+    $count = $this->resultCount();
+@endphp
 
+<div class="mx-auto max-w-(--breakpoint-xl) px-4 py-band md:px-margin">
 
-    <div class="container mx-auto px-4 py-8">
-        <div class="bg-gray-50 py-8 antialiased dark:bg-gray-900 md:py-12">
-            <div class="mx-auto max-w-(--breakpoint-xl) px-0 2xl:px-0">
-                <div class="d-flex mb-5">
-                    <div class="w-full md:w-1/2">
-                        <form class="flex items-center">
-                            <label for="simple-search" class="sr-only">Search</label>
-                            <div class="relative w-full mr-2">
-                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                    <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400"
-                                        fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd"
-                                            d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                                            clip-rule="evenodd" />
-                                    </svg>
-                                </div>
-                                <input type="text" id="simple-search" wire:model.live.debounce.300ms="search"
-                                    class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                    placeholder="Looking for a house, apartment, or commercial space? ...">
-                            </div>
+    <header>
+        <p class="font-mono text-annotation uppercase text-ink-400">{{ __('Sales and lettings') }}</p>
+        <h1 class="mt-3 font-display text-h2 font-bold tracking-tight text-ink-900">
+            {{ __('Every home on our books') }}
+        </h1>
+    </header>
 
-                            <button type="button"
-                                class="flex items-center justify-center px-4 py-2 text-sm font-medium text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
-                                <svg class="h-3.5 w-3.5 mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                    width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
-                                        d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" />
-                                </svg>
-                                search
-                            </button>
-                        </form>
-                    </div>
-                </div>
-                {{-- One card component, used here and on the home page, so a
-                     change to the disclosure strip lands everywhere at once. --}}
-                <div class="mb-4 grid gap-5 sm:grid-cols-2 md:mb-8 lg:grid-cols-3">
-                    @forelse ($properties as $property)
+    {{-- The search and the applied set sit together, because what you typed and
+         what is narrowing the page are the same question. --}}
+    <div class="mt-6 flex flex-wrap items-center gap-2 rounded-sheet border border-sheet-300 bg-sheet-000 p-2 shadow-lift-1">
+        <label for="listing-search" class="sr-only">{{ __('Search') }}</label>
+        <div class="flex flex-1 basis-64 items-center gap-2 px-2">
+            <x-ui.icon name="search" class="size-4 shrink-0 text-ink-400" />
+            <input id="listing-search" type="search" wire:model.live.debounce.300ms="search"
+                   placeholder="{{ __('Postcode, station or area — e.g. RG1') }}"
+                   class="w-full border-0 bg-transparent p-0 py-2.5 font-sans text-body-s text-ink-900 placeholder:text-sheet-400 focus:ring-0 focus:outline-none" />
+        </div>
+
+        <label for="listing-type" class="sr-only">{{ __('Property type') }}</label>
+        <select id="listing-type" wire:model.live="propertyType"
+                class="basis-40 rounded-sheet border border-sheet-300 bg-sheet-000 px-3 py-2.5 font-sans text-body-s text-ink-900">
+            <option value="">{{ __('Any type') }}</option>
+            @foreach ([
+                'house' => __('House'), 'apartment' => __('Apartment'), 'condo' => __('Condo'),
+                'townhouse' => __('Townhouse'), 'villa' => __('Villa'), 'hmo' => __('HMO'),
+            ] as $value => $label)
+                <option value="{{ $value }}">{{ $label }}</option>
+            @endforeach
+        </select>
+
+        <label for="listing-beds" class="sr-only">{{ __('Minimum bedrooms') }}</label>
+        <select id="listing-beds" wire:model.live="minBedrooms"
+                class="basis-36 rounded-sheet border border-sheet-300 bg-sheet-000 px-3 py-2.5 font-sans text-body-s text-ink-900">
+            <option value="">{{ __('Any beds') }}</option>
+            @foreach ([1, 2, 3, 4, 5] as $beds)
+                <option value="{{ $beds }}">{{ $beds }}+</option>
+            @endforeach
+        </select>
+    </div>
+
+    {{-- What is narrowing the page, stated. A filter the visitor cannot see is
+         one they cannot argue with, and quiet defaults have hidden stock here
+         before. --}}
+    <div class="mt-4 flex flex-wrap items-center gap-3">
+        <p class="font-mono text-body-s font-medium tabular-nums text-ink-900" aria-live="polite">
+            {{ trans_choice(':count home|:count homes', $count, ['count' => number_format($count)]) }}
+        </p>
+
+        @if ($applied)
+            <span class="h-4 w-px bg-sheet-300" aria-hidden="true"></span>
+
+            <ul class="flex flex-wrap items-center gap-2">
+                @foreach ($applied as $filter => $description)
+                    <li>
+                        <button type="button" wire:click="clearFilter('{{ $filter }}')"
+                                class="group inline-flex items-center gap-1.5 rounded-tag border border-sheet-300 bg-sheet-000 py-1.5 pl-2.5 pr-2 font-mono text-annotation uppercase text-ink-700 transition-colors duration-[160ms] hover:border-ink-900"
+                                aria-label="{{ __('Clear :filter', ['filter' => $labels[$filter] ?? $filter]) }}">
+                            {{ $description }}
+                            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor"
+                                 stroke-width="2" stroke-linecap="square" aria-hidden="true"
+                                 class="text-ink-400 group-hover:text-ink-900">
+                                <path d="M6 6l12 12M18 6L6 18" />
+                            </svg>
+                        </button>
+                    </li>
+                @endforeach
+            </ul>
+
+            <button type="button" wire:click="clearFilters"
+                    class="font-mono text-annotation uppercase text-survey-600 transition-colors duration-[160ms] hover:text-ink-900">
+                {{ __('Clear all') }}
+            </button>
+        @endif
+    </div>
+
+    @if (session('error'))
+        <p role="alert" class="mt-4 rounded-sheet border border-fault-600 bg-fault-100 px-4 py-3 text-body-s text-fault-700">
+            {{ session('error') }}
+        </p>
+    @endif
+
+    <div class="mt-6 grid gap-6 lg:grid-cols-12">
+        <div class="lg:col-span-7 xl:col-span-8">
+            @if ($count)
+                <div class="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                    @foreach ($this->properties as $property)
                         <x-property-card :property="$property"
                                          saveable
                                          :saved="$this->isFavorited($property->id)" />
-                    @empty
-                        <div class="col-span-full rounded-sheet border border-dashed border-sheet-300 bg-sheet-000 p-10 text-center">
-                            <p class="font-display text-h4 font-bold tracking-tight text-ink-900">
-                                {{ __('No homes match these filters') }}
-                            </p>
-                            <p class="mx-auto mt-2 max-w-reading text-body-s text-ink-500">
-                                {{ __('Widening the price range or the radius is usually the quickest way back to a full page of results.') }}
-                            </p>
-                        </div>
-                    @endforelse
+                    @endforeach
                 </div>
-            </div>
+
+                <div class="mt-8">
+                    {{ $this->properties->links() }}
+                </div>
+            @else
+                @php $loosen = $this->mostRestrictiveFilter(); @endphp
+
+                {{-- An invitation, not a dead end: the move and what it returns. --}}
+                <div class="rounded-sheet border border-dashed border-sheet-300 bg-sheet-000 p-10 text-center">
+                    <p class="font-display text-h4 font-bold tracking-tight text-ink-900">
+                        {{ __('No homes match these filters') }}
+                    </p>
+
+                    @if ($loosen)
+                        @php $would = $this->countWithout($loosen); @endphp
+                        <p class="mx-auto mt-2 max-w-reading text-body-s text-ink-500">
+                            {{ __('Clear :filter and :count come back.', [
+                                'filter' => $labels[$loosen] ?? $loosen,
+                                'count' => trans_choice(':count home|:count homes', $would, ['count' => number_format($would)]),
+                            ]) }}
+                        </p>
+                        <div class="mt-4">
+                            <x-ui.button size="sm" type="button" wire:click="clearFilter('{{ $loosen }}')">
+                                {{ __('Clear :filter', ['filter' => $labels[$loosen] ?? $loosen]) }}
+                            </x-ui.button>
+                        </div>
+                    @else
+                        <p class="mx-auto mt-2 max-w-reading text-body-s text-ink-500">
+                            {{ __('Nothing is listed right now. New homes appear here as they come to market.') }}
+                        </p>
+                    @endif
+                </div>
+            @endif
         </div>
 
-        <div class="bg-gray-50 py-8 antialiased dark:bg-gray-900 md:py-12">
-            <div class="flex items-center justify-between border-gray-100 bg-white px-4 py-3 sm:px-6">
-                <div class="flex flex-1 justify-between sm:hidden">
-                    <a href="#"
-                        class="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Previous</a>
-                    <a href="#"
-                        class="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Next</a>
+        {{-- One map, not two. A second instance would build its own Leaflet
+             and fetch its own tiles for whichever breakpoint was not showing.
+             Above 1024px it is open and sticky beside the results; below, it is
+             a control the reader opens rather than a half-height strip nobody
+             can pan. --}}
+        <aside class="lg:col-span-5 xl:col-span-4">
+            <details data-map-panel class="group lg:sticky lg:top-6" wire:ignore>
+                <summary class="flex cursor-pointer items-center justify-between rounded-sheet border border-sheet-300 bg-sheet-000 px-4 py-3 font-mono text-annotation uppercase text-ink-700 lg:hidden">
+                    {{ __('Show these homes on a map') }}
+                    <x-ui.icon name="chevron-right" class="size-3.5 transition-transform group-open:rotate-90" />
+                </summary>
+                <div class="mt-3 lg:mt-0">
+                    <x-property-map :properties="$this->mappableResults()" />
                 </div>
-                <div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
-                    <div>
+            </details>
+        </aside>
 
-                    </div>
-                    <div>
-                        <div class="">
-                            {{ $properties->links() }}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        @once
+            @push('scripts')
+                <script>
+                    // Open above 1024px, where the map holds its place beside the
+                    // results. A closed <details> cannot be forced open by CSS,
+                    // and duplicating the map to work around that would mean two
+                    // Leaflet instances and two sets of tiles.
+                    (function () {
+                        var panel = document.querySelector('[data-map-panel]');
+
+                        if (! panel) return;
+
+                        var wide = window.matchMedia('(min-width: 1024px)');
+                        var sync = function () {
+                            if (wide.matches) panel.setAttribute('open', '');
+                        };
+
+                        sync();
+                        wide.addEventListener('change', sync);
+                    })();
+                </script>
+            @endpush
+        @endonce
+
     </div>
+</div>

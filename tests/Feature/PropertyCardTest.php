@@ -220,6 +220,12 @@ class PropertyCardTest extends TestCase
         $this->assertStringContainsString('today', $html);
     }
 
+    /**
+     * The results share the sheet with a sticky map from 1024px, which takes
+     * five of the twelve columns — so three cards across starts at xl rather
+     * than lg. The home page, which has no map beside it, still goes to three
+     * at lg.
+     */
     public function test_the_listings_page_renders_cards_in_the_sheet_grid(): void
     {
         Property::factory()->count(3)->create(['status' => 'For Sale']);
@@ -228,6 +234,6 @@ class PropertyCardTest extends TestCase
 
         $this->assertStringContainsString('property-card', $html);
         $this->assertStringContainsString('sm:grid-cols-2', $html);
-        $this->assertStringContainsString('lg:grid-cols-3', $html);
+        $this->assertStringContainsString('xl:grid-cols-3', $html);
     }
 }

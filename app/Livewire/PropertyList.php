@@ -95,83 +95,104 @@ class PropertyList extends Component
         $this->resetPage();
     }
 
+    /**
+     * One place the filters are applied, so a count taken with a filter lifted
+     * cannot drift from the list the visitor is looking at.
+     */
+    private function buildQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        $query = Property::query()
+            ->search($this->search)
+            ->priceRange($this->minPrice, $this->maxPrice)
+            ->bedrooms($this->minBedrooms, $this->maxBedrooms)
+            ->bathrooms($this->minBathrooms, $this->maxBathrooms)
+            ->areaRange($this->minArea, $this->maxArea);
+
+        if ($this->propertyType) {
+            $query->propertyType($this->propertyType);
+        }
+
+        if ($this->selectedAmenities) {
+            $query->hasAmenities($this->selectedAmenities);
+        }
+
+        if ($this->energyRating) {
+            $query->energyRating($this->energyRating);
+        }
+
+        if ($this->minEnergyScore > 0) {
+            $query->minEnergyScore($this->minEnergyScore);
+        }
+
+        if ($this->minWalkabilityScore > 0) {
+            $query->walkabilityScore($this->minWalkabilityScore);
+        }
+
+        if ($this->minTransitScore > 0) {
+            $query->transitScore($this->minTransitScore);
+        }
+
+        if ($this->minBikeScore > 0) {
+            $query->bikeScore($this->minBikeScore);
+        }
+
+        if ($this->featuredOnly) {
+            $query->featured();
+        }
+
+        if ($this->country) {
+            $query->country($this->country);
+        }
+
+        return $query;
+    }
+
+    public function resultCount(): int
+    {
+        return $this->buildQuery()->count();
+    }
+
+    /**
+     * The map shows what the filters returned, not everything on the books.
+     * Showing all of it beside a narrowed list invites the reader to think the
+     * pins and the cards are the same set.
+     */
+    public function mappableResults(): \Illuminate\Support\Collection
+    {
+        return $this->buildQuery()
+            ->select(['id', 'title', 'price', 'currency', 'latitude', 'longitude'])
+            ->whereNotNull('latitude')
+            ->whereNotNull('longitude')
+            ->where('latitude', '!=', 0)
+            ->where('longitude', '!=', 0)
+            ->limit(500)
+            ->get();
+    }
+
     public function getPropertiesProperty()
     {
         // Not cached. A LengthAwarePaginator carries the path and query state
         // of whichever request built it, and holding one for fifteen minutes
         // meant a newly published or re-priced listing was invisible for that
         // long. The query itself is a single indexed select.
-        $properties = (function () {
-            try {
-                $query = Property::query()
-                    ->search($this->search)
-                    ->priceRange($this->minPrice, $this->maxPrice)
-                    ->bedrooms($this->minBedrooms, $this->maxBedrooms)
-                    ->bathrooms($this->minBathrooms, $this->maxBathrooms)
-                    ->areaRange($this->minArea, $this->maxArea);
+        try {
+            // 'media' is Spatie's relation, which the card reads for its
+            // photograph; 'images' is a separate hasMany and does not cover it.
+            $properties = $this->buildQuery()
+                ->with('features', 'images', 'media')
+                ->paginate(12);
+        } catch (Exception $e) {
+            session()->flash('error', __('Something went wrong finding those homes. Try the search again.'));
 
-                if ($this->propertyType) {
-                    $query->propertyType($this->propertyType);
-                }
-
-                if ($this->selectedAmenities) {
-                    $query->hasAmenities($this->selectedAmenities);
-                }
-
-                if ($this->energyRating) {
-                    $query->energyRating($this->energyRating);
-                }
-
-                if ($this->minEnergyScore > 0) {
-                    $query->minEnergyScore($this->minEnergyScore);
-                }
-
-                if ($this->minWalkabilityScore > 0) {
-                    $query->walkabilityScore($this->minWalkabilityScore);
-                }
-
-                if ($this->minTransitScore > 0) {
-                    $query->transitScore($this->minTransitScore);
-                }
-
-                if ($this->minBikeScore > 0) {
-                    $query->bikeScore($this->minBikeScore);
-                }
-
-                if ($this->featuredOnly) {
-                    $query->featured();
-                }
-
-                if ($this->country) {
-                    $query->country($this->country);
-                }
-
-                // 'media' is Spatie's relation, which the card reads for its
-                // photograph; 'images' is a separate hasMany and does not
-                // cover it.
-                $query->with('features', 'images', 'media');
-
-                $properties = $query->paginate(12);
-
-                Log::info('Properties query executed', [
-                    'total' => $properties->total(),
-                    'current_page' => $properties->currentPage(),
-                    'last_page' => $properties->lastPage(),
-                    'per_page' => $properties->perPage(),
-                    'count' => $properties->count(),
-                ]);
-
-                return $properties;
-            } catch (Exception $e) {
-                session()->flash('error', 'An error occurred while fetching properties. Please try again.');
-                if (app()->environment('local')) {
-                    session()->flash('error_details', $e->getMessage() . ' in ' . $e->getFile() . ' on line ' . $e->getLine());
-                }
-                return Property::paginate(0);
+            if (app()->environment('local')) {
+                session()->flash('error_details', $e->getMessage().' in '.$e->getFile().' on line '.$e->getLine());
             }
-        })();
+
+            $properties = Property::paginate(0);
+        }
 
         $this->dispatch('propertiesUpdated', $properties->items());
+
         return $properties;
     }
 
@@ -239,6 +260,142 @@ class PropertyList extends Component
         ]);
     
         $this->dispatch('updateRecommendations');
+    }
+
+    /**
+     * What is currently narrowing the results, in the reader's words.
+     *
+     * A filter the visitor cannot see is a filter they cannot argue with — and
+     * this component has hidden stock behind quiet defaults twice already.
+     *
+     * @return array<string, string>
+     */
+    public function appliedFilters(): array
+    {
+        $applied = [];
+
+        if (filled($this->search)) {
+            $applied['search'] = __('“:term”', ['term' => $this->search]);
+        }
+
+        if (filled($this->propertyType)) {
+            $applied['propertyType'] = ucfirst($this->propertyType);
+        }
+
+        if (filled($this->minBedrooms)) {
+            $applied['minBedrooms'] = __(':count+ bedrooms', ['count' => $this->minBedrooms]);
+        }
+
+        if (filled($this->minBathrooms)) {
+            $applied['minBathrooms'] = __(':count+ bathrooms', ['count' => $this->minBathrooms]);
+        }
+
+        if (filled($this->minPrice)) {
+            $applied['minPrice'] = __('Over :amount', ['amount' => $this->money($this->minPrice)]);
+        }
+
+        if (filled($this->maxPrice)) {
+            $applied['maxPrice'] = __('Under :amount', ['amount' => $this->money($this->maxPrice)]);
+        }
+
+        if (filled($this->minArea)) {
+            $applied['minArea'] = __('Over :area sq ft', ['area' => number_format((float) $this->minArea)]);
+        }
+
+        if (filled($this->maxArea)) {
+            $applied['maxArea'] = __('Under :area sq ft', ['area' => number_format((float) $this->maxArea)]);
+        }
+
+        if (filled($this->energyRating)) {
+            $applied['energyRating'] = __('EPC :band', ['band' => strtoupper($this->energyRating)]);
+        }
+
+        if ($this->featuredOnly) {
+            $applied['featuredOnly'] = __('Featured only');
+        }
+
+        return $applied;
+    }
+
+    /** Plain words for the clear control, so it reads as an action. */
+    public function filterLabels(): array
+    {
+        return [
+            'search' => __('the search term'),
+            'propertyType' => __('the property type'),
+            'minBedrooms' => __('the bedroom minimum'),
+            'minBathrooms' => __('the bathroom minimum'),
+            'minPrice' => __('the minimum price'),
+            'maxPrice' => __('the maximum price'),
+            'minArea' => __('the minimum area'),
+            'maxArea' => __('the maximum area'),
+            'energyRating' => __('the energy rating'),
+            'featuredOnly' => __('the featured filter'),
+        ];
+    }
+
+    public function clearFilter(string $filter): void
+    {
+        if (! array_key_exists($filter, $this->appliedFilters())) {
+            return;
+        }
+
+        $this->{$filter} = $filter === 'featuredOnly' ? false : null;
+        $this->resetPage();
+    }
+
+    public function clearFilters(): void
+    {
+        foreach (array_keys($this->appliedFilters()) as $filter) {
+            $this->{$filter} = $filter === 'featuredOnly' ? false : null;
+        }
+
+        $this->resetPage();
+    }
+
+    /**
+     * How many homes would come back if this one filter were lifted. An empty
+     * page can then name the move and its result rather than just apologising.
+     */
+    public function countWithout(string $filter): int
+    {
+        $was = $this->{$filter};
+        $this->{$filter} = $filter === 'featuredOnly' ? false : null;
+
+        try {
+            return $this->buildQuery()->count();
+        } finally {
+            $this->{$filter} = $was;
+        }
+    }
+
+    /**
+     * The single filter whose removal returns the most homes — the one worth
+     * suggesting when nothing matches.
+     */
+    public function mostRestrictiveFilter(): ?string
+    {
+        $counts = [];
+
+        foreach (array_keys($this->appliedFilters()) as $filter) {
+            $counts[$filter] = $this->countWithout($filter);
+        }
+
+        $counts = array_filter($counts);
+
+        if ($counts === []) {
+            return null;
+        }
+
+        arsort($counts);
+
+        return array_key_first($counts);
+    }
+
+    private function money($amount): string
+    {
+        return (app(\App\Settings\GeneralSettings::class)->site_currency ?: '£')
+            .number_format((float) $amount);
     }
 
     public function toggleFavorite($propertyId)
