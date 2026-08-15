@@ -13,7 +13,14 @@ class ContactMessage extends Model
         'name',
         'email',
         'phone',
+        'interest',
+        'property_id',
         'message',
         'is_read',
     ];
+
+    public function property()
+    {
+        return $this->belongsTo(Property::class);
+    }
 }

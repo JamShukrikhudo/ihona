@@ -11,7 +11,10 @@
     // No border-color in the base: it and the variant's would be the same
     // utility, so the generated source order would decide which wins rather
     // than the order they are written here. Every variant sets its own.
-    $base = 'inline-flex items-center justify-center gap-2 rounded-sheet border'
+    // 44px minimum where a finger is doing the pointing. At the default size a
+    // button measured 38px, under the floor the system sets for touch, while
+    // the fields beside it were 46px.
+    $base = 'inline-flex items-center justify-center gap-2 rounded-sheet border pointer-coarse:min-h-11'
         .' font-sans font-semibold leading-none transition-[background-color,border-color,box-shadow,transform]'
         .' duration-[160ms] ease-snap active:translate-y-px'
         .' disabled:pointer-events-none disabled:opacity-45 disabled:active:translate-y-0'

@@ -3,28 +3,49 @@
 namespace App\Http\Controllers;
 
 use App\Models\ContactMessage;
+use App\Models\Property;
 use Illuminate\Http\Request;
 
 class ContactController extends Controller
 {
-    public function show()
+    public function show(Request $request)
     {
-        return view('contact');
+        // A listing card's "Ask a question" arrives here with the property, so
+        // the agent can tell which home the question is about.
+        $property = $request->filled('property')
+            ? Property::find($request->integer('property'))
+            : null;
+
+        return view('contact', ['property' => $property]);
     }
 
     public function submit(Request $request)
     {
+        // The form has always asked for a phone number and an interest, and
+        // neither was validated — so both were dropped on the way to the
+        // database. Someone asking for a callback lost their number.
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'message' => 'required|string',
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email:rfc', 'max:255'],
+            'phone' => ['nullable', 'string', 'max:50'],
+            'interest' => ['nullable', 'string', 'in:buying,selling,renting,letting,other'],
+            'property_id' => ['nullable', 'integer', 'exists:properties,id'],
+            'message' => ['required', 'string', 'max:5000'],
+        ], [
+            // Errors name the fix, in the interface's voice. No apology, no
+            // "invalid", no telling someone their input was bad.
+            'name.required' => __('Add your name so we know who is asking.'),
+            'email.required' => __('Add an email address so we can reply.'),
+            'email.email' => __('Add the part after the @ so we can reply.'),
+            'message.required' => __('Tell us what you would like to know.'),
+            'message.max' => __('Keep it under 5,000 characters and we will pick up the rest by phone.'),
+            'property_id.exists' => __('That property is no longer listed. Send the question without it and we will find it.'),
         ]);
 
-        // Save the contact message to the database
         ContactMessage::create($validated);
 
-        // TODO: Add email notification logic here if required
-
-        return redirect()->back()->with('success', 'Your message has been sent successfully!');
+        return redirect()
+            ->route('contact.show')
+            ->with('success', __('Message sent. We reply within one working day.'));
     }
 }

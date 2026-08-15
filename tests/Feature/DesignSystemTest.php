@@ -99,6 +99,24 @@ class DesignSystemTest extends TestCase
         $this->assertStringNotContainsString('border-transparent', $html);
     }
 
+    /**
+     * The system sets a 44px floor for touch. At the default size a button
+     * measured 38px next to 46px fields, so the floor was documented but not
+     * enforced.
+     */
+    public function test_a_button_meets_the_touch_target_floor(): void
+    {
+        foreach (['sm', 'base', 'lg'] as $size) {
+            $html = Blade::render('<x-ui.button size="'.$size.'">Go</x-ui.button>');
+
+            $this->assertStringContainsString(
+                'pointer-coarse:min-h-11',
+                $html,
+                "[{$size}] can render under 44px where a finger is pointing"
+            );
+        }
+    }
+
     public function test_a_disabled_button_cannot_be_activated(): void
     {
         $html = Blade::render('<x-ui.button disabled>Viewing booked</x-ui.button>');
