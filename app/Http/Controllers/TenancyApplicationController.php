@@ -36,11 +36,15 @@ class TenancyApplicationController extends Controller
 
     public function store(Request $request, Property $property): RedirectResponse
     {
-        // A stale or bookmarked form can still post here. Saying nothing would
-        // leave someone believing they had applied.
-        return $this->create($property)->with(
+        // Flashed through the session, not RedirectResponse::with(): create()
+        // builds the response directly, so it has no session attached and
+        // with() called flash() on null — a 500 on the very path this exists
+        // to handle gracefully.
+        session()->flash(
             'error',
             __('Applications are not open through that form yet. Send this instead and we will take it from there.')
         );
+
+        return $this->create($property);
     }
 }

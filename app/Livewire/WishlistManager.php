@@ -112,7 +112,10 @@ class WishlistManager extends Component
 
         return view('livewire.wishlist-manager', [
             'favorites' => $favorites,
-            'totalFavorites' => $user->favorites()->count(),
+            // Counted through the relation the list uses, so a saved row whose
+            // property has been removed cannot leave the page insisting there
+            // are homes to show while every page is empty.
+            'totalFavorites' => $user->favoriteProperties()->count(),
         ]);
     }
 }

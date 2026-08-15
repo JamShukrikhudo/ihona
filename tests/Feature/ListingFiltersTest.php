@@ -295,6 +295,39 @@ class ListingFiltersTest extends TestCase
             });
     }
 
+    /**
+     * The dispatched payload has to be shaped like the server-rendered one, or
+     * a price reads "£565,000" on first paint and "GBP565,000" the moment a
+     * filter changes.
+     */
+    public function test_the_pushed_pins_carry_a_currency_symbol(): void
+    {
+        Property::factory()->create([
+            'title' => 'Mapped Home', 'bedrooms' => 4, 'status' => 'For Sale',
+            'currency' => 'GBP', 'latitude' => 51.45, 'longitude' => -0.97,
+        ]);
+
+        Livewire::test(PropertyList::class)
+            ->set('minBedrooms', 4)
+            ->assertDispatched('property-map-updated', function (string $event, array $payload) {
+                return ($payload['properties'][0]['currency'] ?? null) === '£';
+            });
+    }
+
+    /**
+     * Reached through the component, not the URL: Livewire owns its page state
+     * and resets an out-of-range ?page on a plain GET. gotoPage does not.
+     */
+    public function test_a_page_beyond_the_results_is_not_an_empty_search(): void
+    {
+        Property::factory()->count(3)->create(['status' => 'For Sale']);
+
+        Livewire::test(PropertyList::class)
+            ->call('gotoPage', 99)
+            ->assertSee('Nothing on this page')
+            ->assertDontSee('No homes match these filters');
+    }
+
     public function test_the_page_loads_no_third_party_image(): void
     {
         $html = $this->get('/properties')->assertOk()->getContent();

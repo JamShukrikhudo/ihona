@@ -106,6 +106,36 @@ class ContactFormTest extends TestCase
         $this->assertMatchesRegularExpression('/<option value="renting"[^>]*selected/', $html);
     }
 
+    /**
+     * The acceptance sweep only walks GET, so nothing covered this: the
+     * redirect was built directly and therefore had no session, and
+     * RedirectResponse::with() called flash() on null — a 500 on exactly the
+     * stale-form path the handler exists to catch.
+     */
+    public function test_posting_the_old_tenancy_form_does_not_fail(): void
+    {
+        $property = Property::factory()->create();
+
+        $this->post('/properties/'.$property->id.'/apply', [
+            'name' => 'Alex Whitmore',
+            'email' => 'alex@example.com',
+            'password' => 'secret-enough',
+            'password_confirmation' => 'secret-enough',
+        ])->assertRedirect();
+    }
+
+    public function test_a_discarded_submission_is_told_so(): void
+    {
+        $property = Property::factory()->create();
+
+        $this->post('/properties/'.$property->id.'/apply', ['name' => 'Alex'])
+            ->assertRedirect();
+
+        $html = $this->get(route('contact.show'))->assertOk()->getContent();
+
+        $this->assertStringContainsString('Applications are not open', $html);
+    }
+
     public function test_every_field_has_a_real_label(): void
     {
         $html = $this->get(route('contact.show'))->assertOk()->getContent();

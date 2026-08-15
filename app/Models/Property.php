@@ -526,7 +526,15 @@ class Property extends Model implements HasMedia
      */
     public function scopePropertyType(Builder $query, $type): Builder
     {
-        return $query->whereRaw('LOWER(property_type) = ?', [strtolower(trim((string) $type))]);
+        // Matched without regard to case, but with whereIn rather than
+        // LOWER(column): a function on the column makes any index unusable,
+        // and this scope runs on the list, the count, the map and once per
+        // filter in the empty-state calculation.
+        $type = trim((string) $type);
+
+        return $query->whereIn('property_type', array_unique([
+            $type, strtolower($type), strtoupper($type), ucfirst(strtolower($type)),
+        ]));
     }
 
     public function scopeHasAmenities(Builder $query, array $amenities): Builder

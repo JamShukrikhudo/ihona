@@ -23,9 +23,7 @@ class PropertyMap extends Component
      */
     public function __construct($properties = null)
     {
-        $this->properties = Collection::wrap(
-            $properties !== null ? $properties : self::defaults()
-        )->map(fn ($property) => self::point($property))->values();
+        $this->properties = self::points($properties !== null ? $properties : self::defaults());
     }
 
     /**
@@ -54,6 +52,12 @@ class PropertyMap extends Component
      * listing's own currency symbol rather than the site-wide one — the same
      * rule the property card follows.
      */
+    /** @return Collection<int, array<string, mixed>> */
+    public static function points(iterable $properties): Collection
+    {
+        return Collection::wrap($properties)->map(fn ($p) => self::point($p))->values();
+    }
+
     private static function point(mixed $property): array
     {
         $get = fn (string $key) => is_array($property) ? ($property[$key] ?? null) : ($property->{$key} ?? null);

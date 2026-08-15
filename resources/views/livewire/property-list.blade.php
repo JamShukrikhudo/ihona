@@ -93,7 +93,7 @@
 
     <div class="mt-6 grid gap-6 lg:grid-cols-12">
         <div class="lg:col-span-7 xl:col-span-8">
-            @if ($count)
+            @if (count($this->properties))
                 <div class="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
                     @foreach ($this->properties as $property)
                         <x-property-card :property="$property"
@@ -104,6 +104,26 @@
 
                 <div class="mt-8">
                     {{ $this->properties->links() }}
+                </div>
+            @elseif ($count)
+                {{-- Matches exist, just not on this page: an out-of-range page
+                     number, not an empty search. --}}
+                <div class="rounded-sheet border border-dashed border-sheet-300 bg-sheet-000 p-10 text-center">
+                    <p class="font-display text-h4 font-bold tracking-tight text-ink-900">
+                        {{ __('Nothing on this page') }}
+                    </p>
+                    <p class="mx-auto mt-2 max-w-reading text-body-s text-ink-500">
+                        {{ trans_choice(
+                            ':count home matches, starting from the first page.|:count homes match, starting from the first page.',
+                            $count,
+                            ['count' => number_format($count)]
+                        ) }}
+                    </p>
+                    <div class="mt-4">
+                        <x-ui.button size="sm" type="button" wire:click="gotoPage(1)">
+                            {{ __('Back to the first page') }}
+                        </x-ui.button>
+                    </div>
                 </div>
             @else
                 @php $loosen = $this->mostRestrictiveFilter(); @endphp
@@ -147,7 +167,7 @@
                     <x-ui.icon name="chevron-right" class="size-3.5 transition-transform group-open:rotate-90" />
                 </summary>
                 <div class="mt-3 lg:mt-0">
-                    <x-property-map :properties="rescue(fn () => $this->mappableResults(), collect(), report: false)" />
+                    <x-property-map :properties="$mapPoints" />
                 </div>
             </details>
         </aside>

@@ -72,7 +72,7 @@ const CONTRAST = `() => {
     const need = large? 3 : 4.5;
     if (ratio < need - 0.05) bad.push({t:text.slice(0,28), ratio:+ratio.toFixed(2), need, size:+size.toFixed(1)});
   });
-  return bad;
+  return bad.sort((a, b) => a.ratio - b.ratio);
 }`;
 
 for (const page of pages) {

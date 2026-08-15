@@ -11,6 +11,13 @@
 @endphp
 
 <div>
+    @if (session('error'))
+        <p role="alert"
+           class="mb-6 rounded-sheet border border-caution-600 bg-caution-100 px-4 py-3 text-body-s text-caution-700">
+            {{ session('error') }}
+        </p>
+    @endif
+
     @if (session('success'))
         <div role="status"
              class="mb-6 flex items-start gap-3 rounded-sheet border border-verdigris-600 bg-verdigris-100 px-4 py-3">

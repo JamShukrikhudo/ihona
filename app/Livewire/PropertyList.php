@@ -255,9 +255,13 @@ class PropertyList extends Component
         // these filters" — the one moment the map is most obviously wrong.
         $mapped = rescue(fn () => $this->mappableResults(), collect(), report: true);
 
+        // Shaped by the same component that renders the server pass, or the
+        // live update formats prices differently from the first paint.
+        $points = \App\View\Components\PropertyMap::points($mapped);
+
         $this->dispatch(
             'property-map-updated',
-            properties: $mapped->all(),
+            properties: $points->all(),
             label: trans_choice(
                 ':count property mapped|:count properties mapped',
                 $mapped->count(),
@@ -265,10 +269,11 @@ class PropertyList extends Component
             ),
         );
 
-        // No view data: the blade reads $this->properties, which Livewire
-        // memoises. Passing it here as well ran the paginated query a second
-        // time and dispatched propertiesUpdated twice per render.
-        return view('livewire.property-list')->layout('layouts.app');
+        // The map points are passed rather than recomputed in the view: the
+        // blade called mappableResults() again, so every debounced keystroke
+        // paid for two 500-row selects.
+        return view('livewire.property-list', ['mapPoints' => $points])
+            ->layout('layouts.app');
     }
     
     public function viewProperty($propertyId)
