@@ -64,6 +64,13 @@ $pages = [
     'privacy' => '/privacy',
     'terms' => '/terms-and-conditions',
     'design' => '/design',
+    // The sign-in journey. Four of these were on a shell this application does
+    // not have and threw on render, and no sweep — this one included — was
+    // walking them.
+    'login' => '/login',
+    'register' => '/register',
+    'forgot-password' => '/forgot-password',
+    'reset-password' => '/reset-password/a-reset-token',
 ];
 
 $broken = [];

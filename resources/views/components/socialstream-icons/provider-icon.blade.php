@@ -1,4 +1,7 @@
-<div class="text-gray-900">
+{{-- The icon inherits the colour of the control it sits in, so it moves
+     with the theme. It used to force text-gray-900, which on the night
+     ground was a black mark on a dark button. --}}
+<div>
     @switch($provider)
         @case(\JoelButcher\Socialstream\Providers::bitbucket())
             <x-socialstream-icons.bitbucket {{ $attributes }} />

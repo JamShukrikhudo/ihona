@@ -34,10 +34,8 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Event;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use JoelButcher\Socialstream\Filament\SocialstreamPlugin;
-use Laravel\Fortify\Fortify;
 use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
 use Laravel\Jetstream\Features;
-use Laravel\Jetstream\Jetstream;
 
 class AppPanelProvider extends PanelProvider
 {
@@ -107,15 +105,17 @@ class AppPanelProvider extends PanelProvider
     public function boot()
     {
 
-        /**
-         * Disable Fortify routes.
+        /*
+         * Fortify::$registersRoutes and Jetstream::$registersRoutes used to be
+         * switched off here, in nine panel providers. They are statics, and
+         * this runs in boot() — after Fortify has already registered its
+         * routes — so in a fresh process the flags changed nothing and the
+         * public /login, /register and /forgot-password routes existed anyway.
+         * In a process that boots the application twice, they vanished: every
+         * test after the first in a file had no auth routes at all, which is
+         * why nothing here has ever covered them, and a warm Octane worker
+         * would have served 404 for the sign-in page.
          */
-        Fortify::$registersRoutes = false;
-
-        /**
-         * Disable Jetstream routes.
-         */
-        Jetstream::$registersRoutes = false;
 
         /**
          * Listen and switch team if tenant was changed.

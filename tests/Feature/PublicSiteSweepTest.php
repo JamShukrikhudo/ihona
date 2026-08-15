@@ -67,9 +67,11 @@ class PublicSiteSweepTest extends TestCase
         // and one did: `<x-socialstream::components.socialstream />` resolves
         // to components.components.socialstream, so /login and /register threw
         // on every request while the sweep reported the site clean.
-        foreach (['login', 'register'] as $uri) {
-            if (app('router')->getRoutes()->getByName($uri)) {
-                $routes[$uri] = $uri;
+        foreach (['login', 'register', 'password.request', 'password.reset'] as $name) {
+            $route = app('router')->getRoutes()->getByName($name);
+
+            if ($route) {
+                $routes[$route->uri()] = $route->uri();
             }
         }
 
@@ -98,8 +100,8 @@ class PublicSiteSweepTest extends TestCase
         $property = $this->makeProperty();
 
         return '/'.str_replace(
-            ['{propertyId}', '{property}', '{propertyIds}', '{slug}'],
-            [$property->id, $property->id, (string) $property->id, 'a-news-story'],
+            ['{propertyId}', '{property}', '{propertyIds}', '{slug}', '{token}'],
+            [$property->id, $property->id, (string) $property->id, 'a-news-story', 'a-reset-token'],
             $uri
         );
     }

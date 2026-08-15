@@ -1,37 +1,28 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="h-full flex flex-col sm:justify-center items-center pt-3 sm:pt-0 my-8">
-        <div class="w-full sm:max-w-md mb-4 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
+    <x-auth-panel :title="__('Reset your password')"
+                  :lede="__('Give us the address you signed up with and we will email a link that lets you set a new password.')">
+        <form method="POST" action="{{ route('password.email') }}" class="grid gap-5">
+            @csrf
 
-            <div class="mb-4 text-sm text-gray-600">
-                {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
+            <x-ui.field id="email" :label="__('Email')">
+                <x-ui.control id="email" type="email" name="email" :value="old('email')"
+                              autocomplete="username" required autofocus
+                              :invalid="$errors->has('email')" />
+            </x-ui.field>
+
+            <div class="flex items-center justify-end">
+                <x-ui.button type="submit">{{ __('Email me a link') }}</x-ui.button>
             </div>
+        </form>
 
-            @session('status')
-                <div class="mb-4 font-medium text-sm text-green-600">
-                    {{ $value }}
-                </div>
-            @endsession
-
-            <x-validation-errors class="mb-4" />
-
-            <form method="POST" action="{{ route('password.email') }}">
-                @csrf
-
-                <div class="block">
-                    <x-label for="email" value="{{ __('Email') }}" />
-                    <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')"
-                        required autofocus autocomplete="username" />
-                </div>
-
-                <div class="flex items-center justify-end mt-4">
-                    <x-button>
-                        {{ __('Email Password Reset Link') }}
-                    </x-button>
-                </div>
-            </form>
-        </div>
-    </div>
-
+        <x-slot name="footer">
+            {{ __('Remembered it?') }}
+            <a href="{{ route('login') }}"
+               class="text-draft-700 underline underline-offset-2 hover:no-underline">
+                {{ __('Sign in') }}
+            </a>
+        </x-slot>
+    </x-auth-panel>
 @endsection
