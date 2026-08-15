@@ -73,5 +73,66 @@
                 button.setAttribute('aria-expanded', open ? 'true' : 'false');
             });
         })();
+
+        // Hover is handled in CSS. Everything else runs through aria-expanded,
+        // which is the only state the stylesheet reads. Revealing on
+        // :focus-within as well looked equivalent and was not: Escape returns
+        // focus to the toggle, the toggle is inside the group, and the submenu
+        // sprang straight back open.
+        (function () {
+            var toggles = document.querySelectorAll('[data-submenu-toggle]');
+
+            function close(toggle) {
+                toggle.setAttribute('aria-expanded', 'false');
+            }
+
+            function open(toggle) {
+                toggle.setAttribute('aria-expanded', 'true');
+            }
+
+            Array.prototype.forEach.call(toggles, function (toggle) {
+                var item = toggle.closest('.group');
+
+                if (! item) return;
+
+                // Tabbing onto the parent link reveals it, the same as hovering.
+                // Not when the toggle itself takes focus: focus lands before
+                // the click fires, so opening here made the click that
+                // followed read as a close and the button did nothing.
+                item.addEventListener('focusin', function (event) {
+                    if (event.target !== toggle) open(toggle);
+                });
+
+                toggle.addEventListener('click', function () {
+                    toggle.setAttribute(
+                        'aria-expanded',
+                        toggle.getAttribute('aria-expanded') === 'true' ? 'false' : 'true'
+                    );
+                });
+
+                item.addEventListener('keydown', function (event) {
+                    if (event.key !== 'Escape') return;
+
+                    close(toggle);
+                    toggle.focus();
+                });
+
+                // Tabbing out of the last child closes it behind you.
+                item.addEventListener('focusout', function (event) {
+                    if (! item.contains(event.relatedTarget)) close(toggle);
+                });
+            });
+
+            document.addEventListener('click', function (event) {
+                Array.prototype.forEach.call(
+                    document.querySelectorAll('[data-submenu-toggle][aria-expanded="true"]'),
+                    function (toggle) {
+                        var item = toggle.closest('.group');
+
+                        if (item && ! item.contains(event.target)) close(toggle);
+                    }
+                );
+            });
+        })();
     </script>
 @endpush
