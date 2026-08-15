@@ -1,8 +1,9 @@
 @extends('layouts.app')
 
-@section('styles')
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-@endsection
+{{-- No @section('styles') here: Leaflet's stylesheet is already bundled by
+     resources/js/app.js. The unpkg <link> that used to sit here was dead until
+     the layout gained @yield('styles'), at which point it became a
+     render-blocking third-party request for CSS the page already had. --}}
 
 @section('content')
 <div class="container mx-auto px-4 pt-24 pb-8">

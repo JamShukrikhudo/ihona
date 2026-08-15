@@ -29,15 +29,26 @@
     ];
 
     if (! isset($paths[$name])) {
-        // Fail loudly: a silently missing icon is a hole in the interface that
-        // nobody notices until a user reports a blank button.
-        throw new \InvalidArgumentException(
-            "Unknown icon [{$name}]. Available: ".implode(', ', array_keys($paths))
-        );
+        // Loud while building, quiet in production: a typo should stop a
+        // developer, but an icon name that ever comes from a model attribute
+        // must not turn one bad row into a 500 on a public page.
+        if (config('app.debug')) {
+            throw new \InvalidArgumentException(
+                "Unknown icon [{$name}]. Available: ".implode(', ', array_keys($paths))
+            );
+        }
+
+        report(new \InvalidArgumentException("Unknown icon [{$name}]"));
     }
+
+    // Only default the size when the caller did not set one: `size-4` and a
+    // caller's `size-3.5` are the same utility, so source order would decide
+    // the winner rather than the caller.
+    $classes = str_contains($attributes->get('class', ''), 'size-') ? '' : 'size-4';
 @endphp
 
-<svg {{ $attributes->class('size-4') }}
+@if (isset($paths[$name]))
+<svg {{ $attributes->class($classes) }}
      viewBox="0 0 24 24"
      fill="none"
      stroke="currentColor"
@@ -49,3 +60,4 @@
         <path d="{{ $d }}" />
     @endforeach
 </svg>
+@endif

@@ -34,8 +34,11 @@
                     class="rounded-tag px-3 py-2 text-body-s font-medium text-ink-700 transition-colors duration-[160ms] hover:text-survey-600">
                     {{ __('Log in') }}
                 </a>
+                {{-- Never hidden: the mobile menu carries only CMS items, so
+                     hiding this below sm left a phone visitor with no route to
+                     registration at all. --}}
                 <a href="{{ Route::has('register') ? route('register') : url('/app/register') }}"
-                    class="hidden rounded-sheet bg-survey-500 px-4 py-2 text-body-s font-semibold text-white shadow-lift-1 transition-colors duration-[160ms] hover:bg-survey-600 sm:inline-flex">
+                    class="inline-flex rounded-sheet bg-action px-4 py-2 text-body-s font-semibold text-white shadow-lift-1 transition-colors duration-[160ms] hover:bg-action-hover">
                     {{ __('Register') }}
                 </a>
             @endauth

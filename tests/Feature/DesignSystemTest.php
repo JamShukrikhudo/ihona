@@ -62,8 +62,8 @@ class DesignSystemTest extends TestCase
         $primary = Blade::render('<x-ui.button variant="primary">Go</x-ui.button>');
         $ghost = Blade::render('<x-ui.button variant="ghost">Go</x-ui.button>');
 
-        $this->assertStringContainsString('bg-survey-500', $primary);
-        $this->assertStringNotContainsString('bg-survey-500', $ghost);
+        $this->assertStringContainsString('bg-action', $primary);
+        $this->assertStringNotContainsString('bg-action', $ghost);
     }
 
     /**
@@ -186,6 +186,87 @@ class DesignSystemTest extends TestCase
             $source,
             'a utility prefix followed by an interpolation never reaches the stylesheet'
         );
+    }
+
+    /**
+     * The same trap has now cost three separate bugs — the energy bands, the
+     * type scale, and the palette swatches — so guard every view rather than
+     * the one that happened to break last.
+     *
+     * Tailwind reads these files as plain text. Anything assembled at runtime,
+     * whether a class name or a `var(--color-…)` reference, is invisible to it:
+     * the utility is never generated, the @theme variable is dropped, and the
+     * element silently renders unstyled.
+     */
+    public function test_no_view_builds_a_utility_or_token_reference_at_runtime(): void
+    {
+        $offenders = [];
+
+        foreach ($this->designSystemViews() as $path) {
+            $source = file_get_contents($path);
+            $relative = str_replace(base_path().'/', '', $path);
+
+            if (preg_match('/class="[^"]*\b[a-z][a-z-]*-\{\{/', $source, $m)) {
+                $offenders[] = $relative.' — class built at runtime: '.trim($m[0]);
+            }
+
+            if (preg_match('/var\(\s*--[a-z-]*\{\{/', $source, $m)) {
+                $offenders[] = $relative.' — token built at runtime: '.trim($m[0]);
+            }
+        }
+
+        $this->assertSame([], $offenders, implode("\n", $offenders));
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function designSystemViews(): array
+    {
+        return array_merge(
+            glob(resource_path('views/components/ui/*.blade.php')) ?: [],
+            glob(resource_path('views/components/design/*.blade.php')) ?: [],
+            glob(resource_path('views/design/*.blade.php')) ?: [],
+            [
+                resource_path('views/layouts/app.blade.php'),
+                resource_path('views/components/home-navbar.blade.php'),
+                resource_path('views/components/footer.blade.php'),
+                resource_path('views/components/theme-switch.blade.php'),
+            ]
+        );
+    }
+
+    /**
+     * White on survey-500 is 3.7:1 — under AA for the 13–14px labels buttons
+     * carry. The action fill is a separate, theme-fixed token for that reason.
+     */
+    public function test_the_primary_action_fill_is_not_the_signature_accent(): void
+    {
+        $primary = Blade::render('<x-ui.button variant="primary">Book a viewing</x-ui.button>');
+
+        $this->assertStringContainsString('bg-action', $primary);
+        $this->assertStringNotContainsString('bg-survey-500', $primary);
+
+        $css = file_get_contents(resource_path('css/app.css'));
+        $this->assertMatchesRegularExpression('/--color-action:\s*#C93A12/i', $css);
+        $this->assertMatchesRegularExpression('/--color-action-hover:\s*#A82D0C/i', $css);
+    }
+
+    public function test_icon_lets_the_caller_set_its_own_size(): void
+    {
+        $default = Blade::render('<x-ui.icon name="alert" />');
+        $sized = Blade::render('<x-ui.icon name="alert" class="size-3.5" />');
+
+        $this->assertStringContainsString('size-4', $default);
+        $this->assertStringContainsString('size-3.5', $sized);
+        $this->assertStringNotContainsString('size-4', $sized);
+    }
+
+    public function test_energy_band_does_not_emit_two_style_attributes(): void
+    {
+        $html = Blade::render('<x-ui.epc-band band="B" score="84" style="margin:0" />');
+
+        $this->assertSame(1, substr_count($html, 'style='));
     }
 
     public function test_field_wires_its_label_hint_and_error_to_the_control(): void

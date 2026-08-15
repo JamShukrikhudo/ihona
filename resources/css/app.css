@@ -45,7 +45,7 @@
    SURVEY SHEET — design system tokens
    The interface as a surveyor's drawing set. Trust comes from disclosure, not
    decoration: every number on the page is a fact the record already holds.
-   Full reference: docs/design/survey-sheet.html
+   Full reference: docs/design-survey-sheet.html
    ========================================================================= */
 
 @theme {
@@ -69,9 +69,17 @@
   /* Survey orange: wayfinding + primary action. Budget: <=3% of pixels. */
   --color-survey-700: light-dark(#A82D0C, #FFA187);
   --color-survey-600: light-dark(#C93A12, #FF7A52); /* orange as text — 4.5:1  */
-  --color-survey-500: #EE4A1E;                      /* fills, focus ring       */
+  --color-survey-500: #EE4A1E;                      /* focus ring, leader lines */
   --color-survey-300: light-dark(#F8A98F, #8A3D22);
   --color-survey-100: light-dark(#FCE7DF, #3A1B10);
+
+  /* The primary action fill. Fixed in both themes on purpose: white on it has
+     to clear AA, and a light-dark() pair cannot promise that on both grounds —
+     the dark side of survey-600 (#FF7A52) is 2.6:1 against white. White on
+     survey-500 is only 3.7:1, so the signature accent is never a fill that
+     carries text; it stays the focus ring and the leader line. */
+  --color-action: #C93A12;       /* white on this — 5.1:1                     */
+  --color-action-hover: #A82D0C; /* white on this — 6.9:1                     */
 
   /* Verdigris: verified, compliant, in hand. */
   --color-verdigris-700: light-dark(#1F4E42, #8FD3BE);

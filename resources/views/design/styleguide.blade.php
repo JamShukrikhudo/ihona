@@ -12,28 +12,33 @@
             'icons' => 'Icons',
         ];
 
+        // Whole utility class names, never "var(--color-{$token})". Tailwind
+        // drops any @theme variable no utility references, so a token reached
+        // for only through a runtime-built var() is absent from the stylesheet
+        // and its swatch renders blank — the styleguide lying about the palette.
         $ground = [
-            'sheet-000' => 'Card faces, inputs, anything lifted off the page',
-            'sheet-100' => 'Page ground. Vellum, not cream — the green cast is the point',
-            'sheet-200' => 'Wells, table stripes, disabled fills',
-            'sheet-300' => 'Every hairline: borders, rules, dimension lines',
-            'sheet-400' => 'Placeholder text only. Never body copy',
+            ['bg-sheet-000', 'sheet-000', 'Card faces, inputs, anything lifted off the page'],
+            ['bg-sheet-100', 'sheet-100', 'Page ground. Vellum, not cream — the green cast is the point'],
+            ['bg-sheet-200', 'sheet-200', 'Wells, table stripes, disabled fills'],
+            ['bg-sheet-300', 'sheet-300', 'Every hairline: borders, rules, dimension lines'],
+            ['bg-sheet-400', 'sheet-400', 'Placeholder text only. Never body copy'],
         ];
 
         $ink = [
-            'ink-900' => 'Headings, prices, disclosure values — 15.9:1 on vellum',
-            'ink-700' => 'Body copy — 12.2:1',
-            'ink-500' => 'Secondary copy, field labels — 6.3:1',
-            'ink-400' => 'Annotation and metadata — 4.5:1, 12px minimum',
+            ['bg-ink-900', 'ink-900', 'Headings, prices, disclosure values — 15.9:1 on vellum'],
+            ['bg-ink-700', 'ink-700', 'Body copy — 12.2:1'],
+            ['bg-ink-500', 'ink-500', 'Secondary copy, field labels — 6.3:1'],
+            ['bg-ink-400', 'ink-400', 'Annotation and metadata — 4.5:1, 12px minimum'],
         ];
 
         $working = [
-            'survey-500' => 'Act: primary buttons, focus rings, the live map pin',
-            'survey-600' => 'Orange as text or on hover — the only orange safe for copy',
-            'verdigris-600' => 'Verified: ID checked, compliance in date, offer accepted',
-            'draft-700' => 'Reference: inline links, map geometry, informational notes',
-            'caution-600' => 'Expiring: gas safety due, tenancy ending, EPC over 8 years old',
-            'fault-600' => 'Failed: overdue compliance, rejected payment, destructive actions',
+            ['bg-survey-500', 'survey-500', 'The signature accent: focus rings, leader lines, the live map pin. Not for a fill that carries text'],
+            ['bg-action', 'action', 'Primary action fill. Fixed in both themes so white on it stays at 5.1:1'],
+            ['bg-survey-600', 'survey-600', 'Orange as text or on hover — the only orange safe for copy'],
+            ['bg-verdigris-600', 'verdigris-600', 'Verified: ID checked, compliance in date, offer accepted'],
+            ['bg-draft-700', 'draft-700', 'Reference: inline links, map geometry, informational notes'],
+            ['bg-caution-600', 'caution-600', 'Expiring: gas safety due, tenancy ending, EPC over 8 years old'],
+            ['bg-fault-600', 'fault-600', 'Failed: overdue compliance, rejected payment, destructive actions'],
         ];
 
         // Whole class names, never "text-{$step}". Tailwind scans this file as
@@ -98,10 +103,9 @@
             ] as $groupTitle => $swatches)
                 <h3 class="mt-8 mb-3 font-mono text-annotation uppercase text-ink-400">{{ $groupTitle }}</h3>
                 <div class="grid grid-cols-[repeat(auto-fill,minmax(11rem,1fr))] gap-3">
-                    @foreach ($swatches as $token => $use)
+                    @foreach ($swatches as [$fill, $token, $use])
                         <div class="overflow-hidden rounded-sheet border border-sheet-300 bg-sheet-000">
-                            <div class="h-16 border-b border-sheet-300"
-                                 style="background:var(--color-{{ $token }});"></div>
+                            <div class="h-16 border-b border-sheet-300 {{ $fill }}"></div>
                             <div class="p-3">
                                 <p class="font-mono text-micro font-medium text-ink-900">{{ $token }}</p>
                                 <p class="mt-1.5 text-caption text-ink-500">{{ $use }}</p>

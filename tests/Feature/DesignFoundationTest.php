@@ -20,13 +20,55 @@ class DesignFoundationTest extends TestCase
         return file_get_contents(resource_path('css/app.css'));
     }
 
-    public function test_public_pages_request_no_third_party_font(): void
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function publicRoutes(): array
     {
-        $html = $this->get('/')->assertOk()->getContent();
+        return [
+            'home' => ['/'],
+            'property list' => ['/properties'],
+            'about' => ['/about'],
+            'services' => ['/services'],
+            'contact' => ['/contact'],
+            'news' => ['/news'],
+        ];
+    }
 
-        $this->assertStringNotContainsString('fonts.googleapis.com', $html);
-        $this->assertStringNotContainsString('fonts.gstatic.com', $html);
+    /**
+     * Not just fonts. A dead @section('styles') carrying a Leaflet CDN <link>
+     * came alive the moment the layout gained @yield('styles') — a
+     * render-blocking third-party request for CSS the bundle already had.
+     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('publicRoutes')]
+    public function test_public_page_loads_no_third_party_asset(string $uri): void
+    {
+        $html = $this->get($uri)->assertOk()->getContent();
+
+        foreach ([
+            'fonts.googleapis.com',
+            'fonts.gstatic.com',
+            'unpkg.com',
+            'cdn.jsdelivr.net',
+            'cdnjs.cloudflare.com',
+            'ajax.googleapis.com',
+            'stackpath.bootstrapcdn.com',
+        ] as $host) {
+            $this->assertStringNotContainsString(
+                $host,
+                $html,
+                "[{$uri}] pulls a stylesheet or script from {$host}"
+            );
+        }
+    }
+
+    public function test_the_stylesheet_itself_imports_nothing_remote(): void
+    {
         $this->assertStringNotContainsString('fonts.googleapis.com', $this->stylesheet());
+        $this->assertDoesNotMatchRegularExpression(
+            '/@import\s+url\(\s*[\'"]?https?:/',
+            $this->stylesheet()
+        );
     }
 
     /**

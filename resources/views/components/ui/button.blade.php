@@ -18,7 +18,7 @@
         .' aria-disabled:pointer-events-none aria-disabled:opacity-45';
 
     $variants = [
-        'primary' => 'border-survey-500 bg-survey-500 text-white shadow-lift-1 hover:border-survey-600 hover:bg-survey-600 hover:shadow-lift-2',
+        'primary' => 'border-action bg-action text-white shadow-lift-1 hover:border-action-hover hover:bg-action-hover hover:shadow-lift-2',
         'secondary' => 'border-sheet-300 bg-sheet-000 text-ink-900 hover:border-ink-900',
         'ghost' => 'border-transparent bg-transparent text-ink-500 hover:bg-sheet-200 hover:text-ink-900',
         'danger' => 'border-fault-600 bg-fault-600 text-white hover:border-fault-700 hover:bg-fault-700',

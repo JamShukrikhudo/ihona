@@ -59,13 +59,7 @@
                     return stored() || (media.matches ? 'dark' : 'light');
                 }
 
-                function apply(theme, remember) {
-                    document.documentElement.dataset.theme = theme;
-
-                    if (remember) {
-                        try { localStorage.setItem('theme', theme); } catch (e) {}
-                    }
-
+                function reflect(theme) {
                     buttons.forEach(function (button) {
                         button.setAttribute(
                             'aria-pressed',
@@ -74,7 +68,21 @@
                     });
                 }
 
-                apply(current(), false);
+                function apply(theme, remember) {
+                    document.documentElement.dataset.theme = theme;
+
+                    if (remember) {
+                        try { localStorage.setItem('theme', theme); } catch (e) {}
+                    }
+
+                    reflect(theme);
+                }
+
+                // Show which theme is live without stamping the document. With
+                // no stored choice it stays unstamped and `color-scheme: light
+                // dark` keeps following the OS natively, which is the invariant
+                // the layout's head script documents.
+                reflect(current());
 
                 buttons.forEach(function (button) {
                     button.addEventListener('click', function () {
@@ -83,9 +91,11 @@
                 });
 
                 // Follow the operating system only until the reader chooses.
+                // The CSS already follows it; this just keeps the pressed state
+                // honest about which theme is showing.
                 media.addEventListener('change', function () {
                     if (! stored()) {
-                        apply(media.matches ? 'dark' : 'light', false);
+                        reflect(media.matches ? 'dark' : 'light');
                     }
                 });
             })();
