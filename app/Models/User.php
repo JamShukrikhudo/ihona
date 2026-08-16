@@ -25,16 +25,16 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable implements FilamentUser, HasDefaultTenant, HasTenants
 {
     use HasApiTokens;
-
     use HasFactory;
     use HasProfilePhoto {
         HasProfilePhoto::profilePhotoUrl as getPhotoUrl;
     }
+
     // use HasConnectedAccounts;
     use HasRoles;
     use HasTeams;
-
     use Notifiable;
+
     // use SetsProfilePhotoFromUrl;
     use TwoFactorAuthenticatable;
 
@@ -109,22 +109,18 @@ class User extends Authenticatable implements FilamentUser, HasDefaultTenant, Ha
 
     public function canAccessPanel(Panel $panel): bool
     {
-        $panelId = $panel->getId();
-
-        return $this->canAccessPanelById($panelId);
+        return $this->canAccessPanelById($panel->getId());
     }
 
+    /** Every panel id is a role name, so a role gets its own panel — plus staff on /app, admins everywhere. */
     private function canAccessPanelById(string $panelId): bool
     {
-        if ($panelId === 'admin') {
-            return $this->hasRole(['admin', 'super_admin']);
-        }
-        if ($panelId === 'app') {
-            return $this->hasRole(['staff', 'admin', 'super_admin']);
-        }
-        $allowedRoles = config("filament-shield.panels.$panelId", []);
-
-        return $this->hasAnyRole($allowedRoles);
+        return $this->hasAnyRole([
+            $panelId,
+            ...($panelId === 'app' ? ['staff'] : []),
+            'admin',
+            'super_admin',
+        ]);
     }
 
     public function canAccessFilament(): bool

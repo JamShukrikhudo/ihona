@@ -264,6 +264,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/ueberdosis/tiptap-php" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/web-auth/cose-lib" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/web-auth/webauthn-lib" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/_laravel_idea" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
