@@ -10,20 +10,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RedirectIfAuthenticated
 {
-    protected $roleRedirects = [
-        'admin' => '/admin',
-        'staff' => '/staff',
-        'buyer' => '/buyer',
-        'seller' => '/seller',
-        'tenant' => '/tenant',
-        'landlord' => '/landlord',
-        'contractor' => '/contractor',
-    ];
-
     /**
      * Handle an incoming request.
      *
-     * @param Closure(Request):Response $next
+     * @param  Closure(Request):Response  $next
      */
     public function handle(Request $request, Closure $next, string ...$guards): Response
     {
@@ -32,17 +22,19 @@ class RedirectIfAuthenticated
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
                 $user = Auth::guard($guard)->user();
-                foreach ($this->roleRedirects as $role => $redirect) {
+                foreach (RoleBasedRedirect::PANELS as $role => $panel) {
                     if ($user->hasRole($role)) {
-                        return redirect($redirect);
+                        return redirect('/'.$panel);
                     }
                 }
-                // If user has a role not in $roleRedirects, redirect to /{role}
+                // If user has a role outside the map, redirect to /{role}
                 $userRoles = $user->getRoleNames();
                 if ($userRoles->isNotEmpty()) {
                     $firstRole = $userRoles->first();
-                    return redirect('/' . $firstRole);
+
+                    return redirect('/'.$firstRole);
                 }
+
                 // If user has no roles, redirect to default home
                 return redirect(RouteServiceProvider::HOME);
             }

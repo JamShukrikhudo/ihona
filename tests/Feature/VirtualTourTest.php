@@ -37,7 +37,7 @@ class VirtualTourTest extends TestCase
 
         $component = Livewire::test(PropertyDetail::class, ['propertyId' => $property->id]);
 
-        $component->assertSee('View Virtual Tour');
+        $component->assertSee('View the 3D tour');
     }
 
     public function test_property_detail_hides_virtual_tour_when_not_available()
@@ -50,7 +50,7 @@ class VirtualTourTest extends TestCase
 
         $component = Livewire::test(PropertyDetail::class, ['propertyId' => $property->id]);
 
-        $component->assertDontSee('View Virtual Tour');
+        $component->assertDontSee('View the 3D tour');
     }
 
     public function test_toggle_virtual_tour_display()
@@ -83,7 +83,7 @@ class VirtualTourTest extends TestCase
 
         $component = Livewire::test(PropertyDetail::class, ['propertyId' => $property->id]);
 
-        $component->assertSee('Schedule Live Tour');
+        $component->assertSee('Book a live tour with an agent');
     }
 
     public function test_schedule_live_tour_button_hidden_when_not_available()
@@ -96,7 +96,7 @@ class VirtualTourTest extends TestCase
 
         $component = Livewire::test(PropertyDetail::class, ['propertyId' => $property->id]);
 
-        $component->assertDontSee('Schedule Live Tour');
+        $component->assertDontSee('Book a live tour with an agent');
     }
 
     public function test_open_schedule_live_tour_modal()
