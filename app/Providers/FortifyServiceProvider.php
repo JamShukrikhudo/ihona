@@ -11,26 +11,13 @@ use App\Http\Responses\LogoutResponse;
 use App\Http\Responses\RegisterResponse;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Laravel\Fortify\Fortify;
-use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
 
 class FortifyServiceProvider extends ServiceProvider
 {
-
-    protected $roleRedirects = [
-        'admin' => '/admin',
-        'staff' => '/staff',
-        'buyer' => '/buyer',
-        'seller' => '/seller',
-        'tenant' => '/tenant',
-        'landlord' => '/landlord',
-        'contractor' => '/contractor',
-    ];
-    
     /**
      * Register any application services.
      */
@@ -66,12 +53,12 @@ class FortifyServiceProvider extends ServiceProvider
 
         // Rate limit password reset requests
         RateLimiter::for('password-reset', function (Request $request) {
-            return Limit::perHour(5)->by($request->input('email') . '|' . $request->ip());
+            return Limit::perHour(5)->by($request->input('email').'|'.$request->ip());
         });
 
         $this->app->bind(\Filament\Auth\Http\Responses\Contracts\LogoutResponse::class, LogoutResponse::class);
         $this->app->singleton(\Laravel\Fortify\Contracts\LoginResponse::class, LoginResponse::class);
         $this->app->singleton(\Laravel\Fortify\Contracts\RegisterResponse::class, RegisterResponse::class);
-        
+
     }
 }

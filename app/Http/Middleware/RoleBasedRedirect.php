@@ -8,16 +8,21 @@ use Illuminate\Support\Facades\Auth;
 
 class RoleBasedRedirect
 {
-    protected array $roleRedirects = [
+    /**
+     * Role to Filament panel. Public because the navbar links to the same
+     * place: it used to build `/{role}` itself, which sent a super_admin to
+     * the non-existent `/super_admin`.
+     */
+    public const PANELS = [
         'super_admin' => 'admin',
-        'admin'       => 'admin',
-        'staff'       => 'staff',
-        'agent'       => 'agent',
-        'buyer'       => 'buyer',
-        'seller'      => 'seller',
-        'landlord'    => 'landlord',
-        'tenant'      => 'tenant',
-        'contractor'  => 'contractor',
+        'admin' => 'admin',
+        'staff' => 'staff',
+        'agent' => 'agent',
+        'buyer' => 'buyer',
+        'seller' => 'seller',
+        'landlord' => 'landlord',
+        'tenant' => 'tenant',
+        'contractor' => 'contractor',
     ];
 
     public function handle(Request $request, Closure $next): mixed
@@ -36,11 +41,12 @@ class RoleBasedRedirect
 
         $user = Auth::user();
 
-        foreach ($this->roleRedirects as $role => $redirect) {
+        foreach (self::PANELS as $role => $redirect) {
             if ($user->hasRole($role)) {
                 if ($request->is($redirect) || $request->is($redirect.'/*')) {
                     return $next($request);
                 }
+
                 return redirect($redirect);
             }
         }
@@ -51,6 +57,7 @@ class RoleBasedRedirect
             if ($request->is($firstRole) || $request->is($firstRole.'/*')) {
                 return $next($request);
             }
+
             return redirect($firstRole);
         }
 

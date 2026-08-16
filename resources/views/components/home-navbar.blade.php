@@ -1,8 +1,10 @@
 @php
     $settings = app(\App\Settings\GeneralSettings::class);
     $user = auth()->user();
+    // The panel, not the role: a super_admin has no /super_admin to land on.
     $role = $user?->getRoleNames()->first() ?? 'user';
-    $dashboardUrl = $role === 'admin' ? '/admin' : '/' . $role;
+    $panel = \App\Http\Middleware\RoleBasedRedirect::PANELS[$role] ?? $role;
+    $dashboardUrl = '/' . $panel;
 @endphp
 
 <nav class="border-b border-sheet-300 bg-sheet-000">
@@ -27,7 +29,7 @@
             @auth
                 <a href="{{ $dashboardUrl }}"
                     class="rounded-tag px-3 py-2 text-body-s font-medium text-ink-700 transition-colors duration-[160ms] hover:text-survey-600">
-                    {{ __(':role dashboard', ['role' => ucfirst($role)]) }}
+                    {{ __(':role dashboard', ['role' => ucfirst($panel)]) }}
                 </a>
             @else
                 <a href="{{ Route::has('login') ? route('login') : url('/app/login') }}"

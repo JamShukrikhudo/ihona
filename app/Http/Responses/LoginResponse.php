@@ -2,37 +2,28 @@
 
 namespace App\Http\Responses;
 
-use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
+use App\Http\Middleware\RoleBasedRedirect;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
 
 class LoginResponse implements LoginResponseContract
 {
-    protected array $roleRedirects = [
-        'super_admin' => '/admin',
-        'admin'       => '/admin',
-        'staff'       => '/staff',
-        'agent'       => '/agent',
-        'buyer'       => '/buyer',
-        'seller'      => '/seller',
-        'landlord'    => '/landlord',
-        'tenant'      => '/tenant',
-        'contractor'  => '/contractor',
-    ];
-
     protected function shouldRedirect(Request $request, $redirect)
     {
         // Check if the current request path matches the redirect path
-        return !$request->is($redirect) && !$request->is($redirect . '/*');
+        return ! $request->is($redirect) && ! $request->is($redirect.'/*');
     }
 
     public function toResponse($request)
     {
         $user = Auth::user();
 
-        foreach ($this->roleRedirects as $role => $redirect) {
+        foreach (RoleBasedRedirect::PANELS as $role => $panel) {
             if ($user->hasRole($role)) {
+                $redirect = '/'.$panel;
+
                 return $request->wantsJson()
                     ? new JsonResponse(['two_factor' => false], 200)
                     : ($this->shouldRedirect($request, $redirect)
@@ -41,11 +32,12 @@ class LoginResponse implements LoginResponseContract
             }
         }
 
-        // If user has a role not in $roleRedirects, redirect to /{role}
+        // If user has a role outside the map, redirect to /{role}
         $userRoles = $user->getRoleNames();
         if ($userRoles->isNotEmpty()) {
             $firstRole = $userRoles->first();
-            $roleRedirect = '/' . $firstRole;
+            $roleRedirect = '/'.$firstRole;
+
             return $request->wantsJson()
                 ? new JsonResponse(['two_factor' => false], 200)
                 : ($this->shouldRedirect($request, $roleRedirect)
