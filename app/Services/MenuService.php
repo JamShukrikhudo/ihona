@@ -34,7 +34,7 @@ class MenuService
     public function buildMenu()
     {
         $menu = SpatieMenu::new()
-            ->addClass('lg:flex lg:items-center lg:gap-6')
+            ->addClass('lg:flex lg:items-center lg:gap-8')
             ->addItemClass(self::LINK);
 
         $this->tree()->each(function (Menu $item) use ($menu) {
@@ -48,16 +48,19 @@ class MenuService
             // element carrying `group`. Building it through nested Spatie menus
             // put it beside that element instead, where `group-hover:` can
             // never see it — so no submenu on the site had ever opened.
-            $menu->html($this->parent($item), ['class' => 'group relative']);
+            // Flex on the wide bar: the caret button is `lg:static`, so beside a
+            // `block` link it wrapped onto a second line and pushed the item taller
+            // than its neighbours.
+            $menu->html($this->parent($item), ['class' => 'group relative lg:flex lg:items-center lg:gap-1.5']);
         });
 
         return $menu;
     }
 
     /**
-     * @return \Illuminate\Support\Collection<int, Menu>
+     * @return Collection<int, Menu>
      */
-    private function tree(): \Illuminate\Support\Collection
+    private function tree(): Collection
     {
         return once(fn () => Menu::query()
             ->whereNull('parent_id')
@@ -120,13 +123,24 @@ class MenuService
      *
      * Below lg it stacks in the flow — an absolutely positioned panel inside
      * the collapsed menu covers the items underneath it.
+     *
+     * `lg:top-full` is not optional: the parent li is a flex row, so an
+     * abspos child with no `top` takes the flex container's corner as its
+     * static position and the panel opened over the navbar instead of under it.
+     *
+     * ponytail: mt-6 is the row's half-leading plus the navbar's p-4, so the
+     * panel lands on the bottom border. Retune it if the bar's height changes.
+     * The ::before covers exactly that margin — without it the pointer left the
+     * group crossing the gap, the panel closed, and no link was ever reachable.
      */
     private function submenu(Collection $children, string $id): string
     {
         return sprintf(
             '<ul id="%s" class="hidden group-hover:block'
             .' group-has-[[aria-expanded=true]]:block mt-1 w-full rounded-sheet border border-sheet-300'
-            .' bg-sheet-000 py-1 lg:absolute lg:right-0 lg:z-20 lg:mt-2 lg:w-48 lg:shadow-lift-2">%s</ul>',
+            .' bg-sheet-000 py-1 lg:absolute lg:right-0 lg:top-full lg:z-20 lg:mt-6 lg:w-48 lg:shadow-lift-2'
+            ." lg:before:absolute lg:before:inset-x-0 lg:before:-top-6 lg:before:h-6 lg:before:content-['']"
+            .'">%s</ul>',
             $id,
             $this->submenuItems($children)
         );
