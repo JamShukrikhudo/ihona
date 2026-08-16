@@ -3,7 +3,7 @@
     <button 
         @click="toggleChat()" 
         x-show="!isOpen"
-        class="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-4 shadow-lg transition-all duration-200 flex items-center justify-center"
+        class="flex items-center justify-center rounded-pill border border-sheet-300 bg-sheet-000 p-4 text-ink-900 shadow-lift-2 transition-colors duration-[160ms] hover:border-ink-900"
         aria-label="Open chat"
     >
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -24,12 +24,12 @@
         style="display: none;"
     >
         <!-- Header -->
-        <div class="bg-blue-600 text-white p-4 rounded-t-lg flex justify-between items-center">
+        <div class="flex items-center justify-between rounded-t-sheet border-b border-sheet-300 bg-sheet-200 p-4 text-ink-900">
             <div class="flex items-center gap-2">
-                <div class="w-3 h-3 bg-green-400 rounded-full"></div>
+                <div class="size-3 rounded-pill bg-verdigris-500"></div>
                 <h3 class="font-semibold">Customer Support</h3>
             </div>
-            <button @click="toggleChat()" class="text-white hover:text-gray-200">
+            <button @click="toggleChat()" class="text-ink-500 transition-colors duration-[160ms] hover:text-ink-900">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
@@ -42,11 +42,11 @@
                 <div :class="message.sender_type === 'user' ? 'flex justify-end' : 'flex justify-start'">
                     <div 
                         :class="message.sender_type === 'user' 
-                            ? 'bg-blue-600 text-white' 
+                            ? 'bg-ink-900 text-sheet-000' 
                             : message.sender_type === 'agent' 
                                 ? 'bg-verdigris-100 text-ink-700' 
                                 : 'bg-sheet-200 text-ink-700'"
-                        class="rounded-lg p-3 max-w-[80%] shadow-sm"
+                        class="max-w-[80%] rounded-sheet p-3 shadow-lift-1"
                     >
                         <template x-if="message.sender_type === 'agent'">
                             <div class="text-xs font-semibold mb-1 text-verdigris-700">Agent</div>
@@ -59,21 +59,21 @@
             
             <!-- Typing Indicator -->
             <div x-show="isTyping" class="flex justify-start">
-                <div class="bg-sheet-200 rounded-lg p-3 shadow-sm">
+                <div class="rounded-sheet bg-sheet-200 p-3 shadow-lift-1">
                     <div class="flex space-x-1">
-                        <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                        <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
-                        <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                        <div class="size-2 rounded-pill bg-ink-400 animate-bounce"></div>
+                        <div class="size-2 rounded-pill bg-ink-400 animate-bounce" style="animation-delay: 0.1s"></div>
+                        <div class="size-2 rounded-pill bg-ink-400 animate-bounce" style="animation-delay: 0.2s"></div>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Escalation Option -->
-        <div x-show="showEscalationOption && !isEscalated" class="px-4 py-2 bg-yellow-50 border-t border-yellow-200">
+        <div x-show="showEscalationOption && !isEscalated" class="border-t border-sheet-300 bg-caution-100 px-4 py-2">
             <button 
                 @click="escalateToAgent()"
-                class="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
+                class="flex items-center gap-1 text-body-s text-draft-500 transition-colors duration-[160ms] hover:text-draft-700"
             >
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
@@ -83,29 +83,28 @@
         </div>
 
         <!-- Escalated Notice -->
-        <div x-show="isEscalated" class="px-4 py-2 bg-green-50 border-t border-green-200">
-            <p class="text-sm text-green-700">Connected to a live agent</p>
+        <div x-show="isEscalated" class="border-t border-sheet-300 bg-verdigris-100 px-4 py-2">
+            <p class="text-body-s text-verdigris-700">Connected to a live agent</p>
         </div>
 
         <!-- Input Area -->
         <div class="p-4 border-t border-sheet-300">
             <form @submit.prevent="sendMessage()" class="flex gap-2">
-                <input 
-                    type="text" 
-                    x-model="currentMessage" 
-                    :disabled="isEscalated"
-                    placeholder="Type your message..." 
-                    class="flex-1 border border-sheet-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600 disabled:bg-sheet-200"
+                <x-ui.control
+                    type="text"
+                    class="flex-1 disabled:bg-sheet-200"
+                    x-model="currentMessage"
+                    {{-- x-bind:, not the `:` shorthand: Blade reads a leading
+                         colon on a component attribute as a PHP expression. --}}
+                    x-bind:disabled="isEscalated"
+                    :placeholder="__('Type your message')"
+                    :aria-label="__('Your message')"
                 />
-                <button 
-                    type="submit" 
-                    :disabled="!currentMessage.trim() || isEscalated"
-                    class="bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-4 py-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <x-ui.button variant="secondary" type="submit" x-bind:disabled="!currentMessage.trim() || isEscalated" :aria-label="__('Send')">
+                    <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
                     </svg>
-                </button>
+                </x-ui.button>
             </form>
         </div>
     </div>

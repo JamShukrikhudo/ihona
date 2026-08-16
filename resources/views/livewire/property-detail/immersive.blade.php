@@ -92,7 +92,7 @@
                             @if($holographicTourAvailable || $property->hasMedia('3d_models') || $property->model_3d_url)
                                 <div class="mt-6">
                                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">
-                                        <svg class="w-5 h-5 inline mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg class="w-5 h-5 inline mr-2 text-ink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                                         </svg>
                                         Holographic Property Tour
@@ -134,14 +134,13 @@
                                                 </span>
                                             </div>
                                             
-                                            <button wire:click="toggleHolographicViewer" 
-                                                class="w-full inline-flex items-center justify-center px-5 py-3 text-sm font-medium text-white bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg hover:from-purple-700 hover:to-blue-700 focus:ring-4 focus:ring-purple-300 dark:focus:ring-purple-800 transition-all duration-200">
-                                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <x-ui.button variant="secondary" class="w-full" wire:click="toggleHolographicViewer">
+                                                <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                                 </svg>
-                                                Launch Holographic Tour
-                                            </button>
+                                                {{ __('Launch the holographic tour') }}
+                                            </x-ui.button>
 
                                             <div class="mt-4 pt-4 border-t border-purple-200 dark:border-purple-800">
                                                 <p class="text-xs text-gray-600 dark:text-gray-400 text-center">
@@ -154,13 +153,12 @@
                                             <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
                                                 Holographic tour not yet available for this property. Generate one now to provide an immersive viewing experience.
                                             </p>
-                                            <button wire:click="generateHolographicTour" 
-                                                class="inline-flex items-center px-4 py-2 text-sm font-medium text-purple-700 bg-purple-100 rounded-lg hover:bg-purple-200 focus:ring-4 focus:ring-purple-300 dark:bg-purple-900 dark:text-purple-200 dark:hover:bg-purple-800 dark:focus:ring-purple-800 transition-colors">
-                                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <x-ui.button variant="secondary" wire:click="generateHolographicTour">
+                                                <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                                                 </svg>
-                                                Generate Holographic Tour
-                                            </button>
+                                                {{ __('Generate a holographic tour') }}
+                                            </x-ui.button>
                                         </div>
                                     @endif
                                 </div>
