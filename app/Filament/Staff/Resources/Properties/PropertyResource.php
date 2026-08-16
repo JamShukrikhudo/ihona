@@ -88,17 +88,47 @@ class PropertyResource extends Resource
                 TextInput::make('year_built')
                     ->required()
                     ->numeric()
-                    ->minValue(1800)
-                    ->maxValue(date('Y'))
+                    ->minValue(\App\Models\Property::EARLIEST_YEAR_BUILT)
+                    ->maxValue(\App\Models\Property::latestYearBuilt())
+                    ->helperText(\App\Models\Property::yearBuiltMessage())
                     ->label('Year Built'),
+                Select::make('council_tax_band')
+                    ->label('Council tax band')
+                    ->helperText('A to H, or A to I in Wales. Leave blank if it is not known.')
+                    ->options(array_combine(
+                        $bands = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'],
+                        $bands
+                    )),
+                Select::make('tenure')
+                    ->label('Tenure')
+                    ->options([
+                        'freehold' => 'Freehold',
+                        'leasehold' => 'Leasehold',
+                        'share_of_freehold' => 'Share of freehold',
+                        'commonhold' => 'Commonhold',
+                    ])
+                    ->live(),
+                TextInput::make('lease_years_remaining')
+                    ->label('Years remaining on the lease')
+                    ->helperText('Under 80 is shown on the card: below that the lease costs real money to extend.')
+                    ->numeric()
+                    ->minValue(0)
+                    ->maxValue(1200)
+                    ->visible(fn ($get) => $get('tenure') === 'leasehold'),
+                TextInput::make('service_charge')
+                    ->label('Service charge (per year)')
+                    ->numeric()
+                    ->minValue(0)
+                    ->step('0.01'),
+                TextInput::make('ground_rent')
+                    ->label('Ground rent (per year)')
+                    ->helperText('Enter 0 for a peppercorn rent; leave blank if it is not known.')
+                    ->numeric()
+                    ->minValue(0)
+                    ->step('0.01'),
                 Select::make('property_type')
                     ->required()
-                    ->options([
-                        'house' => 'House',
-                        'apartment' => 'Apartment',
-                        'condo' => 'Condo',
-                        'townhouse' => 'Townhouse',
-                    ]),
+                    ->options(\App\Models\Property::TYPES),
                 Select::make('status')
                     ->required()
                     ->options([
@@ -171,8 +201,12 @@ class PropertyResource extends Resource
                             ->maxLength(255),
                     ])
                     ->columnSpanFull(),
+                // The collection the model registers, and the one every public
+                // view reads. Uploading to 'property_images' stored the files
+                // where nothing looks: a property photographed by staff showed
+                // no photograph on the site.
                 SpatieMediaLibraryFileUpload::make('images')
-                    ->collection('property_images')
+                    ->collection('images')
                     ->multiple()
                     ->maxFiles(5)
                     ->label('Property Images')
@@ -228,7 +262,7 @@ class PropertyResource extends Resource
         return $table
             ->columns([
                 SpatieMediaLibraryImageColumn::make('images')
-                    ->collection('property_images')
+                    ->collection('images')
                     ->label('Preview')
                     ->circular()
                     ->stacked()

@@ -67,7 +67,8 @@ class Property3DModelTest extends TestCase
             ->get(route('property.detail', ['propertyId' => $property->id]));
 
         $response->assertStatus(200);
-        $response->assertSee('3D Property Model');
+        // Sentence case, as everywhere else on the restyled page.
+        $response->assertSee('3D property model');
         $response->assertSee('3D Model View');
     }
 

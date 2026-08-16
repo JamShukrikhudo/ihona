@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 
 class Image extends Model
 {
@@ -77,12 +78,36 @@ class Image extends Model
         return $this->stagedVersions()->exists();
     }
 
+    /**
+     * A URL the browser can fetch, or null when there is nothing to fetch.
+     *
+     * This used to return asset('storage/…') for every row regardless of disk.
+     * The V1 media API stores to `local` — which is also the column default —
+     * and `local` is private with no public path, so every image the app itself
+     * writes produced a URL that 404s.
+     *
+     * A disk with a public URL is addressed directly. Anything else goes
+     * through the route, which checks `is_public` before it serves a byte.
+     */
     public function getUrlAttribute(): ?string
     {
-        if ($this->file_path) {
-            return asset('storage/'.$this->file_path);
+        if (blank($this->file_path)) {
+            return null;
         }
 
-        return null;
+        $disk = $this->disk ?: 'public';
+
+        if (config("filesystems.disks.{$disk}.url")) {
+            return Storage::disk($disk)->url($this->file_path);
+        }
+
+        if (! $this->is_public || blank($this->image_id) || blank($this->property_id)) {
+            return null;
+        }
+
+        return route('property.media', [
+            'property' => $this->property_id,
+            'medium' => $this->image_id,
+        ]);
     }
 }

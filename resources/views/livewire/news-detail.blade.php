@@ -1,5 +1,3 @@
-@extends('layouts.app')
-@section('content')
     <div class="bg-gray-50 dark:bg-gray-900 min-h-screen py-8">
         <div class="container mx-auto px-4 max-w-4xl">
             <!-- Back Button -->
@@ -101,4 +99,3 @@
             @endif
         </div>
     </div>
-@endsection

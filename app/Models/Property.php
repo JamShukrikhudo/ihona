@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Services\WalkScoreService;
+use Carbon\Carbon;
 use DateTime;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -49,11 +50,12 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 
 class Property extends Model implements HasMedia
 {
-    use HasFactory, InteractsWithMedia, SoftDeletes;
+    use Concerns\HasDisclosureFacts, Concerns\HasGallery, HasFactory, InteractsWithMedia, SoftDeletes;
 
     protected $fillable = [
         'title',
         'description',
+        'description_generated_at',
         'internal_notes',
         'property_template_id',
         'location',
@@ -99,6 +101,11 @@ class Property extends Model implements HasMedia
         'country',
         'energy_rating',
         'epc',
+        'council_tax_band',
+        'tenure',
+        'lease_years_remaining',
+        'service_charge',
+        'ground_rent',
         'energy_score',
         'energy_rating_date',
         'insurance_policy_id',
@@ -129,6 +136,7 @@ class Property extends Model implements HasMedia
         'latitude' => 'float',
         'longitude' => 'float',
         'walkability_updated_at' => 'datetime',
+        'description_generated_at' => 'datetime',
         'floor_plan_data' => 'array',
         'ar_tour_enabled' => 'boolean',
         'ar_tour_settings' => 'array',
@@ -139,22 +147,10 @@ class Property extends Model implements HasMedia
         'parking' => 'array',
         'gardens' => 'array',
         'epc' => 'array',
+        'lease_years_remaining' => 'integer',
+        'service_charge' => 'decimal:2',
+        'ground_rent' => 'decimal:2',
     ];
-
-    public function auctions()
-    {
-        return $this->hasMany(Auction::class);
-    }
-
-    public function currentAuction()
-    {
-        return $this->auctions()->where('status', 'active')->first();
-    }
-
-    public function isInAuction()
-    {
-        return $this->currentAuction() !== null;
-    }
 
     public function insurancePolicy()
     {
@@ -189,6 +185,54 @@ class Property extends Model implements HasMedia
     public function reject(): void
     {
         $this->update(['status' => 'rejected']);
+    }
+
+    /**
+     * British building stock predates the MySQL YEAR type by eight centuries.
+     * The floor is the Conquest — old enough for anything habitable, late
+     * enough to catch a typo — and the ceiling allows a new build sold before
+     * it is finished without accepting a year that cannot be a build year.
+     */
+    public const EARLIEST_YEAR_BUILT = 1066;
+
+    /**
+     * One vocabulary for the public filter, the applied-filter chip and the
+     * staff panel. They had three: the filter offered villa and HMO, which the
+     * staff panel could not write, so both always returned nothing — and the
+     * chip rendered 'hmo' through ucfirst() as "Hmo".
+     */
+    public const TYPES = [
+        'house' => 'House',
+        'apartment' => 'Apartment',
+        'condo' => 'Condo',
+        'townhouse' => 'Townhouse',
+        'villa' => 'Villa',
+        'hmo' => 'HMO',
+    ];
+
+    public static function latestYearBuilt(): int
+    {
+        return (int) now()->year + 2;
+    }
+
+    /**
+     * One rule, so the API, the staff panel and the public form cannot drift
+     * apart on what counts as a build year. They had: 1000, 1800 and 1800 with
+     * three different ceilings.
+     *
+     * @return list<string>
+     */
+    public static function yearBuiltRules(): array
+    {
+        return ['integer', 'min:'.self::EARLIEST_YEAR_BUILT, 'max:'.self::latestYearBuilt()];
+    }
+
+    public static function yearBuiltMessage(): string
+    {
+        return __('Enter a build year between :from and :to.', [
+            'from' => self::EARLIEST_YEAR_BUILT,
+            'to' => self::latestYearBuilt(),
+        ]);
     }
 
     public function setYearBuiltAttribute($value)
@@ -486,27 +530,55 @@ class Property extends Model implements HasMedia
 
     public function scopePriceRange(Builder $query, $min, $max): Builder
     {
-        return $query->whereBetween('price', [$min, $max]);
+        // A null bound means "no bound". whereBetween with a null max matched
+        // nothing, and a max that merely defaulted low hid dear properties
+        // without ever saying so.
+        return $query
+            ->when($min !== null && $min !== '', fn (Builder $q) => $q->where('price', '>=', $min))
+            ->when($max !== null && $max !== '', fn (Builder $q) => $q->where('price', '<=', $max));
     }
 
     public function scopeBedrooms(Builder $query, $min, $max): Builder
     {
-        return $query->whereBetween('bedrooms', [$min, $max]);
+        // A null bound means "no bound". A default maximum applied
+        // unconditionally hid the largest homes on the books.
+        return $query
+            ->when($min !== null && $min !== '', fn (Builder $q) => $q->where('bedrooms', '>=', $min))
+            ->when($max !== null && $max !== '', fn (Builder $q) => $q->where('bedrooms', '<=', $max));
     }
 
     public function scopeBathrooms(Builder $query, $min, $max): Builder
     {
-        return $query->whereBetween('bathrooms', [$min, $max]);
+        // A null bound means "no bound". A default maximum applied
+        // unconditionally hid the largest homes on the books.
+        return $query
+            ->when($min !== null && $min !== '', fn (Builder $q) => $q->where('bathrooms', '>=', $min))
+            ->when($max !== null && $max !== '', fn (Builder $q) => $q->where('bathrooms', '<=', $max));
     }
 
     public function scopeAreaRange(Builder $query, $min, $max): Builder
     {
-        return $query->whereBetween('area_sqft', [$min, $max]);
+        return $query
+            ->when($min !== null && $min !== '', fn (Builder $q) => $q->where('area_sqft', '>=', $min))
+            ->when($max !== null && $max !== '', fn (Builder $q) => $q->where('area_sqft', '<=', $max));
     }
 
+    /**
+     * Matched without regard to case. The staff panel stores 'house' while the
+     * factory and seeder store 'House', so an exact match returned nothing for
+     * half the stock on any case-sensitive collation.
+     */
     public function scopePropertyType(Builder $query, $type): Builder
     {
-        return $query->where('property_type', $type);
+        // Matched without regard to case, but with whereIn rather than
+        // LOWER(column): a function on the column makes any index unusable,
+        // and this scope runs on the list, the count, the map and once per
+        // filter in the empty-state calculation.
+        $type = trim((string) $type);
+
+        return $query->whereIn('property_type', array_unique([
+            $type, strtolower($type), strtoupper($type), ucfirst(strtolower($type)),
+        ]));
     }
 
     public function scopeHasAmenities(Builder $query, array $amenities): Builder
@@ -559,29 +631,100 @@ class Property extends Model implements HasMedia
         return $query->where('country', $country);
     }
 
-    public function getAvailableDatesForTeam()
+    /**
+     * The hours a viewing can be booked into. Shared, because the date picker
+     * and the time picker have to agree on what a full day is — they did not,
+     * and the date picker won.
+     */
+    public const VIEWING_SLOTS = [
+        '09:00', '10:00', '11:00', '12:00', '13:00',
+        '14:00', '15:00', '16:00', '17:00',
+    ];
+
+    /**
+     * Days this property has at least one viewing slot left on.
+     *
+     * Two bugs lived here. The comparison was `in_array('Y-m-d', $plucked)`,
+     * but Booking casts `date`, so pluck() returns Carbon objects whose string
+     * form is 'Y-m-d H:i:s' — nothing ever matched and every day for three
+     * months was reported free. Fixing that exposed the second: a day was
+     * dropped wholesale on the first booking, and team-wide at that, so one
+     * viewing at 09:00 closed every hour on every home the agency had.
+     */
+    public function availableViewingDates(): array
     {
-        $bookedDates = $this->bookings()
-            ->where('team_id', $this->team_id)
-            ->pluck('date')
-            ->toArray();
+        $from = now()->startOfDay();
+        $to = now()->addMonths(3)->endOfDay();
+        $taken = $this->bookedSlots($from, $to);
+        $available = [];
 
-        $teamBookings = Booking::where('team_id', $this->team_id)
-            ->pluck('date')
-            ->toArray();
+        for ($date = $from->copy(); $date <= $to; $date->addDay()) {
+            $day = $date->format('Y-m-d');
+            // Intersected, not subtracted: the staff panel and
+            // VisitBookingService can write a booking at any hour, and enough
+            // of those off the nine offered would otherwise close a day whose
+            // viewing hours are all still free.
+            $offered = self::slotsFrom($day);
+            $left = count(array_diff($offered, $taken[$day] ?? []));
 
-        $availableDates = [];
-        $startDate = now();
-        $endDate = now()->addMonths(3);
-
-        for ($date = $startDate; $date <= $endDate; $date->addDay()) {
-            $currentDate = $date->format('Y-m-d');
-            if (! in_array($currentDate, $bookedDates) && ! in_array($currentDate, $teamBookings)) {
-                $availableDates[] = $currentDate;
+            if ($left > 0) {
+                $available[] = $day;
             }
         }
 
-        return $availableDates;
+        return $available;
+    }
+
+    public function availableViewingSlots(string $date): array
+    {
+        $day = Carbon::parse($date);
+
+        return array_values(array_diff(
+            self::slotsFrom($date),
+            $this->bookedSlots($day->copy()->startOfDay(), $day->copy()->endOfDay())[$day->format('Y-m-d')] ?? []
+        ));
+    }
+
+    /**
+     * An hour that has already passed is not a slot. Nothing compared against
+     * the clock, and the date rule is only after_or_equal:today, so a visitor
+     * arriving at 18:00 was offered 09:00 that morning — and the booking, the
+     * calendar links and the confirmation email were all created for it.
+     *
+     * @return list<string>
+     */
+    private static function slotsFrom(string $date): array
+    {
+        if (! Carbon::parse($date)->isToday()) {
+            return self::VIEWING_SLOTS;
+        }
+
+        return array_values(array_filter(
+            self::VIEWING_SLOTS,
+            fn (string $slot) => Carbon::parse($slot)->isFuture()
+        ));
+    }
+
+    /**
+     * Booked slots by day. Bounded by the window asked for — the whole booking
+     * history was being read to answer a question about the next three months
+     * — and cancelled viewings give their slot back.
+     *
+     * @return array<string, list<string>>
+     */
+    private function bookedSlots(Carbon $from, Carbon $to): array
+    {
+        return $this->bookings()
+            ->whereBetween('date', [$from, $to])
+            ->whereNot('status', 'cancelled')
+            ->get(['date', 'time'])
+            ->groupBy(fn (Booking $booking) => Carbon::parse($booking->date)->format('Y-m-d'))
+            ->map(fn ($bookings) => $bookings
+                ->map(fn (Booking $booking) => Carbon::parse($booking->time)->format('H:i'))
+                ->unique()
+                ->values()
+                ->all())
+            ->all();
     }
 
     /**

@@ -26,21 +26,34 @@ class PropertySubmissionForm extends Component
     public $aiDescription;
     public $descriptionTone = 'professional';
 
-    protected $rules = [
-        'title' => 'required|string|max:255',
-        'description' => 'required|string',
-        'location' => 'required|string|max:255',
-        'price' => 'required|numeric|min:0',
-        'bedrooms' => 'required|integer|min:0',
-        'bathrooms' => 'required|integer|min:0',
-        'area_sqft' => 'required|numeric|min:0',
-        'year_built' => 'required|integer|min:1800|max:2099',
-        'property_type' => 'required|string|max:255',
-        'images.*' => 'image|max:5120', // 5MB Max
-        'video' => 'nullable|mimetypes:video/mp4,video/quicktime|max:102400', // 100MB Max
-        'customDescription' => 'nullable|string|max:1000',
-        'descriptionTone' => 'required|in:professional,casual,luxury',
-    ];
+    // A method rather than a property: the accepted build years move with the
+    // calendar, and a property cannot call one.
+    protected function rules(): array
+    {
+        return [
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'location' => 'required|string|max:255',
+            'price' => 'required|numeric|min:0',
+            'bedrooms' => 'required|integer|min:0',
+            'bathrooms' => 'required|integer|min:0',
+            'area_sqft' => 'required|numeric|min:0',
+            'year_built' => array_merge(['required'], Property::yearBuiltRules()),
+            'property_type' => 'required|string|max:255',
+            'images.*' => 'image|max:5120', // 5MB Max
+            'video' => 'nullable|mimetypes:video/mp4,video/quicktime|max:102400', // 100MB Max
+            'customDescription' => 'nullable|string|max:1000',
+            'descriptionTone' => 'required|in:professional,casual,luxury',
+        ];
+    }
+
+    protected function messages(): array
+    {
+        return [
+            'year_built.min' => Property::yearBuiltMessage(),
+            'year_built.max' => Property::yearBuiltMessage(),
+        ];
+    }
 
     public function generateAIDescription()
     {
@@ -79,6 +92,12 @@ class PropertySubmissionForm extends Component
         $property = Property::create([
             'title' => $this->title,
             'description' => $this->description,
+            // Only if the sentences that were saved are the ones the model
+            // produced. Someone who rewrote them owns them, and labelling their
+            // copy as generated would be as wrong as not labelling the model's.
+            'description_generated_at' => $this->description === $this->aiDescription && filled($this->aiDescription)
+                ? now()
+                : null,
             'location' => $this->location,
             'price' => $this->price,
             'bedrooms' => $this->bedrooms,

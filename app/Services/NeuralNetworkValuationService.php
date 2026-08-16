@@ -50,12 +50,16 @@ class NeuralNetworkValuationService
         // Get feature importance for interpretability
         $featureImportance = $this->calculateFeatureImportance($features, $weights);
         
+        // One formula for the band, shared with the model, so the page and the
+        // API cannot quote two different widths for the same estimate.
+        $band = PropertyValuation::rangeFor(round($prediction['value'], 2), (int) round($confidence, 0));
+
         return [
             'estimated_value' => round($prediction['value'], 2),
             'confidence_level' => round($confidence, 0),
             'price_range' => [
-                'min' => round($prediction['value'] * (1 - ($confidence / 200)), 2),
-                'max' => round($prediction['value'] * (1 + ($confidence / 200)), 2),
+                'min' => $band['low'],
+                'max' => $band['high'],
             ],
             'method' => 'neural_network',
             'model_version' => self::MODEL_VERSION,

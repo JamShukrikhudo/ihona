@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
 
-            $table->unique(['team_id', 'contact_id', 'related_contact_id']);
+            $table->unique(['team_id', 'contact_id', 'related_contact_id'], 'contact_relationships_unique');
             $table->index(['team_id', 'related_contact_id']);
         });
     }

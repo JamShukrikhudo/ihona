@@ -1,5 +1,4 @@
 <div>
-    @section('content')
         <div class="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-blue-900">
             <!-- Header -->
             <div class="bg-black/30 backdrop-blur-sm border-b border-white/10">
@@ -107,7 +106,7 @@
                             <div class="space-y-3 text-sm">
                                 <div class="flex justify-between">
                                     <span class="text-gray-400">Price</span>
-                                    <span class="text-white font-medium">{{ app(\App\Settings\GeneralSettings::class)->site_currency }} {{ number_format($property->price, 2) }}</span>
+                                    <span class="text-white font-medium">{{ app(\App\Settings\GeneralSettings::class)->currencySymbol() }} {{ number_format($property->price, 2) }}</span>
                                 </div>
                                 <div class="flex justify-between">
                                     <span class="text-gray-400">Bedrooms</span>
@@ -191,9 +190,12 @@
                 </div>
             </div>
         </div>
-    @endsection
 
     @push('scripts')
-    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
+    {{-- model-viewer is bundled by resources/js/app.js at 4.2.0. This tag
+         pulled 3.3.0 from a third-party CDN on top of it, so the page loaded
+         two copies of the same custom element, at different versions, from a
+         host the rest of the site does not use. --}}
     @endpush
 </div>
+

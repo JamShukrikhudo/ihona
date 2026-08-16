@@ -16,7 +16,7 @@ class SiteSettingsSeeder extends Seeder
         $settings->site_phone = '+44 208 050 5865';
         $settings->site_address = '123 Genealogy St, London, UK';
         $settings->site_country = 'United Kingdom';
-        $settings->site_currency = '£';
+        $settings->site_currency = \App\Support\Currency::DEFAULT;
         $settings->site_default_language = 'en';
         $settings->facebook_url = 'https://www.facebook.com/familytree365';
         $settings->twitter_url = null;

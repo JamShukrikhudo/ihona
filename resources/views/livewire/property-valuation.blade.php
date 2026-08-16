@@ -1,269 +1,229 @@
-<div class="container mx-auto px-4 py-8">
-    <div class="max-w-6xl mx-auto">
-        <!-- Header -->
-        <div class="mb-8">
-            <h1 class="text-3xl font-bold text-gray-900 mb-2">Neural Network Property Valuation</h1>
-            <p class="text-gray-600">AI-powered property valuation using advanced machine learning algorithms</p>
-        </div>
+{{-- What a home is worth, according to a model: the band is the figure, the
+     midpoint sits under it, and the evidence is listed with its date. --}}
+<div class="mx-auto max-w-(--breakpoint-lg) px-4 py-8 md:px-margin md:py-12">
+    @php
+        $currency = $property?->currencySymbol() ?? '';
+    @endphp
 
-        @if($errorMessage)
-            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6" role="alert">
-                <span class="block sm:inline">{{ $errorMessage }}</span>
-            </div>
-        @endif
+    <header class="max-w-reading">
+        <h1 class="font-display text-h3 font-bold tracking-tight text-ink-900">
+            {{ __('What this home is worth') }}
+        </h1>
+        <p class="mt-2 text-body text-ink-700">
+            {{ __('An estimate from a model, with the range it is honest to quote. A valuer walking the rooms is what turns it into a figure you can sell on.') }}
+        </p>
+    </header>
 
-        @if($property)
-            <!-- Property Summary Card -->
-            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-                <h2 class="text-2xl font-semibold mb-4">{{ $property->title }}</h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                        <p class="text-gray-600 text-sm">Location</p>
-                        <p class="font-semibold">{{ $property->location }}</p>
+    @if ($errorMessage)
+        <p class="mt-6 rounded-sheet border border-fault-600 bg-fault-100 px-4 py-3 text-body-s text-fault-700" role="alert">
+            {{ $errorMessage }}
+        </p>
+    @endif
+
+    @if ($property)
+        <section class="mt-8 rounded-sheet border border-sheet-300 bg-sheet-000 p-5 sm:p-6" aria-labelledby="subject-heading">
+            <h2 id="subject-heading" class="font-display text-h5 font-bold tracking-tight text-ink-900">
+                {{ $property->title }}
+            </h2>
+            <p class="mt-1 text-body-s text-ink-500">{{ $property->location }}</p>
+
+            <dl class="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-4">
+                @foreach ([
+                    __('Asking price') => $property->price ? $currency.number_format($property->price) : null,
+                    __('Type') => $property->property_type ? ucfirst(str_replace('_', ' ', $property->property_type)) : null,
+                    __('Bedrooms') => $property->bedrooms,
+                    __('Floor area') => $property->area_sqft ? number_format($property->area_sqft).' '.__('sq ft') : null,
+                ] as $label => $value)
+                    <div class="min-w-0">
+                        <dt class="font-mono text-annotation uppercase text-ink-500">{{ $label }}</dt>
+                        <dd class="mt-1 truncate font-mono text-body-s font-medium tabular-nums text-ink-900">
+                            @if (filled($value))
+                                {{ $value }}
+                            @else
+                                <x-ui.not-supplied />
+                            @endif
+                        </dd>
                     </div>
-                    <div>
-                        <p class="text-gray-600 text-sm">Property Type</p>
-                        <p class="font-semibold capitalize">{{ str_replace('_', ' ', $property->property_type) }}</p>
-                    </div>
-                    <div>
-                        <p class="text-gray-600 text-sm">Current Price</p>
-                        <p class="font-semibold text-lg">£{{ number_format($property->price, 2) }}</p>
+                @endforeach
+            </dl>
+        </section>
+
+        @if ($showReport && $valuation)
+            @php
+                $range = $valuation->range();
+                $trend = $valuation->location_factors['market_trend'] ?? null;
+                $comparables = $valuation->comparable_properties['count'] ?? null;
+                $epc = $property->epc['rating'] ?? null;
+                $evidenceDate = $valuation->valuation_date;
+            @endphp
+
+            <section class="mt-6 rounded-sheet border border-sheet-300 bg-sheet-100 p-5 sm:p-6" aria-labelledby="estimate-heading">
+                <h2 id="estimate-heading" class="font-display text-h5 font-bold tracking-tight text-ink-900">
+                    {{ __('Estimated value') }}
+                </h2>
+
+                <x-ui.model-note class="mt-1.5"
+                                 :label="__('Estimated by a model, not surveyed')"
+                                 :dated="$evidenceDate" />
+
+                <div class="mt-4 rounded-sheet border border-sheet-300 bg-sheet-000 p-5">
+                    @if ($range)
+                        <p class="font-display text-h3 font-bold tabular-nums tracking-tight text-ink-900">
+                            {{ $currency }}{{ number_format($range['low']) }}&ndash;{{ $currency }}{{ number_format($range['high']) }}
+                        </p>
+                        <p class="mt-1.5 font-mono text-micro tabular-nums text-ink-400">
+                            {{ __('midpoint :value', ['value' => $currency.number_format($valuation->estimated_value)]) }}
+                        </p>
+                    @else
+                        <p class="text-body-s text-ink-500">{{ __('This valuation carries no figure.') }}</p>
+                    @endif
+
+                    <div class="mt-4 flex flex-wrap items-center gap-2">
+                        {{-- The column is NOT NULL defaulting to 0, so "0%" cannot
+                             be told from an unrecorded confidence. --}}
+                        @if (! $valuation->confidence_level)
+                            <x-ui.chip tone="caution">{{ __('Confidence not recorded') }}</x-ui.chip>
+                        @else
+                            <x-ui.chip :tone="$valuation->confidence_level >= 70 ? 'verified' : 'caution'">
+                                {{ __('Confidence :level%', ['level' => $valuation->confidence_level]) }}
+                            </x-ui.chip>
+                        @endif
+
+                        {{-- Past its three months it is still shown, but not as current. --}}
+                        @if ($valuation->valid_until && ! $valuation->isValid())
+                            <x-ui.chip tone="fault">{{ __('Out of date') }}</x-ui.chip>
+                        @endif
+
+                        <span class="font-mono text-caption text-ink-500">
+                            {{ __('The less sure the model is, the wider the range it quotes.') }}
+                        </span>
                     </div>
                 </div>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
-                    <div>
-                        <p class="text-gray-600 text-sm">Bedrooms</p>
-                        <p class="font-semibold">{{ $property->bedrooms }}</p>
-                    </div>
-                    <div>
-                        <p class="text-gray-600 text-sm">Bathrooms</p>
-                        <p class="font-semibold">{{ $property->bathrooms }}</p>
-                    </div>
-                    <div>
-                        <p class="text-gray-600 text-sm">Area (sqft)</p>
-                        <p class="font-semibold">{{ number_format($property->area_sqft) }}</p>
-                    </div>
-                    <div>
-                        <p class="text-gray-600 text-sm">Year Built</p>
-                        <p class="font-semibold">{{ $property->year_built }}</p>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Generate Valuation Button -->
-            <div class="mb-6">
-                <button 
-                    wire:click="generateValuation" 
-                    wire:loading.attr="disabled"
-                    class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                    @if(!Auth::check()) disabled @endif
-                >
-                    <span wire:loading.remove wire:target="generateValuation">
-                        <svg class="inline-block w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-                        </svg>
-                        Generate AI Valuation
-                    </span>
-                    <span wire:loading wire:target="generateValuation">
-                        <svg class="animate-spin inline-block w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        Generating Valuation...
-                    </span>
-                </button>
-                @if(!Auth::check())
-                    <p class="text-sm text-gray-600 mt-2">Please <a href="/login" class="text-blue-600 hover:underline">login</a> to generate valuations</p>
+                <h3 class="mt-6 font-mono text-annotation uppercase text-ink-500">{{ __('Derived from') }}</h3>
+                <dl class="mt-2 divide-y divide-sheet-300 rounded-sheet border border-sheet-300 bg-sheet-000">
+                    @foreach ([
+                        __('Comparable sales') => $comparables ? trans_choice(':count nearby sale|:count nearby sales', $comparables, ['count' => $comparables]) : null,
+                        __('Floor area') => $property->area_sqft ? number_format($property->area_sqft).' '.__('sq ft') : null,
+                        __('Energy record') => $epc ? __('Band :band', ['band' => $epc]) : null,
+                        __('Local market') => $trend ? ucfirst(str_replace('_', ' ', $trend)) : null,
+                    ] as $label => $value)
+                        <div class="flex flex-wrap items-baseline justify-between gap-2 px-4 py-3">
+                            <dt class="text-body-s text-ink-700">{{ $label }}</dt>
+                            <dd class="font-mono text-caption tabular-nums text-ink-900">
+                                @if (filled($value))
+                                    {{ $value }}
+                                @else
+                                    <x-ui.not-supplied />
+                                @endif
+                            </dd>
+                        </div>
+                    @endforeach
+                    <div class="flex flex-wrap items-baseline justify-between gap-2 px-4 py-3">
+                        <dt class="text-body-s text-ink-700">{{ __('Evidence as at') }}</dt>
+                        <dd class="font-mono text-caption tabular-nums text-ink-900">
+                            {{ $evidenceDate?->format('j M Y') ?? __('unknown') }}
+                        </dd>
+                    </div>
+                </dl>
+
+                @if (! empty($valuation->location_factors['prediction_factors']))
+                    <h3 class="mt-6 font-mono text-annotation uppercase text-ink-500">{{ __('What moved the number') }}</h3>
+                    <ul class="mt-2 space-y-1.5">
+                        @foreach ($valuation->location_factors['prediction_factors'] as $factor)
+                            <li class="flex items-start gap-2 text-body-s text-ink-700">
+                                <x-ui.icon name="aspect" class="mt-1 size-3.5 shrink-0 text-ink-400" />
+                                <span>{{ $factor }}</span>
+                            </li>
+                        @endforeach
+                    </ul>
                 @endif
-            </div>
-
-            <!-- Valuation Report -->
-            @if($showReport && $valuation)
-                <div class="bg-white rounded-lg shadow-lg p-6 mb-6 border-2 border-blue-200">
-                    <div class="flex justify-between items-start mb-4">
-                        <h3 class="text-2xl font-bold text-gray-900">Valuation Report</h3>
-                        <button wire:click="closeReport" class="text-gray-500 hover:text-gray-700">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                            </svg>
-                        </button>
-                    </div>
-
-                    <!-- Main Valuation Result -->
-                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6 mb-6">
-                        <div class="text-center">
-                            <p class="text-gray-700 text-sm mb-2">Estimated Market Value</p>
-                            <p class="text-4xl font-bold text-blue-600">£{{ number_format($valuation->estimated_value ?? 0, 2) }}</p>
-                            <div class="mt-4">
-                                <div class="flex justify-center items-center space-x-2">
-                                    <span class="text-sm text-gray-600">Confidence Level:</span>
-                                    <div class="flex items-center">
-                                        <div class="w-32 bg-gray-200 rounded-full h-3 mr-2">
-                                            <div class="bg-green-500 h-3 rounded-full" style="width: {{ $valuation->confidence_level ?? 0 }}%"></div>
-                                        </div>
-                                        <span class="font-semibold text-green-600">{{ $valuation->confidence_level ?? 0 }}%</span>
-                                    </div>
-                                </div>
-                                <p class="text-xs text-gray-500 mt-2">
-                                    Accuracy: {{ $valuation->getValuationAccuracy() }}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Valuation Details Grid -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                        <!-- Key Metrics -->
-                        <div class="border rounded-lg p-4">
-                            <h4 class="font-semibold text-gray-900 mb-3">Key Metrics</h4>
-                            <div class="space-y-2">
-                                <div class="flex justify-between">
-                                    <span class="text-gray-600">Valuation Method:</span>
-                                    <span class="font-semibold">Neural Network</span>
-                                </div>
-                                <div class="flex justify-between">
-                                    <span class="text-gray-600">Valuation Date:</span>
-                                    <span class="font-semibold">{{ $valuation->valuation_date?->format('M d, Y') }}</span>
-                                </div>
-                                <div class="flex justify-between">
-                                    <span class="text-gray-600">Valid Until:</span>
-                                    <span class="font-semibold">{{ $valuation->valid_until?->format('M d, Y') }}</span>
-                                </div>
-                                <div class="flex justify-between">
-                                    <span class="text-gray-600">Status:</span>
-                                    <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">{{ ucfirst($valuation->status) }}</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Market Insights -->
-                        <div class="border rounded-lg p-4">
-                            <h4 class="font-semibold text-gray-900 mb-3">Market Insights</h4>
-                            <div class="space-y-2">
-                                @if(isset($valuation->location_factors['market_trend']))
-                                    <div class="flex justify-between">
-                                        <span class="text-gray-600">Market Trend:</span>
-                                        <span class="font-semibold capitalize">{{ $valuation->location_factors['market_trend'] }}</span>
-                                    </div>
-                                @endif
-                                @if(isset($valuation->comparable_properties['count']))
-                                    <div class="flex justify-between">
-                                        <span class="text-gray-600">Comparables Used:</span>
-                                        <span class="font-semibold">{{ $valuation->comparable_properties['count'] }}</span>
-                                    </div>
-                                @endif
-                                <div class="flex justify-between">
-                                    <span class="text-gray-600">Model Version:</span>
-                                    <span class="font-semibold text-xs">v{{ $valuation->notes ? (preg_match('/v(\d+\.\d+\.\d+)/', $valuation->notes, $matches) ? $matches[1] : '1.0.0') : '1.0.0' }}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Feature Importance -->
-                    @if(isset($valuation->comparable_properties['feature_importance']) && count($valuation->comparable_properties['feature_importance']) > 0)
-                        <div class="border rounded-lg p-4 mb-6">
-                            <h4 class="font-semibold text-gray-900 mb-3">Top Value Factors</h4>
-                            <div class="space-y-3">
-                                @foreach($valuation->comparable_properties['feature_importance'] as $feature => $importance)
-                                    <div>
-                                        <div class="flex justify-between mb-1">
-                                            <span class="text-sm text-gray-700 capitalize">{{ str_replace('_', ' ', $feature) }}</span>
-                                            <span class="text-sm font-semibold text-blue-600">{{ number_format($importance, 1) }}%</span>
-                                        </div>
-                                        <div class="w-full bg-gray-200 rounded-full h-2">
-                                            <div class="bg-blue-500 h-2 rounded-full" style="width: {{ $importance }}%"></div>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-                    @endif
-
-                    <!-- Prediction Factors -->
-                    @if(isset($valuation->location_factors['prediction_factors']) && count($valuation->location_factors['prediction_factors']) > 0)
-                        <div class="border rounded-lg p-4">
-                            <h4 class="font-semibold text-gray-900 mb-3">Prediction Insights</h4>
-                            <ul class="space-y-2">
-                                @foreach($valuation->location_factors['prediction_factors'] as $factor)
-                                    <li class="flex items-start">
-                                        <svg class="w-5 h-5 text-blue-500 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                                        </svg>
-                                        <span class="text-gray-700 text-sm">{{ $factor }}</span>
-                                    </li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-
-                    <!-- Notes -->
-                    @if($valuation->notes)
-                        <div class="mt-6 p-4 bg-gray-50 rounded-lg">
-                            <p class="text-sm text-gray-700"><strong>Notes:</strong> {{ $valuation->notes }}</p>
-                        </div>
-                    @endif
-                </div>
-            @endif
-
-            <!-- Valuation History -->
-            @if(count($valuationHistory) > 0)
-                <div class="bg-white rounded-lg shadow-md p-6">
-                    <h3 class="text-xl font-semibold mb-4">Valuation History</h3>
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estimated Value</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Confidence</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                @foreach($valuationHistory as $hist)
-                                    <tr class="hover:bg-gray-50">
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                            {{ $hist->valuation_date?->format('M d, Y') }}
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
-                                            £{{ number_format($hist->estimated_value ?? 0, 2) }}
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="flex items-center">
-                                                <div class="w-16 bg-gray-200 rounded-full h-2 mr-2">
-                                                    <div class="bg-blue-500 h-2 rounded-full" style="width: {{ $hist->confidence_level ?? 0 }}%"></div>
-                                                </div>
-                                                <span class="text-sm text-gray-700">{{ $hist->confidence_level ?? 0 }}%</span>
-                                            </div>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                                {{ $hist->status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
-                                                {{ ucfirst($hist->status) }}
-                                            </span>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                            <button 
-                                                wire:click="viewValuation({{ $hist->id }})"
-                                                class="text-blue-600 hover:text-blue-900 font-medium"
-                                            >
-                                                View Details
-                                            </button>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            @endif
-
-        @else
-            <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded">
-                <p>Property not found. Please select a valid property to generate valuations.</p>
-            </div>
+            </section>
         @endif
-    </div>
+
+        <section class="mt-6 rounded-sheet border border-sheet-300 bg-sheet-000 p-5 sm:p-6">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <div class="max-w-reading">
+                    <h2 class="font-display text-h5 font-bold tracking-tight text-ink-900">
+                        {{ __('Book a valuation with a valuer') }}
+                    </h2>
+                    <p class="mt-1 text-body-s text-ink-500">
+                        {{ __('Someone walks the rooms, reads the road, and gives you a figure they will stand behind. No cost, no obligation.') }}
+                    </p>
+                </div>
+                <div class="flex flex-wrap items-center gap-3">
+                    <x-ui.button :href="route('contact.show', ['property' => $property->id, 'interest' => 'selling'])">
+                        {{ __('Book a valuation') }}
+                    </x-ui.button>
+
+                    @if (auth()->user()?->hasAnyRole(['staff', 'agent', 'admin', 'super_admin']))
+                        <x-ui.button variant="secondary" wire:click="generateValuation" wire:loading.attr="disabled">
+                            <span wire:loading.remove wire:target="generateValuation">{{ __('Run the estimate again') }}</span>
+                            <span wire:loading wire:target="generateValuation">{{ __('Estimating…') }}</span>
+                        </x-ui.button>
+                    @endif
+                </div>
+            </div>
+
+            @guest
+                <p class="mt-3 text-body-s text-ink-500">
+                    {!! __('Agents can re-run the estimate after :login.', [
+                        'login' => '<a class="text-draft-700 underline underline-offset-2 hover:no-underline" href="'.e(url('/login')).'">'.e(__('signing in')).'</a>',
+                    ]) !!}
+                </p>
+            @endguest
+        </section>
+
+        @if (count($valuationHistory) > 0)
+            <section class="mt-6 rounded-sheet border border-sheet-300 bg-sheet-000 p-5 sm:p-6" aria-labelledby="history-heading">
+                <h2 id="history-heading" class="font-display text-h5 font-bold tracking-tight text-ink-900">
+                    {{ __('Earlier estimates') }}
+                </h2>
+                <x-ui.model-note class="mt-1.5" :label="__('Each one estimated by a model, not surveyed')" />
+
+                <div class="mt-4 overflow-x-auto">
+                    <table class="min-w-full text-left">
+                        <thead>
+                            <tr class="border-b border-sheet-300">
+                                <th scope="col" class="py-2 pr-4 font-mono text-annotation uppercase text-ink-500">{{ __('Date') }}</th>
+                                <th scope="col" class="py-2 pr-4 font-mono text-annotation uppercase text-ink-500">{{ __('Range') }}</th>
+                                <th scope="col" class="py-2 pr-4 font-mono text-annotation uppercase text-ink-500">{{ __('Confidence') }}</th>
+                                <th scope="col" class="py-2 font-mono text-annotation uppercase text-ink-500">{{ __('Report') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($valuationHistory as $hist)
+                                @php $histRange = $hist->range(); @endphp
+                                <tr class="border-b border-sheet-200 last:border-0">
+                                    <td class="whitespace-nowrap py-3 pr-4 font-mono text-caption tabular-nums text-ink-700">
+                                        {{ $hist->valuation_date?->format('j M Y') }}
+                                    </td>
+                                    <td class="whitespace-nowrap py-3 pr-4 font-mono text-caption font-medium tabular-nums text-ink-900">
+                                        @if ($histRange)
+                                            {{ $currency }}{{ number_format($histRange['low']) }}&ndash;{{ $currency }}{{ number_format($histRange['high']) }}
+                                        @else
+                                            <x-ui.not-supplied />
+                                        @endif
+                                    </td>
+                                    <td class="whitespace-nowrap py-3 pr-4 font-mono text-caption tabular-nums text-ink-700">
+                                        {{ $hist->confidence_level ?? 0 }}%
+                                    </td>
+                                    <td class="whitespace-nowrap py-3">
+                                        <button type="button" wire:click="viewValuation({{ $hist->id }})"
+                                                class="font-mono text-caption text-draft-700 underline underline-offset-2 hover:no-underline">
+                                            {{ __('Open') }}
+                                        </button>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        @endif
+    @else
+        <p class="mt-8 rounded-sheet border border-caution-600 bg-caution-100 px-4 py-3 text-body-s text-caution-700">
+            {{ __('That property is not listed. Pick one from the search and the estimate follows.') }}
+        </p>
+    @endif
 </div>

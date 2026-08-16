@@ -26,6 +26,10 @@ class PropertyValuationComponent extends Component
             $this->propertyId = $propertyId;
             $this->loadProperty();
             $this->loadValuationHistory();
+
+            // The visitor came to see a figure, not a button only staff can press.
+            $this->valuation = collect($this->valuationHistory)->first();
+            $this->showReport = (bool) $this->valuation;
         }
     }
     
@@ -49,24 +53,34 @@ class PropertyValuationComponent extends Component
         }
     }
     
+    /**
+     * Re-runs the model. Staff only: this supersedes the agency's current row.
+     */
     public function generateValuation()
     {
-        if (!Auth::check()) {
-            $this->errorMessage = 'Please login to generate valuations';
+        $user = Auth::user();
+
+        if (! $user || ! $user->hasAnyRole(['staff', 'agent', 'admin', 'super_admin'])) {
+            $this->errorMessage = __('Only the agency can re-run this estimate.');
+
             return;
         }
-        
+
+        if (! $this->property) {
+            return;
+        }
+
         $this->isLoading = true;
         $this->errorMessage = '';
         
         try {
             $nnService = app(NeuralNetworkValuationService::class);
-            $user = Auth::user();
-            
+
+            // The property's team, not a hardcoded 1.
             $this->valuation = $nnService->createValuation(
                 $this->property,
                 $user->id,
-                $user->current_team_id ?? $user->teams()->first()->id ?? 1
+                $user->current_team_id ?? $user->teams()->first()->id ?? $this->property->team_id
             );
             
             $this->loadValuationHistory();
@@ -82,15 +96,30 @@ class PropertyValuationComponent extends Component
         }
     }
     
+    /**
+     * Scoped to the property in the URL: the route is public and this took any
+     * id, so any property's valuation history was reachable by counting.
+     */
     public function viewValuation($valuationId)
     {
-        $this->valuation = PropertyValuation::find($valuationId);
+        if (! $this->property) {
+            return;
+        }
+
+        // Type too: staff-entered valuations for the same property carry the
+        // valuer's name and notes and are not the agency's to publish.
+        $valuation = PropertyValuation::query()
+            ->where('id', $valuationId)
+            ->where('property_id', $this->property->id)
+            ->where('valuation_type', 'neural_network')
+            ->first();
+
+        if (! $valuation) {
+            return;
+        }
+
+        $this->valuation = $valuation;
         $this->showReport = true;
-    }
-    
-    public function closeReport()
-    {
-        $this->showReport = false;
     }
     
     public function render()

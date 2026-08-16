@@ -1,69 +1,53 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="min-h-full flex flex-col sm:justify-center items-center pt-6 sm:pt-0">
-        <div class="w-full sm:max-w-md mb-4 mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
+    <x-auth-panel :title="__('Sign in')"
+                  :lede="__('Saved homes, saved searches and your viewings, wherever you left them.')">
+        <form method="POST" action="{{ route('login') }}" class="grid gap-5">
+            @csrf
 
-            @if (session('status'))
-                <div class="mb-4 font-medium text-sm text-green-600">
-                    {{ session('status') }}
-                </div>
-            @endif
+            <x-ui.field id="email" :label="__('Email')">
+                <x-ui.control id="email" type="email" name="email" :value="old('email')"
+                              autocomplete="username" required autofocus
+                              :invalid="$errors->has('email')" />
+            </x-ui.field>
 
-            <x-validation-errors class="mb-4" />
+            <x-ui.field id="password" :label="__('Password')">
+                <x-ui.control id="password" type="password" name="password"
+                              autocomplete="current-password" required
+                              :invalid="$errors->has('password')" />
+            </x-ui.field>
 
-            <form method="POST" action="{{ route('login') }}">
-                @csrf
+            <label for="remember_me" class="flex items-center gap-2 text-body-s text-ink-700">
+                <input id="remember_me" type="checkbox" name="remember"
+                       class="size-4 rounded-tag border-sheet-300 bg-sheet-000 text-action">
+                {{ __('Keep me signed in') }}
+            </label>
 
-                <div>
-                    <label class="block font-medium text-sm text-gray-700" for="email">
-                        {{ __('Email') }}
-                    </label>
-                    <input class="border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm block mt-1 w-full" id="email" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username">
-                </div>
+            <div class="flex flex-wrap items-center justify-between gap-3">
+                @if (Route::has('password.request'))
+                    <a href="{{ route('password.request') }}"
+                       class="text-body-s text-draft-700 underline underline-offset-2 hover:no-underline">
+                        {{ __('Forgotten your password?') }}
+                    </a>
+                @endif
 
-                <div class="mt-4">
-                    <label class="block font-medium text-sm text-gray-700" for="password">
-                        {{ __('Password') }}
-                    </label>
-                    <input class="border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm block mt-1 w-full" id="password" type="password" name="password" required autocomplete="current-password">
-                </div>
+                <x-ui.button type="submit">{{ __('Sign in') }}</x-ui.button>
+            </div>
+        </form>
 
-                <div class="block mt-4">
-                    <label for="remember_me" class="flex items-center">
-                        <input type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" id="remember_me" name="remember">
-                        <span class="ml-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
-                    </label>
-                </div>
+        @if (\JoelButcher\Socialstream\Socialstream::show())
+            <x-socialstream />
+        @endif
 
-                <div class="flex items-center justify-end mt-4">
-                    @if (Route::has('password.request'))
-                        <a class="underline text-sm text-gray-600 hover:text-gray-900" href="{{ route('password.request') }}">
-                            {{ __('Forgot your password?') }}
-                        </a>
-                    @endif
-
-                    <button type="submit" class="inline-flex items-center px-4 py-2 bg-green-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-700 active:bg-green-900 focus:outline-none focus:border-green-900 focus:ring ring-green-300 disabled:opacity-25 transition ease-in-out duration-150 ml-4">
-                        {{ __('Log in') }}
-                    </button>
-                </div>
-            </form>
-
-            @if (\JoelButcher\Socialstream\Socialstream::show())
-                <div class="mt-4">
-                    <div class="relative">
-                        <div class="absolute inset-0 flex items-center">
-                            <div class="w-full border-t border-gray-300"></div>
-                        </div>
-                        <div class="relative flex justify-center text-sm">
-                            <span class="px-2 bg-white text-gray-500">{{ config('socialstream.prompt', 'Or Login Via') }}</span>
-                        </div>
-                    </div>
-                    <div class="mt-4">
-                        <x-socialstream::components.socialstream />
-                    </div>
-                </div>
-            @endif
-        </div>
-    </div>
+        @if (Route::has('register'))
+            <x-slot name="footer">
+                {{ __('No account yet?') }}
+                <a href="{{ route('register') }}"
+                   class="text-draft-700 underline underline-offset-2 hover:no-underline">
+                    {{ __('Create one') }}
+                </a>
+            </x-slot>
+        @endif
+    </x-auth-panel>
 @endsection

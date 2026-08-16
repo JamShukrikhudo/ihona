@@ -78,6 +78,36 @@ class PropertyValuation extends Model
         return $this->valid_until >= now();
     }
 
+    /**
+     * The band this estimate is worth quoting to. Derived, not stored, so rows
+     * already in the table get one.
+     *
+     * @return array{low: float, high: float}|null
+     */
+    public function range(): ?array
+    {
+        if ($this->estimated_value === null) {
+            return null;
+        }
+
+        return self::rangeFor((float) $this->estimated_value, $this->confidence_level);
+    }
+
+    /**
+     * Widest when the model is least sure. The service had this inverted.
+     *
+     * @return array{low: float, high: float}
+     */
+    public static function rangeFor(float $value, ?int $confidence): array
+    {
+        $width = max(0.02, (100 - max(0, min(100, (int) $confidence))) / 400);
+
+        return [
+            'low' => round($value * (1 - $width)),
+            'high' => round($value * (1 + $width)),
+        ];
+    }
+
     public function getValuationAccuracy(): string
     {
         if ($this->confidence_level >= 90) {

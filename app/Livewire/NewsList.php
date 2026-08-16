@@ -49,21 +49,10 @@ class NewsList extends Component
         return $query->paginate(12);
     }
 
-    public function getFeaturedNewsProperty()
-    {
-        return News::published()
-            ->featured()
-            ->with('author:id,name')
-            ->orderBy('published_at', 'desc')
-            ->limit(3)
-            ->get();
-    }
-
     public function render()
     {
         return view('livewire.news-list', [
             'news' => $this->news,
-            'featuredNews' => $this->featuredNews,
         ]);
     }
 }

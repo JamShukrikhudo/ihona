@@ -24,9 +24,7 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use JoelButcher\Socialstream\Filament\SocialstreamPlugin;
-use Laravel\Fortify\Fortify;
 use Laravel\Jetstream\Features;
-use Laravel\Jetstream\Jetstream;
 
 class AgentPanelProvider extends PanelProvider
 {
@@ -92,8 +90,9 @@ class AgentPanelProvider extends PanelProvider
 
     public function boot(): void
     {
-        Fortify::$registersRoutes = false;
-        Jetstream::$registersRoutes = false;
+        // Fortify/Jetstream route registration is left alone: killing it here
+        // (a static, set after they register) dropped the auth routes on a
+        // second boot.
     }
 
     public function shouldRegisterMenuItem(): bool

@@ -1,3 +1,356 @@
 @import 'tailwindcss';
+
 @plugin "@tailwindcss/forms";
 @plugin "@tailwindcss/typography";
+
+/* --- Self-hosted, latin subset. No third-party request on a public page. --- */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 400 800;
+  font-stretch: 62% 125%;
+  font-display: swap;
+  src: url('/fonts/archivo-variable.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Instrument Sans';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/fonts/instrument-sans-variable.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/ibm-plex-mono-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/ibm-plex-mono-500.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/ibm-plex-mono-600.woff2') format('woff2');
+}
+
+/* ============================================================================
+   SURVEY SHEET — design system tokens
+   The interface as a surveyor's drawing set. Trust comes from disclosure, not
+   decoration: every number on the page is a fact the record already holds.
+   Full reference: docs/design-survey-sheet.html
+   ========================================================================= */
+
+@theme {
+  /* --- Colour. One definition per token: light-dark() picks the value from
+         the element's used color-scheme, which the stamp below controls. The
+         dark side is the night drawing — ink becomes ground, vellum ink. ---- */
+
+  /* Ground: drafting film. Cool green-grey, never cream. */
+  --color-sheet-000: light-dark(#FCFDFB, #1B2220);  /* card faces, inputs      */
+  --color-sheet-100: light-dark(#F1F3EE, #141A18);  /* page ground             */
+  --color-sheet-200: light-dark(#E4E8E0, #232C29);  /* wells, table stripes    */
+  --color-sheet-300: light-dark(#CFD5CA, #35403C);  /* hairlines, borders      */
+  --color-sheet-400: light-dark(#A9B2A6, #5D6B66);  /* placeholder text only   */
+
+  /* Ink: graphite. Green-black, never #000. */
+  --color-ink-900: light-dark(#121614, #F0F3EE);    /* headings — 15.9:1       */
+  --color-ink-700: light-dark(#262E2B, #DBE0DA);    /* body copy — 12.2:1      */
+  --color-ink-500: light-dark(#4E5A55, #A3ADA7);    /* labels — 6.3:1          */
+  --color-ink-400: light-dark(#64706B, #808C87);    /* annotation — 4.5:1      */
+
+  /* Survey orange: wayfinding + primary action. Budget: <=3% of pixels. */
+  --color-survey-700: light-dark(#A82D0C, #FFA187);
+  --color-survey-600: light-dark(#C93A12, #FF7A52); /* orange as text — 4.5:1  */
+  --color-survey-500: #EE4A1E;                      /* focus ring, leader lines */
+  --color-survey-300: light-dark(#F8A98F, #8A3D22);
+  --color-survey-100: light-dark(#FCE7DF, #3A1B10);
+
+  /* The primary action fill. Fixed in both themes on purpose: white on it has
+     to clear AA, and a light-dark() pair cannot promise that on both grounds —
+     the dark side of survey-600 (#FF7A52) is 2.6:1 against white. White on
+     survey-500 is only 3.7:1, so the signature accent is never a fill that
+     carries text; it stays the focus ring and the leader line. */
+  --color-action: #C93A12;       /* white on this — 5.1:1                     */
+  --color-action-hover: #A82D0C; /* white on this — 6.9:1                     */
+
+  /* Destructive fill, fixed for the same reason: white on the dark side of
+     fault-600 (#E86B62) is 3.1:1, under AA for a button label. */
+  --color-danger: #A82424;       /* white on this — 7.1:1                     */
+  --color-danger-hover: #8B1D1D; /* white on this — 8.6:1                     */
+
+  /* The old theme's `primary` ramp, kept alive and pointed at the action
+     colour. Replacing the palette in this rollout deleted it while 25-odd
+     `bg-primary-*` usages remained across pages not yet restyled — every one
+     of them rendering white text on no background at all. They are readable
+     again, and on-system, until their own tickets replace them with the
+     button component.
+
+     The whole ramp is defined, not the shades that happened to show up first
+     in a grep: Tailwind emits nothing for an undefined key, so a missing shade
+     is silently dead rather than merely off-palette. Unused entries cost
+     nothing — Tailwind only emits what a utility references. */
+  --color-primary-50: light-dark(#FEF4F1, #2A1309);
+  --color-primary-100: light-dark(#FCE7DF, #3A1B10);
+  --color-primary-200: light-dark(#F9CFBF, #4E2415);
+  --color-primary-300: light-dark(#F8A98F, #8A3D22);
+  --color-primary-400: #F2703F;
+  --color-primary-500: #EE4A1E;
+  --color-primary-600: #C93A12;
+  --color-primary-700: #A82D0C;
+  --color-primary-800: #8E2609;
+  --color-primary-900: #6E1D07;
+
+  /* Verdigris: verified, compliant, in hand. */
+  --color-verdigris-700: light-dark(#1F4E42, #8FD3BE);
+  --color-verdigris-600: light-dark(#2F6F5E, #4E9A85);
+  --color-verdigris-500: #3E8D77;
+  --color-verdigris-100: light-dark(#DDEBE5, #16302A);
+
+  /* Draft blue: informational annotation, inline links, map geometry. */
+  --color-draft-700: light-dark(#1B3A6B, #A9C6F2);
+  --color-draft-500: light-dark(#2E5DA6, #7CA7E8);
+  --color-draft-100: light-dark(#DEE6F2, #16233A);
+
+  /* Caution / Fault: compliance expiring, compliance failed. */
+  --color-caution-700: light-dark(#7A5106, #F0CE87);
+  --color-caution-600: light-dark(#9A6708, #E0AC45);
+  --color-caution-100: light-dark(#FBEED0, #33260A);
+  --color-fault-700: light-dark(#8B1D1D, #F5A9A2);
+  --color-fault-600: light-dark(#A82424, #E86B62);
+  --color-fault-100: light-dark(#F8E0DE, #35191A);
+
+  /* --- EPC statutory bands. Legally recognised — never restyle these. --- */
+  --color-epc-a: #008054;
+  --color-epc-b: #19B459;
+  --color-epc-c: #8DCE46;
+  --color-epc-d: #FFD500;
+  --color-epc-e: #FCAA65;
+  --color-epc-f: #EF8023;
+  --color-epc-g: #E9153B;
+
+  /* --- Typefaces: three roles, three jobs. ------------------------------ */
+  --font-display: 'Archivo', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* --- Type scale. Mono roles carry every measurement on the page. ------ */
+  --text-annotation: 0.6875rem;   --text-annotation--line-height: 1.2;
+  --text-annotation--letter-spacing: 0.09em;
+  --text-micro: 0.75rem;          --text-micro--line-height: 1.4;
+  --text-caption: 0.8125rem;      --text-caption--line-height: 1.5;
+  --text-body-s: 0.875rem;        --text-body-s--line-height: 1.6;
+  --text-body: 1rem;              --text-body--line-height: 1.65;
+  --text-body-l: 1.125rem;        --text-body-l--line-height: 1.6;
+  --text-h5: 1.25rem;             --text-h5--line-height: 1.3;
+  --text-h4: 1.5rem;              --text-h4--line-height: 1.25;
+  --text-h3: 2rem;                --text-h3--line-height: 1.15;
+  --text-h2: clamp(2.25rem, 1.6rem + 2.4vw, 3.25rem);
+  --text-h2--line-height: 1.06;   --text-h2--letter-spacing: -0.02em;
+  --text-h1: clamp(2.75rem, 1.5rem + 4.6vw, 5rem);
+  --text-h1--line-height: 0.98;   --text-h1--letter-spacing: -0.03em;
+  --text-mega: clamp(3.5rem, 1.4rem + 8vw, 8rem);
+  --text-mega--line-height: 0.9;  --text-mega--letter-spacing: -0.04em;
+
+  /* --- Spacing: 4px module. --spacing-sheet-* are layout-rhythm steps. -- */
+  --spacing: 0.25rem;
+  --spacing-gutter: 1.5rem;       /* column gap, card padding              */
+  --spacing-margin: 2rem;         /* sheet margin, mobile                  */
+  --spacing-margin-lg: 5.5rem;    /* sheet margin, desktop                 */
+  --spacing-band: 4rem;           /* between blocks inside a section       */
+  --spacing-section: 6rem;        /* between sections, mobile              */
+  --spacing-section-lg: 8rem;     /* between sections, desktop             */
+
+  --container-sheet: 77.5rem;     /* 1240px — the drawing sheet            */
+  --container-reading: 42rem;     /* 672px — ~65ch of body copy            */
+
+  /* --- Radii: near-square. The notch does the shape work, not the round. */
+  --radius-sheet: 0.1875rem;      /* 3px — cards, inputs, buttons          */
+  --radius-tag: 0.125rem;         /* 2px — chips, badges                   */
+  --radius-pill: 999px;           /* avatars, toggles only                 */
+
+  /* --- Elevation: ink-tinted, low. Paper resting on paper. ------------- */
+  --shadow-lift-1: 0 1px 0 0 rgb(18 22 20 / 0.04), 0 1px 2px 0 rgb(18 22 20 / 0.06);
+  --shadow-lift-2: 0 1px 0 0 rgb(18 22 20 / 0.05), 0 6px 16px -4px rgb(18 22 20 / 0.10);
+  --shadow-lift-3: 0 2px 0 0 rgb(18 22 20 / 0.05), 0 18px 40px -12px rgb(18 22 20 / 0.18);
+
+  /* --- Motion: a pen laid down, then lifted. --------------------------- */
+  --ease-draw: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-set: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-snap: cubic-bezier(0.4, 0, 0.2, 1);
+  --animate-duration-tick: 90ms;
+  --animate-duration-quick: 160ms;
+  --animate-duration-move: 280ms;
+  --animate-duration-reveal: 480ms;
+}
+
+/* --- Tailwind's `dark:` variant must answer to the same stamp as the tokens.
+       Left on its default it stays keyed to prefers-color-scheme, so clicking
+       Night on a light OS would flip the palette while every `dark:bg-*` in the
+       existing markup stayed light — near-white ink on a white block. There are
+       111 such utilities in the views, so this has to move with the switch. --- */
+@custom-variant dark {
+  &:where([data-theme='dark'], [data-theme='dark'] *) {
+    @slot;
+  }
+  @media (prefers-color-scheme: dark) {
+    &:where(:not([data-theme='light'], [data-theme='light'] *)) {
+      @slot;
+    }
+  }
+}
+
+/* --- Theme stamp. light-dark() above reads the used color-scheme, so the
+       whole palette flips from these three rules alone. ------------------- */
+@layer base {
+  :root {
+    color-scheme: light dark;
+  }
+  :root[data-theme='light'] { color-scheme: light; }
+  :root[data-theme='dark']  { color-scheme: dark; }
+
+  /* No per-theme --shadow-lift-* here. Tailwind bakes a @theme shadow value
+     into the utility at build time rather than emitting a var() reference, so
+     redefining the custom property changes nothing — the bundle carries the
+     literal ink tint. An elevated surface that needs a darker shadow on the
+     night ground pairs `shadow-lift-*` with a `dark:shadow-*` colour utility,
+     which sets --tw-shadow-color and does take effect. */
+
+  html {
+    background: var(--color-sheet-100);
+    color: var(--color-ink-700);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* The viewer paints its own ground behind the page; body must be explicit. */
+  body {
+    background: var(--color-sheet-100);
+    color: var(--color-ink-700);
+  }
+
+  h1, h2, h3, .u-display {
+    font-family: var(--font-display);
+    font-stretch: 116%;
+    font-weight: 700;
+    color: var(--color-ink-900);
+    text-wrap: balance;
+  }
+
+  /* No border-radius here: the outline already follows the element's own
+     radius, and setting it would square off round controls while focused. */
+  :where(a, button, input, select, textarea, [tabindex]):focus-visible {
+    outline: 2px solid var(--color-survey-500);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      /* Duration alone is not enough: an infinite animation restarts forever. */
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* The Survey Sheet component classes (.card, .btn, .disclosure-strip, .epc-band,
+   .chip, .field, .notch-*, .dimension-line) are deliberately NOT here yet. They
+   had no consumer, shipped ~220 unpurged lines in the bundle, and .btn/.btn-primary
+   silently captured the Bootstrap-idiom buttons in resources/views/bookings/*.
+   They land in ticket 04 alongside the Blade components that use them.
+   Reference: docs/design-survey-sheet.html */
+
+/* --- Compatibility, deliberately unlayered ---------------------------------
+   These have to beat Tailwind's utilities, and a layer loses to a later layer
+   whatever its specificity — so they sit outside @layer entirely.
+
+   Pages not yet moved onto the system hardcode bg-white on their containers.
+   Shipping dark mode site-wide turned those into a white card on the night
+   ground carrying near-white text, which is unreadable. Until each page's own
+   ticket lands, a legacy white surface becomes the sheet surface in dark; in
+   light nothing changes. Delete a line here as each page is restyled. */
+:root[data-theme='dark'] .bg-white,
+:root[data-theme='dark'] .bg-gray-50,
+:root[data-theme='dark'] .bg-gray-100 {
+  background-color: var(--color-sheet-000);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .bg-white,
+  :root:not([data-theme='light']) .bg-gray-50,
+  :root:not([data-theme='light']) .bg-gray-100 {
+    background-color: var(--color-sheet-000);
+  }
+}
+
+/* Flipping the surface alone made those pages worse, not better: their text is
+   a literal text-gray-900, so a dark card left dark ink on a dark ground. The
+   legacy ink scale has to move with the legacy surfaces. */
+:root[data-theme='dark'] .text-gray-900,
+:root[data-theme='dark'] .text-gray-800,
+:root[data-theme='dark'] .text-gray-700 {
+  color: var(--color-ink-900);
+}
+
+:root[data-theme='dark'] .text-gray-600,
+:root[data-theme='dark'] .text-gray-500 {
+  color: var(--color-ink-500);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .text-gray-900,
+  :root:not([data-theme='light']) .text-gray-800,
+  :root:not([data-theme='light']) .text-gray-700 {
+    color: var(--color-ink-900);
+  }
+
+  :root:not([data-theme='light']) .text-gray-600,
+  :root:not([data-theme='light']) .text-gray-500 {
+    color: var(--color-ink-500);
+  }
+}
+
+/* Leaflet ships its own attribution colour, which lands at 3.6:1 on the
+   control's translucent white ground. Its own selector is .leaflet-container a,
+   so this has to be at least as specific. */
+.leaflet-container .leaflet-control-attribution,
+.leaflet-container .leaflet-control-attribution a {
+  color: #2A2A2A;
+}
+
+/* --- Ticket 20: a result and its pin are the same home. --------------------
+   Toggled from JavaScript as an attribute and a plain class rather than a
+   Tailwind utility. Tailwind scans these files as text and emits nothing for a
+   class name it cannot see, so a utility added at runtime is a class with no
+   rule behind it — the trap that has already cost this rollout four bugs.
+
+   Only above 1024px, where the map holds its place beside the results. Below
+   it the map is a collapsed <details>, and lighting a card for a pin nobody
+   can see is a flicker with no cause. */
+@media (min-width: 64rem) {
+  [data-property-id][data-raised] {
+    border-color: var(--color-survey-500);
+    box-shadow: var(--shadow-lift-3);
+  }
+
+  /* The marker is an <img> Leaflet positions with its own transform. `scale`
+     is a separate property, so this composes with that instead of replacing
+     it — writing it into `transform` would drop the pin at the map's origin.
+     The drop shadow does the work colour alone should not: the pin visibly
+     lifts off the tile whether or not the reader can see the outline. */
+  .leaflet-marker-icon.is-raised {
+    scale: 1.3;
+    transform-origin: bottom center;
+    filter: drop-shadow(0 3px 5px rgb(18 22 20 / 0.45));
+    transition: scale 160ms var(--ease-snap);
+  }
+}

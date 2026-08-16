@@ -33,10 +33,8 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Event;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use JoelButcher\Socialstream\Filament\SocialstreamPlugin;
-use Laravel\Fortify\Fortify;
 use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
 use Laravel\Jetstream\Features;
-use Laravel\Jetstream\Jetstream;
 
 class LandlordPanelProvider extends PanelProvider
 {
@@ -116,15 +114,9 @@ class LandlordPanelProvider extends PanelProvider
     public function boot()
     {
 
-        /**
-         * Disable Fortify routes.
-         */
-        Fortify::$registersRoutes = false;
-
-        /**
-         * Disable Jetstream routes.
-         */
-        Jetstream::$registersRoutes = false;
+        // Fortify/Jetstream route registration is left alone: killing it here
+        // (a static, set after they register) dropped the auth routes on a
+        // second boot.
     }
 
     // This method has been removed

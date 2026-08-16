@@ -160,7 +160,7 @@ class PropertyController
             'gardens.size' => ['nullable', 'string', 'max:100'],
             'gardens.orientation' => ['nullable', Rule::in(['north', 'north_east', 'east', 'south_east', 'south', 'south_west', 'west', 'north_west'])],
             'area_sqft' => [$required, 'numeric', 'min:0'],
-            'year_built' => [$required, 'integer', 'min:1000', 'max:'.(now()->year + 10)],
+            'year_built' => array_merge([$required], Property::yearBuiltRules()),
             'property_type' => [$required, Rule::in(['residential', 'commercial', 'land', 'new_build', 'development', 'mixed_use', 'house', 'apartment'])],
             'status' => ['sometimes', Rule::in(['draft', 'coming_soon', 'available', 'under_offer', 'sstc', 'exchanged', 'sold', 'to_let', 'let_agreed', 'let', 'withdrawn', 'archived', 'pending', 'approved', 'rejected'])],
             'list_date' => ['nullable', 'date'],

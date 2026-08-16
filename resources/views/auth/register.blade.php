@@ -1,72 +1,83 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="min-h-full flex flex-col sm:justify-center items-center pt-6 sm:pt-0">
+    <x-auth-panel :title="__('Create an account')"
+                  :lede="__('Save homes, get told when the ones you like change, and keep your viewings in one place.')"
+                  wide>
+        <form method="POST" action="{{ route('register') }}" class="grid gap-5 sm:grid-cols-2">
+            @csrf
 
-        <div class="w-full sm:max-w-md mb-4 mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
-            <x-validation-errors class="mb-4" />
-        
-            <form method="POST" action="{{ route('register') }}">
-                @csrf
+            <x-ui.field id="name" :label="__('Name')" class="sm:col-span-2">
+                <x-ui.control id="name" type="text" name="name" :value="old('name')"
+                              autocomplete="name" required autofocus
+                              :invalid="$errors->has('name')" />
+            </x-ui.field>
 
-                <div>
-                    <x-label for="name" value="{{ __('Name') }}" />
-                    <x-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus />
-                </div>
+            <x-ui.field id="email" :label="__('Email')" class="sm:col-span-2">
+                <x-ui.control id="email" type="email" name="email" :value="old('email')"
+                              autocomplete="email" required
+                              :invalid="$errors->has('email')" />
+            </x-ui.field>
 
-                <div class="mt-4">
-                    <x-label for="email" value="{{ __('Email') }}" />
-                    <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required />
-                </div>
+            <x-ui.field id="password" :label="__('Password')">
+                <x-ui.control id="password" type="password" name="password"
+                              autocomplete="new-password" required
+                              :invalid="$errors->has('password')" />
+            </x-ui.field>
 
-                <div class="mt-4">
-                    <x-label for="password" value="{{ __('Password') }}" />
-                    <x-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" />
-                </div>
+            <x-ui.field id="password_confirmation" :label="__('Password again')">
+                <x-ui.control id="password_confirmation" type="password" name="password_confirmation"
+                              autocomplete="new-password" required
+                              :invalid="$errors->has('password_confirmation')" />
+            </x-ui.field>
 
-                <div class="mt-4">
-                    <x-label for="password_confirmation" value="{{ __('Confirm Password') }}" />
-                    <x-input id="password_confirmation" class="block mt-1 w-full" type="password" name="password_confirmation" required />
-                </div>
+            <x-ui.field id="role" :label="__('What brings you here?')"
+                        :hint="__('It sets what you see first. It can be changed later.')"
+                        class="sm:col-span-2">
+                <x-ui.control as="select" id="role" name="role" required :invalid="$errors->has('role')">
+                    <option value="">{{ __('Choose one') }}</option>
+                    @foreach ([
+                        'buyer' => __('Buying a home'),
+                        'seller' => __('Selling a home'),
+                        'tenant' => __('Renting a home'),
+                        'landlord' => __('Letting a property'),
+                        'contractor' => __('Working on properties'),
+                    ] as $value => $label)
+                        <option value="{{ $value }}" @selected(old('role') === $value)>{{ $label }}</option>
+                    @endforeach
+                </x-ui.control>
+            </x-ui.field>
 
-                <div class="mt-4">
-                    <x-label for="role" value="{{ __('Role') }}" />
-                    <select id="role" name="role" class="block mt-1 w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm" required>
-                        <option value="">Select a role</option>
-                        <option value="tenant">Tenant</option>
-                        <option value="buyer">Buyer</option>
-                        <option value="seller">Seller</option>
-                        <option value="landlord">Landlord</option>
-                        <option value="contractor">Contractor</option>
-                    </select>
-                </div>
-
-                <div class="flex items-center justify-end mt-4">
-                    <a class="underline text-sm text-gray-600 hover:text-gray-900" href="{{ route('login') }}">
-                        {{ __('Already registered?') }}
-                    </a>
-
-                    <x-button class="inline-flex items-center px-4 py-2 bg-green-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-700 active:bg-green-900 focus:outline-none focus:border-green-900 focus:ring ring-green-300 disabled:opacity-25 transition ease-in-out duration-150 ml-4">
-                        {{ __('Register') }}
-                    </x-button>
-                </div>
-            </form>
-
-            @if (\JoelButcher\Socialstream\Socialstream::show())
-                <div class="mt-4">
-                    <div class="relative">
-                        <div class="absolute inset-0 flex items-center">
-                            <div class="w-full border-t border-gray-300"></div>
-                        </div>
-                        <div class="relative flex justify-center text-sm">
-                            <span class="px-2 bg-white text-gray-500">{{ config('socialstream.prompt', 'Or Register Via') }}</span>
-                        </div>
-                    </div>
-                    <div class="mt-4">
-                        <x-socialstream::components.socialstream />
-                    </div>
-                </div>
+            @if (Laravel\Jetstream\Jetstream::hasTermsAndPrivacyPolicyFeature())
+                <x-ui.field id="terms" class="sm:col-span-2">
+                    <label for="terms" class="flex items-start gap-2 text-body-s text-ink-700">
+                        <input id="terms" type="checkbox" name="terms" required
+                               class="mt-0.5 size-4 shrink-0 rounded-tag border-sheet-300 bg-sheet-000 text-action">
+                        <span>
+                            {!! __('I agree to the :terms and :privacy.', [
+                                'terms' => '<a class="text-draft-700 underline underline-offset-2 hover:no-underline" href="'.e(route('termsandconditions')).'">'.e(__('terms of service')).'</a>',
+                                'privacy' => '<a class="text-draft-700 underline underline-offset-2 hover:no-underline" href="'.e(route('privacypolicy')).'">'.e(__('privacy policy')).'</a>',
+                            ]) !!}
+                        </span>
+                    </label>
+                </x-ui.field>
             @endif
-        </div>
-    </div>
+
+            <div class="flex items-center justify-end sm:col-span-2">
+                <x-ui.button type="submit">{{ __('Create account') }}</x-ui.button>
+            </div>
+        </form>
+
+        @if (\JoelButcher\Socialstream\Socialstream::show())
+            <x-socialstream />
+        @endif
+
+        <x-slot name="footer">
+            {{ __('Already have an account?') }}
+            <a href="{{ route('login') }}"
+               class="text-draft-700 underline underline-offset-2 hover:no-underline">
+                {{ __('Sign in') }}
+            </a>
+        </x-slot>
+    </x-auth-panel>
 @endsection

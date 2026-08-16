@@ -1,135 +1,100 @@
-@extends('layouts.app')
-
-@section('content')
-<div class="bg-white dark:bg-gray-900">
-    <div class="container mx-auto px-4 py-8">
-        <div class="max-w-7xl mx-auto">
-            <!-- Header -->
-            <div class="mb-8">
-                <h1 class="text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-2">
-                    My Wishlist
-                </h1>
-                <p class="text-lg text-gray-600 dark:text-gray-400">
-                    {{ $totalFavorites }} {{ Str::plural('property', $totalFavorites) }} saved
-                </p>
-            </div>
-
-            <!-- Search and Sort -->
-            <div class="mb-6 flex flex-col sm:flex-row gap-4">
-                <div class="flex-1">
-                    <label for="search" class="sr-only">Search</label>
-                    <div class="relative">
-                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                            <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/>
-                            </svg>
-                        </div>
-                        <input type="text" 
-                               wire:model.debounce.300ms="search" 
-                               id="search"
-                               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-                               placeholder="Search properties...">
-                    </div>
-                </div>
-                
-                <div class="flex gap-2">
-                    <button wire:click="sortByColumn('created_at')" 
-                            class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:hover:bg-gray-600">
-                        Date Added @if($sortBy === 'created_at') {{ $sortDirection === 'asc' ? '↑' : '↓' }} @endif
-                    </button>
-                    <button wire:click="sortByColumn('price')" 
-                            class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:hover:bg-gray-600">
-                        Price @if($sortBy === 'price') {{ $sortDirection === 'asc' ? '↑' : '↓' }} @endif
-                    </button>
-                </div>
-            </div>
-
-            @if(session()->has('success'))
-                <div class="mb-4 p-4 text-sm text-green-800 bg-green-100 rounded-lg dark:bg-green-900 dark:text-green-200">
-                    {{ session('success') }}
-                </div>
-            @endif
-
-            <!-- Properties Grid -->
-            @if($favorites->count() > 0)
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                    @foreach($favorites as $property)
-                        <div class="bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 relative">
-                            <!-- Remove from Wishlist Button -->
-                            <button wire:click="removeFavorite({{ $property->id }})"
-                                    class="absolute top-3 right-3 z-10 p-2 bg-white rounded-full shadow-lg hover:bg-red-50 transition-colors"
-                                    title="Remove from wishlist">
-                                <svg class="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"/>
-                                </svg>
-                            </button>
-
-                            <a href="{{ route('property.detail', $property->id) }}">
-                                @if($property->images->count() > 0)
-                                    <img class="rounded-t-lg w-full h-48 object-cover" 
-                                         src="{{ $property->images->first()->url }}" 
-                                         alt="{{ $property->title }}">
-                                @else
-                                    <div class="rounded-t-lg w-full h-48 bg-gray-300 flex items-center justify-center">
-                                        <span class="text-gray-500">No image</span>
-                                    </div>
-                                @endif
-                            </a>
-
-                            <div class="p-5">
-                                <a href="{{ route('property.detail', $property->id) }}">
-                                    <h5 class="mb-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white">
-                                        {{ $property->title }}
-                                    </h5>
-                                </a>
-                                
-                                <p class="mb-2 text-sm text-gray-600 dark:text-gray-400">
-                                    <svg class="inline w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
-                                    </svg>
-                                    {{ $property->location }}
-                                </p>
-
-                                <div class="mb-3 flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
-                                    <span>{{ $property->bedrooms }} beds</span>
-                                    <span>{{ $property->bathrooms }} baths</span>
-                                    <span>{{ number_format($property->area_sqft) }} sqft</span>
-                                </div>
-
-                                <p class="text-2xl font-bold text-primary-600 dark:text-primary-400">
-                                    ${{ number_format($property->price) }}
-                                </p>
-
-                                @if(isset($property->favorited_at))
-                                    <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
-                                        Added {{ $property->favorited_at->diffForHumans() }}
-                                    </p>
-                                @endif
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-
-                <!-- Pagination -->
-                <div class="mt-6">
-                    {{ $favorites->links() }}
-                </div>
-            @else
-                <div class="text-center py-12">
-                    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                    </svg>
-                    <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">No properties in your wishlist</h3>
-                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Get started by adding properties you're interested in.</p>
-                    <div class="mt-6">
-                        <a href="{{ route('property.list') }}" 
-                           class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
-                            Browse Properties
-                        </a>
-                    </div>
-                </div>
-            @endif
+<div class="mx-auto max-w-(--breakpoint-xl) px-4 py-band md:px-margin">
+    <header class="flex flex-wrap items-end justify-between gap-4">
+        <div>
+            <p class="font-mono text-annotation uppercase text-ink-400">{{ __('Saved') }}</p>
+            <h1 class="mt-3 font-display text-h2 font-bold tracking-tight text-ink-900">
+                {{ __('Your shortlist') }}
+            </h1>
         </div>
-    </div>
+
+        <p class="font-mono text-body-s font-medium tabular-nums text-ink-900" aria-live="polite">
+            {{ trans_choice(':count home saved|:count homes saved', $totalFavorites, ['count' => number_format($totalFavorites)]) }}
+        </p>
+    </header>
+
+    @if ($removed)
+        <p role="status" class="mt-6 rounded-sheet border border-verdigris-600 bg-verdigris-100 px-4 py-3 text-body-s text-verdigris-700">
+            {{ $removed }}
+        </p>
+    @endif
+
+    @if ($totalFavorites)
+        <div class="mt-6 flex flex-wrap items-center gap-2">
+            <label for="wishlist-search" class="sr-only">{{ __('Search your shortlist') }}</label>
+            <div class="flex flex-1 basis-64 items-center gap-2 rounded-sheet border border-sheet-300 bg-sheet-000 px-3">
+                <x-ui.icon name="search" class="size-4 shrink-0 text-ink-400" />
+                <input id="wishlist-search" type="search" wire:model.live.debounce.300ms="search"
+                       placeholder="{{ __('Address or postcode') }}"
+                       class="w-full border-0 bg-transparent p-0 py-2.5 font-sans text-body-s text-ink-900 placeholder:text-sheet-400 focus:ring-0 focus:outline-none" />
+            </div>
+
+            <label for="wishlist-sort" class="sr-only">{{ __('Sort by') }}</label>
+            <select id="wishlist-sort" wire:model.live="sortBy"
+                    class="basis-48 rounded-sheet border border-sheet-300 bg-sheet-000 px-3 py-2.5 font-sans text-body-s text-ink-900">
+                <option value="created_at">{{ __('Recently saved') }}</option>
+                <option value="price">{{ __('Price') }}</option>
+                <option value="title">{{ __('Address') }}</option>
+            </select>
+        </div>
+    @endif
+
+    @if (count($favorites))
+        <div class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            @foreach ($favorites as $property)
+                <div>
+                    <x-property-card :property="$property" />
+
+                    {{-- Removing is the action this page is for, so it is stated
+                         rather than hidden behind a bookmark glyph. --}}
+                    <button type="button" wire:click="removeFavorite({{ $property->id }})"
+                            class="mt-2 font-mono text-annotation uppercase text-ink-400 transition-colors duration-[160ms] hover:text-fault-600"
+                            aria-label="{{ __('Remove :title from your shortlist', ['title' => $property->title]) }}">
+                        {{ __('Remove from shortlist') }}
+                    </button>
+                </div>
+            @endforeach
+        </div>
+
+        <div class="mt-8">
+            {{ $favorites->links() }}
+        </div>
+    @elseif ($totalFavorites && ! filled($search))
+        {{-- Saved homes exist but this page has none: an out-of-range page, or
+             a saved row whose property has since gone. --}}
+        <div class="mt-6 rounded-sheet border border-dashed border-sheet-300 bg-sheet-000 p-10 text-center">
+            <p class="font-display text-h4 font-bold tracking-tight text-ink-900">
+                {{ __('Nothing on this page') }}
+            </p>
+            <p class="mx-auto mt-2 max-w-reading text-body-s text-ink-500">
+                {{ __('Your shortlist starts again from the first page.') }}
+            </p>
+            <div class="mt-4">
+                <x-ui.button size="sm" type="button" wire:click="gotoPage(1)">
+                    {{ __('Back to the first page') }}
+                </x-ui.button>
+            </div>
+        </div>
+    @elseif ($totalFavorites)
+        <div class="mt-6 rounded-sheet border border-dashed border-sheet-300 bg-sheet-000 p-10 text-center">
+            <p class="font-display text-h4 font-bold tracking-tight text-ink-900">
+                {{ __('No saved homes match that search') }}
+            </p>
+            <p class="mx-auto mt-2 max-w-reading text-body-s text-ink-500">
+                {{ __('Clearing the search brings the rest of your shortlist back.') }}
+            </p>
+        </div>
+    @else
+        {{-- An empty screen is an invitation to act. --}}
+        <div class="mt-6 rounded-sheet border border-dashed border-sheet-300 bg-sheet-000 p-10 text-center">
+            <p class="font-display text-h4 font-bold tracking-tight text-ink-900">
+                {{ __('Nothing saved yet') }}
+            </p>
+            <p class="mx-auto mt-2 max-w-reading text-body-s text-ink-500">
+                {{ __('The bookmark on any listing card saves it here, so you can line up a few and compare them properly.') }}
+            </p>
+            <div class="mt-4">
+                <x-ui.button size="sm" :href="route('property.list')">{{ __('Browse homes') }}</x-ui.button>
+            </div>
+        </div>
+    @endif
 </div>
-@endsection

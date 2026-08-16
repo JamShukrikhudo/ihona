@@ -1,4 +1,5 @@
-<div class="text-gray-900">
+{{-- No colour here: the icon inherits it, so it moves with the theme. --}}
+<div>
     @switch($provider)
         @case(\JoelButcher\Socialstream\Providers::bitbucket())
             <x-socialstream-icons.bitbucket {{ $attributes }} />

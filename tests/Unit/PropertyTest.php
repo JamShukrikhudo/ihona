@@ -76,10 +76,10 @@ class PropertyTest extends TestCase
         $this->assertCount(0, Property::postalCode('SE1')->get());
     }
 
-    public function test_get_available_dates_for_team()
+    public function test_available_viewing_dates()
     {
         $property = Property::factory()->create();
-        $availableDates = $property->getAvailableDatesForTeam();
+        $availableDates = $property->availableViewingDates();
 
         $this->assertIsArray($availableDates);
         $this->assertNotEmpty($availableDates);

@@ -39,7 +39,15 @@ class BookingResource extends Resource
                 DatePicker::make('date')
                     ->required(),
                 TimePicker::make('time')
-                    ->required(),
+                    ->required()
+                    // The unique index on the slot rejects a clash outright, so
+                    // without this the panel showed a raw QueryException where
+                    // a field error belongs.
+                    ->rule(fn (\Filament\Schemas\Components\Utilities\Get $get, ?Booking $record) => function (string $attribute, $value, \Closure $fail) use ($get, $record) {
+                        if (Booking::slotIsTaken((int) $get('property_id'), $get('date'), $value, $record?->getKey())) {
+                            $fail(__('Someone already has that time. Please choose another.'));
+                        }
+                    }),
                 Select::make('user_id')
                     ->relationship('user', 'name')
                     ->required(),
@@ -94,8 +102,17 @@ class BookingResource extends Resource
                         TimePicker::make('new_time')
                             ->required(),
                     ])
-                    ->action(function (Booking $record, array $data): void {
-                        $record->reschedule($data['new_date'], $data['new_time']);
+                    ->action(function (Booking $record, array $data, Action $action): void {
+                        try {
+                            $record->reschedule($data['new_date'], $data['new_time']);
+                        } catch (\App\Exceptions\SlotAlreadyBooked $e) {
+                            \Filament\Notifications\Notification::make()
+                                ->danger()
+                                ->title($e->getMessage())
+                                ->send();
+
+                            $action->halt();
+                        }
                     })
                     ->visible(fn (Booking $record) => $record->canBeRescheduled()),
             ])

@@ -12,7 +12,7 @@
             @foreach ($payments as $payment)
                 <tr>
                     <td class="px-6 py-4 whitespace-nowrap">{{ $payment->payment_date->format('Y-m-d') }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">${{ number_format($payment->amount, 2) }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">{{ app(\App\Settings\GeneralSettings::class)->currencySymbol() }}{{ number_format($payment->amount, 2) }}</td>
                     <td class="px-6 py-4 whitespace-nowrap">{{ ucfirst($payment->status) }}</td>
                     <td class="px-6 py-4 whitespace-nowrap">{{ ucfirst(str_replace('_', ' ', $payment->payment_method)) }}</td>
                 </tr>

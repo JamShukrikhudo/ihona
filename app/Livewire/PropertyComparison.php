@@ -29,6 +29,7 @@ class PropertyComparison extends Component
         if (count($this->propertyIds) < 4 && !in_array($propertyId, $this->propertyIds)) {
             $this->propertyIds[] = $propertyId;
             $this->loadProperties();
+            $this->searchProperties();
         }
     }
 
@@ -36,6 +37,17 @@ class PropertyComparison extends Component
     {
         $this->propertyIds = array_diff($this->propertyIds, [$propertyId]);
         $this->loadProperties();
+        $this->searchProperties();
+    }
+
+    /**
+     * Named for the property it watches. It used to rely on a wire:keyup in
+     * the view, so when that went the search stopped running entirely and
+     * no home could be added to the comparison.
+     */
+    public function updatedSearchTerm()
+    {
+        $this->searchProperties();
     }
 
     public function searchProperties()

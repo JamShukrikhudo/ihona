@@ -61,6 +61,27 @@ class AIInvestmentAnalysisService
         return [
             'predicted_roi' => $predictedROI,
             'risk_score' => $riskScore,
+            'confidence' => $this->rangeFor($predictedROI, $riskScore),
+        ];
+    }
+
+    /**
+     * The band around a predicted return.
+     *
+     * A single figure to two decimal places reads as a measurement, and this is
+     * not one — it is a point on a curve whose width the model cannot see. The
+     * risk score is the model's own statement of how little it knows about this
+     * property, so it sets the width: ±1 point at risk 1, ±10 at risk 10.
+     *
+     * @return array{low: float, high: float}
+     */
+    public function rangeFor(float $predictedROI, float $riskScore): array
+    {
+        $width = max(0.5, $riskScore);
+
+        return [
+            'low' => round($predictedROI - $width, 2),
+            'high' => round($predictedROI + $width, 2),
         ];
     }
 
@@ -229,6 +250,9 @@ class AIInvestmentAnalysisService
             'prediction' => [
                 'predicted_roi' => 5.0,
                 'risk_score' => 5.0,
+                // The fallback knows least of all, so it must not be the one
+                // path that prints a bare figure.
+                'confidence' => $this->rangeFor(5.0, 5.0),
             ],
             'cash_flow_analysis' => $this->calculateCashFlowAnalysis($property),
             'market_position' => [

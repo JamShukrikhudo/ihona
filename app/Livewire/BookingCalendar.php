@@ -12,7 +12,6 @@ use Carbon\Carbon;
 
 class BookingCalendar extends Component
 {
-    public $dates;
     public $appointments;
     public $selectedProperty;
     public $selectedAgent;
@@ -38,10 +37,6 @@ class BookingCalendar extends Component
         $this->appointmentType = AppointmentType::findOrFail($appointmentType);
         $this->currentMonth = Carbon::now()->month;
         $this->currentYear = Carbon::now()->year;
-
-        $this->dates = Property::all()->flatMap(function ($property) {
-            return $property->getAvailableDates();
-        })->unique()->values()->toArray();
 
         $this->appointments = Appointment::with('property')
             ->where('appointment_type_id', $this->appointmentType->id)
@@ -149,7 +144,6 @@ class BookingCalendar extends Component
     public function render()
     {
         return view('livewire.booking-calendar', [
-            'dates' => $this->dates,
             'appointments' => $this->appointments,
             'availableTimeSlots' => $this->availableTimeSlots,
             'appointmentType' => $this->appointmentType,

@@ -28,10 +28,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('team_id')->constrained()->cascadeOnDelete();
             $table->foreignId('accounting_integration_id')->constrained()->cascadeOnDelete();
-            $table->string('link_type');
+            $table->string('link_type', 64);
             $table->nullableMorphs('linkable');
             $table->string('external_id')->nullable();
-            $table->string('invoice_reference')->nullable();
+            $table->string('invoice_reference', 191)->nullable();
             $table->string('payment_status')->default('unknown');
             $table->decimal('amount', 14, 2)->nullable();
             $table->char('currency', 3)->nullable();

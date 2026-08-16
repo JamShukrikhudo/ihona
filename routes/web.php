@@ -35,12 +35,19 @@ Route::middleware('auth')->group(function () {
     Route::put('/bookings/{booking}', [BookingController::class, 'update']);
     Route::get('/bookings', [BookingController::class, 'index']);
 });
-Route::get('/properties/{property}/book', PropertyBooking::class)->name('property.book');
+Route::get('/properties/{propertyId}/book', PropertyBooking::class)->name('property.book');
 Route::post('/payments/session', [PaymentController::class, 'createSession'])->middleware(['auth', 'throttle:10,1']);
 Route::get('/payments/success', [PaymentController::class, 'handlePaymentSuccess'])->middleware('auth');
-Route::get('/booking-calendar', BookingCalendar::class)->middleware('auth')->name('booking.calendar');
+// The component's mount() takes the appointment type, and the route had no
+// parameter to give it, so the page could never boot: "Unable to resolve
+// dependency [Parameter #0 $appointmentType]".
+Route::get('/booking-calendar/{appointmentType}', BookingCalendar::class)->middleware('auth')->name('booking.calendar');
 Route::get('/properties', PropertyList::class)->name('property.list');
 Route::get('/properties/search', [PropertyController::class, 'search'])->name('property.search');
+// Before the catch-all detail route, or {propertyId} swallows it.
+Route::get('/properties/{property}/media/{medium}', \App\Http\Controllers\PropertyMediaController::class)
+    ->whereNumber(['property', 'medium'])
+    ->name('property.media');
 Route::get('/properties/{propertyId}', PropertyDetail::class)->name('property.detail');
 Route::get('/properties/{propertyId}/holographic-tour', HolographicViewer::class)->name('property.holographic-tour');
 
@@ -61,8 +68,20 @@ Route::get('/properties/compare/{propertyIds}', PropertyComparison::class)->name
 
 Route::controller(ContactController::class)->group(function () {
     Route::get('/contact', 'show')->name('contact.show');
-    Route::post('/contact', 'submit')->name('contact.submit');
+    // Unauthenticated public write. Throttled so the enquiries table and the
+    // agency's inbox cannot be filled by anyone with a loop.
+    Route::post('/contact', 'submit')->name('contact.submit')->middleware('throttle:10,1');
 });
+
+// The Survey Sheet styleguide, rendered from the same components the public
+// site uses so it cannot drift into a lie. Not available in production, and
+// never indexed.
+if (! app()->environment('production')) {
+    Route::get('/design', fn () => response()
+        ->view('design.styleguide')
+        ->header('X-Robots-Tag', 'noindex, nofollow')
+    )->name('design.styleguide');
+}
 
 Route::get('/about', [PageController::class, 'about'])->name('about');
 Route::get('/terms-and-conditions', [PageController::class, 'terms'])->name('termsandconditions');

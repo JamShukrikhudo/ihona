@@ -13,14 +13,17 @@ class AdvancedPropertySearch extends Component
     use WithPagination;
 
     public $search = '';
-    public $minPrice = 0;
-    public $maxPrice = 1000000;
-    public $minBedrooms = 0;
-    public $maxBedrooms = 10;
-    public $minBathrooms = 0;
-    public $maxBathrooms = 10;
-    public $minArea = 0;
-    public $maxArea = 10000;
+    // Unset by default, like PropertyList. These were real bounds applied
+    // unconditionally, so an untouched search on /properties/search dropped
+    // every home over £1m, over 10 beds or baths, or over 10,000 sq ft.
+    public $minPrice = null;
+    public $maxPrice = null;
+    public $minBedrooms = null;
+    public $maxBedrooms = null;
+    public $minBathrooms = null;
+    public $maxBathrooms = null;
+    public $minArea = null;
+    public $maxArea = null;
     public $propertyType = '';
     public $selectedAmenities = [];
     public $yearBuilt = '';
