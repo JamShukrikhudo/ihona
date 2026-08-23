@@ -1,0 +1,3 @@
+<?php
+
+return ['token_url' => env('RIGHTMOVE_TOKEN_URL', 'https://api-services.adftest.rightmove.com/oauth/token'), 'base_url' => env('RIGHTMOVE_BASE_URL', 'https://api-services.adftest.rightmove.com'), 'send_path' => env('RIGHTMOVE_SEND_PATH', '/v2/property/commercial/{reference}'), 'remove_path' => env('RIGHTMOVE_REMOVE_PATH', '/v2/property/commercial/{reference}'), 'branch_list_path' => env('RIGHTMOVE_BRANCH_LIST_PATH', '/v1/property/getbranchpropertylist'), 'client_id' => env('RIGHTMOVE_CLIENT_ID'), 'client_secret' => env('RIGHTMOVE_CLIENT_SECRET'), 'timeout' => env('RIGHTMOVE_TIMEOUT', 30)];

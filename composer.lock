@@ -8008,16 +8008,17 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-real-estate-onthemarket.git",
-                "reference": "39223cdbf2f0693d7baf55794d5542e8b43bd5b0"
+                "reference": "411224c85f36267151ec345aa1a8ea870281c366"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-onthemarket/zipball/39223cdbf2f0693d7baf55794d5542e8b43bd5b0",
-                "reference": "39223cdbf2f0693d7baf55794d5542e8b43bd5b0",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-onthemarket/zipball/411224c85f36267151ec345aa1a8ea870281c366",
+                "reference": "411224c85f36267151ec345aa1a8ea870281c366",
                 "shasum": ""
             },
             "require": {
                 "illuminate/database": "^13.0",
+                "illuminate/http": "^13.0",
                 "illuminate/validation": "^13.0",
                 "liberusoftware/module-manager": "^1.0",
                 "liberusoftware/organizations-teams": "^1.0",
@@ -8055,7 +8056,7 @@
                 "source": "https://github.com/liberusoftware/module-real-estate-onthemarket/tree/1.0.0",
                 "issues": "https://github.com/liberusoftware/module-real-estate-onthemarket/issues"
             },
-            "time": "2026-08-23T02:46:22+00:00"
+            "time": "2026-08-23T02:58:44+00:00"
         },
         {
             "name": "liberusoftware/real-estate-onthemarket-api",
@@ -8063,12 +8064,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-real-estate-onthemarket-api.git",
-                "reference": "14cf1ccd0b6ad1a1c971407ef3528d5339e6f6a2"
+                "reference": "a9928f5506afad244cc990676dc8ea0a66a41422"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-onthemarket-api/zipball/14cf1ccd0b6ad1a1c971407ef3528d5339e6f6a2",
-                "reference": "14cf1ccd0b6ad1a1c971407ef3528d5339e6f6a2",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-onthemarket-api/zipball/a9928f5506afad244cc990676dc8ea0a66a41422",
+                "reference": "a9928f5506afad244cc990676dc8ea0a66a41422",
                 "shasum": ""
             },
             "require": {
@@ -8104,7 +8105,7 @@
                 "source": "https://github.com/liberusoftware/module-real-estate-onthemarket-api/tree/1.0.0",
                 "issues": "https://github.com/liberusoftware/module-real-estate-onthemarket-api/issues"
             },
-            "time": "2026-08-23T02:46:28+00:00"
+            "time": "2026-08-23T02:58:48+00:00"
         },
         {
             "name": "liberusoftware/real-estate-onthemarket-filament",
@@ -8765,16 +8766,17 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-real-estate-rightmove.git",
-                "reference": "e430a3f3493674bbd75b6f445396aef79ffbb601"
+                "reference": "5d1a1981768fcec4c420ef9bb1645f4bbc571f71"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-rightmove/zipball/e430a3f3493674bbd75b6f445396aef79ffbb601",
-                "reference": "e430a3f3493674bbd75b6f445396aef79ffbb601",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-rightmove/zipball/5d1a1981768fcec4c420ef9bb1645f4bbc571f71",
+                "reference": "5d1a1981768fcec4c420ef9bb1645f4bbc571f71",
                 "shasum": ""
             },
             "require": {
                 "illuminate/database": "^13.0",
+                "illuminate/http": "^13.0",
                 "illuminate/validation": "^13.0",
                 "liberusoftware/module-manager": "^1.0",
                 "liberusoftware/organizations-teams": "^1.0",
@@ -8812,7 +8814,7 @@
                 "source": "https://github.com/liberusoftware/module-real-estate-rightmove/tree/1.0.0",
                 "issues": "https://github.com/liberusoftware/module-real-estate-rightmove/issues"
             },
-            "time": "2026-08-23T02:45:31+00:00"
+            "time": "2026-08-23T02:58:27+00:00"
         },
         {
             "name": "liberusoftware/real-estate-rightmove-api",
@@ -8820,12 +8822,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-real-estate-rightmove-api.git",
-                "reference": "ab2382ed67749e2399ba3656e7ba69b3ac5c2537"
+                "reference": "c7f905a5798edebc199b5dce8bd56979dde76708"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-rightmove-api/zipball/ab2382ed67749e2399ba3656e7ba69b3ac5c2537",
-                "reference": "ab2382ed67749e2399ba3656e7ba69b3ac5c2537",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-rightmove-api/zipball/c7f905a5798edebc199b5dce8bd56979dde76708",
+                "reference": "c7f905a5798edebc199b5dce8bd56979dde76708",
                 "shasum": ""
             },
             "require": {
@@ -8861,7 +8863,7 @@
                 "source": "https://github.com/liberusoftware/module-real-estate-rightmove-api/tree/1.0.0",
                 "issues": "https://github.com/liberusoftware/module-real-estate-rightmove-api/issues"
             },
-            "time": "2026-08-23T02:45:37+00:00"
+            "time": "2026-08-23T02:58:31+00:00"
         },
         {
             "name": "liberusoftware/real-estate-rightmove-filament",
@@ -9549,16 +9551,17 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-real-estate-zoopla.git",
-                "reference": "2340dc3c1b0d7e3a7a206b43e697dc0902ae5448"
+                "reference": "23224a4a00241a8014224283d22ed95e751825a3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-zoopla/zipball/2340dc3c1b0d7e3a7a206b43e697dc0902ae5448",
-                "reference": "2340dc3c1b0d7e3a7a206b43e697dc0902ae5448",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-zoopla/zipball/23224a4a00241a8014224283d22ed95e751825a3",
+                "reference": "23224a4a00241a8014224283d22ed95e751825a3",
                 "shasum": ""
             },
             "require": {
                 "illuminate/database": "^13.0",
+                "illuminate/http": "^13.0",
                 "illuminate/validation": "^13.0",
                 "liberusoftware/module-manager": "^1.0",
                 "liberusoftware/organizations-teams": "^1.0",
@@ -9596,7 +9599,7 @@
                 "source": "https://github.com/liberusoftware/module-real-estate-zoopla/tree/1.0.0",
                 "issues": "https://github.com/liberusoftware/module-real-estate-zoopla/issues"
             },
-            "time": "2026-08-23T02:45:56+00:00"
+            "time": "2026-08-23T02:58:35+00:00"
         },
         {
             "name": "liberusoftware/real-estate-zoopla-api",
@@ -9604,12 +9607,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-real-estate-zoopla-api.git",
-                "reference": "f3e3ca412824a9ddca82e237faed560944d9f150"
+                "reference": "a63d690f3222e2c9935d9f9c80b512e6059b02ac"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-zoopla-api/zipball/f3e3ca412824a9ddca82e237faed560944d9f150",
-                "reference": "f3e3ca412824a9ddca82e237faed560944d9f150",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-zoopla-api/zipball/a63d690f3222e2c9935d9f9c80b512e6059b02ac",
+                "reference": "a63d690f3222e2c9935d9f9c80b512e6059b02ac",
                 "shasum": ""
             },
             "require": {
@@ -9645,7 +9648,7 @@
                 "source": "https://github.com/liberusoftware/module-real-estate-zoopla-api/tree/1.0.0",
                 "issues": "https://github.com/liberusoftware/module-real-estate-zoopla-api/issues"
             },
-            "time": "2026-08-23T02:46:03+00:00"
+            "time": "2026-08-23T02:58:39+00:00"
         },
         {
             "name": "liberusoftware/real-estate-zoopla-filament",

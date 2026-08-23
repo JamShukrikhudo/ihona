@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Liberu\RealEstate\Zoopla\Application\CreateZooplaSync;
 use Liberu\RealEstate\Zoopla\Application\DeleteZooplaSync;
+use Liberu\RealEstate\Zoopla\Application\SyncZooplaListing;
 use Liberu\RealEstate\Zoopla\Application\UpdateZooplaSync;
 use Liberu\RealEstate\Zoopla\Models\ZooplaSync;
 
@@ -36,6 +37,14 @@ final class ZooplaSyncController
         abort_unless((string) $request->user()?->current_team_id === (string) $zooplaSync->team_id, 404);
 
         return response()->json(['data' => $zooplaSync]);
+    }
+
+    public function sync(Request $request, ZooplaSync $zooplaSync, SyncZooplaListing $sync): JsonResponse
+    {
+        abort_unless((string) $request->user()?->current_team_id === (string) $zooplaSync->team_id, 404);
+        $data = $request->validate(['reference' => ['required', 'string', 'max:255'], 'payload' => ['required', 'array']]);
+
+        return response()->json(['data' => $sync->handle($zooplaSync, $data['reference'], $data['payload'], ['certificate' => config('zoopla.certificate'), 'key' => config('zoopla.key'), 'key_password' => config('zoopla.key_password')])]);
     }
 
     public function update(Request $request, ZooplaSync $zooplaSync, UpdateZooplaSync $update): JsonResponse

@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Liberu\RealEstate\OnTheMarket\Application\CreateOnTheMarketSync;
 use Liberu\RealEstate\OnTheMarket\Application\DeleteOnTheMarketSync;
+use Liberu\RealEstate\OnTheMarket\Application\SyncOnTheMarketListing;
 use Liberu\RealEstate\OnTheMarket\Application\UpdateOnTheMarketSync;
 use Liberu\RealEstate\OnTheMarket\Models\OnTheMarketSync;
 
@@ -36,6 +37,14 @@ final class OnTheMarketSyncController
         abort_unless((string) $request->user()?->current_team_id === (string) $onTheMarketSync->team_id, 404);
 
         return response()->json(['data' => $onTheMarketSync]);
+    }
+
+    public function sync(Request $request, OnTheMarketSync $onTheMarketSync, SyncOnTheMarketListing $sync): JsonResponse
+    {
+        abort_unless((string) $request->user()?->current_team_id === (string) $onTheMarketSync->team_id, 404);
+        $data = $request->validate(['reference' => ['required', 'string', 'max:255'], 'payload' => ['required', 'array']]);
+
+        return response()->json(['data' => $sync->handle($onTheMarketSync, $data['reference'], $data['payload'], ['certificate' => config('onthemarket.certificate'), 'key' => config('onthemarket.key'), 'key_password' => config('onthemarket.key_password')])]);
     }
 
     public function update(Request $request, OnTheMarketSync $onTheMarketSync, UpdateOnTheMarketSync $update): JsonResponse

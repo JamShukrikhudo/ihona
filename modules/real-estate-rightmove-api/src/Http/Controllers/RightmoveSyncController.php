@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Liberu\RealEstate\Rightmove\Application\CreateRightmoveSync;
 use Liberu\RealEstate\Rightmove\Application\DeleteRightmoveSync;
+use Liberu\RealEstate\Rightmove\Application\SyncRightmoveListing;
 use Liberu\RealEstate\Rightmove\Application\UpdateRightmoveSync;
 use Liberu\RealEstate\Rightmove\Models\RightmoveSync;
 
@@ -36,6 +37,14 @@ final class RightmoveSyncController
         abort_unless((string) $request->user()?->current_team_id === (string) $rightmoveSync->team_id, 404);
 
         return response()->json(['data' => $rightmoveSync]);
+    }
+
+    public function sync(Request $request, RightmoveSync $rightmoveSync, SyncRightmoveListing $sync): JsonResponse
+    {
+        abort_unless((string) $request->user()?->current_team_id === (string) $rightmoveSync->team_id, 404);
+        $data = $request->validate(['reference' => ['required', 'string', 'max:255'], 'payload' => ['required', 'array']]);
+
+        return response()->json(['data' => $sync->handle($rightmoveSync, $data['reference'], $data['payload'], ['client_id' => config('rightmove.client_id'), 'client_secret' => config('rightmove.client_secret')])]);
     }
 
     public function update(Request $request, RightmoveSync $rightmoveSync, UpdateRightmoveSync $update): JsonResponse
