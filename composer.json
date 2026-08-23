@@ -201,6 +201,13 @@
         {
             "type": "vcs",
             "url": "https://github.com/liberusoftware/theme-base.git"
+        },
+        {
+            "type": "path",
+            "url": "modules/*",
+            "options": {
+                "symlink": false
+            }
         }
     ],
     "require": {
@@ -265,6 +272,10 @@
         "liberusoftware/theme-support-livewire": "^1.1",
         "liberusoftware/two-factor-authentication": "^1.0",
         "liberusoftware/webhooks": "^1.0",
+        "liberusoftware/module-real-estate-properties": "1.0.0",
+        "liberusoftware/module-real-estate-properties-api": "1.0.0",
+        "liberusoftware/module-real-estate-properties-filament": "1.0.0",
+        "liberusoftware/module-real-estate-properties-livewire": "1.0.0",
         "livewire/livewire": "^4.0",
         "spatie/laravel-activitylog": "^5.0",
         "spatie/laravel-backup": "^10.3",

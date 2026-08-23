@@ -1,0 +1,13 @@
+{
+    "$schema": "https://schemas.liberu.dev/module/v1.json",
+    "name": "real-estate-properties-api",
+    "display_name": "Real Estate Properties API",
+    "description": "Authorized versioned HTTP transport for properties.",
+    "version": "1.0.0",
+    "category": "presentation",
+    "provider": "Liberu\\RealEstate\\PropertiesApi\\PropertiesApiServiceProvider",
+    "requires": {"php": "^8.5", "laravel": "^13.0", "packages": {"liberusoftware/module-real-estate-properties": "^1.0"}},
+    "capabilities": ["real-estate.properties.api"],
+    "default_enabled": true,
+    "features": ["Property list and detail transport", "Validated property creation"]
+}
