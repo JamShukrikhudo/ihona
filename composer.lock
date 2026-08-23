@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a3929888373e865996e3d08ddf8a16b9",
+    "content-hash": "8cc3ac9a609c8fd2090bccceabed2ddb",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -2380,23 +2380,23 @@
         },
         {
             "name": "google/protobuf",
-            "version": "v5.35.1",
+            "version": "v5.36.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/protocolbuffers/protobuf-php.git",
-                "reference": "55bb4a7d6739b5af0927b96213c1371a3afb7cfb"
+                "reference": "9c105104b54709ecd902494ab340ed2122789b2d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/protocolbuffers/protobuf-php/zipball/55bb4a7d6739b5af0927b96213c1371a3afb7cfb",
-                "reference": "55bb4a7d6739b5af0927b96213c1371a3afb7cfb",
+                "url": "https://api.github.com/repos/protocolbuffers/protobuf-php/zipball/9c105104b54709ecd902494ab340ed2122789b2d",
+                "reference": "9c105104b54709ecd902494ab340ed2122789b2d",
                 "shasum": ""
             },
             "require": {
                 "php": ">=8.2.0"
             },
             "require-dev": {
-                "phpunit/phpunit": ">=11.5.0 <12.0.0"
+                "phpunit/phpunit": ">=11.5.50 <12.0.0"
             },
             "suggest": {
                 "ext-bcmath": "Need to support JSON deserialization"
@@ -2418,9 +2418,9 @@
                 "proto"
             ],
             "support": {
-                "source": "https://github.com/protocolbuffers/protobuf-php/tree/v5.35.1"
+                "source": "https://github.com/protocolbuffers/protobuf-php/tree/v5.36.0"
             },
-            "time": "2026-06-11T21:19:23+00:00"
+            "time": "2026-08-20T13:06:50+00:00"
         },
         {
             "name": "graham-campbell/result-type",
@@ -3345,16 +3345,16 @@
         },
         {
             "name": "laravel/horizon",
-            "version": "v5.48.2",
+            "version": "v5.48.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/horizon.git",
-                "reference": "2ebe3cb25ab6461b53a4e3ef42e167edeafe7932"
+                "reference": "2d1045db2ecdc7842a13e96a7c21773f32c93ab3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/horizon/zipball/2ebe3cb25ab6461b53a4e3ef42e167edeafe7932",
-                "reference": "2ebe3cb25ab6461b53a4e3ef42e167edeafe7932",
+                "url": "https://api.github.com/repos/laravel/horizon/zipball/2d1045db2ecdc7842a13e96a7c21773f32c93ab3",
+                "reference": "2d1045db2ecdc7842a13e96a7c21773f32c93ab3",
                 "shasum": ""
             },
             "require": {
@@ -3419,9 +3419,9 @@
             ],
             "support": {
                 "issues": "https://github.com/laravel/horizon/issues",
-                "source": "https://github.com/laravel/horizon/tree/v5.48.2"
+                "source": "https://github.com/laravel/horizon/tree/v5.48.3"
             },
-            "time": "2026-07-27T13:13:49+00:00"
+            "time": "2026-08-10T13:09:54+00:00"
         },
         {
             "name": "laravel/jetstream",
@@ -3491,16 +3491,16 @@
         },
         {
             "name": "laravel/octane",
-            "version": "v2.18.0",
+            "version": "v2.19.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/octane.git",
-                "reference": "404a2f98370c5dea7fb65ecce03c807e8d324074"
+                "reference": "68a2516a0318baba0de0e4648f61e335c5e69dca"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/octane/zipball/404a2f98370c5dea7fb65ecce03c807e8d324074",
-                "reference": "404a2f98370c5dea7fb65ecce03c807e8d324074",
+                "url": "https://api.github.com/repos/laravel/octane/zipball/68a2516a0318baba0de0e4648f61e335c5e69dca",
+                "reference": "68a2516a0318baba0de0e4648f61e335c5e69dca",
                 "shasum": ""
             },
             "require": {
@@ -3576,7 +3576,7 @@
                 "issues": "https://github.com/laravel/octane/issues",
                 "source": "https://github.com/laravel/octane"
             },
-            "time": "2026-07-21T13:23:39+00:00"
+            "time": "2026-08-13T13:58:52+00:00"
         },
         {
             "name": "laravel/passkeys",
@@ -3796,16 +3796,16 @@
         },
         {
             "name": "laravel/reverb",
-            "version": "v1.11.0",
+            "version": "v1.11.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/reverb.git",
-                "reference": "dca414f38e0f7acc237890ca18edfb5f3d535f86"
+                "reference": "52ce5fd88cd1d7eacfdcf6b91cea4704cc546f27"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/reverb/zipball/dca414f38e0f7acc237890ca18edfb5f3d535f86",
-                "reference": "dca414f38e0f7acc237890ca18edfb5f3d535f86",
+                "url": "https://api.github.com/repos/laravel/reverb/zipball/52ce5fd88cd1d7eacfdcf6b91cea4704cc546f27",
+                "reference": "52ce5fd88cd1d7eacfdcf6b91cea4704cc546f27",
                 "shasum": ""
             },
             "require": {
@@ -3869,9 +3869,9 @@
             ],
             "support": {
                 "issues": "https://github.com/laravel/reverb/issues",
-                "source": "https://github.com/laravel/reverb/tree/v1.11.0"
+                "source": "https://github.com/laravel/reverb/tree/v1.11.1"
             },
-            "time": "2026-06-25T02:41:17+00:00"
+            "time": "2026-08-06T14:48:58+00:00"
         },
         {
             "name": "laravel/sanctum",
@@ -4055,16 +4055,16 @@
         },
         {
             "name": "laravel/socialite",
-            "version": "v5.29.0",
+            "version": "v5.30.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/socialite.git",
-                "reference": "cd343a5841f02292af119ee607edc71300c9ae4f"
+                "reference": "caf714f55d51ab0d914b40033d8b0f489d6219cc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/socialite/zipball/cd343a5841f02292af119ee607edc71300c9ae4f",
-                "reference": "cd343a5841f02292af119ee607edc71300c9ae4f",
+                "url": "https://api.github.com/repos/laravel/socialite/zipball/caf714f55d51ab0d914b40033d8b0f489d6219cc",
+                "reference": "caf714f55d51ab0d914b40033d8b0f489d6219cc",
                 "shasum": ""
             },
             "require": {
@@ -4123,20 +4123,20 @@
                 "issues": "https://github.com/laravel/socialite/issues",
                 "source": "https://github.com/laravel/socialite"
             },
-            "time": "2026-07-01T13:50:23+00:00"
+            "time": "2026-08-13T23:01:33+00:00"
         },
         {
             "name": "laravel/telescope",
-            "version": "v5.22.0",
+            "version": "v5.22.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/telescope.git",
-                "reference": "571b08633d86086da3899474378050b16c4c6680"
+                "reference": "67edf6caba0f6f9421a92c38bf97e369af268a56"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/telescope/zipball/571b08633d86086da3899474378050b16c4c6680",
-                "reference": "571b08633d86086da3899474378050b16c4c6680",
+                "url": "https://api.github.com/repos/laravel/telescope/zipball/67edf6caba0f6f9421a92c38bf97e369af268a56",
+                "reference": "67edf6caba0f6f9421a92c38bf97e369af268a56",
                 "shasum": ""
             },
             "require": {
@@ -4190,9 +4190,9 @@
             ],
             "support": {
                 "issues": "https://github.com/laravel/telescope/issues",
-                "source": "https://github.com/laravel/telescope/tree/v5.22.0"
+                "source": "https://github.com/laravel/telescope/tree/v5.22.1"
             },
-            "time": "2026-07-29T14:10:20+00:00"
+            "time": "2026-08-05T13:51:24+00:00"
         },
         {
             "name": "laravel/tinker",
@@ -5078,7 +5078,7 @@
             "version": "1.4.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-activity-comments.git",
+                "url": "git@github.com:liberusoftware/module-activity-comments.git",
                 "reference": "416a1fdfb51bf5dbe331326709b44fdd7b9d3f32"
             },
             "dist": {
@@ -5122,10 +5122,6 @@
                 "MIT"
             ],
             "description": "Generic authorized timelines, comments, mentions, subscriptions, attachments, and visibility.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-activity-comments/tree/1.4.2",
-                "issues": "https://github.com/liberusoftware/module-activity-comments/issues"
-            },
             "time": "2026-08-07T14:25:02+00:00"
         },
         {
@@ -5133,7 +5129,7 @@
             "version": "1.0.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/analytics-contracts.git",
+                "url": "git@github.com:liberusoftware/analytics-contracts.git",
                 "reference": "c950ae334da15762f9b8e55777c844a3c902ab74"
             },
             "dist": {
@@ -5155,10 +5151,6 @@
                 "MIT"
             ],
             "description": "Stable provider-neutral contracts and value types for Liberu Analytics.",
-            "support": {
-                "source": "https://github.com/liberusoftware/analytics-contracts/tree/1.0.2",
-                "issues": "https://github.com/liberusoftware/analytics-contracts/issues"
-            },
             "time": "2026-08-01T07:24:38+00:00"
         },
         {
@@ -5166,7 +5158,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-analytics-core.git",
+                "url": "git@github.com:liberusoftware/module-analytics-core.git",
                 "reference": "b302f2e18910c3589fc3497a241bd56db809da93"
             },
             "dist": {
@@ -5211,10 +5203,6 @@
                 "MIT"
             ],
             "description": "Consent-aware provider-neutral analytics event routing and durable delivery evidence.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-analytics-core/tree/1.4.1",
-                "issues": "https://github.com/liberusoftware/module-analytics-core/issues"
-            },
             "time": "2026-08-07T14:25:08+00:00"
         },
         {
@@ -5222,7 +5210,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-analytics-google.git",
+                "url": "git@github.com:liberusoftware/module-analytics-google.git",
                 "reference": "60d4b39b689e13557829dd5b1fbb62ebb1d589c6"
             },
             "dist": {
@@ -5266,10 +5254,6 @@
                 "MIT"
             ],
             "description": "Consent-aware Google Analytics event mapping adapter.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-analytics-google/tree/1.4.1",
-                "issues": "https://github.com/liberusoftware/module-analytics-google/issues"
-            },
             "time": "2026-08-07T14:25:08+00:00"
         },
         {
@@ -5277,7 +5261,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-analytics-meta.git",
+                "url": "git@github.com:liberusoftware/module-analytics-meta.git",
                 "reference": "e087a4499ec299462ebdacd574ee12e52d36cc4c"
             },
             "dist": {
@@ -5321,10 +5305,6 @@
                 "MIT"
             ],
             "description": "Consent-aware Meta server-side event mapping and normalized customer-data adapter.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-analytics-meta/tree/1.4.1",
-                "issues": "https://github.com/liberusoftware/module-analytics-meta/issues"
-            },
             "time": "2026-08-07T14:25:08+00:00"
         },
         {
@@ -5332,7 +5312,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-api-access.git",
+                "url": "git@github.com:liberusoftware/module-api-access.git",
                 "reference": "5c79a794e1e64e84efde7305bde23a1dca459168"
             },
             "dist": {
@@ -5377,10 +5357,6 @@
                 "MIT"
             ],
             "description": "API token, scope, version, rate-limit, idempotency, and revocation policy.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-api-access/tree/1.4.1",
-                "issues": "https://github.com/liberusoftware/module-api-access/issues"
-            },
             "time": "2026-08-07T14:25:08+00:00"
         },
         {
@@ -5388,7 +5364,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-application.git",
+                "url": "git@github.com:liberusoftware/module-application.git",
                 "reference": "f4fe1f694a693308398e50c3894ca266bece75ac"
             },
             "dist": {
@@ -5432,10 +5408,6 @@
                 "MIT"
             ],
             "description": "Required application metadata, health, clocks, identifiers, and secure HTTP defaults.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-application/tree/1.4.1",
-                "issues": "https://github.com/liberusoftware/module-application/issues"
-            },
             "time": "2026-08-07T14:25:08+00:00"
         },
         {
@@ -5443,7 +5415,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-audit.git",
+                "url": "git@github.com:liberusoftware/module-audit.git",
                 "reference": "78c4f3b0f59484fd928cff4cc1c63a0e32f75857"
             },
             "dist": {
@@ -5487,10 +5459,6 @@
                 "MIT"
             ],
             "description": "Contextual material-change audit records with correlation and retention boundaries.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-audit/tree/1.4.1",
-                "issues": "https://github.com/liberusoftware/module-audit/issues"
-            },
             "time": "2026-08-07T14:25:10+00:00"
         },
         {
@@ -5498,7 +5466,7 @@
             "version": "1.1.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/composer-installer.git",
+                "url": "git@github.com:liberusoftware/composer-installer.git",
                 "reference": "470e3b95f6232424c69d67e4f7dad6f3619c37c4"
             },
             "dist": {
@@ -5535,10 +5503,6 @@
                 "MIT"
             ],
             "description": "Deterministic Composer 2 installer for tracked Liberu modules and themes.",
-            "support": {
-                "source": "https://github.com/liberusoftware/composer-installer/tree/1.1.0",
-                "issues": "https://github.com/liberusoftware/composer-installer/issues"
-            },
             "time": "2026-08-05T07:59:00+00:00"
         },
         {
@@ -5546,7 +5510,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-currency-context.git",
+                "url": "git@github.com:liberusoftware/module-currency-context.git",
                 "reference": "10f4df26157d7c5fee683d75f0a542c689afdd57"
             },
             "dist": {
@@ -5590,10 +5554,6 @@
                 "MIT"
             ],
             "description": "Precise money values, ISO currency metadata, context, formatting, and exchange-rate contracts.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-currency-context/tree/1.4.1",
-                "issues": "https://github.com/liberusoftware/module-currency-context/issues"
-            },
             "time": "2026-08-07T14:25:15+00:00"
         },
         {
@@ -5601,7 +5561,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-developer-experience.git",
+                "url": "git@github.com:liberusoftware/module-developer-experience.git",
                 "reference": "2a2f574430611175af6ff430d65156a56be7b657"
             },
             "dist": {
@@ -5645,10 +5605,6 @@
                 "MIT"
             ],
             "description": "Foundation diagnostics and reproducible development/quality conventions.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-developer-experience/tree/1.4.1",
-                "issues": "https://github.com/liberusoftware/module-developer-experience/issues"
-            },
             "time": "2026-08-07T14:25:15+00:00"
         },
         {
@@ -5656,7 +5612,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-feature-flags.git",
+                "url": "git@github.com:liberusoftware/module-feature-flags.git",
                 "reference": "f0701fbb929b8d5f330204b3b53c1901cec0749e"
             },
             "dist": {
@@ -5700,10 +5656,6 @@
                 "MIT"
             ],
             "description": "Typed rollout flags with stable environment, tenant, and actor targeting.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-feature-flags/tree/1.4.1",
-                "issues": "https://github.com/liberusoftware/module-feature-flags/issues"
-            },
             "time": "2026-08-07T14:25:15+00:00"
         },
         {
@@ -5711,7 +5663,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-files-media.git",
+                "url": "git@github.com:liberusoftware/module-files-media.git",
                 "reference": "214f00cd168620fe6fa209c6669a206534129ff5"
             },
             "dist": {
@@ -5755,10 +5707,6 @@
                 "MIT"
             ],
             "description": "Secure upload policy, malware-scanner contract, media metadata, access, and retention foundations.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-files-media/tree/1.4.1",
-                "issues": "https://github.com/liberusoftware/module-files-media/issues"
-            },
             "time": "2026-08-07T14:25:15+00:00"
         },
         {
@@ -5766,7 +5714,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-identity-core.git",
+                "url": "git@github.com:liberusoftware/module-identity-core.git",
                 "reference": "46d9b48899910a511285761f990a1d7f96531189"
             },
             "dist": {
@@ -5809,10 +5757,6 @@
                 "MIT"
             ],
             "description": "Provider-neutral identity policy, normalization, and versioned security events.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-identity-core/tree/1.4.1",
-                "issues": "https://github.com/liberusoftware/module-identity-core/issues"
-            },
             "time": "2026-08-07T14:25:16+00:00"
         },
         {
@@ -5820,7 +5764,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-identity-core-filament.git",
+                "url": "git@github.com:liberusoftware/module-identity-core-filament.git",
                 "reference": "34519fdd11c96b7db55def83ef50321265b81ba8"
             },
             "dist": {
@@ -5863,10 +5807,6 @@
                 "MIT"
             ],
             "description": "Filament administration adapter for the configured Liberu identity model.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-identity-core-filament/tree/1.4.1",
-                "issues": "https://github.com/liberusoftware/module-identity-core-filament/issues"
-            },
             "time": "2026-08-07T14:25:21+00:00"
         },
         {
@@ -5874,7 +5814,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-identity-socialstream.git",
+                "url": "git@github.com:liberusoftware/module-identity-socialstream.git",
                 "reference": "faea00423bd97e3de696e37cb5d7cc6bafc0edf2"
             },
             "dist": {
@@ -5921,10 +5861,6 @@
                 "MIT"
             ],
             "description": "Socialstream/Socialite identity-linking provider adapter.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-identity-socialstream/tree/1.4.1",
-                "issues": "https://github.com/liberusoftware/module-identity-socialstream/issues"
-            },
             "time": "2026-08-07T14:25:24+00:00"
         },
         {
@@ -5932,7 +5868,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-import-export.git",
+                "url": "git@github.com:liberusoftware/module-import-export.git",
                 "reference": "075032d5033056c3b4a10a010673de3d4a57159c"
             },
             "dist": {
@@ -5976,10 +5912,6 @@
                 "MIT"
             ],
             "description": "Versioned transfer schemas, mapping, dry runs, validation, queued progress, reports, and retention.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-import-export/tree/1.4.1",
-                "issues": "https://github.com/liberusoftware/module-import-export/issues"
-            },
             "time": "2026-08-07T14:25:23+00:00"
         },
         {
@@ -5987,7 +5919,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-integrations.git",
+                "url": "git@github.com:liberusoftware/module-integrations.git",
                 "reference": "9569c7b2e48633fc47131a0a3533dfb7a4d516fc"
             },
             "dist": {
@@ -6031,10 +5963,6 @@
                 "MIT"
             ],
             "description": "Provider adapter registry and protected connection lifecycle.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-integrations/tree/1.4.1",
-                "issues": "https://github.com/liberusoftware/module-integrations/issues"
-            },
             "time": "2026-08-07T14:25:23+00:00"
         },
         {
@@ -6042,7 +5970,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-jetstream-bridge.git",
+                "url": "git@github.com:liberusoftware/module-jetstream-bridge.git",
                 "reference": "7ba43cc22d76d231d74b3987bbb7d40dd2a0f445"
             },
             "dist": {
@@ -6088,10 +6016,6 @@
                 "MIT"
             ],
             "description": "Fortify and Jetstream-compatible action adapters for Liberu identity capabilities.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-jetstream-bridge/tree/1.4.1",
-                "issues": "https://github.com/liberusoftware/module-jetstream-bridge/issues"
-            },
             "time": "2026-08-07T14:25:24+00:00"
         },
         {
@@ -6099,7 +6023,7 @@
             "version": "1.0.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/localization-contracts.git",
+                "url": "git@github.com:liberusoftware/localization-contracts.git",
                 "reference": "7b5121caeeda07379bab2bf8ea1b3947855afed3"
             },
             "dist": {
@@ -6121,10 +6045,6 @@
                 "MIT"
             ],
             "description": "Stable provider-neutral machine translation contracts for Liberu Localization.",
-            "support": {
-                "source": "https://github.com/liberusoftware/localization-contracts/tree/1.0.2",
-                "issues": "https://github.com/liberusoftware/localization-contracts/issues"
-            },
             "time": "2026-08-01T07:24:41+00:00"
         },
         {
@@ -6132,7 +6052,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-localization-core.git",
+                "url": "git@github.com:liberusoftware/module-localization-core.git",
                 "reference": "c77a5aed99bd101eeff7a7a94dde0a969a0f38ab"
             },
             "dist": {
@@ -6179,10 +6099,6 @@
                 "MIT"
             ],
             "description": "Locale resolution, preferences, propagation, and UI direction for Liberu applications.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-localization-core/tree/1.4.1",
-                "issues": "https://github.com/liberusoftware/module-localization-core/issues"
-            },
             "time": "2026-08-07T14:25:23+00:00"
         },
         {
@@ -6190,7 +6106,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-localization-core-livewire.git",
+                "url": "git@github.com:liberusoftware/module-localization-core-livewire.git",
                 "reference": "31553cab97641e83fc702974c3159de78afdcec7"
             },
             "dist": {
@@ -6234,10 +6150,6 @@
                 "MIT"
             ],
             "description": "Livewire locale-switching presentation adapter for Liberu Localization.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-localization-core-livewire/tree/1.4.1",
-                "issues": "https://github.com/liberusoftware/module-localization-core-livewire/issues"
-            },
             "time": "2026-08-07T14:25:29+00:00"
         },
         {
@@ -6245,7 +6157,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-localization-mymemory.git",
+                "url": "git@github.com:liberusoftware/module-localization-mymemory.git",
                 "reference": "bf11fef28492b3a311cb252f484205b5875c5d9e"
             },
             "dist": {
@@ -6290,10 +6202,6 @@
                 "MIT"
             ],
             "description": "MyMemory machine-translation adapter for Liberu Localization.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-localization-mymemory/tree/1.4.1",
-                "issues": "https://github.com/liberusoftware/module-localization-mymemory/issues"
-            },
             "time": "2026-08-07T14:25:31+00:00"
         },
         {
@@ -6301,7 +6209,7 @@
             "version": "1.4.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-module-manager.git",
+                "url": "git@github.com:liberusoftware/module-module-manager.git",
                 "reference": "688fc9c01008bfd5258afa2a78587c48804ec2e7"
             },
             "dist": {
@@ -6345,10 +6253,6 @@
                 "MIT"
             ],
             "description": "Deterministic manifest discovery and runtime enablement for Liberu modules.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-module-manager/tree/1.4.2",
-                "issues": "https://github.com/liberusoftware/module-module-manager/issues"
-            },
             "time": "2026-08-07T14:25:25+00:00"
         },
         {
@@ -6356,7 +6260,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-module-manager-filament.git",
+                "url": "git@github.com:liberusoftware/module-module-manager-filament.git",
                 "reference": "44378fb5b6b5ea3239639f09ad51b1a8b8696026"
             },
             "dist": {
@@ -6400,10 +6304,6 @@
                 "MIT"
             ],
             "description": "Filament operations presentation adapter for the Liberu Module Manager.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-module-manager-filament/tree/1.4.1",
-                "issues": "https://github.com/liberusoftware/module-module-manager-filament/issues"
-            },
             "time": "2026-08-07T14:25:35+00:00"
         },
         {
@@ -6411,7 +6311,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-notifications.git",
+                "url": "git@github.com:liberusoftware/module-notifications.git",
                 "reference": "c218aa80a8773b7feadd0a884172a88135446ef9"
             },
             "dist": {
@@ -6455,10 +6355,6 @@
                 "MIT"
             ],
             "description": "Localized notification preferences, channel policy, inbox delivery state, and quiet hours.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-notifications/tree/1.4.1",
-                "issues": "https://github.com/liberusoftware/module-notifications/issues"
-            },
             "time": "2026-08-07T14:25:32+00:00"
         },
         {
@@ -6466,7 +6362,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-observability.git",
+                "url": "git@github.com:liberusoftware/module-observability.git",
                 "reference": "6adfdab5abf83d6f39473345822fda97f3f05ecb"
             },
             "dist": {
@@ -6511,10 +6407,6 @@
                 "MIT"
             ],
             "description": "Structured diagnostics, monitoring dashboards, health signals, and redaction defaults.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-observability/tree/1.4.1",
-                "issues": "https://github.com/liberusoftware/module-observability/issues"
-            },
             "time": "2026-08-07T14:25:32+00:00"
         },
         {
@@ -6522,7 +6414,7 @@
             "version": "1.5.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-organizations-teams.git",
+                "url": "git@github.com:liberusoftware/module-organizations-teams.git",
                 "reference": "12f20e83088659fe9194823d090e44358eed3a56"
             },
             "dist": {
@@ -6567,10 +6459,6 @@
                 "MIT"
             ],
             "description": "Organization, team, membership, invitation, ownership, and context foundation.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-organizations-teams/tree/1.5.0",
-                "issues": "https://github.com/liberusoftware/module-organizations-teams/issues"
-            },
             "time": "2026-08-09T15:38:02+00:00"
         },
         {
@@ -6578,7 +6466,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-organizations-teams-filament.git",
+                "url": "git@github.com:liberusoftware/module-organizations-teams-filament.git",
                 "reference": "ce57c44ef89eb852c9c1737d65de7a9e5ffa4b76"
             },
             "dist": {
@@ -6621,10 +6509,6 @@
                 "MIT"
             ],
             "description": "Filament administration adapter for organizations and teams.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-organizations-teams-filament/tree/1.4.1",
-                "issues": "https://github.com/liberusoftware/module-organizations-teams-filament/issues"
-            },
             "time": "2026-08-07T14:25:42+00:00"
         },
         {
@@ -6632,7 +6516,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-profiles.git",
+                "url": "git@github.com:liberusoftware/module-profiles.git",
                 "reference": "bdf7c4cb01bf602735df5ecf01d02cbb88b659fe"
             },
             "dist": {
@@ -6676,10 +6560,6 @@
                 "MIT"
             ],
             "description": "Controlled profile updates and user presentation preferences.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-profiles/tree/1.4.1",
-                "issues": "https://github.com/liberusoftware/module-profiles/issues"
-            },
             "time": "2026-08-07T14:25:39+00:00"
         },
         {
@@ -7239,7 +7119,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-real-estate-marketing.git",
+                "url": "git@github.com:liberusoftware/module-real-estate-marketing.git",
                 "reference": "8f09e6f95cb4c9d60c37b215645c54a00e7bd390"
             },
             "dist": {
@@ -7283,10 +7163,6 @@
                 "MIT"
             ],
             "description": "Provider-neutral, team-scoped real-estate campaigns, content, audiences, and delivery metrics.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-real-estate-marketing/tree/1.0.0",
-                "issues": "https://github.com/liberusoftware/module-real-estate-marketing/issues"
-            },
             "time": "2026-08-23T02:26:42+00:00"
         },
         {
@@ -7294,7 +7170,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-real-estate-marketing-api.git",
+                "url": "git@github.com:liberusoftware/module-real-estate-marketing-api.git",
                 "reference": "72339262f18d0d4b47c3357a377cd8aa370593b8"
             },
             "dist": {
@@ -7332,10 +7208,6 @@
                 "MIT"
             ],
             "description": "Versioned API adapter for real-estate marketing campaigns.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-real-estate-marketing-api/tree/1.0.0",
-                "issues": "https://github.com/liberusoftware/module-real-estate-marketing-api/issues"
-            },
             "time": "2026-08-23T02:26:47+00:00"
         },
         {
@@ -7343,7 +7215,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-real-estate-marketing-filament.git",
+                "url": "git@github.com:liberusoftware/module-real-estate-marketing-filament.git",
                 "reference": "4a036e4294f8651de7fb2f77bafbed236cf04648"
             },
             "dist": {
@@ -7380,10 +7252,6 @@
                 "MIT"
             ],
             "description": "Filament 5 adapter for real-estate marketing campaigns.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-real-estate-marketing-filament/tree/1.0.0",
-                "issues": "https://github.com/liberusoftware/module-real-estate-marketing-filament/issues"
-            },
             "time": "2026-08-23T02:26:52+00:00"
         },
         {
@@ -7391,7 +7259,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-real-estate-marketing-livewire.git",
+                "url": "git@github.com:liberusoftware/module-real-estate-marketing-livewire.git",
                 "reference": "f6777acdbcd3c4d919f49654eeecc52132da86e9"
             },
             "dist": {
@@ -7428,10 +7296,6 @@
                 "MIT"
             ],
             "description": "Livewire 4 adapter for real-estate marketing campaigns.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-real-estate-marketing-livewire/tree/1.0.0",
-                "issues": "https://github.com/liberusoftware/module-real-estate-marketing-livewire/issues"
-            },
             "time": "2026-08-23T02:26:58+00:00"
         },
         {
@@ -7675,12 +7539,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:liberusoftware/module-real-estate-media-and-documents-api.git",
-                "reference": "20b9bdffba9d43dd55338601be3ba3ff29ed89f7"
+                "reference": "20969d05822f2012e69dadb7412db90b703bf17f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-media-and-documents-api/zipball/20b9bdffba9d43dd55338601be3ba3ff29ed89f7",
-                "reference": "20b9bdffba9d43dd55338601be3ba3ff29ed89f7",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-media-and-documents-api/zipball/20969d05822f2012e69dadb7412db90b703bf17f",
+                "reference": "20969d05822f2012e69dadb7412db90b703bf17f",
                 "shasum": ""
             },
             "require": {
@@ -7712,7 +7576,7 @@
                 "MIT"
             ],
             "description": "Versioned API adapter for real-estate media and documents.",
-            "time": "2026-08-23T01:30:35+00:00"
+            "time": "2026-08-23T01:32:25+00:00"
         },
         {
             "name": "liberusoftware/real-estate-media-and-documents-filament",
@@ -7807,7 +7671,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-real-estate-offers.git",
+                "url": "git@github.com:liberusoftware/module-real-estate-offers.git",
                 "reference": "eb87bb442d39439bfb029e6b88a798dcb469cd36"
             },
             "dist": {
@@ -7851,10 +7715,6 @@
                 "MIT"
             ],
             "description": "Provider-neutral offer terms, qualification, negotiation, proof, and acceptance actions.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-real-estate-offers/tree/1.0.0",
-                "issues": "https://github.com/liberusoftware/module-real-estate-offers/issues"
-            },
             "time": "2026-08-23T02:11:06+00:00"
         },
         {
@@ -7862,7 +7722,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-real-estate-offers-api.git",
+                "url": "git@github.com:liberusoftware/module-real-estate-offers-api.git",
                 "reference": "5454d59ec9ba5d6cb5fc079fbcd3980c67071948"
             },
             "dist": {
@@ -7900,10 +7760,6 @@
                 "MIT"
             ],
             "description": "Versioned API adapter for real-estate offers.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-real-estate-offers-api/tree/1.0.0",
-                "issues": "https://github.com/liberusoftware/module-real-estate-offers-api/issues"
-            },
             "time": "2026-08-23T02:11:11+00:00"
         },
         {
@@ -7911,7 +7767,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-real-estate-offers-filament.git",
+                "url": "git@github.com:liberusoftware/module-real-estate-offers-filament.git",
                 "reference": "781c4797f560c7542206b9f6e55ae459dd4f92af"
             },
             "dist": {
@@ -7948,10 +7804,6 @@
                 "MIT"
             ],
             "description": "Filament 5 adapter for real-estate offers.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-real-estate-offers-filament/tree/1.0.0",
-                "issues": "https://github.com/liberusoftware/module-real-estate-offers-filament/issues"
-            },
             "time": "2026-08-23T02:11:16+00:00"
         },
         {
@@ -7959,7 +7811,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-real-estate-offers-livewire.git",
+                "url": "git@github.com:liberusoftware/module-real-estate-offers-livewire.git",
                 "reference": "63f77ad4cd2a52ef3e7685ac1a840bb686dac4f7"
             },
             "dist": {
@@ -7996,10 +7848,6 @@
                 "MIT"
             ],
             "description": "Livewire 4 adapter for real-estate offers.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-real-estate-offers-livewire/tree/1.0.0",
-                "issues": "https://github.com/liberusoftware/module-real-estate-offers-livewire/issues"
-            },
             "time": "2026-08-23T02:11:22+00:00"
         },
         {
@@ -8007,7 +7855,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-real-estate-onthemarket.git",
+                "url": "git@github.com:liberusoftware/module-real-estate-onthemarket.git",
                 "reference": "411224c85f36267151ec345aa1a8ea870281c366"
             },
             "dist": {
@@ -8052,10 +7900,6 @@
                 "MIT"
             ],
             "description": "Independent OnTheMarket listing synchronization core for Liberu Real Estate.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-real-estate-onthemarket/tree/1.0.0",
-                "issues": "https://github.com/liberusoftware/module-real-estate-onthemarket/issues"
-            },
             "time": "2026-08-23T02:58:44+00:00"
         },
         {
@@ -8063,13 +7907,13 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-real-estate-onthemarket-api.git",
-                "reference": "a9928f5506afad244cc990676dc8ea0a66a41422"
+                "url": "git@github.com:liberusoftware/module-real-estate-onthemarket-api.git",
+                "reference": "a6ad6ac53874ac4e671b0cd7bd42e5c8ebedc15a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-onthemarket-api/zipball/a9928f5506afad244cc990676dc8ea0a66a41422",
-                "reference": "a9928f5506afad244cc990676dc8ea0a66a41422",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-onthemarket-api/zipball/a6ad6ac53874ac4e671b0cd7bd42e5c8ebedc15a",
+                "reference": "a6ad6ac53874ac4e671b0cd7bd42e5c8ebedc15a",
                 "shasum": ""
             },
             "require": {
@@ -8101,18 +7945,14 @@
                 "MIT"
             ],
             "description": "Independent API adapter for OnTheMarket synchronization.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-real-estate-onthemarket-api/tree/1.0.0",
-                "issues": "https://github.com/liberusoftware/module-real-estate-onthemarket-api/issues"
-            },
-            "time": "2026-08-23T02:58:48+00:00"
+            "time": "2026-08-23T03:16:48+00:00"
         },
         {
             "name": "liberusoftware/real-estate-onthemarket-filament",
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-real-estate-onthemarket-filament.git",
+                "url": "git@github.com:liberusoftware/module-real-estate-onthemarket-filament.git",
                 "reference": "3fc464078b6307e212386902d7722474fd09f0b0"
             },
             "dist": {
@@ -8149,10 +7989,6 @@
                 "MIT"
             ],
             "description": "Independent Filament adapter for OnTheMarket synchronization.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-real-estate-onthemarket-filament/tree/1.0.0",
-                "issues": "https://github.com/liberusoftware/module-real-estate-onthemarket-filament/issues"
-            },
             "time": "2026-08-23T02:46:34+00:00"
         },
         {
@@ -8160,7 +7996,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-real-estate-onthemarket-livewire.git",
+                "url": "git@github.com:liberusoftware/module-real-estate-onthemarket-livewire.git",
                 "reference": "43508c72985079666406567c67c5d4d2bcab5a04"
             },
             "dist": {
@@ -8197,10 +8033,6 @@
                 "MIT"
             ],
             "description": "Independent Livewire adapter for OnTheMarket synchronization.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-real-estate-onthemarket-livewire/tree/1.0.0",
-                "issues": "https://github.com/liberusoftware/module-real-estate-onthemarket-livewire/issues"
-            },
             "time": "2026-08-23T02:46:41+00:00"
         },
         {
@@ -8392,7 +8224,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-real-estate-portals-reporting.git",
+                "url": "git@github.com:liberusoftware/module-real-estate-portals-reporting.git",
                 "reference": "9f58a53c435a07547e2575eea167ca6167574f2e"
             },
             "dist": {
@@ -8436,10 +8268,6 @@
                 "MIT"
             ],
             "description": "Provider-neutral, team-scoped portal publication and reporting records for real estate.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-real-estate-portals-reporting/tree/1.0.0",
-                "issues": "https://github.com/liberusoftware/module-real-estate-portals-reporting/issues"
-            },
             "time": "2026-08-23T02:34:02+00:00"
         },
         {
@@ -8447,7 +8275,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-real-estate-portals-reporting-api.git",
+                "url": "git@github.com:liberusoftware/module-real-estate-portals-reporting-api.git",
                 "reference": "b552c208fca47b9c1032d07b331e35ff547f5513"
             },
             "dist": {
@@ -8485,10 +8313,6 @@
                 "MIT"
             ],
             "description": "Versioned API adapter for real-estate portal reports.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-real-estate-portals-reporting-api/tree/1.0.0",
-                "issues": "https://github.com/liberusoftware/module-real-estate-portals-reporting-api/issues"
-            },
             "time": "2026-08-23T02:34:08+00:00"
         },
         {
@@ -8496,7 +8320,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-real-estate-portals-reporting-filament.git",
+                "url": "git@github.com:liberusoftware/module-real-estate-portals-reporting-filament.git",
                 "reference": "a8f4e0f46d9c4911c758c88763433f6feb83b660"
             },
             "dist": {
@@ -8533,10 +8357,6 @@
                 "MIT"
             ],
             "description": "Filament 5 adapter for real-estate portal reports.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-real-estate-portals-reporting-filament/tree/1.0.0",
-                "issues": "https://github.com/liberusoftware/module-real-estate-portals-reporting-filament/issues"
-            },
             "time": "2026-08-23T02:34:15+00:00"
         },
         {
@@ -8544,7 +8364,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-real-estate-portals-reporting-livewire.git",
+                "url": "git@github.com:liberusoftware/module-real-estate-portals-reporting-livewire.git",
                 "reference": "3d3f9dbdff4b3a7576f71f7e7f94a637dc9e544e"
             },
             "dist": {
@@ -8581,10 +8401,6 @@
                 "MIT"
             ],
             "description": "Livewire 4 adapter for real-estate portal reports.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-real-estate-portals-reporting-livewire/tree/1.0.0",
-                "issues": "https://github.com/liberusoftware/module-real-estate-portals-reporting-livewire/issues"
-            },
             "time": "2026-08-23T02:34:21+00:00"
         },
         {
@@ -8765,7 +8581,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-real-estate-rightmove.git",
+                "url": "git@github.com:liberusoftware/module-real-estate-rightmove.git",
                 "reference": "5d1a1981768fcec4c420ef9bb1645f4bbc571f71"
             },
             "dist": {
@@ -8810,10 +8626,6 @@
                 "MIT"
             ],
             "description": "Independent Rightmove listing synchronization core for Liberu Real Estate.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-real-estate-rightmove/tree/1.0.0",
-                "issues": "https://github.com/liberusoftware/module-real-estate-rightmove/issues"
-            },
             "time": "2026-08-23T02:58:27+00:00"
         },
         {
@@ -8821,13 +8633,13 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-real-estate-rightmove-api.git",
-                "reference": "c7f905a5798edebc199b5dce8bd56979dde76708"
+                "url": "git@github.com:liberusoftware/module-real-estate-rightmove-api.git",
+                "reference": "5a219a7a8098789a8cf3772f9d7c03ab7d68e8c2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-rightmove-api/zipball/c7f905a5798edebc199b5dce8bd56979dde76708",
-                "reference": "c7f905a5798edebc199b5dce8bd56979dde76708",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-rightmove-api/zipball/5a219a7a8098789a8cf3772f9d7c03ab7d68e8c2",
+                "reference": "5a219a7a8098789a8cf3772f9d7c03ab7d68e8c2",
                 "shasum": ""
             },
             "require": {
@@ -8859,18 +8671,14 @@
                 "MIT"
             ],
             "description": "Independent API adapter for Rightmove synchronization.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-real-estate-rightmove-api/tree/1.0.0",
-                "issues": "https://github.com/liberusoftware/module-real-estate-rightmove-api/issues"
-            },
-            "time": "2026-08-23T02:58:31+00:00"
+            "time": "2026-08-23T03:16:39+00:00"
         },
         {
             "name": "liberusoftware/real-estate-rightmove-filament",
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-real-estate-rightmove-filament.git",
+                "url": "git@github.com:liberusoftware/module-real-estate-rightmove-filament.git",
                 "reference": "3841fe8e168db011bb0da125b9aa24f7b43a7c08"
             },
             "dist": {
@@ -8907,10 +8715,6 @@
                 "MIT"
             ],
             "description": "Independent Filament adapter for Rightmove synchronization.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-real-estate-rightmove-filament/tree/1.0.0",
-                "issues": "https://github.com/liberusoftware/module-real-estate-rightmove-filament/issues"
-            },
             "time": "2026-08-23T02:45:44+00:00"
         },
         {
@@ -8918,7 +8722,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-real-estate-rightmove-livewire.git",
+                "url": "git@github.com:liberusoftware/module-real-estate-rightmove-livewire.git",
                 "reference": "8ae890f72ede2330675d4cb1cff34b2146946a18"
             },
             "dist": {
@@ -8955,10 +8759,6 @@
                 "MIT"
             ],
             "description": "Independent Livewire adapter for Rightmove synchronization.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-real-estate-rightmove-livewire/tree/1.0.0",
-                "issues": "https://github.com/liberusoftware/module-real-estate-rightmove-livewire/issues"
-            },
             "time": "2026-08-23T02:45:50+00:00"
         },
         {
@@ -8966,7 +8766,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-real-estate-sales-progression.git",
+                "url": "git@github.com:liberusoftware/module-real-estate-sales-progression.git",
                 "reference": "c9a2fbb531e4363e7d468e5ece56c961d02b54d6"
             },
             "dist": {
@@ -9010,10 +8810,6 @@
                 "MIT"
             ],
             "description": "Team-scoped sales progression milestones, chains, and completion controls.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-real-estate-sales-progression/tree/1.0.0",
-                "issues": "https://github.com/liberusoftware/module-real-estate-sales-progression/issues"
-            },
             "time": "2026-08-23T02:18:45+00:00"
         },
         {
@@ -9021,7 +8817,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-real-estate-sales-progression-api.git",
+                "url": "git@github.com:liberusoftware/module-real-estate-sales-progression-api.git",
                 "reference": "348db0aa8fe898de0a49de5211d187d5b9a842ca"
             },
             "dist": {
@@ -9059,10 +8855,6 @@
                 "MIT"
             ],
             "description": "Versioned API adapter for real-estate sales progression.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-real-estate-sales-progression-api/tree/1.0.0",
-                "issues": "https://github.com/liberusoftware/module-real-estate-sales-progression-api/issues"
-            },
             "time": "2026-08-23T02:18:50+00:00"
         },
         {
@@ -9070,7 +8862,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-real-estate-sales-progression-filament.git",
+                "url": "git@github.com:liberusoftware/module-real-estate-sales-progression-filament.git",
                 "reference": "a6d5ae25c2a9904f2c448c6dbbbb05c49c0ff162"
             },
             "dist": {
@@ -9107,10 +8899,6 @@
                 "MIT"
             ],
             "description": "Filament 5 adapter for real-estate sales progression.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-real-estate-sales-progression-filament/tree/1.0.0",
-                "issues": "https://github.com/liberusoftware/module-real-estate-sales-progression-filament/issues"
-            },
             "time": "2026-08-23T02:18:55+00:00"
         },
         {
@@ -9118,7 +8906,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-real-estate-sales-progression-livewire.git",
+                "url": "git@github.com:liberusoftware/module-real-estate-sales-progression-livewire.git",
                 "reference": "5f3ac62758eebabc493d50181b57e9807c010626"
             },
             "dist": {
@@ -9155,10 +8943,6 @@
                 "MIT"
             ],
             "description": "Livewire 4 adapter for real-estate sales progression.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-real-estate-sales-progression-livewire/tree/1.0.0",
-                "issues": "https://github.com/liberusoftware/module-real-estate-sales-progression-livewire/issues"
-            },
             "time": "2026-08-23T02:19:00+00:00"
         },
         {
@@ -9350,7 +9134,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-real-estate-viewings.git",
+                "url": "git@github.com:liberusoftware/module-real-estate-viewings.git",
                 "reference": "59005bd978a25527563584bc467be743eda74949"
             },
             "dist": {
@@ -9394,10 +9178,6 @@
                 "MIT"
             ],
             "description": "Provider-neutral viewing bookings and attendance lifecycle actions.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-real-estate-viewings/tree/1.0.0",
-                "issues": "https://github.com/liberusoftware/module-real-estate-viewings/issues"
-            },
             "time": "2026-08-23T02:00:26+00:00"
         },
         {
@@ -9405,7 +9185,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-real-estate-viewings-api.git",
+                "url": "git@github.com:liberusoftware/module-real-estate-viewings-api.git",
                 "reference": "c2cce756b93e82babf11e88c0fef9958e136d470"
             },
             "dist": {
@@ -9443,10 +9223,6 @@
                 "MIT"
             ],
             "description": "Versioned API adapter for real-estate viewings.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-real-estate-viewings-api/tree/1.0.0",
-                "issues": "https://github.com/liberusoftware/module-real-estate-viewings-api/issues"
-            },
             "time": "2026-08-23T02:00:31+00:00"
         },
         {
@@ -9454,7 +9230,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-real-estate-viewings-filament.git",
+                "url": "git@github.com:liberusoftware/module-real-estate-viewings-filament.git",
                 "reference": "4fd61cacd1f0678d07e3d797eee808496990e0f8"
             },
             "dist": {
@@ -9491,10 +9267,6 @@
                 "MIT"
             ],
             "description": "Filament 5 adapter for real-estate viewings.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-real-estate-viewings-filament/tree/1.0.0",
-                "issues": "https://github.com/liberusoftware/module-real-estate-viewings-filament/issues"
-            },
             "time": "2026-08-23T02:00:36+00:00"
         },
         {
@@ -9502,7 +9274,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-real-estate-viewings-livewire.git",
+                "url": "git@github.com:liberusoftware/module-real-estate-viewings-livewire.git",
                 "reference": "72beddafb7bd90181295d89df1e65664c0038f23"
             },
             "dist": {
@@ -9539,10 +9311,6 @@
                 "MIT"
             ],
             "description": "Livewire 4 adapter for real-estate viewings.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-real-estate-viewings-livewire/tree/1.0.0",
-                "issues": "https://github.com/liberusoftware/module-real-estate-viewings-livewire/issues"
-            },
             "time": "2026-08-23T02:00:41+00:00"
         },
         {
@@ -9550,7 +9318,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-real-estate-zoopla.git",
+                "url": "git@github.com:liberusoftware/module-real-estate-zoopla.git",
                 "reference": "23224a4a00241a8014224283d22ed95e751825a3"
             },
             "dist": {
@@ -9595,10 +9363,6 @@
                 "MIT"
             ],
             "description": "Independent Zoopla listing synchronization core for Liberu Real Estate.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-real-estate-zoopla/tree/1.0.0",
-                "issues": "https://github.com/liberusoftware/module-real-estate-zoopla/issues"
-            },
             "time": "2026-08-23T02:58:35+00:00"
         },
         {
@@ -9606,13 +9370,13 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-real-estate-zoopla-api.git",
-                "reference": "a63d690f3222e2c9935d9f9c80b512e6059b02ac"
+                "url": "git@github.com:liberusoftware/module-real-estate-zoopla-api.git",
+                "reference": "ac66274abc6634e5f5f3977c6a5df98aaf0e8a05"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-zoopla-api/zipball/a63d690f3222e2c9935d9f9c80b512e6059b02ac",
-                "reference": "a63d690f3222e2c9935d9f9c80b512e6059b02ac",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-zoopla-api/zipball/ac66274abc6634e5f5f3977c6a5df98aaf0e8a05",
+                "reference": "ac66274abc6634e5f5f3977c6a5df98aaf0e8a05",
                 "shasum": ""
             },
             "require": {
@@ -9644,18 +9408,14 @@
                 "MIT"
             ],
             "description": "Independent API adapter for Zoopla synchronization.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-real-estate-zoopla-api/tree/1.0.0",
-                "issues": "https://github.com/liberusoftware/module-real-estate-zoopla-api/issues"
-            },
-            "time": "2026-08-23T02:58:39+00:00"
+            "time": "2026-08-23T03:16:43+00:00"
         },
         {
             "name": "liberusoftware/real-estate-zoopla-filament",
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-real-estate-zoopla-filament.git",
+                "url": "git@github.com:liberusoftware/module-real-estate-zoopla-filament.git",
                 "reference": "4059731b6d73715cccd839f47e99cc723089ae37"
             },
             "dist": {
@@ -9692,10 +9452,6 @@
                 "MIT"
             ],
             "description": "Independent Filament adapter for Zoopla synchronization.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-real-estate-zoopla-filament/tree/1.0.0",
-                "issues": "https://github.com/liberusoftware/module-real-estate-zoopla-filament/issues"
-            },
             "time": "2026-08-23T02:46:09+00:00"
         },
         {
@@ -9703,7 +9459,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-real-estate-zoopla-livewire.git",
+                "url": "git@github.com:liberusoftware/module-real-estate-zoopla-livewire.git",
                 "reference": "e2a47011aa18b9719d98f5a191855490f976f0ff"
             },
             "dist": {
@@ -9740,10 +9496,6 @@
                 "MIT"
             ],
             "description": "Independent Livewire adapter for Zoopla synchronization.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-real-estate-zoopla-livewire/tree/1.0.0",
-                "issues": "https://github.com/liberusoftware/module-real-estate-zoopla-livewire/issues"
-            },
             "time": "2026-08-23T02:46:15+00:00"
         },
         {
@@ -9751,7 +9503,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-roles-permissions.git",
+                "url": "git@github.com:liberusoftware/module-roles-permissions.git",
                 "reference": "d061b98bbe185ae966e8fe6ea4761bddf48aed9d"
             },
             "dist": {
@@ -9795,10 +9547,6 @@
                 "MIT"
             ],
             "description": "Contextual roles, permissions, policies, and authorization safeguards.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-roles-permissions/tree/1.4.1",
-                "issues": "https://github.com/liberusoftware/module-roles-permissions/issues"
-            },
             "time": "2026-08-07T14:25:40+00:00"
         },
         {
@@ -9806,7 +9554,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-roles-permissions-filament.git",
+                "url": "git@github.com:liberusoftware/module-roles-permissions-filament.git",
                 "reference": "788117df5f64d16103ce595a42fc3506d97a16d2"
             },
             "dist": {
@@ -9850,10 +9598,6 @@
                 "MIT"
             ],
             "description": "Filament Shield presentation adapter for Liberu authorization.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-roles-permissions-filament/tree/1.4.1",
-                "issues": "https://github.com/liberusoftware/module-roles-permissions-filament/issues"
-            },
             "time": "2026-08-07T14:25:45+00:00"
         },
         {
@@ -9861,7 +9605,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-scheduler-queues.git",
+                "url": "git@github.com:liberusoftware/module-scheduler-queues.git",
                 "reference": "fdfb3b1b3d8b9c3142fa670063da5ae116fa5c76"
             },
             "dist": {
@@ -9905,10 +9649,6 @@
                 "MIT"
             ],
             "description": "Queue idempotency, retry, failure, scheduling, locking, and deployment conventions.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-scheduler-queues/tree/1.4.1",
-                "issues": "https://github.com/liberusoftware/module-scheduler-queues/issues"
-            },
             "time": "2026-08-07T14:25:42+00:00"
         },
         {
@@ -9916,7 +9656,7 @@
             "version": "1.5.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-search.git",
+                "url": "git@github.com:liberusoftware/module-search.git",
                 "reference": "d2617f80de4c267adf4593b357b545c9ec762188"
             },
             "dist": {
@@ -9961,10 +9701,6 @@
                 "MIT"
             ],
             "description": "Provider-neutral authorized search contracts and local Eloquent driver.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-search/tree/1.5.1",
-                "issues": "https://github.com/liberusoftware/module-search/issues"
-            },
             "time": "2026-08-07T14:25:44+00:00"
         },
         {
@@ -9972,7 +9708,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-search-api.git",
+                "url": "git@github.com:liberusoftware/module-search-api.git",
                 "reference": "73a5e71c61c7199896ea9a8d01012fa832140f5d"
             },
             "dist": {
@@ -10016,10 +9752,6 @@
                 "MIT"
             ],
             "description": "HTTP API presentation adapter for Liberu Search.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-search-api/tree/1.4.1",
-                "issues": "https://github.com/liberusoftware/module-search-api/issues"
-            },
             "time": "2026-08-07T14:25:47+00:00"
         },
         {
@@ -10027,7 +9759,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-sessions-devices.git",
+                "url": "git@github.com:liberusoftware/module-sessions-devices.git",
                 "reference": "164817b59449f6930af4ff08d93c21b93368c738"
             },
             "dist": {
@@ -10071,10 +9803,6 @@
                 "MIT"
             ],
             "description": "Privacy-conscious session inventory and revocation.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-sessions-devices/tree/1.4.1",
-                "issues": "https://github.com/liberusoftware/module-sessions-devices/issues"
-            },
             "time": "2026-08-07T14:25:49+00:00"
         },
         {
@@ -10082,7 +9810,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-sessions-devices-filament.git",
+                "url": "git@github.com:liberusoftware/module-sessions-devices-filament.git",
                 "reference": "91eb6d30430ad82b21dc57c68ffbaa804299d41f"
             },
             "dist": {
@@ -10125,10 +9853,6 @@
                 "MIT"
             ],
             "description": "Filament account-security presentation adapter for Liberu Sessions and Devices.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-sessions-devices-filament/tree/1.4.1",
-                "issues": "https://github.com/liberusoftware/module-sessions-devices-filament/issues"
-            },
             "time": "2026-08-07T14:25:53+00:00"
         },
         {
@@ -10136,7 +9860,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-settings.git",
+                "url": "git@github.com:liberusoftware/module-settings.git",
                 "reference": "37c18cd0aaa4d026b7adcfba859516dd7abc39aa"
             },
             "dist": {
@@ -10179,10 +9903,6 @@
                 "MIT"
             ],
             "description": "Typed scoped settings foundation for Liberu applications.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-settings/tree/1.4.1",
-                "issues": "https://github.com/liberusoftware/module-settings/issues"
-            },
             "time": "2026-08-07T14:25:50+00:00"
         },
         {
@@ -10190,7 +9910,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-settings-filament.git",
+                "url": "git@github.com:liberusoftware/module-settings-filament.git",
                 "reference": "86ee7e6377624baca845121981e6bb8cec092ca2"
             },
             "dist": {
@@ -10237,10 +9957,6 @@
                 "MIT"
             ],
             "description": "Filament administration adapter for Liberu Settings.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-settings-filament/tree/1.4.1",
-                "issues": "https://github.com/liberusoftware/module-settings-filament/issues"
-            },
             "time": "2026-08-07T14:26:12+00:00"
         },
         {
@@ -10248,7 +9964,7 @@
             "version": "2.0.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/theme-base.git",
+                "url": "git@github.com:liberusoftware/theme-base.git",
                 "reference": "a79f3355a9dd7af74f080d66ea82f700cfac09b8"
             },
             "dist": {
@@ -10290,10 +10006,6 @@
                 "MIT"
             ],
             "description": "Shared semantic tokens and accessible presentation primitives for Liberu themes.",
-            "support": {
-                "source": "https://github.com/liberusoftware/theme-base/tree/2.0.1",
-                "issues": "https://github.com/liberusoftware/theme-base/issues"
-            },
             "time": "2026-08-07T14:25:52+00:00"
         },
         {
@@ -10301,7 +10013,7 @@
             "version": "1.5.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/theme-clear-signal.git",
+                "url": "git@github.com:liberusoftware/theme-clear-signal.git",
                 "reference": "e4f7e56bdf4edc722c59976acdf3acbf9757df28"
             },
             "dist": {
@@ -10344,10 +10056,6 @@
                 "MIT"
             ],
             "description": "Clear Signal public theme for Liberu applications.",
-            "support": {
-                "source": "https://github.com/liberusoftware/theme-clear-signal/tree/1.5.1",
-                "issues": "https://github.com/liberusoftware/theme-clear-signal/issues"
-            },
             "time": "2026-08-07T14:25:54+00:00"
         },
         {
@@ -10355,7 +10063,7 @@
             "version": "1.5.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/theme-dark.git",
+                "url": "git@github.com:liberusoftware/theme-dark.git",
                 "reference": "d5d2027dd87a806cd4faee81ca798caf0ae75845"
             },
             "dist": {
@@ -10398,10 +10106,6 @@
                 "MIT"
             ],
             "description": "Liberu dark public theme.",
-            "support": {
-                "source": "https://github.com/liberusoftware/theme-dark/tree/1.5.1",
-                "issues": "https://github.com/liberusoftware/theme-dark/issues"
-            },
             "time": "2026-08-07T14:26:22+00:00"
         },
         {
@@ -10409,7 +10113,7 @@
             "version": "1.5.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/theme-default.git",
+                "url": "git@github.com:liberusoftware/theme-default.git",
                 "reference": "759e19abeba7d39d129d6ce9acaa10d9d4e7da50"
             },
             "dist": {
@@ -10452,10 +10156,6 @@
                 "MIT"
             ],
             "description": "Liberu default public theme.",
-            "support": {
-                "source": "https://github.com/liberusoftware/theme-default/tree/1.5.1",
-                "issues": "https://github.com/liberusoftware/theme-default/issues"
-            },
             "time": "2026-08-07T14:26:23+00:00"
         },
         {
@@ -10463,7 +10163,7 @@
             "version": "1.4.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-theme-support.git",
+                "url": "git@github.com:liberusoftware/module-theme-support.git",
                 "reference": "22c3d18d23d802265d68f03e58f8dda8b88b48fa"
             },
             "dist": {
@@ -10514,10 +10214,6 @@
                 "MIT"
             ],
             "description": "Theme discovery and host presentation support for Liberu applications.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-theme-support/tree/1.4.2",
-                "issues": "https://github.com/liberusoftware/module-theme-support/issues"
-            },
             "time": "2026-08-07T14:25:46+00:00"
         },
         {
@@ -10525,7 +10221,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-theme-support-livewire.git",
+                "url": "git@github.com:liberusoftware/module-theme-support-livewire.git",
                 "reference": "8db221e424ebd0a1d9bbb61265b41878da59caeb"
             },
             "dist": {
@@ -10570,10 +10266,6 @@
                 "MIT"
             ],
             "description": "Livewire theme-switching presentation adapter for Liberu Theme Support.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-theme-support-livewire/tree/1.4.1",
-                "issues": "https://github.com/liberusoftware/module-theme-support-livewire/issues"
-            },
             "time": "2026-08-07T14:25:59+00:00"
         },
         {
@@ -10581,7 +10273,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-two-factor-authentication.git",
+                "url": "git@github.com:liberusoftware/module-two-factor-authentication.git",
                 "reference": "60e4cb036f76375e9814cf57ca4a32fc343301e5"
             },
             "dist": {
@@ -10625,10 +10317,6 @@
                 "MIT"
             ],
             "description": "TOTP enforcement policy and one-time recovery-code primitives.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-two-factor-authentication/tree/1.4.1",
-                "issues": "https://github.com/liberusoftware/module-two-factor-authentication/issues"
-            },
             "time": "2026-08-07T14:25:56+00:00"
         },
         {
@@ -10636,7 +10324,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-webhooks.git",
+                "url": "git@github.com:liberusoftware/module-webhooks.git",
                 "reference": "308f905ee503c708dce8ffbb78a08c7c5b9d72bb"
             },
             "dist": {
@@ -10680,10 +10368,6 @@
                 "MIT"
             ],
             "description": "Signed filtered webhook endpoints, durable delivery attempts, retry, replay, and secret rotation.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-webhooks/tree/1.4.1",
-                "issues": "https://github.com/liberusoftware/module-webhooks/issues"
-            },
             "time": "2026-08-07T14:25:58+00:00"
         },
         {
@@ -13505,16 +13189,16 @@
         },
         {
             "name": "roadrunner-php/roadrunner-api-dto",
-            "version": "v1.14.1",
+            "version": "v1.15.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/roadrunner-php/roadrunner-api-dto.git",
-                "reference": "a7664d4a4c451631fba7d5504fdf4f94a81a19c3"
+                "reference": "dd936d06246e50215bf9cd21cbcecfd6ad15a73e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/roadrunner-php/roadrunner-api-dto/zipball/a7664d4a4c451631fba7d5504fdf4f94a81a19c3",
-                "reference": "a7664d4a4c451631fba7d5504fdf4f94a81a19c3",
+                "url": "https://api.github.com/repos/roadrunner-php/roadrunner-api-dto/zipball/dd936d06246e50215bf9cd21cbcecfd6ad15a73e",
+                "reference": "dd936d06246e50215bf9cd21cbcecfd6ad15a73e",
                 "shasum": ""
             },
             "require": {
@@ -13560,7 +13244,7 @@
                 "docs": "https://docs.roadrunner.dev",
                 "forum": "https://forum.roadrunner.dev",
                 "issues": "https://github.com/roadrunner-server/roadrunner/issues",
-                "source": "https://github.com/roadrunner-php/roadrunner-api-dto/tree/v1.14.1"
+                "source": "https://github.com/roadrunner-php/roadrunner-api-dto/tree/v1.15.0"
             },
             "funding": [
                 {
@@ -13568,7 +13252,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-02-28T14:55:02+00:00"
+            "time": "2026-08-20T11:07:41+00:00"
         },
         {
             "name": "ryangjchandler/blade-capture-directive",
@@ -13944,16 +13628,16 @@
         },
         {
             "name": "spatie/laravel-backup",
-            "version": "10.3.1",
+            "version": "10.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-backup.git",
-                "reference": "1160cf6a6faa262586f47e2bd20c59512bb1a77e"
+                "reference": "705147b2521c19b6e2a0cd598acbf8a0c5f3184f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-backup/zipball/1160cf6a6faa262586f47e2bd20c59512bb1a77e",
-                "reference": "1160cf6a6faa262586f47e2bd20c59512bb1a77e",
+                "url": "https://api.github.com/repos/spatie/laravel-backup/zipball/705147b2521c19b6e2a0cd598acbf8a0c5f3184f",
+                "reference": "705147b2521c19b6e2a0cd598acbf8a0c5f3184f",
                 "shasum": ""
             },
             "require": {
@@ -14028,7 +13712,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/laravel-backup/issues",
-                "source": "https://github.com/spatie/laravel-backup/tree/10.3.1"
+                "source": "https://github.com/spatie/laravel-backup/tree/10.3.2"
             },
             "funding": [
                 {
@@ -14040,7 +13724,7 @@
                     "type": "other"
                 }
             ],
-            "time": "2026-07-28T13:19:06+00:00"
+            "time": "2026-08-20T12:06:47+00:00"
         },
         {
             "name": "spatie/laravel-package-tools",
@@ -16265,16 +15949,16 @@
         },
         {
             "name": "symfony/http-client",
-            "version": "v8.1.3",
+            "version": "v8.1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-client.git",
-                "reference": "ae15c8c6f5c4f4adbe7da2a2d69b349eb6e407dd"
+                "reference": "9f941ed000bb11f16dc7eafed98a7b646d3b3e5d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-client/zipball/ae15c8c6f5c4f4adbe7da2a2d69b349eb6e407dd",
-                "reference": "ae15c8c6f5c4f4adbe7da2a2d69b349eb6e407dd",
+                "url": "https://api.github.com/repos/symfony/http-client/zipball/9f941ed000bb11f16dc7eafed98a7b646d3b3e5d",
+                "reference": "9f941ed000bb11f16dc7eafed98a7b646d3b3e5d",
                 "shasum": ""
             },
             "require": {
@@ -16297,7 +15981,7 @@
             "require-dev": {
                 "amphp/http-client": "^5.3.2",
                 "amphp/http-tunnel": "^2.0",
-                "guzzlehttp/guzzle": "^7.10",
+                "guzzlehttp/guzzle": "^7.10|^8.0",
                 "nyholm/psr7": "^1.0",
                 "php-http/httplug": "^1.0|^2.0",
                 "psr/http-client": "^1.0",
@@ -16338,7 +16022,7 @@
                 "http"
             ],
             "support": {
-                "source": "https://github.com/symfony/http-client/tree/v8.1.3"
+                "source": "https://github.com/symfony/http-client/tree/v8.1.5"
             },
             "funding": [
                 {
@@ -16358,7 +16042,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-07-29T16:43:23+00:00"
+            "time": "2026-08-21T17:47:34+00:00"
         },
         {
             "name": "symfony/http-client-contracts",
@@ -18807,16 +18491,16 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v8.1.2",
+            "version": "v8.1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "faabdbe998e8c5c599dceffa27aa265b185c0736"
+                "reference": "b3fc9e8888eeb9daddc33bfbd15d282a61f543cd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/faabdbe998e8c5c599dceffa27aa265b185c0736",
-                "reference": "faabdbe998e8c5c599dceffa27aa265b185c0736",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/b3fc9e8888eeb9daddc33bfbd15d282a61f543cd",
+                "reference": "b3fc9e8888eeb9daddc33bfbd15d282a61f543cd",
                 "shasum": ""
             },
             "require": {
@@ -18859,7 +18543,7 @@
             "description": "Loads and dumps YAML files",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/yaml/tree/v8.1.2"
+                "source": "https://github.com/symfony/yaml/tree/v8.1.5"
             },
             "funding": [
                 {
@@ -18879,7 +18563,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-07-22T15:42:13+00:00"
+            "time": "2026-08-21T12:16:08+00:00"
         },
         {
             "name": "tijsverkoyen/css-to-inline-styles",
@@ -19390,16 +19074,16 @@
     "packages-dev": [
         {
             "name": "brianium/paratest",
-            "version": "v7.23.1",
+            "version": "v7.24.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/paratestphp/paratest.git",
-                "reference": "6b2aaf7d0e8d5220710d78921f28e5464a816596"
+                "reference": "c63bfd148355e6aeb9e22697bae6c0fee2dfe96c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/paratestphp/paratest/zipball/6b2aaf7d0e8d5220710d78921f28e5464a816596",
-                "reference": "6b2aaf7d0e8d5220710d78921f28e5464a816596",
+                "url": "https://api.github.com/repos/paratestphp/paratest/zipball/c63bfd148355e6aeb9e22697bae6c0fee2dfe96c",
+                "reference": "c63bfd148355e6aeb9e22697bae6c0fee2dfe96c",
                 "shasum": ""
             },
             "require": {
@@ -19410,12 +19094,12 @@
                 "fidry/cpu-core-counter": "^1.3.0",
                 "jean85/pretty-package-versions": "^2.1.1",
                 "php": "~8.4.0 || ~8.5.0",
-                "phpunit/php-code-coverage": "^14.2.3",
+                "phpunit/php-code-coverage": "^14.3.0",
                 "phpunit/php-file-iterator": "^7",
                 "phpunit/php-timer": "^9",
-                "phpunit/phpunit": "^13.2.5",
+                "phpunit/phpunit": "^13.3.0",
                 "sebastian/environment": "^9.3.2",
-                "symfony/console": "^7.4.8 || ^8.1.1",
+                "symfony/console": "^7.4.8 || ^8.1.2",
                 "symfony/process": "^7.4.8 || ^8.1.0"
             },
             "require-dev": {
@@ -19423,11 +19107,11 @@
                 "ext-pcntl": "*",
                 "ext-pcov": "*",
                 "ext-posix": "*",
-                "phpstan/phpstan": "^2.2.6",
+                "phpstan/phpstan": "^2.2.8",
                 "phpstan/phpstan-deprecation-rules": "^2.0.5",
                 "phpstan/phpstan-phpunit": "^2.0.18",
                 "phpstan/phpstan-strict-rules": "^2.0.12",
-                "symfony/filesystem": "^7.4.8 || ^8.1.0"
+                "symfony/filesystem": "^7.4.8 || ^8.1.2"
             },
             "bin": [
                 "bin/paratest",
@@ -19467,7 +19151,7 @@
             ],
             "support": {
                 "issues": "https://github.com/paratestphp/paratest/issues",
-                "source": "https://github.com/paratestphp/paratest/tree/v7.23.1"
+                "source": "https://github.com/paratestphp/paratest/tree/v7.24.0"
             },
             "funding": [
                 {
@@ -19479,7 +19163,7 @@
                     "type": "paypal"
                 }
             ],
-            "time": "2026-07-28T13:47:02+00:00"
+            "time": "2026-08-07T13:03:48+00:00"
         },
         {
             "name": "fakerphp/faker",
@@ -19718,16 +19402,16 @@
         },
         {
             "name": "fruitcake/laravel-debugbar",
-            "version": "v4.4.1",
+            "version": "v4.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fruitcake/laravel-debugbar.git",
-                "reference": "389157fb616e5c5d19d16a88fd9bfcf3e3248e9b"
+                "reference": "18d1c1c64cc5d7794a2c52a2165fe6121e28ed44"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fruitcake/laravel-debugbar/zipball/389157fb616e5c5d19d16a88fd9bfcf3e3248e9b",
-                "reference": "389157fb616e5c5d19d16a88fd9bfcf3e3248e9b",
+                "url": "https://api.github.com/repos/fruitcake/laravel-debugbar/zipball/18d1c1c64cc5d7794a2c52a2165fe6121e28ed44",
+                "reference": "18d1c1c64cc5d7794a2c52a2165fe6121e28ed44",
                 "shasum": ""
             },
             "require": {
@@ -19805,7 +19489,7 @@
             ],
             "support": {
                 "issues": "https://github.com/fruitcake/laravel-debugbar/issues",
-                "source": "https://github.com/fruitcake/laravel-debugbar/tree/v4.4.1"
+                "source": "https://github.com/fruitcake/laravel-debugbar/tree/v4.4.2"
             },
             "funding": [
                 {
@@ -19817,7 +19501,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-08-03T06:23:16+00:00"
+            "time": "2026-08-20T12:02:04+00:00"
         },
         {
             "name": "hamcrest/hamcrest-php",
@@ -20067,20 +19751,20 @@
         },
         {
             "name": "laravel/boost",
-            "version": "v2.5.3",
+            "version": "v2.5.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/boost.git",
-                "reference": "f5f9297225aba9857d014b3140f55a7c50cb1a92"
+                "reference": "a6c798975a893d3c0a609ebc6ed37a007ecbedec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/boost/zipball/f5f9297225aba9857d014b3140f55a7c50cb1a92",
-                "reference": "f5f9297225aba9857d014b3140f55a7c50cb1a92",
+                "url": "https://api.github.com/repos/laravel/boost/zipball/a6c798975a893d3c0a609ebc6ed37a007ecbedec",
+                "reference": "a6c798975a893d3c0a609ebc6ed37a007ecbedec",
                 "shasum": ""
             },
             "require": {
-                "guzzlehttp/guzzle": "^7.9",
+                "guzzlehttp/guzzle": "^7.9|^8.0",
                 "illuminate/console": "^11.45.3|^12.41.1|^13.0",
                 "illuminate/contracts": "^11.45.3|^12.41.1|^13.0",
                 "illuminate/routing": "^11.45.3|^12.41.1|^13.0",
@@ -20129,20 +19813,20 @@
                 "issues": "https://github.com/laravel/boost/issues",
                 "source": "https://github.com/laravel/boost"
             },
-            "time": "2026-08-07T05:46:02+00:00"
+            "time": "2026-08-19T02:26:00+00:00"
         },
         {
             "name": "laravel/mcp",
-            "version": "v0.9.2",
+            "version": "v0.9.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/mcp.git",
-                "reference": "2bb70c3662dfc2e2ff55c38a10ddf55bed2443b3"
+                "reference": "7ca5b923630118696602d14348cd0466a5e853ec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/mcp/zipball/2bb70c3662dfc2e2ff55c38a10ddf55bed2443b3",
-                "reference": "2bb70c3662dfc2e2ff55c38a10ddf55bed2443b3",
+                "url": "https://api.github.com/repos/laravel/mcp/zipball/7ca5b923630118696602d14348cd0466a5e853ec",
+                "reference": "7ca5b923630118696602d14348cd0466a5e853ec",
                 "shasum": ""
             },
             "require": {
@@ -20203,20 +19887,20 @@
                 "issues": "https://github.com/laravel/mcp/issues",
                 "source": "https://github.com/laravel/mcp"
             },
-            "time": "2026-08-06T15:59:47+00:00"
+            "time": "2026-08-13T15:01:07+00:00"
         },
         {
             "name": "laravel/pint",
-            "version": "v1.30.4",
+            "version": "v1.30.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/pint.git",
-                "reference": "a96cb6eee2961905d2fce7207aefb80945bf6b28"
+                "reference": "fe4148c503a0e266353d61396b79bbf7f35122df"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/pint/zipball/a96cb6eee2961905d2fce7207aefb80945bf6b28",
-                "reference": "a96cb6eee2961905d2fce7207aefb80945bf6b28",
+                "url": "https://api.github.com/repos/laravel/pint/zipball/fe4148c503a0e266353d61396b79bbf7f35122df",
+                "reference": "fe4148c503a0e266353d61396b79bbf7f35122df",
                 "shasum": ""
             },
             "require": {
@@ -20224,19 +19908,19 @@
                 "ext-mbstring": "*",
                 "ext-tokenizer": "*",
                 "ext-xml": "*",
-                "php": "^8.2.0"
+                "php": "^8.3.0"
             },
             "require-dev": {
                 "composer/semver": "^3.4.4",
                 "friendsofphp/php-cs-fixer": "^3.95.18",
-                "illuminate/view": "^12.65.0",
+                "illuminate/view": "^13.24.0",
                 "larastan/larastan": "^3.10.0",
-                "laravel-zero/framework": "^12.1.0",
+                "laravel-zero/framework": "^13.0.0",
                 "laravel/agent-detector": "^2.0.2",
                 "laravel/prompts": "^0.3.22",
                 "mockery/mockery": "^1.6.12",
                 "nunomaduro/termwind": "^2.4.0",
-                "pestphp/pest": "^3.8.7"
+                "pestphp/pest": "^4.7.8"
             },
             "bin": [
                 "builds/pint"
@@ -20273,7 +19957,7 @@
                 "issues": "https://github.com/laravel/pint/issues",
                 "source": "https://github.com/laravel/pint"
             },
-            "time": "2026-08-05T16:47:22+00:00"
+            "time": "2026-08-10T15:35:50+00:00"
         },
         {
             "name": "laravel/roster",
@@ -20339,16 +20023,16 @@
         },
         {
             "name": "laravel/sail",
-            "version": "v1.65.0",
+            "version": "v1.67.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/sail.git",
-                "reference": "d4b92139858d2a189a6302ca133e494f58afe20b"
+                "reference": "639e03ac12cf23def171770bcab05758045b2642"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/sail/zipball/d4b92139858d2a189a6302ca133e494f58afe20b",
-                "reference": "d4b92139858d2a189a6302ca133e494f58afe20b",
+                "url": "https://api.github.com/repos/laravel/sail/zipball/639e03ac12cf23def171770bcab05758045b2642",
+                "reference": "639e03ac12cf23def171770bcab05758045b2642",
                 "shasum": ""
             },
             "require": {
@@ -20398,14 +20082,14 @@
                 "issues": "https://github.com/laravel/sail/issues",
                 "source": "https://github.com/laravel/sail"
             },
-            "time": "2026-08-03T18:00:17+00:00"
+            "time": "2026-08-12T13:55:56+00:00"
         },
         {
             "name": "liberusoftware/boilerplate-scripts",
             "version": "1.2.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/boilerplate-scripts.git",
+                "url": "git@github.com:liberusoftware/boilerplate-scripts.git",
                 "reference": "a7461a447049879ef30202cc0a12dfe0919fa9e2"
             },
             "dist": {
@@ -20429,8 +20113,7 @@
             ],
             "description": "Release, repository splitting, and Packagist publishing automation for Liberu Composer packages.",
             "support": {
-                "source": "https://github.com/liberusoftware/boilerplate-scripts",
-                "issues": "https://github.com/liberusoftware/boilerplate-scripts/issues"
+                "source": "https://github.com/liberusoftware/boilerplate-scripts"
             },
             "time": "2026-08-07T09:23:54+00:00"
         },
@@ -20518,20 +20201,20 @@
         },
         {
             "name": "myclabs/deep-copy",
-            "version": "1.13.4",
+            "version": "1.14.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/myclabs/DeepCopy.git",
-                "reference": "07d290f0c47959fd5eed98c95ee5602db07e0b6a"
+                "reference": "8680aa248f8e07bc8fb43f56f0f5fc77a0c96aae"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/07d290f0c47959fd5eed98c95ee5602db07e0b6a",
-                "reference": "07d290f0c47959fd5eed98c95ee5602db07e0b6a",
+                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/8680aa248f8e07bc8fb43f56f0f5fc77a0c96aae",
+                "reference": "8680aa248f8e07bc8fb43f56f0f5fc77a0c96aae",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.1 || ^8.0"
+                "php": "^8.0"
             },
             "conflict": {
                 "doctrine/collections": "<1.6.8",
@@ -20566,15 +20249,15 @@
             ],
             "support": {
                 "issues": "https://github.com/myclabs/DeepCopy/issues",
-                "source": "https://github.com/myclabs/DeepCopy/tree/1.13.4"
+                "source": "https://github.com/myclabs/DeepCopy/tree/1.14.0"
             },
             "funding": [
                 {
-                    "url": "https://tidelift.com/funding/github/packagist/myclabs/deep-copy",
-                    "type": "tidelift"
+                    "url": "https://github.com/mnapoli",
+                    "type": "github"
                 }
             ],
-            "time": "2025-08-01T08:46:24+00:00"
+            "time": "2026-08-11T10:17:44+00:00"
         },
         {
             "name": "nunomaduro/collision",
@@ -20674,41 +20357,41 @@
         },
         {
             "name": "pestphp/pest",
-            "version": "v5.0.4",
+            "version": "v5.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/pestphp/pest.git",
-                "reference": "7b6415ccd07c1e68031fa47c0999ed680cf717bd"
+                "reference": "208f447a10fc416397edf00a5fc6380aa284d393"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pestphp/pest/zipball/7b6415ccd07c1e68031fa47c0999ed680cf717bd",
-                "reference": "7b6415ccd07c1e68031fa47c0999ed680cf717bd",
+                "url": "https://api.github.com/repos/pestphp/pest/zipball/208f447a10fc416397edf00a5fc6380aa284d393",
+                "reference": "208f447a10fc416397edf00a5fc6380aa284d393",
                 "shasum": ""
             },
             "require": {
-                "brianium/paratest": "^7.23.1",
+                "brianium/paratest": "^7.24.0",
                 "nunomaduro/collision": "^8.9.5",
                 "nunomaduro/termwind": "^2.4.0",
                 "pestphp/pest-plugin": "^5.0.0",
                 "pestphp/pest-plugin-arch": "^5.0.0",
-                "pestphp/pest-plugin-mutate": "^5.0.1",
+                "pestphp/pest-plugin-mutate": "^5.0.2",
                 "pestphp/pest-plugin-profanity": "^5.0.0",
                 "php": "^8.4",
-                "phpunit/phpunit": "^13.2.6",
+                "phpunit/phpunit": "^13.3.0",
                 "symfony/process": "^8.1.0"
             },
             "conflict": {
                 "filp/whoops": "<2.18.3",
-                "phpunit/phpunit": ">13.2.6",
+                "phpunit/phpunit": ">13.3.0",
                 "sebastian/exporter": "<7.0.0",
                 "webmozart/assert": "<1.11.0"
             },
             "require-dev": {
                 "pestphp/pest-dev-tools": "^5.0.0",
-                "pestphp/pest-plugin-browser": "^5.0.0",
-                "pestphp/pest-plugin-phpstan": "^5.0.0",
-                "pestphp/pest-plugin-rector": "^5.0.2",
+                "pestphp/pest-plugin-browser": "^5.0.1",
+                "pestphp/pest-plugin-phpstan": "^5.0.2",
+                "pestphp/pest-plugin-rector": "^5.0.3",
                 "pestphp/pest-plugin-type-coverage": "^5.0.2",
                 "psy/psysh": "^0.12.24"
             },
@@ -20777,7 +20460,7 @@
             ],
             "support": {
                 "issues": "https://github.com/pestphp/pest/issues",
-                "source": "https://github.com/pestphp/pest/tree/v5.0.4"
+                "source": "https://github.com/pestphp/pest/tree/v5.1.1"
             },
             "funding": [
                 {
@@ -20789,7 +20472,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-08-07T02:15:22+00:00"
+            "time": "2026-08-12T14:29:21+00:00"
         },
         {
             "name": "pestphp/pest-plugin",
@@ -21013,31 +20696,32 @@
         },
         {
             "name": "pestphp/pest-plugin-mutate",
-            "version": "v5.0.1",
+            "version": "v5.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/pestphp/pest-plugin-mutate.git",
-                "reference": "ca1e6e6402323353ef4c1dd5bf034e6f4ab17fbf"
+                "reference": "d0c87110416b699413cc073b8dcc92e440d81931"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pestphp/pest-plugin-mutate/zipball/ca1e6e6402323353ef4c1dd5bf034e6f4ab17fbf",
-                "reference": "ca1e6e6402323353ef4c1dd5bf034e6f4ab17fbf",
+                "url": "https://api.github.com/repos/pestphp/pest-plugin-mutate/zipball/d0c87110416b699413cc073b8dcc92e440d81931",
+                "reference": "d0c87110416b699413cc073b8dcc92e440d81931",
                 "shasum": ""
             },
             "require": {
                 "nikic/php-parser": "^5.8.0",
                 "pestphp/pest-plugin": "^5.0.0",
                 "php": "^8.4",
+                "phpunit/php-code-coverage": "^14.3.0",
                 "psr/simple-cache": "^3.0.0"
             },
             "conflict": {
                 "pestphp/pest": "<5.0.0"
             },
             "require-dev": {
-                "pestphp/pest": "^5.0.3",
+                "pestphp/pest": "^5.0.4",
                 "pestphp/pest-dev-tools": "^5.0.0",
-                "pestphp/pest-plugin-type-coverage": "^5.0.0"
+                "pestphp/pest-plugin-type-coverage": "^5.0.2"
             },
             "type": "library",
             "autoload": {
@@ -21072,7 +20756,7 @@
                 "unit"
             ],
             "support": {
-                "source": "https://github.com/pestphp/pest-plugin-mutate/tree/v5.0.1"
+                "source": "https://github.com/pestphp/pest-plugin-mutate/tree/v5.0.2"
             },
             "funding": [
                 {
@@ -21088,7 +20772,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-08-04T15:26:47+00:00"
+            "time": "2026-08-10T11:01:27+00:00"
         },
         {
             "name": "pestphp/pest-plugin-profanity",
@@ -21437,11 +21121,11 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "2.2.8",
+            "version": "2.2.9",
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/e285254e60f33c21902efef4a926ca0987c06804",
-                "reference": "e285254e60f33c21902efef4a926ca0987c06804",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/13d6b4f347bad222da436580c8304fa6f83e6bd0",
+                "reference": "13d6b4f347bad222da436580c8304fa6f83e6bd0",
                 "shasum": ""
             },
             "require": {
@@ -21497,20 +21181,20 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-08-04T22:21:45+00:00"
+            "time": "2026-08-22T07:38:16+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
-            "version": "14.3.0",
+            "version": "14.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "060a5c93e81afb01e97dbe8930a5d0c9bd46e54e"
+                "reference": "6ce313bb110384148d1dc7695a99175f59529069"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/060a5c93e81afb01e97dbe8930a5d0c9bd46e54e",
-                "reference": "060a5c93e81afb01e97dbe8930a5d0c9bd46e54e",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/6ce313bb110384148d1dc7695a99175f59529069",
+                "reference": "6ce313bb110384148d1dc7695a99175f59529069",
                 "shasum": ""
             },
             "require": {
@@ -21529,7 +21213,7 @@
                 "theseer/tokenizer": "^2.0.1"
             },
             "require-dev": {
-                "phpunit/phpunit": "^13.3"
+                "phpunit/phpunit": "^13.3.1"
             },
             "suggest": {
                 "ext-pcov": "PHP extension that provides line coverage",
@@ -21567,7 +21251,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/php-code-coverage/issues",
                 "security": "https://github.com/sebastianbergmann/php-code-coverage/security/policy",
-                "source": "https://github.com/sebastianbergmann/php-code-coverage/tree/14.3.0"
+                "source": "https://github.com/sebastianbergmann/php-code-coverage/tree/14.3.1"
             },
             "funding": [
                 {
@@ -21587,27 +21271,27 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-08-07T07:24:15+00:00"
+            "time": "2026-08-16T05:23:47+00:00"
         },
         {
             "name": "phpunit/php-file-iterator",
-            "version": "7.0.0",
+            "version": "7.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-file-iterator.git",
-                "reference": "6e5aa1fb0a95b1703d83e721299ee18bb4e2de50"
+                "reference": "3ccaa29123548190af12fee7af078dcd7f3ddfab"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-file-iterator/zipball/6e5aa1fb0a95b1703d83e721299ee18bb4e2de50",
-                "reference": "6e5aa1fb0a95b1703d83e721299ee18bb4e2de50",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-file-iterator/zipball/3ccaa29123548190af12fee7af078dcd7f3ddfab",
+                "reference": "3ccaa29123548190af12fee7af078dcd7f3ddfab",
                 "shasum": ""
             },
             "require": {
                 "php": ">=8.4"
             },
             "require-dev": {
-                "phpunit/phpunit": "^13.0"
+                "phpunit/phpunit": "^13.3.0"
             },
             "type": "library",
             "extra": {
@@ -21640,7 +21324,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/php-file-iterator/issues",
                 "security": "https://github.com/sebastianbergmann/php-file-iterator/security/policy",
-                "source": "https://github.com/sebastianbergmann/php-file-iterator/tree/7.0.0"
+                "source": "https://github.com/sebastianbergmann/php-file-iterator/tree/7.0.1"
             },
             "funding": [
                 {
@@ -21660,7 +21344,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-02-06T04:33:26+00:00"
+            "time": "2026-08-10T06:43:12+00:00"
         },
         {
             "name": "phpunit/php-invoker",
@@ -21884,16 +21568,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "13.2.6",
+            "version": "13.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "5d2afe181339a56348ef9a80fa7eb806b7eae508"
+                "reference": "346fcba6ce7ab89bb1b0675feac6bc29c0f7711b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/5d2afe181339a56348ef9a80fa7eb806b7eae508",
-                "reference": "5d2afe181339a56348ef9a80fa7eb806b7eae508",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/346fcba6ce7ab89bb1b0675feac6bc29c0f7711b",
+                "reference": "346fcba6ce7ab89bb1b0675feac6bc29c0f7711b",
                 "shasum": ""
             },
             "require": {
@@ -21907,21 +21591,21 @@
                 "phar-io/manifest": "^2.0.4",
                 "phar-io/version": "^3.2.1",
                 "php": ">=8.4.1",
-                "phpunit/php-code-coverage": "^14.2.3",
+                "phpunit/php-code-coverage": "^14.3",
                 "phpunit/php-file-iterator": "^7.0.0",
                 "phpunit/php-invoker": "^7.0.0",
                 "phpunit/php-text-template": "^6.0.0",
                 "phpunit/php-timer": "^9.0.0",
-                "sebastian/cli-parser": "^5.0.0",
-                "sebastian/comparator": "^8.3.0",
+                "sebastian/cli-parser": "^5.0.1",
+                "sebastian/comparator": "^8.4",
                 "sebastian/diff": "^9.0",
                 "sebastian/environment": "^9.3.2",
-                "sebastian/exporter": "^8.1.1",
+                "sebastian/exporter": "^8.2.1",
                 "sebastian/file-filter": "^1.0",
                 "sebastian/git-state": "^1.0",
                 "sebastian/global-state": "^9.0.1",
                 "sebastian/object-enumerator": "^8.0.0",
-                "sebastian/recursion-context": "^8.0.0",
+                "sebastian/recursion-context": "^8.0.1",
                 "sebastian/type": "^7.0.1",
                 "sebastian/version": "^7.0.0",
                 "staabm/side-effects-detector": "^1.0.5"
@@ -21932,7 +21616,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "13.2-dev"
+                    "dev-main": "13.3-dev"
                 }
             },
             "autoload": {
@@ -21964,7 +21648,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/13.2.6"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/13.3.0"
             },
             "funding": [
                 {
@@ -21972,20 +21656,20 @@
                     "type": "other"
                 }
             ],
-            "time": "2026-07-28T14:00:09+00:00"
+            "time": "2026-08-07T07:37:01+00:00"
         },
         {
             "name": "rector/rector",
-            "version": "2.6.1",
+            "version": "2.6.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rectorphp/rector.git",
-                "reference": "b8e68f058bca43e01a2e1caa51ef022d6551ed95"
+                "reference": "7e46709996a4b3dc59e1d6ecbb6a38ace335bd58"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rectorphp/rector/zipball/b8e68f058bca43e01a2e1caa51ef022d6551ed95",
-                "reference": "b8e68f058bca43e01a2e1caa51ef022d6551ed95",
+                "url": "https://api.github.com/repos/rectorphp/rector/zipball/7e46709996a4b3dc59e1d6ecbb6a38ace335bd58",
+                "reference": "7e46709996a4b3dc59e1d6ecbb6a38ace335bd58",
                 "shasum": ""
             },
             "require": {
@@ -22024,7 +21708,7 @@
             ],
             "support": {
                 "issues": "https://github.com/rectorphp/rector/issues",
-                "source": "https://github.com/rectorphp/rector/tree/2.6.1"
+                "source": "https://github.com/rectorphp/rector/tree/2.6.3"
             },
             "funding": [
                 {
@@ -22032,7 +21716,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-08-03T17:30:34+00:00"
+            "time": "2026-08-18T22:01:18+00:00"
         },
         {
             "name": "sebastian/cli-parser",
@@ -22794,30 +22478,29 @@
         },
         {
             "name": "sebastian/object-enumerator",
-            "version": "8.0.0",
+            "version": "8.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/object-enumerator.git",
-                "reference": "b39ab125fd9a7434b0ecbc4202eebce11a98cfc5"
+                "reference": "511064ecde82bd747e2ba2fab3dda8d977b59576"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/object-enumerator/zipball/b39ab125fd9a7434b0ecbc4202eebce11a98cfc5",
-                "reference": "b39ab125fd9a7434b0ecbc4202eebce11a98cfc5",
+                "url": "https://api.github.com/repos/sebastianbergmann/object-enumerator/zipball/511064ecde82bd747e2ba2fab3dda8d977b59576",
+                "reference": "511064ecde82bd747e2ba2fab3dda8d977b59576",
                 "shasum": ""
             },
             "require": {
                 "php": ">=8.4",
-                "sebastian/object-reflector": "^6.0",
-                "sebastian/recursion-context": "^8.0"
+                "sebastian/recursion-context": "^8.0.1"
             },
             "require-dev": {
-                "phpunit/phpunit": "^13.0"
+                "phpunit/phpunit": "^13.3.0"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "8.0-dev"
+                    "dev-main": "8.1-dev"
                 }
             },
             "autoload": {
@@ -22840,7 +22523,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/object-enumerator/issues",
                 "security": "https://github.com/sebastianbergmann/object-enumerator/security/policy",
-                "source": "https://github.com/sebastianbergmann/object-enumerator/tree/8.0.0"
+                "source": "https://github.com/sebastianbergmann/object-enumerator/tree/8.1.0"
             },
             "funding": [
                 {
@@ -22860,27 +22543,27 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-02-06T04:46:36+00:00"
+            "time": "2026-08-13T07:05:05+00:00"
         },
         {
             "name": "sebastian/object-reflector",
-            "version": "6.0.0",
+            "version": "6.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/object-reflector.git",
-                "reference": "3ca042c2c60b0eab094f8a1b6a7093f4d4c72200"
+                "reference": "f71bbcdc4f95456b4622810bec64eb06372e25b2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/object-reflector/zipball/3ca042c2c60b0eab094f8a1b6a7093f4d4c72200",
-                "reference": "3ca042c2c60b0eab094f8a1b6a7093f4d4c72200",
+                "url": "https://api.github.com/repos/sebastianbergmann/object-reflector/zipball/f71bbcdc4f95456b4622810bec64eb06372e25b2",
+                "reference": "f71bbcdc4f95456b4622810bec64eb06372e25b2",
                 "shasum": ""
             },
             "require": {
                 "php": ">=8.4"
             },
             "require-dev": {
-                "phpunit/phpunit": "^13.0"
+                "phpunit/phpunit": "^13.3.0"
             },
             "type": "library",
             "extra": {
@@ -22908,7 +22591,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/object-reflector/issues",
                 "security": "https://github.com/sebastianbergmann/object-reflector/security/policy",
-                "source": "https://github.com/sebastianbergmann/object-reflector/tree/6.0.0"
+                "source": "https://github.com/sebastianbergmann/object-reflector/tree/6.1.0"
             },
             "funding": [
                 {
@@ -22928,7 +22611,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-02-06T04:47:13+00:00"
+            "time": "2026-08-13T06:34:36+00:00"
         },
         {
             "name": "sebastian/recursion-context",
@@ -23008,23 +22691,23 @@
         },
         {
             "name": "sebastian/type",
-            "version": "7.0.1",
+            "version": "7.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/type.git",
-                "reference": "fee0309275847fefd7636167085e379c1dbf6990"
+                "reference": "bd1df467864cb95140414059a535b2d906173fcf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/type/zipball/fee0309275847fefd7636167085e379c1dbf6990",
-                "reference": "fee0309275847fefd7636167085e379c1dbf6990",
+                "url": "https://api.github.com/repos/sebastianbergmann/type/zipball/bd1df467864cb95140414059a535b2d906173fcf",
+                "reference": "bd1df467864cb95140414059a535b2d906173fcf",
                 "shasum": ""
             },
             "require": {
                 "php": ">=8.4"
             },
             "require-dev": {
-                "phpunit/phpunit": "^13.1.10"
+                "phpunit/phpunit": "^13.3.0"
             },
             "type": "library",
             "extra": {
@@ -23053,7 +22736,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/type/issues",
                 "security": "https://github.com/sebastianbergmann/type/security/policy",
-                "source": "https://github.com/sebastianbergmann/type/tree/7.0.1"
+                "source": "https://github.com/sebastianbergmann/type/tree/7.0.2"
             },
             "funding": [
                 {
@@ -23073,7 +22756,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-05-20T06:49:11+00:00"
+            "time": "2026-08-10T08:00:57+00:00"
         },
         {
             "name": "sebastian/version",

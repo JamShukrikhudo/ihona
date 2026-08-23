@@ -5,6 +5,7 @@ paths:
     get: {summary: List Rightmove syncs, responses: {'200': {description: OK}}}
     post: {summary: Create a Rightmove sync, responses: {'201': {description: Created}}}
   /api/v1/real-estate/integrations/rightmove/syncs/{rightmoveSync}:
+    post: {summary: Synchronize a Rightmove listing, responses: {'200': {description: Synchronized}}}
     get: {summary: Show a Rightmove sync, responses: {'200': {description: OK}}}
     patch: {summary: Update a Rightmove sync, responses: {'200': {description: OK}}}
     delete: {summary: Archive a Rightmove sync, responses: {'204': {description: Archived}}}

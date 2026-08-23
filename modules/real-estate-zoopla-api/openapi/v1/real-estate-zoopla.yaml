@@ -5,6 +5,7 @@ paths:
     get: {summary: List Zoopla syncs, responses: {'200': {description: OK}}}
     post: {summary: Create a Zoopla sync, responses: {'201': {description: Created}}}
   /api/v1/real-estate/integrations/zoopla/syncs/{zooplaSync}:
+    post: {summary: Synchronize a Zoopla listing, responses: {'200': {description: Synchronized}}}
     get: {summary: Show a Zoopla sync, responses: {'200': {description: OK}}}
     patch: {summary: Update a Zoopla sync, responses: {'200': {description: OK}}}
     delete: {summary: Archive a Zoopla sync, responses: {'204': {description: Archived}}}

@@ -5,6 +5,7 @@ paths:
     get: {summary: List OnTheMarket syncs, responses: {'200': {description: OK}}}
     post: {summary: Create an OnTheMarket sync, responses: {'201': {description: Created}}}
   /api/v1/real-estate/integrations/onthemarket/syncs/{onTheMarketSync}:
+    post: {summary: Synchronize an OnTheMarket listing, responses: {'200': {description: Synchronized}}}
     get: {summary: Show an OnTheMarket sync, responses: {'200': {description: OK}}}
     patch: {summary: Update an OnTheMarket sync, responses: {'200': {description: OK}}}
     delete: {summary: Archive an OnTheMarket sync, responses: {'204': {description: Archived}}}

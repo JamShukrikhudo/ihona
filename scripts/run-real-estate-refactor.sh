@@ -11,6 +11,7 @@ echo "[$(date -u +%FT%TZ)] branch: $(git branch --show-current)"
 composer install --no-interaction --no-progress --no-scripts
 composer validate --no-check-publish
 vendor/bin/pint --test modules tests
+vendor/bin/phpstan analyse --no-progress --memory-limit=512M
 
 vendor/bin/pest \
     tests/Feature/RealEstatePropertyActionsTest.php \
