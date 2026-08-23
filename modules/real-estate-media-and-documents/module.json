@@ -1,0 +1,14 @@
+{
+    "$schema": "https://schemas.liberu.dev/module/v1.json",
+    "name": "real-estate-media-and-documents",
+    "display_name": "Real Estate Media and Documents",
+    "description": "Media, documents, rights, ordering, and retention records for real-estate workflows.",
+    "version": "1.0.0",
+    "category": "product",
+    "provider": "Liberu\\RealEstate\\MediaAndDocuments\\MediaAndDocumentsServiceProvider",
+    "requires": {"php": "^8.5", "laravel": "^13.0", "packages": {"liberusoftware/module-manager": "^1.0", "liberusoftware/organizations-teams": "^1.0"}},
+    "suggests": {},
+    "capabilities": ["real-estate.media-and-documents"],
+    "default_enabled": true,
+    "features": ["Team-scoped media and document records", "Rights and ordering metadata", "Retention dates and soft deletion"]
+}

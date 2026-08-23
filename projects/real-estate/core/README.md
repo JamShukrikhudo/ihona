@@ -5,7 +5,7 @@
 | Real Estate Core | liberusoftware/real-estate-core |
 | Parties | liberusoftware/real-estate-parties |
 | Properties | liberusoftware/real-estate-properties |
-| Media and Documents | planned |
+| Media and Documents | liberusoftware/real-estate-media-and-documents |
 | Valuations | planned |
 | Instructions | planned |
 | Listings | planned |

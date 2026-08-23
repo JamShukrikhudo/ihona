@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6128fd31ab73872db43976f27f6dc550",
+    "content-hash": "429bc801675b45c9664777a909a84819",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -6857,6 +6857,47 @@
             ],
             "description": "Livewire 4 adapter for real-estate branches.",
             "time": "2026-08-23T01:20:18+00:00"
+        },
+        {
+            "name": "liberusoftware/real-estate-media-and-documents",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:liberusoftware/module-real-estate-media-and-documents.git",
+                "reference": "db0183eac156734519e43c2f7ce0b48ab1f56926"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-media-and-documents/zipball/db0183eac156734519e43c2f7ce0b48ab1f56926",
+                "reference": "db0183eac156734519e43c2f7ce0b48ab1f56926",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "^13.0",
+                "illuminate/support": "^13.0",
+                "php": "^8.5"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Liberu\\RealEstate\\MediaAndDocuments\\MediaAndDocumentsServiceProvider"
+                    ]
+                },
+                "liberu": {
+                    "name": "real-estate-media-and-documents"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\MediaAndDocuments\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Provider-neutral media and document records for Liberu real-estate applications.",
+            "time": "2026-08-23T01:26:39+00:00"
         },
         {
             "name": "liberusoftware/real-estate-parties",
