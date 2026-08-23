@@ -10,5 +10,5 @@
     "suggests": {},
     "capabilities": ["real-estate.media-and-documents"],
     "default_enabled": true,
-    "features": ["Team-scoped media and document records", "Rights and ordering metadata", "Retention dates and soft deletion"]
+    "features": ["Photos", "Floorplans", "Video", "Certificates", "Rights", "Ordering", "Brochures", "Retention"]
 }

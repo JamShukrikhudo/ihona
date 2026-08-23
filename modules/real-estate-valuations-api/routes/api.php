@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Liberu\RealEstate\ValuationsApi\Http\Controllers\ValuationController;
 
-Route::prefix('api/v1/real-estate/valuations')->middleware('api')->group(function (): void {
+Route::prefix('api/v1/real-estate/valuations')->middleware(['api', 'auth:sanctum', 'throttle:api'])->group(function (): void {
     Route::get('/', [ValuationController::class, 'index'])->name('real-estate.valuations.index');
     Route::post('/', [ValuationController::class, 'store'])->name('real-estate.valuations.store');
     Route::get('/{valuation}', [ValuationController::class, 'show'])->name('real-estate.valuations.show');

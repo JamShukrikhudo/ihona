@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Liberu\RealEstate\CoreApi\Http\Controllers\BranchController;
 
-Route::prefix('api/v1/real-estate/branches')->middleware('auth:sanctum')->group(function (): void {
+Route::prefix('api/v1/real-estate/branches')->middleware(['api', 'auth:sanctum', 'throttle:api'])->group(function (): void {
     Route::get('/', [BranchController::class, 'index'])->name('real-estate.branches.index');
     Route::post('/', [BranchController::class, 'store'])->name('real-estate.branches.store');
     Route::get('/{branch}', [BranchController::class, 'show'])->name('real-estate.branches.show');
