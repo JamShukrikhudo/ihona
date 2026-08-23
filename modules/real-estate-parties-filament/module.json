@@ -1,0 +1,14 @@
+{
+    "$schema": "https://schemas.liberu.dev/module/v1.json",
+    "name": "real-estate-parties-filament",
+    "display_name": "Real Estate Parties Filament",
+    "description": "Filament 5 party administration surface.",
+    "version": "1.0.0",
+    "category": "presentation",
+    "provider": "Liberu\\RealEstate\\PartiesFilament\\PartiesFilamentServiceProvider",
+    "requires": {"php": "^8.5", "laravel": "^13.0", "packages": {"liberusoftware/real-estate-parties": "^1.0"}},
+    "presentation": {"filament": {"admin": ["Liberu\\RealEstate\\PartiesFilament\\PartiesFilamentPlugin"]}},
+    "capabilities": ["real-estate.parties.filament"],
+    "default_enabled": true,
+    "features": ["Party resource", "Team-scoped party administration"]
+}

@@ -23,7 +23,7 @@ it('soft deletes team properties and retains the deletion history', function () 
 
     app(DeleteProperty::class)->handle(10, 20, $property->getKey());
 
-        expect(Property::query()->find($property->getKey()))->toBeNull()
+    expect(Property::query()->find($property->getKey()))->toBeNull()
         ->and(Property::withTrashed()->find($property->getKey()))->not->toBeNull()
         ->and(Property::withTrashed()->find($property->getKey())->history()->where('event', 'deleted')->exists())->toBeTrue();
 });

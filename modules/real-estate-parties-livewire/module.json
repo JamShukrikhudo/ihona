@@ -1,0 +1,13 @@
+{
+    "$schema": "https://schemas.liberu.dev/module/v1.json",
+    "name": "real-estate-parties-livewire",
+    "display_name": "Real Estate Parties Livewire",
+    "description": "Livewire 4 party list and search surface.",
+    "version": "1.0.0",
+    "category": "presentation",
+    "provider": "Liberu\\RealEstate\\PartiesLivewire\\PartiesLivewireServiceProvider",
+    "requires": {"php": "^8.5", "laravel": "^13.0", "packages": {"liberusoftware/real-estate-parties": "^1.0"}},
+    "capabilities": ["real-estate.parties.livewire"],
+    "default_enabled": true,
+    "features": ["Team-scoped party search", "Accessible empty state"]
+}

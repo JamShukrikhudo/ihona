@@ -15,7 +15,10 @@ use Liberu\Foundation\ModuleManager\ModuleRegistry;
 
 function moduleDirectories(): array
 {
-    return array_values(array_filter(glob(dirname(__DIR__, 2).'/modules/*') ?: [], 'is_dir'));
+    return array_values(array_filter(
+        glob(dirname(__DIR__, 2).'/modules/*') ?: [],
+        static fn (string $path): bool => is_dir($path) && is_file($path.'/module.json'),
+    ));
 }
 
 /**

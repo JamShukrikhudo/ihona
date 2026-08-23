@@ -1,0 +1,13 @@
+{
+    "$schema": "https://schemas.liberu.dev/module/v1.json",
+    "name": "real-estate-parties-api",
+    "display_name": "Real Estate Parties API",
+    "description": "Authorized versioned HTTP transport for parties.",
+    "version": "1.0.0",
+    "category": "presentation",
+    "provider": "Liberu\\RealEstate\\PartiesApi\\PartiesApiServiceProvider",
+    "requires": {"php": "^8.5", "laravel": "^13.0", "packages": {"liberusoftware/real-estate-parties": "^1.0"}},
+    "capabilities": ["real-estate.parties.api"],
+    "default_enabled": true,
+    "features": ["Party list and detail transport", "Validated party mutations"]
+}

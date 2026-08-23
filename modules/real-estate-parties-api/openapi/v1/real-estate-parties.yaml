@@ -1,0 +1,41 @@
+openapi: 3.1.0
+info:
+  title: Real Estate Parties API
+  version: 1.0.0
+paths:
+  /api/v1/real-estate/parties:
+    get:
+      operationId: real.estate.parties.list
+      security: [{sanctum: []}]
+      responses:
+        '200': {description: Authorized paginated parties}
+    post:
+      operationId: real.estate.parties.create
+      security: [{sanctum: []}]
+      responses:
+        '201': {description: Party created}
+  /api/v1/real-estate/parties/{id}:
+    get:
+      operationId: real.estate.parties.get
+      security: [{sanctum: []}]
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string}}
+      responses:
+        '200': {description: Authorized party}
+    patch:
+      operationId: real.estate.parties.update
+      security: [{sanctum: []}]
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string}}
+      responses:
+        '200': {description: Party updated}
+    delete:
+      operationId: real.estate.parties.delete
+      security: [{sanctum: []}]
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string}}
+      responses:
+        '204': {description: Party archived}
+components:
+  securitySchemes:
+    sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}
