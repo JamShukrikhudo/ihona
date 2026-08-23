@@ -255,6 +255,10 @@
             "url": "https://github.com/liberusoftware/module-real-estate-valuations.git"
         },
         {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-real-estate-valuations-api.git"
+        },
+        {
             "type": "path",
             "url": "modules/*",
             "options": {
@@ -341,6 +345,7 @@
         "liberusoftware/real-estate-media-and-documents-filament": "1.0.0",
         "liberusoftware/real-estate-media-and-documents-livewire": "1.0.0",
         "liberusoftware/real-estate-valuations": "1.0.0",
+        "liberusoftware/real-estate-valuations-api": "1.0.0",
         "livewire/livewire": "^4.0",
         "spatie/laravel-activitylog": "^5.0",
         "spatie/laravel-backup": "^10.3",
