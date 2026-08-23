@@ -1,0 +1,17 @@
+openapi: 3.1.0
+info:
+  title: Real Estate Media and Documents API
+  version: 1.0.0
+paths:
+  /api/v1/real-estate/media-and-documents:
+    get:
+      operationId: real.estate.media.and.documents.list
+      responses: {"200": {description: Authorized media and documents}}
+    post:
+      operationId: real.estate.media.and.documents.create
+      responses: {"201": {description: Created media or document}}
+  /api/v1/real-estate/media-and-documents/{id}:
+    parameters: [{name: id, in: path, required: true, schema: {type: string}}]
+    get: {operationId: real.estate.media.and.documents.get, responses: {"200": {description: Resource}}}
+    patch: {operationId: real.estate.media.and.documents.update, responses: {"200": {description: Updated resource}}}
+    delete: {operationId: real.estate.media.and.documents.delete, responses: {"204": {description: Deleted resource}}}

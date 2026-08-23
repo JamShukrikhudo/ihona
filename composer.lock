@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "429bc801675b45c9664777a909a84819",
+    "content-hash": "da0f581d7fb2f6a962364229abc647f0",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -6864,20 +6864,25 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:liberusoftware/module-real-estate-media-and-documents.git",
-                "reference": "db0183eac156734519e43c2f7ce0b48ab1f56926"
+                "reference": "13acb4ab532282d0e4884080060a7c71bb49dc43"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-media-and-documents/zipball/db0183eac156734519e43c2f7ce0b48ab1f56926",
-                "reference": "db0183eac156734519e43c2f7ce0b48ab1f56926",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-media-and-documents/zipball/13acb4ab532282d0e4884080060a7c71bb49dc43",
+                "reference": "13acb4ab532282d0e4884080060a7c71bb49dc43",
                 "shasum": ""
             },
             "require": {
                 "illuminate/database": "^13.0",
                 "illuminate/support": "^13.0",
+                "liberusoftware/module-manager": "^1.0",
+                "liberusoftware/organizations-teams": "^1.0",
                 "php": "^8.5"
             },
-            "type": "library",
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
             "extra": {
                 "laravel": {
                     "providers": [
@@ -6893,11 +6898,61 @@
                     "Liberu\\RealEstate\\MediaAndDocuments\\": "src/"
                 }
             },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
             "license": [
                 "MIT"
             ],
             "description": "Provider-neutral media and document records for Liberu real-estate applications.",
-            "time": "2026-08-23T01:26:39+00:00"
+            "time": "2026-08-23T01:32:57+00:00"
+        },
+        {
+            "name": "liberusoftware/real-estate-media-and-documents-api",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:liberusoftware/module-real-estate-media-and-documents-api.git",
+                "reference": "20b9bdffba9d43dd55338601be3ba3ff29ed89f7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-media-and-documents-api/zipball/20b9bdffba9d43dd55338601be3ba3ff29ed89f7",
+                "reference": "20b9bdffba9d43dd55338601be3ba3ff29ed89f7",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "liberusoftware/real-estate-media-and-documents": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "real-estate-media-and-documents-api"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\MediaAndDocumentsApi\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Versioned API adapter for real-estate media and documents.",
+            "time": "2026-08-23T01:30:35+00:00"
         },
         {
             "name": "liberusoftware/real-estate-parties",

@@ -239,6 +239,10 @@
             "url": "https://github.com/liberusoftware/module-real-estate-media-and-documents.git"
         },
         {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-real-estate-media-and-documents-api.git"
+        },
+        {
             "type": "path",
             "url": "modules/*",
             "options": {
@@ -321,6 +325,7 @@
         "liberusoftware/real-estate-core-filament": "1.0.0",
         "liberusoftware/real-estate-core-livewire": "1.0.0",
         "liberusoftware/real-estate-media-and-documents": "1.0.0",
+        "liberusoftware/real-estate-media-and-documents-api": "1.0.0",
         "livewire/livewire": "^4.0",
         "spatie/laravel-activitylog": "^5.0",
         "spatie/laravel-backup": "^10.3",
