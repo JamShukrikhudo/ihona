@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8c0705a68c8afa08fe0398ac544f9f40",
+    "content-hash": "125c55fdf3a6cbd4b668a4d4da68b82d",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -7398,6 +7398,57 @@
                 "symlink": false,
                 "relative": true
             }
+        },
+        {
+            "name": "liberusoftware/real-estate-valuations",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:liberusoftware/module-real-estate-valuations.git",
+                "reference": "9efb7e9e72f3f009e8ad9519a32335105366e141"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-valuations/zipball/9efb7e9e72f3f009e8ad9519a32335105366e141",
+                "reference": "9efb7e9e72f3f009e8ad9519a32335105366e141",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "^13.0",
+                "illuminate/validation": "^13.0",
+                "liberusoftware/module-manager": "^1.0",
+                "liberusoftware/organizations-teams": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Liberu\\RealEstate\\Valuations\\ValuationsServiceProvider"
+                    ]
+                },
+                "liberu": {
+                    "name": "real-estate-valuations"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\Valuations\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Provider-neutral valuation records and lifecycle actions.",
+            "time": "2026-08-23T01:38:03+00:00"
         },
         {
             "name": "liberusoftware/roles-permissions",
