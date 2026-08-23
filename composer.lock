@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "af004fbb0f01d06b872c560f805a5aed",
+    "content-hash": "89a5ec1f41c4aa9196eedb92531bc7df",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -7041,6 +7041,190 @@
             ],
             "description": "Livewire 4 adapter for real-estate instructions.",
             "time": "2026-08-23T01:47:18+00:00"
+        },
+        {
+            "name": "liberusoftware/real-estate-listings",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:liberusoftware/module-real-estate-listings.git",
+                "reference": "7b108de5222dc58169a50354c1a86e9c771ad74d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-listings/zipball/7b108de5222dc58169a50354c1a86e9c771ad74d",
+                "reference": "7b108de5222dc58169a50354c1a86e9c771ad74d",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "^13.0",
+                "illuminate/validation": "^13.0",
+                "liberusoftware/module-manager": "^1.0",
+                "liberusoftware/organizations-teams": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Liberu\\RealEstate\\Listings\\ListingsServiceProvider"
+                    ]
+                },
+                "liberu": {
+                    "name": "real-estate-listings"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\Listings\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Provider-neutral listing records and publication lifecycle actions.",
+            "time": "2026-08-23T01:51:32+00:00"
+        },
+        {
+            "name": "liberusoftware/real-estate-listings-api",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:liberusoftware/module-real-estate-listings-api.git",
+                "reference": "879f60d0e7fea7a3e63b1f17ed8841b241b0e3e3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-listings-api/zipball/879f60d0e7fea7a3e63b1f17ed8841b241b0e3e3",
+                "reference": "879f60d0e7fea7a3e63b1f17ed8841b241b0e3e3",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "liberusoftware/real-estate-listings": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "real-estate-listings-api"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\ListingsApi\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Versioned API adapter for real-estate listings.",
+            "time": "2026-08-23T01:51:37+00:00"
+        },
+        {
+            "name": "liberusoftware/real-estate-listings-filament",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:liberusoftware/module-real-estate-listings-filament.git",
+                "reference": "70f33554d74e1fee6a9ec861eb51943fb58108fc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-listings-filament/zipball/70f33554d74e1fee6a9ec861eb51943fb58108fc",
+                "reference": "70f33554d74e1fee6a9ec861eb51943fb58108fc",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^5.0",
+                "liberusoftware/real-estate-listings": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "real-estate-listings-filament"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\ListingsFilament\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Filament 5 adapter for real-estate listings.",
+            "time": "2026-08-23T01:51:42+00:00"
+        },
+        {
+            "name": "liberusoftware/real-estate-listings-livewire",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:liberusoftware/module-real-estate-listings-livewire.git",
+                "reference": "1a6b46f95f5309c9083e8209fe8622aaef7463c3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-listings-livewire/zipball/1a6b46f95f5309c9083e8209fe8622aaef7463c3",
+                "reference": "1a6b46f95f5309c9083e8209fe8622aaef7463c3",
+                "shasum": ""
+            },
+            "require": {
+                "liberusoftware/real-estate-listings": "^1.0",
+                "livewire/livewire": "^4.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "real-estate-listings-livewire"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\ListingsLivewire\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Livewire 4 adapter for real-estate listings.",
+            "time": "2026-08-23T01:51:47+00:00"
         },
         {
             "name": "liberusoftware/real-estate-media-and-documents",

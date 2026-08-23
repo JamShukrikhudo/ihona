@@ -1,0 +1,11 @@
+openapi: 3.1.0
+info: {title: Real Estate Listings API, version: 1.0.0}
+paths:
+  /api/v1/real-estate/listings:
+    get: {operationId: real.estate.listings.list, responses: {"200": {description: Authorized listings}}}
+    post: {operationId: real.estate.listings.create, responses: {"201": {description: Created listing}}}
+  /api/v1/real-estate/listings/{id}:
+    parameters: [{name: id, in: path, required: true, schema: {type: string}}]
+    get: {operationId: real.estate.listings.get, responses: {"200": {description: Listing}}}
+    patch: {operationId: real.estate.listings.update, responses: {"200": {description: Updated listing}}}
+    delete: {operationId: real.estate.listings.delete, responses: {"204": {description: Deleted listing}}}
