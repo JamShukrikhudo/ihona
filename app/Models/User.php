@@ -2,92 +2,119 @@
 
 namespace App\Models;
 
-use App\Services\AgentMatchingService;
+use Database\Factories\UserFactory;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasDefaultTenant;
 use Filament\Models\Contracts\HasTenants;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 use JoelButcher\Socialstream\HasConnectedAccounts;
 use JoelButcher\Socialstream\SetsProfilePhotoFromUrl;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Jetstream\HasTeams;
 use Laravel\Sanctum\HasApiTokens;
+use Liberu\Foundation\Identity\Socialstream\Contracts\ConnectedAccountOwner;
+use Liberu\Foundation\Observability\Contracts\ObservabilityActor;
+use Liberu\Foundation\Organizations\Contracts\OrganizationActor;
+use Liberu\Foundation\Organizations\Models\Team;
+use Liberu\Foundation\RolesPermissions\Contracts\PrivilegedActor;
+use Liberu\Foundation\RolesPermissions\Services\AnyTeamRoleLookup;
+use Liberu\Foundation\Search\Concerns\Searchable;
+use Spatie\Activitylog\Models\Concerns\LogsActivity;
+use Spatie\Activitylog\Support\LogOptions;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable implements FilamentUser, HasDefaultTenant, HasTenants
+/**
+ * @property string|null $theme_preference
+ * @property string|null $locale
+ */
+class User extends Authenticatable implements ConnectedAccountOwner, FilamentUser, HasDefaultTenant, HasTenants, ObservabilityActor, OrganizationActor, PrivilegedActor
 {
     use HasApiTokens;
+    use HasConnectedAccounts;
+
+    /** @use HasFactory<UserFactory> */
     use HasFactory;
+
     use HasProfilePhoto {
         HasProfilePhoto::profilePhotoUrl as getPhotoUrl;
     }
-
-    // use HasConnectedAccounts;
-    use HasRoles;
-    use HasTeams;
+    use HasRoles, HasTeams {
+        // Both traits define teams(): Jetstream = team membership (used by allTeams()
+        // and Filament tenancy). Spatie's teams() (roles-derived) is excluded — Spatie
+        // scopes via the team_id column + DefaultTeamResolver, not this relation.
+        HasTeams::teams insteadof HasRoles;
+    }
+    use LogsActivity;
     use Notifiable;
 
-    // use SetsProfilePhotoFromUrl;
+    // The scope `SearchService` calls. It used to be declared here, which meant
+    // the package could not be installed anywhere else without reimplementing it.
+    use Searchable;
+    use SetsProfilePhotoFromUrl;
     use TwoFactorAuthenticatable;
 
     /**
      * The attributes that are mass assignable.
      *
-     * @var array<int, string>
+     * @var list<string>
      */
     protected $fillable = [
         'name',
         'email',
         'password',
-        'agent_preferences',
+        'theme_preference',
+        'locale',
+        'timezone',
     ];
 
     /**
      * The attributes that should be hidden for arrays.
      *
-     * @var array<int, string>
+     * @var list<string>
      */
     protected $hidden = [
         'password',
         'remember_token',
         'two_factor_recovery_codes',
         'two_factor_secret',
+        // PII: keep email off array/JSON serialization so public search endpoints
+        // (nested post.user / group.owner) can't be used to harvest addresses.
+        'email',
+        'email_verified_at',
+    ];
+
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'email_verified_at' => 'datetime',
     ];
 
     /**
      * The accessors to append to the model's array form.
      *
-     * @var array<int, string>
+     * @var list<string>
      */
     protected $appends = [
         'profile_photo_url',
     ];
 
     /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'agent_preferences' => 'array',
-        ];
-    }
-
-    /**
      * Get the URL to the user's profile photo.
+     *
+     * @return Attribute<string, never>
      */
-    public function profilePhotoUrl(): Attribute
+    protected function profilePhotoUrl(): Attribute
     {
         return filter_var($this->profile_photo_path, FILTER_VALIDATE_URL)
             ? Attribute::get(fn () => $this->profile_photo_path)
@@ -95,37 +122,74 @@ class User extends Authenticatable implements FilamentUser, HasDefaultTenant, Ha
     }
 
     /**
-     * @return array<Model> | Collection
+     * The teams this user may act within as a Filament tenant — owned + member teams,
+     * consistent with canAccessTenant()/belongsToTeam() so invited members aren't locked out.
+     *
+     * @return array<int, Model>|Collection<int, Model>
      */
     public function getTenants(Panel $panel): array|Collection
     {
-        return $this->teams;
+        return $this->allTeams();
     }
 
     public function canAccessTenant(Model $tenant): bool
     {
-        return $this->teams()->whereKey($tenant)->exists();
+        return $tenant instanceof Team && $this->belongsToTeam($tenant);
     }
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return $this->canAccessPanelById($panel->getId());
-    }
+        if ($panel->getId() === 'admin') {
+            return $this->hasAdminAccess();
+        }
 
-    /** Every panel id is a role name, so a role gets its own panel — plus staff on /app, admins everywhere. */
-    private function canAccessPanelById(string $panelId): bool
-    {
-        return $this->hasAnyRole([
-            $panelId,
-            ...($panelId === 'app' ? ['staff'] : []),
-            'admin',
-            'super_admin',
-        ]);
-    }
-
-    public function canAccessFilament(): bool
-    {
         return true;
+    }
+
+    /**
+     * True if the user holds an admin role in ANY team. Spatie roles are
+     * team-scoped, and the active team context is not reliably set when
+     * canAccessPanel() runs, so check the pivot directly across all teams.
+     */
+    public function hasAdminAccess(): bool
+    {
+        return $this->hasRoleInAnyTeam([(string) config('filament-shield.super_admin.name', 'super_admin'), 'admin']);
+    }
+
+    /**
+     * True if the user holds the super_admin role in ANY team. Team-agnostic
+     * (unlike Spatie's team-scoped hasRole), so it drives the policy-bypass gate
+     * reliably even when no team context is set on the request.
+     */
+    public function isSuperAdmin(): bool
+    {
+        return $this->hasRoleInAnyTeam((string) config('filament-shield.super_admin.name', 'super_admin'));
+    }
+
+    /** The pivot columns AnyTeamRoleLookup matches this actor on. */
+    public function authorizationIdentifier(): int|string
+    {
+        return $this->getKey();
+    }
+
+    public function authorizationType(): string
+    {
+        return $this->getMorphClass();
+    }
+
+    /**
+     * Team-agnostic role check. Spatie's hasRole() is bound to the active team
+     * context, which is unset on plain web requests and when canAccessPanel()
+     * runs, so the pivot is queried directly across every team.
+     *
+     * The query itself moved into the authorization package in 1.0.4; the host
+     * delegates rather than keeping its own copy.
+     *
+     * @param  string|list<string>  $roles
+     */
+    public function hasRoleInAnyTeam(string|array $roles): bool
+    {
+        return app(AnyTeamRoleLookup::class)->hasRoleInAnyTeam($this, $roles);
     }
 
     public function getDefaultTenant(Panel $panel): ?Model
@@ -133,124 +197,32 @@ class User extends Authenticatable implements FilamentUser, HasDefaultTenant, Ha
         return $this->latestTeam;
     }
 
+    /**
+     * @return BelongsTo<Team, $this>
+     */
     public function latestTeam(): BelongsTo
     {
         return $this->belongsTo(Team::class, 'current_team_id');
     }
 
-    public function teams()
+    /**
+     * Only track safe profile fields — never password / 2FA / tokens.
+     */
+    public function getActivitylogOptions(): LogOptions
     {
-        return $this->belongsToMany(Team::class, Membership::class)
-            ->withPivot(['role', 'permissions', 'branch_id', 'department_id', 'job_title', 'phone', 'bio', 'is_public'])
-            ->withTimestamps()
-            ->as('membership');
-    }
-
-    public function savedSearches()
-    {
-        return $this->hasMany(SavedSearch::class);
-    }
-
-    public function reviews()
-    {
-        return $this->hasMany(Review::class);
-    }
-
-    public function reviewsReceived()
-    {
-        return $this->morphMany(Review::class, 'reviewable');
-    }
-
-    public function properties()
-    {
-        return $this->hasMany(Property::class);
-    }
-
-    public function appointments()
-    {
-        return $this->hasMany(Appointment::class);
-    }
-
-    public function assignedAgencyTasks()
-    {
-        return $this->hasMany(AgencyTask::class, 'assigned_to');
-    }
-
-    public function negotiatedOffers()
-    {
-        return $this->hasMany(Offer::class, 'negotiator_id');
-    }
-
-    public function averageRating()
-    {
-        return $this->reviewsReceived()->avg('rating');
-    }
-
-    public function priceAlerts()
-    {
-        return $this->hasMany(PriceAlert::class);
-    }
-
-    public function favorites()
-    {
-        return $this->hasMany(Favorite::class);
-    }
-
-    public function favoriteProperties()
-    {
-        return $this->belongsToMany(Property::class, 'favorites', 'user_id', 'property_id')
-            ->withTimestamps();
-    }
-
-    public function agentMatches()
-    {
-        return $this->hasMany(AgentMatch::class);
-    }
-
-    public function matchedAgents()
-    {
-        return $this->belongsToMany(User::class, 'agent_matches', 'user_id', 'agent_id')
-            ->withPivot(['match_score', 'status', 'match_reasons'])
-            ->withTimestamps();
-    }
-
-    public function clientMatches()
-    {
-        return $this->hasMany(AgentMatch::class, 'agent_id');
-    }
-
-    public function team()
-    {
-        return $this->currentTeam();
+        return LogOptions::defaults()
+            ->logOnly(['name', 'email', 'locale', 'theme_preference'])
+            ->logOnlyDirty()
+            ->dontLogEmptyChanges();
     }
 
     /**
-     * Get recommended agents for this user
+     * Admin = super_admin in any team, or an allowlisted email. Used to gate the
+     * Telescope/Pulse dashboards.
      */
-    public function getRecommendedAgents(int $limit = 5): Collection
+    public function isAdmin(): bool
     {
-        $service = app(AgentMatchingService::class);
-
-        return $service->findMatches($this, $limit);
-    }
-
-    /**
-     * Generate and save agent matches for this user
-     */
-    public function generateAgentMatches(int $minScore = 60): Collection
-    {
-        $service = app(AgentMatchingService::class);
-
-        return $service->generateMatchesForUser($this, $minScore);
-    }
-
-    /**
-     * Get agents recommended for a specific property search
-     */
-    public function getAgentsForPropertySearch(array $searchContext): Collection
-    {
-        $service = app(AgentMatchingService::class);
-
-        return $service->getRecommendedAgentsForPropertySearch($this, $searchContext);
+        return in_array($this->email, (array) config('app.admin_emails', []), true)
+            || $this->isSuperAdmin();
     }
 }

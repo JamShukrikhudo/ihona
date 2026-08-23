@@ -27,8 +27,7 @@ RUN composer install \
     --no-ansi \
     --no-scripts \
     --prefer-dist \
-    --ignore-platform-req=ext-pcntl \
-    --ignore-platform-req=ext-exif
+    --ignore-platform-req=ext-pcntl
 
 ###########################################
 # Main application stage

@@ -1,83 +1,64 @@
-@extends('layouts.app')
+<x-guest-layout>
+    <x-authentication-card>
+        <x-slot name="logo">
+            <x-authentication-card-logo />
+        </x-slot>
 
-@section('content')
-    <x-auth-panel :title="__('Create an account')"
-                  :lede="__('Save homes, get told when the ones you like change, and keep your viewings in one place.')"
-                  wide>
-        <form method="POST" action="{{ route('register') }}" class="grid gap-5 sm:grid-cols-2">
+        <x-validation-errors class="mb-4" />
+
+        <form method="POST" action="{{ route('register') }}">
             @csrf
 
-            <x-ui.field id="name" :label="__('Name')" class="sm:col-span-2">
-                <x-ui.control id="name" type="text" name="name" :value="old('name')"
-                              autocomplete="name" required autofocus
-                              :invalid="$errors->has('name')" />
-            </x-ui.field>
+            <div>
+                <x-label for="name" value="{{ __('Name') }}" />
+                <x-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
+            </div>
 
-            <x-ui.field id="email" :label="__('Email')" class="sm:col-span-2">
-                <x-ui.control id="email" type="email" name="email" :value="old('email')"
-                              autocomplete="email" required
-                              :invalid="$errors->has('email')" />
-            </x-ui.field>
+            <div class="mt-4">
+                <x-label for="email" value="{{ __('Email') }}" />
+                <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
+            </div>
 
-            <x-ui.field id="password" :label="__('Password')">
-                <x-ui.control id="password" type="password" name="password"
-                              autocomplete="new-password" required
-                              :invalid="$errors->has('password')" />
-            </x-ui.field>
+            <div class="mt-4">
+                <x-label for="password" value="{{ __('Password') }}" />
+                <x-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" />
+            </div>
 
-            <x-ui.field id="password_confirmation" :label="__('Password again')">
-                <x-ui.control id="password_confirmation" type="password" name="password_confirmation"
-                              autocomplete="new-password" required
-                              :invalid="$errors->has('password_confirmation')" />
-            </x-ui.field>
-
-            <x-ui.field id="role" :label="__('What brings you here?')"
-                        :hint="__('It sets what you see first. It can be changed later.')"
-                        class="sm:col-span-2">
-                <x-ui.control as="select" id="role" name="role" required :invalid="$errors->has('role')">
-                    <option value="">{{ __('Choose one') }}</option>
-                    @foreach ([
-                        'buyer' => __('Buying a home'),
-                        'seller' => __('Selling a home'),
-                        'tenant' => __('Renting a home'),
-                        'landlord' => __('Letting a property'),
-                        'contractor' => __('Working on properties'),
-                    ] as $value => $label)
-                        <option value="{{ $value }}" @selected(old('role') === $value)>{{ $label }}</option>
-                    @endforeach
-                </x-ui.control>
-            </x-ui.field>
+            <div class="mt-4">
+                <x-label for="password_confirmation" value="{{ __('Confirm Password') }}" />
+                <x-input id="password_confirmation" class="block mt-1 w-full" type="password" name="password_confirmation" required autocomplete="new-password" />
+            </div>
 
             @if (Laravel\Jetstream\Jetstream::hasTermsAndPrivacyPolicyFeature())
-                <x-ui.field id="terms" class="sm:col-span-2">
-                    <label for="terms" class="flex items-start gap-2 text-body-s text-ink-700">
-                        <input id="terms" type="checkbox" name="terms" required
-                               class="mt-0.5 size-4 shrink-0 rounded-tag border-sheet-300 bg-sheet-000 text-action">
-                        <span>
-                            {!! __('I agree to the :terms and :privacy.', [
-                                'terms' => '<a class="text-draft-700 underline underline-offset-2 hover:no-underline" href="'.e(route('termsandconditions')).'">'.e(__('terms of service')).'</a>',
-                                'privacy' => '<a class="text-draft-700 underline underline-offset-2 hover:no-underline" href="'.e(route('privacypolicy')).'">'.e(__('privacy policy')).'</a>',
-                            ]) !!}
-                        </span>
-                    </label>
-                </x-ui.field>
+                <div class="mt-4">
+                    <x-label for="terms">
+                        <div class="flex items-center">
+                            <x-checkbox name="terms" id="terms" required />
+
+                            <div class="ml-2">
+                                {!! __('I agree to the :terms_of_service and :privacy_policy', [
+                                        'terms_of_service' => '<a target="_blank" href="'.route('terms.show').'" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">'.__('Terms of Service').'</a>',
+                                        'privacy_policy' => '<a target="_blank" href="'.route('policy.show').'" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">'.__('Privacy Policy').'</a>',
+                                ]) !!}
+                            </div>
+                        </div>
+                    </x-label>
+                </div>
             @endif
 
-            <div class="flex items-center justify-end sm:col-span-2">
-                <x-ui.button type="submit">{{ __('Create account') }}</x-ui.button>
+            <div class="flex items-center justify-end mt-4">
+                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
+                    {{ __('Already registered?') }}
+                </a>
+
+                <x-button class="ml-4">
+                    {{ __('Register') }}
+                </x-button>
             </div>
         </form>
 
-        @if (\JoelButcher\Socialstream\Socialstream::show())
+        @if (JoelButcher\Socialstream\Socialstream::show())
             <x-socialstream />
         @endif
-
-        <x-slot name="footer">
-            {{ __('Already have an account?') }}
-            <a href="{{ route('login') }}"
-               class="text-draft-700 underline underline-offset-2 hover:no-underline">
-                {{ __('Sign in') }}
-            </a>
-        </x-slot>
-    </x-auth-panel>
-@endsection
+    </x-authentication-card>
+</x-guest-layout>

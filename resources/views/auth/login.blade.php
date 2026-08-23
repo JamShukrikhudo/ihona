@@ -1,53 +1,52 @@
-@extends('layouts.app')
+<x-guest-layout>
+    <x-authentication-card>
+        <x-slot name="logo">
+            <x-authentication-card-logo />
+        </x-slot>
 
-@section('content')
-    <x-auth-panel :title="__('Sign in')"
-                  :lede="__('Saved homes, saved searches and your viewings, wherever you left them.')">
-        <form method="POST" action="{{ route('login') }}" class="grid gap-5">
+        <x-validation-errors class="mb-4" />
+
+        @if (session('status'))
+            <div class="mb-4 font-medium text-sm text-green-600">
+                {{ session('status') }}
+            </div>
+        @endif
+
+        <form method="POST" action="{{ route('login') }}">
             @csrf
 
-            <x-ui.field id="email" :label="__('Email')">
-                <x-ui.control id="email" type="email" name="email" :value="old('email')"
-                              autocomplete="username" required autofocus
-                              :invalid="$errors->has('email')" />
-            </x-ui.field>
+            <div>
+                <x-label for="email" value="{{ __('Email') }}" />
+                <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />
+            </div>
 
-            <x-ui.field id="password" :label="__('Password')">
-                <x-ui.control id="password" type="password" name="password"
-                              autocomplete="current-password" required
-                              :invalid="$errors->has('password')" />
-            </x-ui.field>
+            <div class="mt-4">
+                <x-label for="password" value="{{ __('Password') }}" />
+                <x-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="current-password" />
+            </div>
 
-            <label for="remember_me" class="flex items-center gap-2 text-body-s text-ink-700">
-                <input id="remember_me" type="checkbox" name="remember"
-                       class="size-4 rounded-tag border-sheet-300 bg-sheet-000 text-action">
-                {{ __('Keep me signed in') }}
-            </label>
+            <div class="block mt-4">
+                <label for="remember_me" class="flex items-center">
+                    <x-checkbox id="remember_me" name="remember" />
+                    <span class="ml-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
+                </label>
+            </div>
 
-            <div class="flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center justify-end mt-4">
                 @if (Route::has('password.request'))
-                    <a href="{{ route('password.request') }}"
-                       class="text-body-s text-draft-700 underline underline-offset-2 hover:no-underline">
-                        {{ __('Forgotten your password?') }}
+                    <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
+                        {{ __('Forgot your password?') }}
                     </a>
                 @endif
 
-                <x-ui.button type="submit">{{ __('Sign in') }}</x-ui.button>
+                <x-button class="ml-4">
+                    {{ __('Login') }}
+                </x-button>
             </div>
         </form>
 
-        @if (\JoelButcher\Socialstream\Socialstream::show())
+        @if (JoelButcher\Socialstream\Socialstream::show())
             <x-socialstream />
         @endif
-
-        @if (Route::has('register'))
-            <x-slot name="footer">
-                {{ __('No account yet?') }}
-                <a href="{{ route('register') }}"
-                   class="text-draft-700 underline underline-offset-2 hover:no-underline">
-                    {{ __('Create one') }}
-                </a>
-            </x-slot>
-        @endif
-    </x-auth-panel>
-@endsection
+    </x-authentication-card>
+</x-guest-layout>

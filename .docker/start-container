@@ -20,8 +20,7 @@ if [ "$1" != "" ]; then
     exec "$@"
 elif [ "${container_mode}" = "http" ]; then
     initialStuff
-    echo "Octane Server: ${OCTANE_SERVER}"
-
+    echo "Octane Server: $OCTANE_SERVER"
     if [ "${OCTANE_SERVER}" = "frankenphp" ]; then
         exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.frankenphp.conf
     elif [ "${OCTANE_SERVER}" = "swoole" ]; then

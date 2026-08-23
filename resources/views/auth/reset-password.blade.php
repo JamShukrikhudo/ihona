@@ -1,34 +1,36 @@
-@extends('layouts.app')
+<x-guest-layout>
+    <x-authentication-card>
+        <x-slot name="logo">
+            <x-authentication-card-logo />
+        </x-slot>
 
-@section('content')
-    <x-auth-panel :title="__('Set a new password')"
-                  :lede="__('Pick something you have not used elsewhere. The link that brought you here stops working once this is done.')">
-        <form method="POST" action="{{ route('password.update') }}" class="grid gap-5">
+        <x-validation-errors class="mb-4" />
+
+        <form method="POST" action="{{ route('password.update') }}">
             @csrf
 
             <input type="hidden" name="token" value="{{ $request->route('token') }}">
 
-            <x-ui.field id="email" :label="__('Email')">
-                <x-ui.control id="email" type="email" name="email" :value="old('email', $request->email)"
-                              autocomplete="username" required autofocus
-                              :invalid="$errors->has('email')" />
-            </x-ui.field>
+            <div class="block">
+                <x-label for="email" value="{{ __('Email') }}" />
+                <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email', $request->email)" required autofocus autocomplete="username" />
+            </div>
 
-            <x-ui.field id="password" :label="__('New password')">
-                <x-ui.control id="password" type="password" name="password"
-                              autocomplete="new-password" required
-                              :invalid="$errors->has('password')" />
-            </x-ui.field>
+            <div class="mt-4">
+                <x-label for="password" value="{{ __('Password') }}" />
+                <x-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" />
+            </div>
 
-            <x-ui.field id="password_confirmation" :label="__('New password again')">
-                <x-ui.control id="password_confirmation" type="password" name="password_confirmation"
-                              autocomplete="new-password" required
-                              :invalid="$errors->has('password_confirmation')" />
-            </x-ui.field>
+            <div class="mt-4">
+                <x-label for="password_confirmation" value="{{ __('Confirm Password') }}" />
+                <x-input id="password_confirmation" class="block mt-1 w-full" type="password" name="password_confirmation" required autocomplete="new-password" />
+            </div>
 
-            <div class="flex items-center justify-end">
-                <x-ui.button type="submit">{{ __('Save the new password') }}</x-ui.button>
+            <div class="flex items-center justify-end mt-4">
+                <x-button>
+                    {{ __('Reset Password') }}
+                </x-button>
             </div>
         </form>
-    </x-auth-panel>
-@endsection
+    </x-authentication-card>
+</x-guest-layout>

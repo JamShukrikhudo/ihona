@@ -1,20 +1,28 @@
-@extends('layouts.app')
+<x-guest-layout>
+    <x-authentication-card>
+        <x-slot name="logo">
+            <x-authentication-card-logo />
+        </x-slot>
 
-@section('content')
-    <x-auth-panel :title="__('Confirm your password')"
-                  :lede="__('This part of your account changes what other people can see or do, so we ask for the password again before going in.')">
-        <form method="POST" action="{{ route('password.confirm') }}" class="grid gap-5">
+        <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
+            {{ __('This is a secure area of the application. Please confirm your password before continuing.') }}
+        </div>
+
+        <x-validation-errors class="mb-4" />
+
+        <form method="POST" action="{{ route('password.confirm') }}">
             @csrf
 
-            <x-ui.field id="password" :label="__('Password')">
-                <x-ui.control id="password" type="password" name="password"
-                              autocomplete="current-password" required autofocus
-                              :invalid="$errors->has('password')" />
-            </x-ui.field>
+            <div>
+                <x-label for="password" value="{{ __('Password') }}" />
+                <x-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="current-password" autofocus />
+            </div>
 
-            <div class="flex items-center justify-end">
-                <x-ui.button type="submit">{{ __('Confirm') }}</x-ui.button>
+            <div class="flex justify-end mt-4">
+                <x-button class="ms-4">
+                    {{ __('Confirm') }}
+                </x-button>
             </div>
         </form>
-    </x-auth-panel>
-@endsection
+    </x-authentication-card>
+</x-guest-layout>

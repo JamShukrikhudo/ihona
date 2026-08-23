@@ -5,17 +5,16 @@ services:
       dockerfile: Dockerfile
       args:
         PHP_VERSION: '8.5'
-        USER_ID: '${UID:-1000}'
-        GROUP_ID: '${GID:-1000}'
-    image: real-estate-laravel:latest
+        USER_ID: '${WWWUSER:-1000}'
+        GROUP_ID: '${WWWGROUP:-1000}'
+    image: boilerplate-laravel:latest
     ports:
-      - '${APP_PORT:-8000}:8000'
+      - '${APP_PORT:-8000}:80'
     environment:
       CONTAINER_MODE: http
       OCTANE_SERVER: roadrunner
-      WITH_SCHEDULER: '${WITH_SCHEDULER:-true}'
-      WITH_HORIZON: '${WITH_HORIZON:-false}'
-      WITH_REVERB: '${WITH_REVERB:-false}'
+      WITH_SCHEDULER: 'true'
+      WITH_HORIZON: 'false'
       RUNNING_MIGRATIONS_AND_SEEDERS: '${RUNNING_MIGRATIONS_AND_SEEDERS:-false}'
     env_file:
       - .env
@@ -29,12 +28,6 @@ services:
         condition: service_healthy
     networks:
       - appnet
-    healthcheck:
-      test: ['CMD', 'healthcheck']
-      start_period: 10s
-      interval: 5s
-      timeout: 5s
-      retries: 5
 
   reverb:
     build:
@@ -42,9 +35,7 @@ services:
       dockerfile: Dockerfile
       args:
         PHP_VERSION: '8.5'
-    image: real-estate-laravel:latest
-    ports:
-      - '${REVERB_PORT:-8080}:8080'
+    image: boilerplate-laravel:latest
     environment:
       CONTAINER_MODE: reverb
     env_file:
@@ -68,7 +59,7 @@ services:
       dockerfile: Dockerfile
       args:
         PHP_VERSION: '8.5'
-    image: real-estate-laravel:latest
+    image: boilerplate-laravel:latest
     environment:
       CONTAINER_MODE: worker
       WORKER_COMMAND: 'php /var/www/html/artisan queue:work --sleep=3 --tries=3 --max-time=3600'

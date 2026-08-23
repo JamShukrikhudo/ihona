@@ -1,27 +1,34 @@
 <?php
 
+use JoelButcher\Socialstream\Features;
 use JoelButcher\Socialstream\Providers;
 
 return [
+    'guard' => 'web', // used if Fortify is not installed
     'middleware' => ['web'],
     'prompt' => 'Or Login Via',
     'providers' => [
-        Providers::bitbucket(),
-        Providers::facebook(),
         Providers::github(),
-        Providers::gitlab(),
         Providers::google(),
-        Providers::linkedin(),
-        Providers::linkedinOpenId(),
-        Providers::slack(),
+        Providers::facebook(),
         Providers::twitterOAuth2(),
     ],
-    'component' => 'socialstream::components.socialstream',
-    'show_provider_ids' => env('SOCIALSTREAM_SHOW_PROVIDER_IDS', false),
     'features' => [
-        // \JoelButcher\Socialstream\Features::createAccountOnFirstLogin(),
-        // \JoelButcher\Socialstream\Features::generateMissingEmails(),
-        // \JoelButcher\Socialstream\Features::loginOnRegistration(),
-        // \JoelButcher\Socialstream\Features::rememberSession(),
+        // Features::generateMissingEmails(),
+        // Features::createAccountOnFirstLogin(),
+        // Features::globalLogin(),
+        // Features::authExistingUnlinkedUsers(),
+        Features::rememberSession(),
+        Features::providerAvatars(),
+        Features::refreshOAuthTokens(),
+    ],
+    'home' => '/dashboard',
+    'redirects' => [
+        'login' => '/dashboard',
+        'register' => '/dashboard',
+        'login-failed' => '/login',
+        'registration-failed' => '/register',
+        'provider-linked' => '/user/profile',
+        'provider-link-failed' => '/user/profile',
     ],
 ];
