@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "da0f581d7fb2f6a962364229abc647f0",
+    "content-hash": "8c0705a68c8afa08fe0398ac544f9f40",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -6953,6 +6953,94 @@
             ],
             "description": "Versioned API adapter for real-estate media and documents.",
             "time": "2026-08-23T01:30:35+00:00"
+        },
+        {
+            "name": "liberusoftware/real-estate-media-and-documents-filament",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:liberusoftware/module-real-estate-media-and-documents-filament.git",
+                "reference": "9407e604d1f23da08bdb5ea9232c906a7b384899"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-media-and-documents-filament/zipball/9407e604d1f23da08bdb5ea9232c906a7b384899",
+                "reference": "9407e604d1f23da08bdb5ea9232c906a7b384899",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^5.0",
+                "liberusoftware/real-estate-media-and-documents": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "real-estate-media-and-documents-filament"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\MediaAndDocumentsFilament\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Filament 5 adapter for real-estate media and documents.",
+            "time": "2026-08-23T01:35:30+00:00"
+        },
+        {
+            "name": "liberusoftware/real-estate-media-and-documents-livewire",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:liberusoftware/module-real-estate-media-and-documents-livewire.git",
+                "reference": "93d8be5e029980808685dd4388fea5ecc0cc9ac2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-media-and-documents-livewire/zipball/93d8be5e029980808685dd4388fea5ecc0cc9ac2",
+                "reference": "93d8be5e029980808685dd4388fea5ecc0cc9ac2",
+                "shasum": ""
+            },
+            "require": {
+                "liberusoftware/real-estate-media-and-documents": "^1.0",
+                "livewire/livewire": "^4.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "real-estate-media-and-documents-livewire"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\MediaAndDocumentsLivewire\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Livewire 4 adapter for real-estate media and documents.",
+            "time": "2026-08-23T01:35:34+00:00"
         },
         {
             "name": "liberusoftware/real-estate-parties",
