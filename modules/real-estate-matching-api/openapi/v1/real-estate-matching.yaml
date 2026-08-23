@@ -1,0 +1,11 @@
+openapi: 3.1.0
+info: {title: Real Estate Matching API, version: 1.0.0}
+paths:
+  /api/v1/real-estate/matching:
+    get: {operationId: real.estate.matching.list, responses: {"200": {description: Authorized matching profiles}}}
+    post: {operationId: real.estate.matching.create, responses: {"201": {description: Created profile}}}
+  /api/v1/real-estate/matching/{id}:
+    parameters: [{name: id, in: path, required: true, schema: {type: string}}]
+    get: {operationId: real.estate.matching.get, responses: {"200": {description: Profile}}}
+    patch: {operationId: real.estate.matching.update, responses: {"200": {description: Updated profile}}}
+    delete: {operationId: real.estate.matching.delete, responses: {"204": {description: Deleted profile}}}

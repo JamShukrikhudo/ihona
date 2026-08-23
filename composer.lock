@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "89a5ec1f41c4aa9196eedb92531bc7df",
+    "content-hash": "5515d3c0f27d99c0962aa42bf9350c33",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -7225,6 +7225,190 @@
             ],
             "description": "Livewire 4 adapter for real-estate listings.",
             "time": "2026-08-23T01:51:47+00:00"
+        },
+        {
+            "name": "liberusoftware/real-estate-matching",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:liberusoftware/module-real-estate-matching.git",
+                "reference": "fe155030f16e14cceea211b7659ee82180ba0b5a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-matching/zipball/fe155030f16e14cceea211b7659ee82180ba0b5a",
+                "reference": "fe155030f16e14cceea211b7659ee82180ba0b5a",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "^13.0",
+                "illuminate/validation": "^13.0",
+                "liberusoftware/module-manager": "^1.0",
+                "liberusoftware/organizations-teams": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Liberu\\RealEstate\\Matching\\MatchingServiceProvider"
+                    ]
+                },
+                "liberu": {
+                    "name": "real-estate-matching"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\Matching\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Provider-neutral applicant matching requirements and scoring actions.",
+            "time": "2026-08-23T01:55:52+00:00"
+        },
+        {
+            "name": "liberusoftware/real-estate-matching-api",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:liberusoftware/module-real-estate-matching-api.git",
+                "reference": "5e2b4471c34091fd831fceb925b152ca6867f372"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-matching-api/zipball/5e2b4471c34091fd831fceb925b152ca6867f372",
+                "reference": "5e2b4471c34091fd831fceb925b152ca6867f372",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "liberusoftware/real-estate-matching": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "real-estate-matching-api"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\MatchingApi\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Versioned API adapter for real-estate matching.",
+            "time": "2026-08-23T01:55:57+00:00"
+        },
+        {
+            "name": "liberusoftware/real-estate-matching-filament",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:liberusoftware/module-real-estate-matching-filament.git",
+                "reference": "21697e436280772bd7d17e391887665bf87205b7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-matching-filament/zipball/21697e436280772bd7d17e391887665bf87205b7",
+                "reference": "21697e436280772bd7d17e391887665bf87205b7",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^5.0",
+                "liberusoftware/real-estate-matching": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "real-estate-matching-filament"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\MatchingFilament\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Filament 5 adapter for real-estate matching.",
+            "time": "2026-08-23T01:56:02+00:00"
+        },
+        {
+            "name": "liberusoftware/real-estate-matching-livewire",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:liberusoftware/module-real-estate-matching-livewire.git",
+                "reference": "285ce9d2776082745a958aa90b40b213c116f07c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-matching-livewire/zipball/285ce9d2776082745a958aa90b40b213c116f07c",
+                "reference": "285ce9d2776082745a958aa90b40b213c116f07c",
+                "shasum": ""
+            },
+            "require": {
+                "liberusoftware/real-estate-matching": "^1.0",
+                "livewire/livewire": "^4.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "real-estate-matching-livewire"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\MatchingLivewire\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Livewire 4 adapter for real-estate matching.",
+            "time": "2026-08-23T01:56:07+00:00"
         },
         {
             "name": "liberusoftware/real-estate-media-and-documents",
