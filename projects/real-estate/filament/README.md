@@ -14,6 +14,7 @@
 | Offers | liberusoftware/real-estate-offers-filament |
 | Sales Progression | liberusoftware/real-estate-sales-progression-filament |
 | Marketing | liberusoftware/real-estate-marketing-filament |
+| Portals and Reporting | liberusoftware/real-estate-portals-reporting-filament |
 
 The remaining panel adapters remain planned until their matching core
 contracts exist.

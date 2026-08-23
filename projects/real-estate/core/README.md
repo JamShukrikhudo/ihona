@@ -16,6 +16,6 @@
 | Lettings | planned |
 | Property Management | planned |
 | Marketing | liberusoftware/real-estate-marketing |
-| Portals and Reporting | planned |
+| Portals and Reporting | liberusoftware/real-estate-portals-reporting |
 
 Planned entries are explicit backlog items, not claims of implementation.

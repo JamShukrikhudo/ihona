@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ea28dc941c8dd499e71fec5ca6574ca4",
+    "content-hash": "696549e0417f2c91aace887d31a582f4",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -8185,6 +8185,206 @@
             ],
             "description": "Livewire 4 adapter for real-estate parties.",
             "time": "2026-08-23T01:12:33+00:00"
+        },
+        {
+            "name": "liberusoftware/real-estate-portals-reporting",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/liberusoftware/module-real-estate-portals-reporting.git",
+                "reference": "9f58a53c435a07547e2575eea167ca6167574f2e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-portals-reporting/zipball/9f58a53c435a07547e2575eea167ca6167574f2e",
+                "reference": "9f58a53c435a07547e2575eea167ca6167574f2e",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "^13.0",
+                "illuminate/validation": "^13.0",
+                "liberusoftware/module-manager": "^1.0",
+                "liberusoftware/organizations-teams": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Liberu\\RealEstate\\PortalsReporting\\PortalsReportingServiceProvider"
+                    ]
+                },
+                "liberu": {
+                    "name": "real-estate-portals-reporting"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\PortalsReporting\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Provider-neutral, team-scoped portal publication and reporting records for real estate.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-real-estate-portals-reporting/tree/1.0.0",
+                "issues": "https://github.com/liberusoftware/module-real-estate-portals-reporting/issues"
+            },
+            "time": "2026-08-23T02:34:02+00:00"
+        },
+        {
+            "name": "liberusoftware/real-estate-portals-reporting-api",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/liberusoftware/module-real-estate-portals-reporting-api.git",
+                "reference": "b552c208fca47b9c1032d07b331e35ff547f5513"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-portals-reporting-api/zipball/b552c208fca47b9c1032d07b331e35ff547f5513",
+                "reference": "b552c208fca47b9c1032d07b331e35ff547f5513",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "liberusoftware/real-estate-portals-reporting": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "real-estate-portals-reporting-api"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\PortalsReportingApi\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Versioned API adapter for real-estate portal reports.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-real-estate-portals-reporting-api/tree/1.0.0",
+                "issues": "https://github.com/liberusoftware/module-real-estate-portals-reporting-api/issues"
+            },
+            "time": "2026-08-23T02:34:08+00:00"
+        },
+        {
+            "name": "liberusoftware/real-estate-portals-reporting-filament",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/liberusoftware/module-real-estate-portals-reporting-filament.git",
+                "reference": "a8f4e0f46d9c4911c758c88763433f6feb83b660"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-portals-reporting-filament/zipball/a8f4e0f46d9c4911c758c88763433f6feb83b660",
+                "reference": "a8f4e0f46d9c4911c758c88763433f6feb83b660",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^5.0",
+                "liberusoftware/real-estate-portals-reporting": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "real-estate-portals-reporting-filament"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\PortalsReportingFilament\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Filament 5 adapter for real-estate portal reports.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-real-estate-portals-reporting-filament/tree/1.0.0",
+                "issues": "https://github.com/liberusoftware/module-real-estate-portals-reporting-filament/issues"
+            },
+            "time": "2026-08-23T02:34:15+00:00"
+        },
+        {
+            "name": "liberusoftware/real-estate-portals-reporting-livewire",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/liberusoftware/module-real-estate-portals-reporting-livewire.git",
+                "reference": "3d3f9dbdff4b3a7576f71f7e7f94a637dc9e544e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-portals-reporting-livewire/zipball/3d3f9dbdff4b3a7576f71f7e7f94a637dc9e544e",
+                "reference": "3d3f9dbdff4b3a7576f71f7e7f94a637dc9e544e",
+                "shasum": ""
+            },
+            "require": {
+                "liberusoftware/real-estate-portals-reporting": "^1.0",
+                "livewire/livewire": "^4.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "real-estate-portals-reporting-livewire"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\PortalsReportingLivewire\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Livewire 4 adapter for real-estate portal reports.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-real-estate-portals-reporting-livewire/tree/1.0.0",
+                "issues": "https://github.com/liberusoftware/module-real-estate-portals-reporting-livewire/issues"
+            },
+            "time": "2026-08-23T02:34:21+00:00"
         },
         {
             "name": "liberusoftware/real-estate-properties",

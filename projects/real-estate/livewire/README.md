@@ -14,6 +14,7 @@
 | Offers | liberusoftware/real-estate-offers-livewire |
 | Sales Progression | liberusoftware/real-estate-sales-progression-livewire |
 | Marketing | liberusoftware/real-estate-marketing-livewire |
+| Portals and Reporting | liberusoftware/real-estate-portals-reporting-livewire |
 
 The remaining interactive adapters remain planned until their matching core
 contracts exist.
