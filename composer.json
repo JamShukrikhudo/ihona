@@ -266,6 +266,10 @@
             "type": "vcs",
             "url": "https://github.com/liberusoftware/module-real-estate-valuations-livewire.git"
         },
+        {"type":"vcs","url":"https://github.com/liberusoftware/module-real-estate-instructions.git"},
+        {"type":"vcs","url":"https://github.com/liberusoftware/module-real-estate-instructions-api.git"},
+        {"type":"vcs","url":"https://github.com/liberusoftware/module-real-estate-instructions-filament.git"},
+        {"type":"vcs","url":"https://github.com/liberusoftware/module-real-estate-instructions-livewire.git"},
         {
             "type": "path",
             "url": "modules/*",
@@ -356,6 +360,10 @@
         "liberusoftware/real-estate-valuations-api": "1.0.0",
         "liberusoftware/real-estate-valuations-filament": "1.0.0",
         "liberusoftware/real-estate-valuations-livewire": "1.0.0",
+        "liberusoftware/real-estate-instructions": "1.0.0",
+        "liberusoftware/real-estate-instructions-api": "1.0.0",
+        "liberusoftware/real-estate-instructions-filament": "1.0.0",
+        "liberusoftware/real-estate-instructions-livewire": "1.0.0",
         "livewire/livewire": "^4.0",
         "spatie/laravel-activitylog": "^5.0",
         "spatie/laravel-backup": "^10.3",

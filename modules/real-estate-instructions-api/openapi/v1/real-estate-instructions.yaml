@@ -1,0 +1,11 @@
+openapi: 3.1.0
+info: {title: Real Estate Instructions API, version: 1.0.0}
+paths:
+  /api/v1/real-estate/instructions:
+    get: {operationId: real.estate.instructions.list, responses: {"200": {description: Authorized instructions}}}
+    post: {operationId: real.estate.instructions.create, responses: {"201": {description: Created instruction}}}
+  /api/v1/real-estate/instructions/{id}:
+    parameters: [{name: id, in: path, required: true, schema: {type: string}}]
+    get: {operationId: real.estate.instructions.get, responses: {"200": {description: Instruction}}}
+    patch: {operationId: real.estate.instructions.update, responses: {"200": {description: Updated instruction}}}
+    delete: {operationId: real.estate.instructions.delete, responses: {"204": {description: Deleted instruction}}}
