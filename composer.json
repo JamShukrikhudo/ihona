@@ -219,6 +219,22 @@
             "url": "https://github.com/liberusoftware/module-real-estate-parties-livewire.git"
         },
         {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-real-estate-core.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-real-estate-core-api.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-real-estate-core-filament.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-real-estate-core-livewire.git"
+        },
+        {
             "type": "path",
             "url": "modules/*",
             "options": {
@@ -296,6 +312,10 @@
         "liberusoftware/real-estate-parties-api": "1.0.0",
         "liberusoftware/real-estate-parties-filament": "1.0.0",
         "liberusoftware/real-estate-parties-livewire": "1.0.0",
+        "liberusoftware/real-estate-core": "1.0.0",
+        "liberusoftware/real-estate-core-api": "1.0.0",
+        "liberusoftware/real-estate-core-filament": "1.0.0",
+        "liberusoftware/real-estate-core-livewire": "1.0.0",
         "livewire/livewire": "^4.0",
         "spatie/laravel-activitylog": "^5.0",
         "spatie/laravel-backup": "^10.3",

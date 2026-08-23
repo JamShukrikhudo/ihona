@@ -2,6 +2,7 @@
 
 | Module | Package |
 | --- | --- |
+| Real Estate Core | liberusoftware/real-estate-core-livewire |
 | Parties | liberusoftware/real-estate-parties-livewire |
 | Properties | liberusoftware/real-estate-properties-livewire |
 

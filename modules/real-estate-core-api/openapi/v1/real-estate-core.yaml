@@ -1,0 +1,33 @@
+openapi: 3.1.0
+info:
+  title: Real Estate Core API
+  version: 1.0.0
+paths:
+  /api/v1/real-estate/branches:
+    get:
+      operationId: real.estate.branches.list
+      security: [{sanctum: []}]
+      responses: {'200': {description: Authorized branch collection}}
+    post:
+      operationId: real.estate.branches.create
+      security: [{sanctum: []}]
+      responses: {'201': {description: Branch created}}
+  /api/v1/real-estate/branches/{id}:
+    get:
+      operationId: real.estate.branches.get
+      security: [{sanctum: []}]
+      parameters: [{name: id, in: path, required: true, schema: {type: string}}]
+      responses: {'200': {description: Authorized branch}}
+    patch:
+      operationId: real.estate.branches.update
+      security: [{sanctum: []}]
+      parameters: [{name: id, in: path, required: true, schema: {type: string}}]
+      responses: {'200': {description: Branch updated}}
+    delete:
+      operationId: real.estate.branches.delete
+      security: [{sanctum: []}]
+      parameters: [{name: id, in: path, required: true, schema: {type: string}}]
+      responses: {'204': {description: Branch archived}}
+components:
+  securitySchemes:
+    sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}

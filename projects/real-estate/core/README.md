@@ -2,6 +2,7 @@
 
 | Module | Package |
 | --- | --- |
+| Real Estate Core | liberusoftware/real-estate-core |
 | Parties | liberusoftware/real-estate-parties |
 | Properties | liberusoftware/real-estate-properties |
 | Media and Documents | planned |

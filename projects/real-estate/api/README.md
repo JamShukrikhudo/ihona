@@ -2,6 +2,7 @@
 
 | Module | Package |
 | --- | --- |
+| Real Estate Core | liberusoftware/real-estate-core-api |
 | Parties | liberusoftware/real-estate-parties-api |
 | Properties | liberusoftware/real-estate-properties-api |
 

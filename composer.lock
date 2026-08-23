@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9ea2e7ef16ba2acfc64f21945fbf3215",
+    "content-hash": "6128fd31ab73872db43976f27f6dc550",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -6673,6 +6673,190 @@
                 "issues": "https://github.com/liberusoftware/module-profiles/issues"
             },
             "time": "2026-08-07T14:25:39+00:00"
+        },
+        {
+            "name": "liberusoftware/real-estate-core",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:liberusoftware/module-real-estate-core.git",
+                "reference": "7a2375564fa8140bb6e797d56a246a64b88eb113"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-core/zipball/7a2375564fa8140bb6e797d56a246a64b88eb113",
+                "reference": "7a2375564fa8140bb6e797d56a246a64b88eb113",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "^13.0",
+                "illuminate/validation": "^13.0",
+                "liberusoftware/module-manager": "^1.0",
+                "liberusoftware/organizations-teams": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "real-estate-core"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\Core\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\Core\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Provider-neutral real-estate agencies, branches, and operational numbering.",
+            "time": "2026-08-23T01:20:05+00:00"
+        },
+        {
+            "name": "liberusoftware/real-estate-core-api",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:liberusoftware/module-real-estate-core-api.git",
+                "reference": "588d347a73086897d7bcd06b334833dd516e58da"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-core-api/zipball/588d347a73086897d7bcd06b334833dd516e58da",
+                "reference": "588d347a73086897d7bcd06b334833dd516e58da",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "liberusoftware/real-estate-core": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "real-estate-core-api"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\CoreApi\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Versioned API adapter for real-estate branches.",
+            "time": "2026-08-23T01:20:09+00:00"
+        },
+        {
+            "name": "liberusoftware/real-estate-core-filament",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:liberusoftware/module-real-estate-core-filament.git",
+                "reference": "785fc6a0c0d3c97982bb3d2d066418793767104b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-core-filament/zipball/785fc6a0c0d3c97982bb3d2d066418793767104b",
+                "reference": "785fc6a0c0d3c97982bb3d2d066418793767104b",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^5.0",
+                "liberusoftware/real-estate-core": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "real-estate-core-filament"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\CoreFilament\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Filament 5 adapter for real-estate branches.",
+            "time": "2026-08-23T01:20:14+00:00"
+        },
+        {
+            "name": "liberusoftware/real-estate-core-livewire",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:liberusoftware/module-real-estate-core-livewire.git",
+                "reference": "b6054b1fc71812f14a57314613b0d36798c27beb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-core-livewire/zipball/b6054b1fc71812f14a57314613b0d36798c27beb",
+                "reference": "b6054b1fc71812f14a57314613b0d36798c27beb",
+                "shasum": ""
+            },
+            "require": {
+                "liberusoftware/real-estate-core": "^1.0",
+                "livewire/livewire": "^4.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "real-estate-core-livewire"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\CoreLivewire\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Livewire 4 adapter for real-estate branches.",
+            "time": "2026-08-23T01:20:18+00:00"
         },
         {
             "name": "liberusoftware/real-estate-parties",

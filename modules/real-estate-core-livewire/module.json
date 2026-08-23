@@ -1,0 +1,13 @@
+{
+    "$schema": "https://schemas.liberu.dev/module/v1.json",
+    "name": "real-estate-core-livewire",
+    "display_name": "Real Estate Core Livewire",
+    "description": "Livewire 4 branch list and search surface.",
+    "version": "1.0.0",
+    "category": "presentation",
+    "provider": "Liberu\\RealEstate\\CoreLivewire\\RealEstateCoreLivewireServiceProvider",
+    "requires": {"php": "^8.5", "laravel": "^13.0", "packages": {"liberusoftware/real-estate-core": "^1.0"}},
+    "capabilities": ["real-estate.core.livewire"],
+    "default_enabled": true,
+    "features": ["Team-scoped branch search", "Accessible empty state"]
+}

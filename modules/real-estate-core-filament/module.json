@@ -1,0 +1,14 @@
+{
+    "$schema": "https://schemas.liberu.dev/module/v1.json",
+    "name": "real-estate-core-filament",
+    "display_name": "Real Estate Core Filament",
+    "description": "Filament 5 branch administration surface.",
+    "version": "1.0.0",
+    "category": "presentation",
+    "provider": "Liberu\\RealEstate\\CoreFilament\\RealEstateCoreFilamentServiceProvider",
+    "requires": {"php": "^8.5", "laravel": "^13.0", "packages": {"liberusoftware/real-estate-core": "^1.0"}},
+    "presentation": {"filament": {"admin": ["Liberu\\RealEstate\\CoreFilament\\RealEstateCoreFilamentPlugin"]}},
+    "capabilities": ["real-estate.core.filament"],
+    "default_enabled": true,
+    "features": ["Branch resource", "Team-scoped branch administration"]
+}
