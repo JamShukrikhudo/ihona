@@ -1,0 +1,10 @@
+openapi: 3.0.3
+info: {title: Real Estate Zoopla Sync API, version: 1.0.0}
+paths:
+  /api/v1/real-estate/integrations/zoopla/syncs:
+    get: {summary: List Zoopla syncs, responses: {'200': {description: OK}}}
+    post: {summary: Create a Zoopla sync, responses: {'201': {description: Created}}}
+  /api/v1/real-estate/integrations/zoopla/syncs/{zooplaSync}:
+    get: {summary: Show a Zoopla sync, responses: {'200': {description: OK}}}
+    patch: {summary: Update a Zoopla sync, responses: {'200': {description: OK}}}
+    delete: {summary: Archive a Zoopla sync, responses: {'204': {description: Archived}}}

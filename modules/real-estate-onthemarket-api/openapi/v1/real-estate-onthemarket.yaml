@@ -1,0 +1,10 @@
+openapi: 3.0.3
+info: {title: Real Estate OnTheMarket Sync API, version: 1.0.0}
+paths:
+  /api/v1/real-estate/integrations/onthemarket/syncs:
+    get: {summary: List OnTheMarket syncs, responses: {'200': {description: OK}}}
+    post: {summary: Create an OnTheMarket sync, responses: {'201': {description: Created}}}
+  /api/v1/real-estate/integrations/onthemarket/syncs/{onTheMarketSync}:
+    get: {summary: Show an OnTheMarket sync, responses: {'200': {description: OK}}}
+    patch: {summary: Update an OnTheMarket sync, responses: {'200': {description: OK}}}
+    delete: {summary: Archive an OnTheMarket sync, responses: {'204': {description: Archived}}}

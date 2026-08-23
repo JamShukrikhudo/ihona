@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "696549e0417f2c91aace887d31a582f4",
+    "content-hash": "a3929888373e865996e3d08ddf8a16b9",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -8003,6 +8003,206 @@
             "time": "2026-08-23T02:11:22+00:00"
         },
         {
+            "name": "liberusoftware/real-estate-onthemarket",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/liberusoftware/module-real-estate-onthemarket.git",
+                "reference": "39223cdbf2f0693d7baf55794d5542e8b43bd5b0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-onthemarket/zipball/39223cdbf2f0693d7baf55794d5542e8b43bd5b0",
+                "reference": "39223cdbf2f0693d7baf55794d5542e8b43bd5b0",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "^13.0",
+                "illuminate/validation": "^13.0",
+                "liberusoftware/module-manager": "^1.0",
+                "liberusoftware/organizations-teams": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Liberu\\RealEstate\\OnTheMarket\\OnTheMarketServiceProvider"
+                    ]
+                },
+                "liberu": {
+                    "name": "real-estate-onthemarket"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\OnTheMarket\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Independent OnTheMarket listing synchronization core for Liberu Real Estate.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-real-estate-onthemarket/tree/1.0.0",
+                "issues": "https://github.com/liberusoftware/module-real-estate-onthemarket/issues"
+            },
+            "time": "2026-08-23T02:46:22+00:00"
+        },
+        {
+            "name": "liberusoftware/real-estate-onthemarket-api",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/liberusoftware/module-real-estate-onthemarket-api.git",
+                "reference": "14cf1ccd0b6ad1a1c971407ef3528d5339e6f6a2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-onthemarket-api/zipball/14cf1ccd0b6ad1a1c971407ef3528d5339e6f6a2",
+                "reference": "14cf1ccd0b6ad1a1c971407ef3528d5339e6f6a2",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "liberusoftware/real-estate-onthemarket": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "real-estate-onthemarket-api"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\OnTheMarketApi\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Independent API adapter for OnTheMarket synchronization.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-real-estate-onthemarket-api/tree/1.0.0",
+                "issues": "https://github.com/liberusoftware/module-real-estate-onthemarket-api/issues"
+            },
+            "time": "2026-08-23T02:46:28+00:00"
+        },
+        {
+            "name": "liberusoftware/real-estate-onthemarket-filament",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/liberusoftware/module-real-estate-onthemarket-filament.git",
+                "reference": "3fc464078b6307e212386902d7722474fd09f0b0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-onthemarket-filament/zipball/3fc464078b6307e212386902d7722474fd09f0b0",
+                "reference": "3fc464078b6307e212386902d7722474fd09f0b0",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^5.0",
+                "liberusoftware/real-estate-onthemarket": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "real-estate-onthemarket-filament"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\OnTheMarketFilament\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Independent Filament adapter for OnTheMarket synchronization.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-real-estate-onthemarket-filament/tree/1.0.0",
+                "issues": "https://github.com/liberusoftware/module-real-estate-onthemarket-filament/issues"
+            },
+            "time": "2026-08-23T02:46:34+00:00"
+        },
+        {
+            "name": "liberusoftware/real-estate-onthemarket-livewire",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/liberusoftware/module-real-estate-onthemarket-livewire.git",
+                "reference": "43508c72985079666406567c67c5d4d2bcab5a04"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-onthemarket-livewire/zipball/43508c72985079666406567c67c5d4d2bcab5a04",
+                "reference": "43508c72985079666406567c67c5d4d2bcab5a04",
+                "shasum": ""
+            },
+            "require": {
+                "liberusoftware/real-estate-onthemarket": "^1.0",
+                "livewire/livewire": "^4.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "real-estate-onthemarket-livewire"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\OnTheMarketLivewire\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Independent Livewire adapter for OnTheMarket synchronization.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-real-estate-onthemarket-livewire/tree/1.0.0",
+                "issues": "https://github.com/liberusoftware/module-real-estate-onthemarket-livewire/issues"
+            },
+            "time": "2026-08-23T02:46:41+00:00"
+        },
+        {
             "name": "liberusoftware/real-estate-parties",
             "version": "1.0.0",
             "source": {
@@ -8558,6 +8758,206 @@
                 "symlink": false,
                 "relative": true
             }
+        },
+        {
+            "name": "liberusoftware/real-estate-rightmove",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/liberusoftware/module-real-estate-rightmove.git",
+                "reference": "e430a3f3493674bbd75b6f445396aef79ffbb601"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-rightmove/zipball/e430a3f3493674bbd75b6f445396aef79ffbb601",
+                "reference": "e430a3f3493674bbd75b6f445396aef79ffbb601",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "^13.0",
+                "illuminate/validation": "^13.0",
+                "liberusoftware/module-manager": "^1.0",
+                "liberusoftware/organizations-teams": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Liberu\\RealEstate\\Rightmove\\RightmoveServiceProvider"
+                    ]
+                },
+                "liberu": {
+                    "name": "real-estate-rightmove"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\Rightmove\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Independent Rightmove listing synchronization core for Liberu Real Estate.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-real-estate-rightmove/tree/1.0.0",
+                "issues": "https://github.com/liberusoftware/module-real-estate-rightmove/issues"
+            },
+            "time": "2026-08-23T02:45:31+00:00"
+        },
+        {
+            "name": "liberusoftware/real-estate-rightmove-api",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/liberusoftware/module-real-estate-rightmove-api.git",
+                "reference": "ab2382ed67749e2399ba3656e7ba69b3ac5c2537"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-rightmove-api/zipball/ab2382ed67749e2399ba3656e7ba69b3ac5c2537",
+                "reference": "ab2382ed67749e2399ba3656e7ba69b3ac5c2537",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "liberusoftware/real-estate-rightmove": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "real-estate-rightmove-api"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\RightmoveApi\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Independent API adapter for Rightmove synchronization.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-real-estate-rightmove-api/tree/1.0.0",
+                "issues": "https://github.com/liberusoftware/module-real-estate-rightmove-api/issues"
+            },
+            "time": "2026-08-23T02:45:37+00:00"
+        },
+        {
+            "name": "liberusoftware/real-estate-rightmove-filament",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/liberusoftware/module-real-estate-rightmove-filament.git",
+                "reference": "3841fe8e168db011bb0da125b9aa24f7b43a7c08"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-rightmove-filament/zipball/3841fe8e168db011bb0da125b9aa24f7b43a7c08",
+                "reference": "3841fe8e168db011bb0da125b9aa24f7b43a7c08",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^5.0",
+                "liberusoftware/real-estate-rightmove": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "real-estate-rightmove-filament"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\RightmoveFilament\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Independent Filament adapter for Rightmove synchronization.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-real-estate-rightmove-filament/tree/1.0.0",
+                "issues": "https://github.com/liberusoftware/module-real-estate-rightmove-filament/issues"
+            },
+            "time": "2026-08-23T02:45:44+00:00"
+        },
+        {
+            "name": "liberusoftware/real-estate-rightmove-livewire",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/liberusoftware/module-real-estate-rightmove-livewire.git",
+                "reference": "8ae890f72ede2330675d4cb1cff34b2146946a18"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-rightmove-livewire/zipball/8ae890f72ede2330675d4cb1cff34b2146946a18",
+                "reference": "8ae890f72ede2330675d4cb1cff34b2146946a18",
+                "shasum": ""
+            },
+            "require": {
+                "liberusoftware/real-estate-rightmove": "^1.0",
+                "livewire/livewire": "^4.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "real-estate-rightmove-livewire"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\RightmoveLivewire\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Independent Livewire adapter for Rightmove synchronization.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-real-estate-rightmove-livewire/tree/1.0.0",
+                "issues": "https://github.com/liberusoftware/module-real-estate-rightmove-livewire/issues"
+            },
+            "time": "2026-08-23T02:45:50+00:00"
         },
         {
             "name": "liberusoftware/real-estate-sales-progression",
@@ -9142,6 +9542,206 @@
                 "issues": "https://github.com/liberusoftware/module-real-estate-viewings-livewire/issues"
             },
             "time": "2026-08-23T02:00:41+00:00"
+        },
+        {
+            "name": "liberusoftware/real-estate-zoopla",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/liberusoftware/module-real-estate-zoopla.git",
+                "reference": "2340dc3c1b0d7e3a7a206b43e697dc0902ae5448"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-zoopla/zipball/2340dc3c1b0d7e3a7a206b43e697dc0902ae5448",
+                "reference": "2340dc3c1b0d7e3a7a206b43e697dc0902ae5448",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "^13.0",
+                "illuminate/validation": "^13.0",
+                "liberusoftware/module-manager": "^1.0",
+                "liberusoftware/organizations-teams": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Liberu\\RealEstate\\Zoopla\\ZooplaServiceProvider"
+                    ]
+                },
+                "liberu": {
+                    "name": "real-estate-zoopla"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\Zoopla\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Independent Zoopla listing synchronization core for Liberu Real Estate.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-real-estate-zoopla/tree/1.0.0",
+                "issues": "https://github.com/liberusoftware/module-real-estate-zoopla/issues"
+            },
+            "time": "2026-08-23T02:45:56+00:00"
+        },
+        {
+            "name": "liberusoftware/real-estate-zoopla-api",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/liberusoftware/module-real-estate-zoopla-api.git",
+                "reference": "f3e3ca412824a9ddca82e237faed560944d9f150"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-zoopla-api/zipball/f3e3ca412824a9ddca82e237faed560944d9f150",
+                "reference": "f3e3ca412824a9ddca82e237faed560944d9f150",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "liberusoftware/real-estate-zoopla": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "real-estate-zoopla-api"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\ZooplaApi\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Independent API adapter for Zoopla synchronization.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-real-estate-zoopla-api/tree/1.0.0",
+                "issues": "https://github.com/liberusoftware/module-real-estate-zoopla-api/issues"
+            },
+            "time": "2026-08-23T02:46:03+00:00"
+        },
+        {
+            "name": "liberusoftware/real-estate-zoopla-filament",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/liberusoftware/module-real-estate-zoopla-filament.git",
+                "reference": "4059731b6d73715cccd839f47e99cc723089ae37"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-zoopla-filament/zipball/4059731b6d73715cccd839f47e99cc723089ae37",
+                "reference": "4059731b6d73715cccd839f47e99cc723089ae37",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^5.0",
+                "liberusoftware/real-estate-zoopla": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "real-estate-zoopla-filament"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\ZooplaFilament\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Independent Filament adapter for Zoopla synchronization.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-real-estate-zoopla-filament/tree/1.0.0",
+                "issues": "https://github.com/liberusoftware/module-real-estate-zoopla-filament/issues"
+            },
+            "time": "2026-08-23T02:46:09+00:00"
+        },
+        {
+            "name": "liberusoftware/real-estate-zoopla-livewire",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/liberusoftware/module-real-estate-zoopla-livewire.git",
+                "reference": "e2a47011aa18b9719d98f5a191855490f976f0ff"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-zoopla-livewire/zipball/e2a47011aa18b9719d98f5a191855490f976f0ff",
+                "reference": "e2a47011aa18b9719d98f5a191855490f976f0ff",
+                "shasum": ""
+            },
+            "require": {
+                "liberusoftware/real-estate-zoopla": "^1.0",
+                "livewire/livewire": "^4.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "real-estate-zoopla-livewire"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\ZooplaLivewire\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Independent Livewire adapter for Zoopla synchronization.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-real-estate-zoopla-livewire/tree/1.0.0",
+                "issues": "https://github.com/liberusoftware/module-real-estate-zoopla-livewire/issues"
+            },
+            "time": "2026-08-23T02:46:15+00:00"
         },
         {
             "name": "liberusoftware/roles-permissions",

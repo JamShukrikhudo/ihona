@@ -1,0 +1,10 @@
+openapi: 3.0.3
+info: {title: Real Estate Rightmove Sync API, version: 1.0.0}
+paths:
+  /api/v1/real-estate/integrations/rightmove/syncs:
+    get: {summary: List Rightmove syncs, responses: {'200': {description: OK}}}
+    post: {summary: Create a Rightmove sync, responses: {'201': {description: Created}}}
+  /api/v1/real-estate/integrations/rightmove/syncs/{rightmoveSync}:
+    get: {summary: Show a Rightmove sync, responses: {'200': {description: OK}}}
+    patch: {summary: Update a Rightmove sync, responses: {'200': {description: OK}}}
+    delete: {summary: Archive a Rightmove sync, responses: {'204': {description: Archived}}}
