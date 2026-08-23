@@ -15,7 +15,7 @@
 | Sales Progression | liberusoftware/real-estate-sales-progression |
 | Lettings | planned |
 | Property Management | planned |
-| Marketing | planned |
+| Marketing | liberusoftware/real-estate-marketing |
 | Portals and Reporting | planned |
 
 Planned entries are explicit backlog items, not claims of implementation.

@@ -13,6 +13,7 @@
 | Viewings | liberusoftware/real-estate-viewings-livewire |
 | Offers | liberusoftware/real-estate-offers-livewire |
 | Sales Progression | liberusoftware/real-estate-sales-progression-livewire |
+| Marketing | liberusoftware/real-estate-marketing-livewire |
 
 The remaining interactive adapters remain planned until their matching core
 contracts exist.

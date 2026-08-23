@@ -1,0 +1,13 @@
+openapi: 3.0.3
+info:
+  title: Real Estate Marketing API
+  version: 1.0.0
+paths:
+  /api/v1/real-estate/marketing-campaigns:
+    get: {summary: List team marketing campaigns, responses: {'200': {description: OK}}}
+    post: {summary: Create a marketing campaign, responses: {'201': {description: Created}}}
+  /api/v1/real-estate/marketing-campaigns/{marketingCampaign}:
+    parameters: [{name: marketingCampaign, in: path, required: true, schema: {type: integer}}]
+    get: {summary: Show a marketing campaign, responses: {'200': {description: OK}}}
+    patch: {summary: Update a marketing campaign, responses: {'200': {description: OK}}}
+    delete: {summary: Archive a marketing campaign, responses: {'204': {description: Archived}}}

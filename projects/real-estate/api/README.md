@@ -13,6 +13,7 @@
 | Viewings | liberusoftware/real-estate-viewings-api |
 | Offers | liberusoftware/real-estate-offers-api |
 | Sales Progression | liberusoftware/real-estate-sales-progression-api |
+| Marketing | liberusoftware/real-estate-marketing-api |
 
 The remaining API adapters follow the core delivery order and remain
 deliberately marked planned until their matching core contracts exist.

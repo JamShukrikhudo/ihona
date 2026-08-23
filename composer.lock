@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cbc2b3aa900e55977915f3edbe939f1c",
+    "content-hash": "ea28dc941c8dd499e71fec5ca6574ca4",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -7233,6 +7233,206 @@
             ],
             "description": "Livewire 4 adapter for real-estate listings.",
             "time": "2026-08-23T01:51:47+00:00"
+        },
+        {
+            "name": "liberusoftware/real-estate-marketing",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/liberusoftware/module-real-estate-marketing.git",
+                "reference": "8f09e6f95cb4c9d60c37b215645c54a00e7bd390"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-marketing/zipball/8f09e6f95cb4c9d60c37b215645c54a00e7bd390",
+                "reference": "8f09e6f95cb4c9d60c37b215645c54a00e7bd390",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "^13.0",
+                "illuminate/validation": "^13.0",
+                "liberusoftware/module-manager": "^1.0",
+                "liberusoftware/organizations-teams": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Liberu\\RealEstate\\Marketing\\MarketingServiceProvider"
+                    ]
+                },
+                "liberu": {
+                    "name": "real-estate-marketing"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\Marketing\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Provider-neutral, team-scoped real-estate campaigns, content, audiences, and delivery metrics.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-real-estate-marketing/tree/1.0.0",
+                "issues": "https://github.com/liberusoftware/module-real-estate-marketing/issues"
+            },
+            "time": "2026-08-23T02:26:42+00:00"
+        },
+        {
+            "name": "liberusoftware/real-estate-marketing-api",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/liberusoftware/module-real-estate-marketing-api.git",
+                "reference": "72339262f18d0d4b47c3357a377cd8aa370593b8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-marketing-api/zipball/72339262f18d0d4b47c3357a377cd8aa370593b8",
+                "reference": "72339262f18d0d4b47c3357a377cd8aa370593b8",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "liberusoftware/real-estate-marketing": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "real-estate-marketing-api"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\MarketingApi\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Versioned API adapter for real-estate marketing campaigns.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-real-estate-marketing-api/tree/1.0.0",
+                "issues": "https://github.com/liberusoftware/module-real-estate-marketing-api/issues"
+            },
+            "time": "2026-08-23T02:26:47+00:00"
+        },
+        {
+            "name": "liberusoftware/real-estate-marketing-filament",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/liberusoftware/module-real-estate-marketing-filament.git",
+                "reference": "4a036e4294f8651de7fb2f77bafbed236cf04648"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-marketing-filament/zipball/4a036e4294f8651de7fb2f77bafbed236cf04648",
+                "reference": "4a036e4294f8651de7fb2f77bafbed236cf04648",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^5.0",
+                "liberusoftware/real-estate-marketing": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "real-estate-marketing-filament"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\MarketingFilament\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Filament 5 adapter for real-estate marketing campaigns.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-real-estate-marketing-filament/tree/1.0.0",
+                "issues": "https://github.com/liberusoftware/module-real-estate-marketing-filament/issues"
+            },
+            "time": "2026-08-23T02:26:52+00:00"
+        },
+        {
+            "name": "liberusoftware/real-estate-marketing-livewire",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/liberusoftware/module-real-estate-marketing-livewire.git",
+                "reference": "f6777acdbcd3c4d919f49654eeecc52132da86e9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-marketing-livewire/zipball/f6777acdbcd3c4d919f49654eeecc52132da86e9",
+                "reference": "f6777acdbcd3c4d919f49654eeecc52132da86e9",
+                "shasum": ""
+            },
+            "require": {
+                "liberusoftware/real-estate-marketing": "^1.0",
+                "livewire/livewire": "^4.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "real-estate-marketing-livewire"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\MarketingLivewire\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Livewire 4 adapter for real-estate marketing campaigns.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-real-estate-marketing-livewire/tree/1.0.0",
+                "issues": "https://github.com/liberusoftware/module-real-estate-marketing-livewire/issues"
+            },
+            "time": "2026-08-23T02:26:58+00:00"
         },
         {
             "name": "liberusoftware/real-estate-matching",
