@@ -6,10 +6,13 @@ namespace Liberu\RealEstate\Properties\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Liberu\RealEstate\Properties\Domain\PropertyStatus;
 
 final class Property extends Model
 {
+    use SoftDeletes;
+
     protected $table = 'real_estate_properties';
 
     protected $guarded = ['id'];

@@ -3,7 +3,7 @@
     "name": "real-estate-properties-filament",
     "display_name": "Real Estate Properties Filament",
     "description": "Filament 5 property administration surface.",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "category": "presentation",
     "provider": "Liberu\\RealEstate\\PropertiesFilament\\PropertiesFilamentServiceProvider",
     "requires": {"php": "^8.5", "laravel": "^13.0", "packages": {"liberusoftware/real-estate-properties": "^1.0"}},

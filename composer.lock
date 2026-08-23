@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "004f5113ecd4127ad2e95b2cc740827c",
+    "content-hash": "400ee5f1374b131522bccf3232e464ae",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -6676,11 +6676,11 @@
         },
         {
             "name": "liberusoftware/real-estate-properties",
-            "version": "1.0.0",
+            "version": "1.0.1",
             "dist": {
                 "type": "path",
                 "url": "modules/real-estate-properties",
-                "reference": "b4ccf440d4cdc72c39ceac696c0dfc12ffe9bffe"
+                "reference": "9a56ca4841e3079636ab88c787b8b539d2afe076"
             },
             "require": {
                 "illuminate/database": "^13.0",
@@ -6725,11 +6725,11 @@
         },
         {
             "name": "liberusoftware/real-estate-properties-api",
-            "version": "1.0.0",
+            "version": "1.0.1",
             "dist": {
                 "type": "path",
                 "url": "modules/real-estate-properties-api",
-                "reference": "b2e320301af9f609dc0440a0213c69d240223a78"
+                "reference": "c611130170e461a8b4262057aac260de6ff90b8b"
             },
             "require": {
                 "illuminate/http": "^13.0",
@@ -6767,11 +6767,11 @@
         },
         {
             "name": "liberusoftware/real-estate-properties-filament",
-            "version": "1.0.0",
+            "version": "1.0.1",
             "dist": {
                 "type": "path",
                 "url": "modules/real-estate-properties-filament",
-                "reference": "d15418045bc9098950a53121e08160d86f4c6734"
+                "reference": "4bcfd59010588e32128a49f1ddb89dfaa87ef10a"
             },
             "require": {
                 "filament/filament": "^5.0",
@@ -6808,11 +6808,11 @@
         },
         {
             "name": "liberusoftware/real-estate-properties-livewire",
-            "version": "1.0.0",
+            "version": "1.0.1",
             "dist": {
                 "type": "path",
                 "url": "modules/real-estate-properties-livewire",
-                "reference": "82523c82bd8f5aae812d1a18b7070c953ebebf15"
+                "reference": "88d79835ecd9e7ea83e6b5717749c72a98a64e17"
             },
             "require": {
                 "liberusoftware/real-estate-properties": "^1.0",

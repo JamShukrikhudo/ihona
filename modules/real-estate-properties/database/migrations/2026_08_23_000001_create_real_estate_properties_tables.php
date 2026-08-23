@@ -20,6 +20,7 @@ return new class extends Migration {
             $table->json('utilities')->nullable();
             $table->json('features')->nullable();
             $table->timestamp('published_at')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
 

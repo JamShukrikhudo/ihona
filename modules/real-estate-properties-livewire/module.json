@@ -3,7 +3,7 @@
     "name": "real-estate-properties-livewire",
     "display_name": "Real Estate Properties Livewire",
     "description": "Livewire 4 property search and interaction surface.",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "category": "presentation",
     "provider": "Liberu\\RealEstate\\PropertiesLivewire\\PropertiesLivewireServiceProvider",
     "requires": {"php": "^8.5", "laravel": "^13.0", "packages": {"liberusoftware/real-estate-properties": "^1.0"}},

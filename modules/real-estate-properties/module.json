@@ -3,7 +3,7 @@
     "name": "real-estate-properties",
     "display_name": "Real Estate Properties",
     "description": "Address, units, characteristics, tenure, utilities, features, status, history, and keys.",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "category": "product",
     "provider": "Liberu\\RealEstate\\Properties\\PropertiesServiceProvider",
     "requires": {
