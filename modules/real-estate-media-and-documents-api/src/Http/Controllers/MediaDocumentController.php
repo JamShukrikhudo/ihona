@@ -19,6 +19,7 @@ final class MediaDocumentController
         $teamId = $request->user()?->current_team_id;
         abort_unless($teamId !== null, 403);
         $pageSize = max(1, min($request->integer('page_size', 25), 100));
+
         return response()->json(['data' => MediaDocument::query()->forTeam($teamId)->latest()->paginate($pageSize)]);
     }
 
@@ -36,12 +37,14 @@ final class MediaDocumentController
             'sort_order' => ['sometimes', 'integer', 'min:0'],
             'retention_until' => ['nullable', 'date'],
         ]);
+
         return response()->json(['data' => $create->handle($user->current_team_id, $user->getAuthIdentifier(), $validated)], 201);
     }
 
     public function show(Request $request, MediaDocument $mediaDocument): JsonResponse
     {
         abort_unless((string) $request->user()?->current_team_id === (string) $mediaDocument->team_id, 404);
+
         return response()->json(['data' => $mediaDocument]);
     }
 
@@ -50,6 +53,7 @@ final class MediaDocumentController
         $teamId = $request->user()?->current_team_id;
         abort_unless((string) $teamId === (string) $mediaDocument->team_id, 404);
         $validated = $request->validate(['path' => ['sometimes', 'string', 'max:2048'], 'title' => ['nullable', 'string', 'max:255'], 'rights' => ['sometimes', 'array'], 'metadata' => ['sometimes', 'array'], 'sort_order' => ['sometimes', 'integer', 'min:0'], 'retention_until' => ['nullable', 'date']]);
+
         return response()->json(['data' => $update->handle($mediaDocument, $teamId, $validated)]);
     }
 
@@ -58,6 +62,7 @@ final class MediaDocumentController
         $teamId = $request->user()?->current_team_id;
         abort_unless((string) $teamId === (string) $mediaDocument->team_id, 404);
         $delete->handle($mediaDocument, $teamId);
+
         return response()->noContent();
     }
 }

@@ -6,13 +6,13 @@
 | Parties | liberusoftware/real-estate-parties |
 | Properties | liberusoftware/real-estate-properties |
 | Media and Documents | liberusoftware/real-estate-media-and-documents |
-| Valuations | planned |
-| Instructions | planned |
-| Listings | planned |
-| Matching | planned |
-| Viewings | planned |
-| Offers | planned |
-| Sales Progression | planned |
+| Valuations | liberusoftware/real-estate-valuations |
+| Instructions | liberusoftware/real-estate-instructions |
+| Listings | liberusoftware/real-estate-listings |
+| Matching | liberusoftware/real-estate-matching |
+| Viewings | liberusoftware/real-estate-viewings |
+| Offers | liberusoftware/real-estate-offers |
+| Sales Progression | liberusoftware/real-estate-sales-progression |
 | Lettings | planned |
 | Property Management | planned |
 | Marketing | planned |

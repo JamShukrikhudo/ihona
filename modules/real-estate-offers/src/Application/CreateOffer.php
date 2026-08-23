@@ -1,5 +1,26 @@
 <?php
+
 declare(strict_types=1);
+
 namespace Liberu\RealEstate\Offers\Application;
-use Illuminate\Support\Facades\DB; use Illuminate\Validation\ValidationException; use Liberu\RealEstate\Offers\Domain\OfferStatus; use Liberu\RealEstate\Offers\Models\Offer;
-final class CreateOffer { public function handle(int|string $teamId,int|string $actorId,array $attributes):Offer{$subject=trim((string)($attributes['subject']??''));$amount=$attributes['amount']??null;if($subject===''){throw ValidationException::withMessages(['subject'=>'An offer subject is required.']);}if($amount===null||!is_numeric($amount)||$amount<0){throw ValidationException::withMessages(['amount'=>'A non-negative offer amount is required.']);}return DB::transaction(fn():Offer=>Offer::query()->create(['team_id'=>$teamId,'created_by'=>$actorId,'property_id'=>$attributes['property_id']??null,'party_id'=>$attributes['party_id']??null,'subject'=>$subject,'amount'=>$amount,'status'=>OfferStatus::Draft,'terms'=>$attributes['terms']??[],'qualification'=>$attributes['qualification']??[],'negotiation'=>$attributes['negotiation']??[],'proof'=>$attributes['proof']??[],'decision_history'=>$attributes['decision_history']??[],'accepted_controls'=>$attributes['accepted_controls']??[]]));} }
+
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
+use Liberu\RealEstate\Offers\Domain\OfferStatus;
+use Liberu\RealEstate\Offers\Models\Offer;
+
+final class CreateOffer
+{
+    public function handle(int|string $teamId, int|string $actorId, array $attributes): Offer
+    {
+        $subject = trim((string) ($attributes['subject'] ?? ''));
+        $amount = $attributes['amount'] ?? null;
+        if ($subject === '') {
+            throw ValidationException::withMessages(['subject' => 'An offer subject is required.']);
+        }if ($amount === null || ! is_numeric($amount) || $amount < 0) {
+            throw ValidationException::withMessages(['amount' => 'A non-negative offer amount is required.']);
+        }
+
+return DB::transaction(fn (): Offer => Offer::query()->create(['team_id' => $teamId, 'created_by' => $actorId, 'property_id' => $attributes['property_id'] ?? null, 'party_id' => $attributes['party_id'] ?? null, 'subject' => $subject, 'amount' => $amount, 'status' => OfferStatus::Draft, 'terms' => $attributes['terms'] ?? [], 'qualification' => $attributes['qualification'] ?? [], 'negotiation' => $attributes['negotiation'] ?? [], 'proof' => $attributes['proof'] ?? [], 'decision_history' => $attributes['decision_history'] ?? [], 'accepted_controls' => $attributes['accepted_controls'] ?? []]));
+    }
+}

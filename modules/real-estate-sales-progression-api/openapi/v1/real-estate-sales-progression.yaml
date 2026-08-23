@@ -1,0 +1,13 @@
+openapi: 3.0.3
+info:
+  title: Real Estate Sales Progression API
+  version: 1.0.0
+paths:
+  /api/v1/real-estate/sales-progressions:
+    get: {summary: List team sales progressions, responses: {'200': {description: OK}}}
+    post: {summary: Create a sales progression, responses: {'201': {description: Created}}}
+  /api/v1/real-estate/sales-progressions/{salesProgression}:
+    parameters: [{name: salesProgression, in: path, required: true, schema: {type: integer}}]
+    get: {summary: Show a sales progression, responses: {'200': {description: OK}}}
+    patch: {summary: Update a sales progression, responses: {'200': {description: OK}}}
+    delete: {summary: Archive a sales progression, responses: {'204': {description: Archived}}}

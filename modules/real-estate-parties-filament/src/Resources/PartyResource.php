@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Liberu\RealEstate\PartiesFilament\Resources;
 
-use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
@@ -14,6 +13,7 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Liberu\RealEstate\Parties\Domain\PartyType;
 use Liberu\RealEstate\Parties\Models\Party;
 use Liberu\RealEstate\PartiesFilament\Resources\PartyResource\Pages\CreateParty;
 use Liberu\RealEstate\PartiesFilament\Resources\PartyResource\Pages\EditParty;
@@ -30,7 +30,7 @@ final class PartyResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            Select::make('type')->options(collect(\Liberu\RealEstate\Parties\Domain\PartyType::cases())->mapWithKeys(fn ($type) => [$type->value => ucfirst($type->value)])->all())->required(),
+            Select::make('type')->options(collect(PartyType::cases())->mapWithKeys(fn ($type) => [$type->value => ucfirst($type->value)])->all())->required(),
             TextInput::make('name')->required()->maxLength(255),
             TextInput::make('email')->email(),
             TextInput::make('phone')->maxLength(50),

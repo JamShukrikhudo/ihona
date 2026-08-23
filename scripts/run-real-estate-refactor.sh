@@ -10,6 +10,7 @@ echo "[$(date -u +%FT%TZ)] branch: $(git branch --show-current)"
 
 composer install --no-interaction --no-progress --no-scripts
 composer validate --no-check-publish
+vendor/bin/pint --test modules tests
 
 vendor/bin/pest \
     tests/Feature/RealEstatePropertyActionsTest.php \
@@ -22,6 +23,7 @@ vendor/bin/pest \
     tests/Feature/RealEstateMatchingTest.php \
     tests/Feature/RealEstateViewingsTest.php \
     tests/Feature/RealEstateOffersTest.php \
+    tests/Feature/RealEstateSalesProgressionTest.php \
     tests/Architecture/ModuleBoundariesTest.php \
     tests/Unit/CanonicalModuleDiscoveryTest.php \
     --no-coverage

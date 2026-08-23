@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9cd15923fef99295d5f34146af50ca91",
+    "content-hash": "cbc2b3aa900e55977915f3edbe939f1c",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -8158,6 +8158,206 @@
                 "symlink": false,
                 "relative": true
             }
+        },
+        {
+            "name": "liberusoftware/real-estate-sales-progression",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/liberusoftware/module-real-estate-sales-progression.git",
+                "reference": "c9a2fbb531e4363e7d468e5ece56c961d02b54d6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-sales-progression/zipball/c9a2fbb531e4363e7d468e5ece56c961d02b54d6",
+                "reference": "c9a2fbb531e4363e7d468e5ece56c961d02b54d6",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "^13.0",
+                "illuminate/validation": "^13.0",
+                "liberusoftware/module-manager": "^1.0",
+                "liberusoftware/organizations-teams": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Liberu\\RealEstate\\SalesProgression\\SalesProgressionServiceProvider"
+                    ]
+                },
+                "liberu": {
+                    "name": "real-estate-sales-progression"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\SalesProgression\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Team-scoped sales progression milestones, chains, and completion controls.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-real-estate-sales-progression/tree/1.0.0",
+                "issues": "https://github.com/liberusoftware/module-real-estate-sales-progression/issues"
+            },
+            "time": "2026-08-23T02:18:45+00:00"
+        },
+        {
+            "name": "liberusoftware/real-estate-sales-progression-api",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/liberusoftware/module-real-estate-sales-progression-api.git",
+                "reference": "348db0aa8fe898de0a49de5211d187d5b9a842ca"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-sales-progression-api/zipball/348db0aa8fe898de0a49de5211d187d5b9a842ca",
+                "reference": "348db0aa8fe898de0a49de5211d187d5b9a842ca",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "liberusoftware/real-estate-sales-progression": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "real-estate-sales-progression-api"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\SalesProgressionApi\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Versioned API adapter for real-estate sales progression.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-real-estate-sales-progression-api/tree/1.0.0",
+                "issues": "https://github.com/liberusoftware/module-real-estate-sales-progression-api/issues"
+            },
+            "time": "2026-08-23T02:18:50+00:00"
+        },
+        {
+            "name": "liberusoftware/real-estate-sales-progression-filament",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/liberusoftware/module-real-estate-sales-progression-filament.git",
+                "reference": "a6d5ae25c2a9904f2c448c6dbbbb05c49c0ff162"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-sales-progression-filament/zipball/a6d5ae25c2a9904f2c448c6dbbbb05c49c0ff162",
+                "reference": "a6d5ae25c2a9904f2c448c6dbbbb05c49c0ff162",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^5.0",
+                "liberusoftware/real-estate-sales-progression": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "real-estate-sales-progression-filament"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\SalesProgressionFilament\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Filament 5 adapter for real-estate sales progression.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-real-estate-sales-progression-filament/tree/1.0.0",
+                "issues": "https://github.com/liberusoftware/module-real-estate-sales-progression-filament/issues"
+            },
+            "time": "2026-08-23T02:18:55+00:00"
+        },
+        {
+            "name": "liberusoftware/real-estate-sales-progression-livewire",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/liberusoftware/module-real-estate-sales-progression-livewire.git",
+                "reference": "5f3ac62758eebabc493d50181b57e9807c010626"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-sales-progression-livewire/zipball/5f3ac62758eebabc493d50181b57e9807c010626",
+                "reference": "5f3ac62758eebabc493d50181b57e9807c010626",
+                "shasum": ""
+            },
+            "require": {
+                "liberusoftware/real-estate-sales-progression": "^1.0",
+                "livewire/livewire": "^4.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "real-estate-sales-progression-livewire"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\SalesProgressionLivewire\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Livewire 4 adapter for real-estate sales progression.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-real-estate-sales-progression-livewire/tree/1.0.0",
+                "issues": "https://github.com/liberusoftware/module-real-estate-sales-progression-livewire/issues"
+            },
+            "time": "2026-08-23T02:19:00+00:00"
         },
         {
             "name": "liberusoftware/real-estate-valuations",

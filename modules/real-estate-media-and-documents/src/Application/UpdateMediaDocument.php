@@ -18,6 +18,7 @@ final class UpdateMediaDocument
         }
         $document->fill($attributes);
         $document->save();
+
         return $document->fresh();
     }
 }
