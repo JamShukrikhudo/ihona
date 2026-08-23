@@ -57,3 +57,6 @@ docs/superpowers
 .cursor/skills/
 .github/skills/
 .junie/skills/
+
+# local background refactor output
+/real-estate-refactor.log

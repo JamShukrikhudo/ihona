@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5515d3c0f27d99c0962aa42bf9350c33",
+    "content-hash": "3f80df9231d13b0dbcc3287cd84d1cee",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -6301,7 +6301,7 @@
             "version": "1.4.2",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-module-manager.git",
+                "url": "https://github.com/liberusoftware/module-module-manager.git",
                 "reference": "688fc9c01008bfd5258afa2a78587c48804ec2e7"
             },
             "dist": {
@@ -6345,6 +6345,10 @@
                 "MIT"
             ],
             "description": "Deterministic manifest discovery and runtime enablement for Liberu modules.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-module-manager/tree/1.4.2",
+                "issues": "https://github.com/liberusoftware/module-module-manager/issues"
+            },
             "time": "2026-08-07T14:25:25+00:00"
         },
         {
@@ -6518,7 +6522,7 @@
             "version": "1.5.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-organizations-teams.git",
+                "url": "https://github.com/liberusoftware/module-organizations-teams.git",
                 "reference": "12f20e83088659fe9194823d090e44358eed3a56"
             },
             "dist": {
@@ -6563,6 +6567,10 @@
                 "MIT"
             ],
             "description": "Organization, team, membership, invitation, ownership, and context foundation.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-organizations-teams/tree/1.5.0",
+                "issues": "https://github.com/liberusoftware/module-organizations-teams/issues"
+            },
             "time": "2026-08-09T15:38:02+00:00"
         },
         {
@@ -8134,6 +8142,206 @@
             ],
             "description": "Livewire 4 adapter for real-estate valuations.",
             "time": "2026-08-23T01:42:58+00:00"
+        },
+        {
+            "name": "liberusoftware/real-estate-viewings",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/liberusoftware/module-real-estate-viewings.git",
+                "reference": "59005bd978a25527563584bc467be743eda74949"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-viewings/zipball/59005bd978a25527563584bc467be743eda74949",
+                "reference": "59005bd978a25527563584bc467be743eda74949",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "^13.0",
+                "illuminate/validation": "^13.0",
+                "liberusoftware/module-manager": "^1.0",
+                "liberusoftware/organizations-teams": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Liberu\\RealEstate\\Viewings\\ViewingsServiceProvider"
+                    ]
+                },
+                "liberu": {
+                    "name": "real-estate-viewings"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\Viewings\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Provider-neutral viewing bookings and attendance lifecycle actions.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-real-estate-viewings/tree/1.0.0",
+                "issues": "https://github.com/liberusoftware/module-real-estate-viewings/issues"
+            },
+            "time": "2026-08-23T02:00:26+00:00"
+        },
+        {
+            "name": "liberusoftware/real-estate-viewings-api",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/liberusoftware/module-real-estate-viewings-api.git",
+                "reference": "c2cce756b93e82babf11e88c0fef9958e136d470"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-viewings-api/zipball/c2cce756b93e82babf11e88c0fef9958e136d470",
+                "reference": "c2cce756b93e82babf11e88c0fef9958e136d470",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "liberusoftware/real-estate-viewings": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "real-estate-viewings-api"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\ViewingsApi\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Versioned API adapter for real-estate viewings.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-real-estate-viewings-api/tree/1.0.0",
+                "issues": "https://github.com/liberusoftware/module-real-estate-viewings-api/issues"
+            },
+            "time": "2026-08-23T02:00:31+00:00"
+        },
+        {
+            "name": "liberusoftware/real-estate-viewings-filament",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/liberusoftware/module-real-estate-viewings-filament.git",
+                "reference": "4fd61cacd1f0678d07e3d797eee808496990e0f8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-viewings-filament/zipball/4fd61cacd1f0678d07e3d797eee808496990e0f8",
+                "reference": "4fd61cacd1f0678d07e3d797eee808496990e0f8",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^5.0",
+                "liberusoftware/real-estate-viewings": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "real-estate-viewings-filament"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\ViewingsFilament\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Filament 5 adapter for real-estate viewings.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-real-estate-viewings-filament/tree/1.0.0",
+                "issues": "https://github.com/liberusoftware/module-real-estate-viewings-filament/issues"
+            },
+            "time": "2026-08-23T02:00:36+00:00"
+        },
+        {
+            "name": "liberusoftware/real-estate-viewings-livewire",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/liberusoftware/module-real-estate-viewings-livewire.git",
+                "reference": "72beddafb7bd90181295d89df1e65664c0038f23"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-viewings-livewire/zipball/72beddafb7bd90181295d89df1e65664c0038f23",
+                "reference": "72beddafb7bd90181295d89df1e65664c0038f23",
+                "shasum": ""
+            },
+            "require": {
+                "liberusoftware/real-estate-viewings": "^1.0",
+                "livewire/livewire": "^4.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "real-estate-viewings-livewire"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\ViewingsLivewire\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Livewire 4 adapter for real-estate viewings.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-real-estate-viewings-livewire/tree/1.0.0",
+                "issues": "https://github.com/liberusoftware/module-real-estate-viewings-livewire/issues"
+            },
+            "time": "2026-08-23T02:00:41+00:00"
         },
         {
             "name": "liberusoftware/roles-permissions",

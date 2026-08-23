@@ -1,0 +1,11 @@
+openapi: 3.1.0
+info: {title: Real Estate Viewings API, version: 1.0.0}
+paths:
+  /api/v1/real-estate/viewings:
+    get: {operationId: real.estate.viewings.list, responses: {"200": {description: Authorized viewings}}}
+    post: {operationId: real.estate.viewings.create, responses: {"201": {description: Created viewing}}}
+  /api/v1/real-estate/viewings/{id}:
+    parameters: [{name: id, in: path, required: true, schema: {type: string}}]
+    get: {operationId: real.estate.viewings.get, responses: {"200": {description: Viewing}}}
+    patch: {operationId: real.estate.viewings.update, responses: {"200": {description: Updated viewing}}}
+    delete: {operationId: real.estate.viewings.delete, responses: {"204": {description: Deleted viewing}}}
