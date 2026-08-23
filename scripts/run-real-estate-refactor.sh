@@ -21,6 +21,7 @@ vendor/bin/pest \
     tests/Feature/RealEstateListingsTest.php \
     tests/Feature/RealEstateMatchingTest.php \
     tests/Feature/RealEstateViewingsTest.php \
+    tests/Feature/RealEstateOffersTest.php \
     tests/Architecture/ModuleBoundariesTest.php \
     tests/Unit/CanonicalModuleDiscoveryTest.php \
     --no-coverage

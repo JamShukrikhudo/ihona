@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3f80df9231d13b0dbcc3287cd84d1cee",
+    "content-hash": "9cd15923fef99295d5f34146af50ca91",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -7601,6 +7601,206 @@
             ],
             "description": "Livewire 4 adapter for real-estate media and documents.",
             "time": "2026-08-23T01:35:34+00:00"
+        },
+        {
+            "name": "liberusoftware/real-estate-offers",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/liberusoftware/module-real-estate-offers.git",
+                "reference": "eb87bb442d39439bfb029e6b88a798dcb469cd36"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-offers/zipball/eb87bb442d39439bfb029e6b88a798dcb469cd36",
+                "reference": "eb87bb442d39439bfb029e6b88a798dcb469cd36",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "^13.0",
+                "illuminate/validation": "^13.0",
+                "liberusoftware/module-manager": "^1.0",
+                "liberusoftware/organizations-teams": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Liberu\\RealEstate\\Offers\\OffersServiceProvider"
+                    ]
+                },
+                "liberu": {
+                    "name": "real-estate-offers"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\Offers\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Provider-neutral offer terms, qualification, negotiation, proof, and acceptance actions.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-real-estate-offers/tree/1.0.0",
+                "issues": "https://github.com/liberusoftware/module-real-estate-offers/issues"
+            },
+            "time": "2026-08-23T02:11:06+00:00"
+        },
+        {
+            "name": "liberusoftware/real-estate-offers-api",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/liberusoftware/module-real-estate-offers-api.git",
+                "reference": "5454d59ec9ba5d6cb5fc079fbcd3980c67071948"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-offers-api/zipball/5454d59ec9ba5d6cb5fc079fbcd3980c67071948",
+                "reference": "5454d59ec9ba5d6cb5fc079fbcd3980c67071948",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "liberusoftware/real-estate-offers": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "real-estate-offers-api"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\OffersApi\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Versioned API adapter for real-estate offers.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-real-estate-offers-api/tree/1.0.0",
+                "issues": "https://github.com/liberusoftware/module-real-estate-offers-api/issues"
+            },
+            "time": "2026-08-23T02:11:11+00:00"
+        },
+        {
+            "name": "liberusoftware/real-estate-offers-filament",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/liberusoftware/module-real-estate-offers-filament.git",
+                "reference": "781c4797f560c7542206b9f6e55ae459dd4f92af"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-offers-filament/zipball/781c4797f560c7542206b9f6e55ae459dd4f92af",
+                "reference": "781c4797f560c7542206b9f6e55ae459dd4f92af",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^5.0",
+                "liberusoftware/real-estate-offers": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "real-estate-offers-filament"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\OffersFilament\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Filament 5 adapter for real-estate offers.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-real-estate-offers-filament/tree/1.0.0",
+                "issues": "https://github.com/liberusoftware/module-real-estate-offers-filament/issues"
+            },
+            "time": "2026-08-23T02:11:16+00:00"
+        },
+        {
+            "name": "liberusoftware/real-estate-offers-livewire",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/liberusoftware/module-real-estate-offers-livewire.git",
+                "reference": "63f77ad4cd2a52ef3e7685ac1a840bb686dac4f7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-offers-livewire/zipball/63f77ad4cd2a52ef3e7685ac1a840bb686dac4f7",
+                "reference": "63f77ad4cd2a52ef3e7685ac1a840bb686dac4f7",
+                "shasum": ""
+            },
+            "require": {
+                "liberusoftware/real-estate-offers": "^1.0",
+                "livewire/livewire": "^4.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "real-estate-offers-livewire"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\OffersLivewire\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Livewire 4 adapter for real-estate offers.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-real-estate-offers-livewire/tree/1.0.0",
+                "issues": "https://github.com/liberusoftware/module-real-estate-offers-livewire/issues"
+            },
+            "time": "2026-08-23T02:11:22+00:00"
         },
         {
             "name": "liberusoftware/real-estate-parties",

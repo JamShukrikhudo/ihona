@@ -1,0 +1,11 @@
+openapi: 3.1.0
+info: {title: Real Estate Offers API, version: 1.0.0}
+paths:
+  /api/v1/real-estate/offers:
+    get: {operationId: real.estate.offers.list, responses: {"200": {description: Authorized offers}}}
+    post: {operationId: real.estate.offers.create, responses: {"201": {description: Created offer}}}
+  /api/v1/real-estate/offers/{id}:
+    parameters: [{name: id, in: path, required: true, schema: {type: string}}]
+    get: {operationId: real.estate.offers.get, responses: {"200": {description: Offer}}}
+    patch: {operationId: real.estate.offers.update, responses: {"200": {description: Updated offer}}}
+    delete: {operationId: real.estate.offers.delete, responses: {"204": {description: Deleted offer}}}
