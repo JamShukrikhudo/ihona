@@ -6,7 +6,7 @@
     "version": "1.0.0",
     "category": "presentation",
     "provider": "Liberu\\RealEstate\\PropertiesLivewire\\PropertiesLivewireServiceProvider",
-    "requires": {"php": "^8.5", "laravel": "^13.0", "packages": {"liberusoftware/module-real-estate-properties": "^1.0"}},
+    "requires": {"php": "^8.5", "laravel": "^13.0", "packages": {"liberusoftware/real-estate-properties": "^1.0"}},
     "capabilities": ["real-estate.properties.livewire"],
     "default_enabled": true,
     "features": ["Property search state", "Validation and empty states"]

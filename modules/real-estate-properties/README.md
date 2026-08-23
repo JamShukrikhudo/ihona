@@ -1,6 +1,6 @@
 # Real Estate Properties
 
-`liberusoftware/module-real-estate-properties` owns team-scoped property
+`liberusoftware/real-estate-properties` owns team-scoped property
 records, structured property attributes, lifecycle status, and immutable
 history entries. It is presentation-neutral; API, Filament, and Livewire
 adapters depend on this package and do not duplicate its rules.

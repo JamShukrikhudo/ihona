@@ -5,6 +5,13 @@ declare(strict_types=1);
 
 $arguments = array_slice($argv, 1);
 $dryRun = in_array('--dry-run', $arguments, true);
+$only = [];
+foreach ($arguments as $index => $argument) {
+    if ($argument === '--only') {
+        $only = array_values(array_filter(array_map('trim', explode(',', $arguments[$index + 1] ?? ''))));
+        break;
+    }
+}
 $configArgument = array_search('--config', $arguments, true);
 $root = getcwd() ?: dirname(__DIR__);
 $configFile = $configArgument === false ? ($root.'/.liberu-meta.json') : ($arguments[$configArgument + 1] ?? '');
@@ -44,6 +51,10 @@ $rootComposer = json_decode((string) file_get_contents($root.'/composer.json'), 
 $packages[(string) $rootComposer['name']] = (string) $config['repository'];
 $packages += $config['additionalPackages'] ?? [];
 ksort($packages);
+
+if ($only !== []) {
+    $packages = array_intersect_key($packages, array_flip($only));
+}
 
 $failures = [];
 foreach ($packages as $package => $repository) {

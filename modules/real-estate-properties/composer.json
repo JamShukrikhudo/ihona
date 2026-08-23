@@ -1,5 +1,5 @@
 {
-    "name": "liberusoftware/module-real-estate-properties",
+    "name": "liberusoftware/real-estate-properties",
     "description": "Provider-neutral real-estate property records and lifecycle actions.",
     "type": "liberu-module",
     "version": "1.0.0",

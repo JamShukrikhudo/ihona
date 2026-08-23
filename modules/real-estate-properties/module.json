@@ -15,9 +15,9 @@
         }
     },
     "suggests": {
-        "liberusoftware/module-real-estate-properties-api": "^1.0",
-        "liberusoftware/module-real-estate-properties-filament": "^1.0",
-        "liberusoftware/module-real-estate-properties-livewire": "^1.0"
+        "liberusoftware/real-estate-properties-api": "^1.0",
+        "liberusoftware/real-estate-properties-filament": "^1.0",
+        "liberusoftware/real-estate-properties-livewire": "^1.0"
     },
     "capabilities": ["real-estate.properties"],
     "default_enabled": true,

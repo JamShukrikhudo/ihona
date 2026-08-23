@@ -76,7 +76,7 @@ The trusted [`liberusoftware/composer-installer`](https://github.com/liberusoftw
 
 | Composer type | Install path | Repository convention |
 |---|---|---|
-| `liberu-module` | `/modules/{installer-name}` | `liberusoftware/module-{installer-name}` |
+| `liberu-module` | `/modules/{installer-name}` | Packagist: `liberusoftware/{installer-name}`; GitHub: `liberusoftware/module-{installer-name}` |
 | `liberu-theme` | `/themes/{installer-name}` | `liberusoftware/theme-{installer-name}` |
 | Contract/library | `/vendor` | Package-specific repository |
 
