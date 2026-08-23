@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c36f695052129abc02273e836571f51e",
+    "content-hash": "8ea42e3d9e25feae43aa8719e4bc6f87",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -7494,6 +7494,94 @@
             ],
             "description": "Versioned API adapter for real-estate valuations.",
             "time": "2026-08-23T01:40:05+00:00"
+        },
+        {
+            "name": "liberusoftware/real-estate-valuations-filament",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:liberusoftware/module-real-estate-valuations-filament.git",
+                "reference": "344628f2da2bde8b60a7f51986f5b34a6244d719"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-valuations-filament/zipball/344628f2da2bde8b60a7f51986f5b34a6244d719",
+                "reference": "344628f2da2bde8b60a7f51986f5b34a6244d719",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^5.0",
+                "liberusoftware/real-estate-valuations": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "real-estate-valuations-filament"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\ValuationsFilament\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Filament 5 adapter for real-estate valuations.",
+            "time": "2026-08-23T01:42:54+00:00"
+        },
+        {
+            "name": "liberusoftware/real-estate-valuations-livewire",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:liberusoftware/module-real-estate-valuations-livewire.git",
+                "reference": "9b8142e9b35714e67254bf13ded6d3ffd5689a08"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-valuations-livewire/zipball/9b8142e9b35714e67254bf13ded6d3ffd5689a08",
+                "reference": "9b8142e9b35714e67254bf13ded6d3ffd5689a08",
+                "shasum": ""
+            },
+            "require": {
+                "liberusoftware/real-estate-valuations": "^1.0",
+                "livewire/livewire": "^4.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "real-estate-valuations-livewire"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\RealEstate\\ValuationsLivewire\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Livewire 4 adapter for real-estate valuations.",
+            "time": "2026-08-23T01:42:58+00:00"
         },
         {
             "name": "liberusoftware/roles-permissions",
