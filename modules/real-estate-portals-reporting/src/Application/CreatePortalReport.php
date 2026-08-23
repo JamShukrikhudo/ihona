@@ -21,6 +21,6 @@ final class CreatePortalReport
             throw ValidationException::withMessages(['report_type' => 'A report type is required.']);
         }
 
-return DB::transaction(fn (): PortalReport => PortalReport::query()->create(['team_id' => $teamId, 'created_by' => $actorId, 'property_id' => $attributes['property_id'] ?? null, 'listing_id' => $attributes['listing_id'] ?? null, 'portal' => $portal, 'report_type' => $type, 'status' => $attributes['status'] ?? PortalReportStatus::Draft, 'payload' => $attributes['payload'] ?? [], 'metrics' => $attributes['metrics'] ?? [], 'published_at' => $attributes['published_at'] ?? null, 'generated_at' => $attributes['generated_at'] ?? null, 'expires_at' => $attributes['expires_at'] ?? null, 'error' => $attributes['error'] ?? null]));
+        return DB::transaction(fn (): PortalReport => PortalReport::query()->create(['team_id' => $teamId, 'created_by' => $actorId, 'property_id' => $attributes['property_id'] ?? null, 'listing_id' => $attributes['listing_id'] ?? null, 'portal' => $portal, 'report_type' => $type, 'status' => $attributes['status'] ?? PortalReportStatus::Draft, 'payload' => $attributes['payload'] ?? [], 'metrics' => $attributes['metrics'] ?? [], 'published_at' => $attributes['published_at'] ?? null, 'generated_at' => $attributes['generated_at'] ?? null, 'expires_at' => $attributes['expires_at'] ?? null, 'error' => $attributes['error'] ?? null]));
     }
 }

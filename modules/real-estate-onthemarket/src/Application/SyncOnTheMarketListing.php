@@ -22,6 +22,6 @@ final class SyncOnTheMarketListing
             throw $exception;
         }
 
-return $sync->refresh();
+        return $sync->refresh();
     }
 }

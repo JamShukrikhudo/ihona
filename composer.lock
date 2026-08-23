@@ -6752,12 +6752,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:liberusoftware/module-real-estate-instructions.git",
-                "reference": "6595c91dc1b6dd952f656cfd6fa1ae64bed35e9f"
+                "reference": "a6ae00898a24170c16e608dd73a246c95fe56976"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-instructions/zipball/6595c91dc1b6dd952f656cfd6fa1ae64bed35e9f",
-                "reference": "6595c91dc1b6dd952f656cfd6fa1ae64bed35e9f",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-instructions/zipball/a6ae00898a24170c16e608dd73a246c95fe56976",
+                "reference": "a6ae00898a24170c16e608dd73a246c95fe56976",
                 "shasum": ""
             },
             "require": {
@@ -6936,12 +6936,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:liberusoftware/module-real-estate-listings.git",
-                "reference": "afc386174086d161d6477dc1c7023ccb14827efa"
+                "reference": "cd76bae52317ebd36d56763654a2940e7855d3d8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-listings/zipball/afc386174086d161d6477dc1c7023ccb14827efa",
-                "reference": "afc386174086d161d6477dc1c7023ccb14827efa",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-listings/zipball/cd76bae52317ebd36d56763654a2940e7855d3d8",
+                "reference": "cd76bae52317ebd36d56763654a2940e7855d3d8",
                 "shasum": ""
             },
             "require": {
@@ -7120,12 +7120,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:liberusoftware/module-real-estate-marketing.git",
-                "reference": "8f09e6f95cb4c9d60c37b215645c54a00e7bd390"
+                "reference": "3e45da0072c9ac2923af6cd21b58e36ea32dd523"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-marketing/zipball/8f09e6f95cb4c9d60c37b215645c54a00e7bd390",
-                "reference": "8f09e6f95cb4c9d60c37b215645c54a00e7bd390",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-marketing/zipball/3e45da0072c9ac2923af6cd21b58e36ea32dd523",
+                "reference": "3e45da0072c9ac2923af6cd21b58e36ea32dd523",
                 "shasum": ""
             },
             "require": {
@@ -7672,12 +7672,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:liberusoftware/module-real-estate-offers.git",
-                "reference": "0c5e0a220ebc3bd032aff8898aecd6f2a4e801c0"
+                "reference": "0b92db0646a54ee4319a5c43c86324b08cfccd01"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-offers/zipball/0c5e0a220ebc3bd032aff8898aecd6f2a4e801c0",
-                "reference": "0c5e0a220ebc3bd032aff8898aecd6f2a4e801c0",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-offers/zipball/0b92db0646a54ee4319a5c43c86324b08cfccd01",
+                "reference": "0b92db0646a54ee4319a5c43c86324b08cfccd01",
                 "shasum": ""
             },
             "require": {
@@ -7856,12 +7856,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:liberusoftware/module-real-estate-onthemarket.git",
-                "reference": "411224c85f36267151ec345aa1a8ea870281c366"
+                "reference": "ef99087cd471a7747026cfb15ce43924915c175c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-onthemarket/zipball/411224c85f36267151ec345aa1a8ea870281c366",
-                "reference": "411224c85f36267151ec345aa1a8ea870281c366",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-onthemarket/zipball/ef99087cd471a7747026cfb15ce43924915c175c",
+                "reference": "ef99087cd471a7747026cfb15ce43924915c175c",
                 "shasum": ""
             },
             "require": {
@@ -8225,12 +8225,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:liberusoftware/module-real-estate-portals-reporting.git",
-                "reference": "9f58a53c435a07547e2575eea167ca6167574f2e"
+                "reference": "c8a0f06b561cf7d40b827032d9a3e2f5e7e1d399"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-portals-reporting/zipball/9f58a53c435a07547e2575eea167ca6167574f2e",
-                "reference": "9f58a53c435a07547e2575eea167ca6167574f2e",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-portals-reporting/zipball/c8a0f06b561cf7d40b827032d9a3e2f5e7e1d399",
+                "reference": "c8a0f06b561cf7d40b827032d9a3e2f5e7e1d399",
                 "shasum": ""
             },
             "require": {
@@ -8582,12 +8582,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:liberusoftware/module-real-estate-rightmove.git",
-                "reference": "5d1a1981768fcec4c420ef9bb1645f4bbc571f71"
+                "reference": "73003fcd4047bcc6af8f3b37d2f6edd2fe8791ca"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-rightmove/zipball/5d1a1981768fcec4c420ef9bb1645f4bbc571f71",
-                "reference": "5d1a1981768fcec4c420ef9bb1645f4bbc571f71",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-rightmove/zipball/73003fcd4047bcc6af8f3b37d2f6edd2fe8791ca",
+                "reference": "73003fcd4047bcc6af8f3b37d2f6edd2fe8791ca",
                 "shasum": ""
             },
             "require": {
@@ -8767,12 +8767,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:liberusoftware/module-real-estate-sales-progression.git",
-                "reference": "c09a32d4543af1043ffb8412b6d463dfb96ef9a7"
+                "reference": "09ef14f1513e82484f8803346b7b327319108a1e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-sales-progression/zipball/c09a32d4543af1043ffb8412b6d463dfb96ef9a7",
-                "reference": "c09a32d4543af1043ffb8412b6d463dfb96ef9a7",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-sales-progression/zipball/09ef14f1513e82484f8803346b7b327319108a1e",
+                "reference": "09ef14f1513e82484f8803346b7b327319108a1e",
                 "shasum": ""
             },
             "require": {
@@ -8951,12 +8951,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:liberusoftware/module-real-estate-valuations.git",
-                "reference": "435c94b319fbd02bd37f7847e4168fcfed254bba"
+                "reference": "ebb6830f65460663d21fbcbfdb4e0eec4b027e0e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-valuations/zipball/435c94b319fbd02bd37f7847e4168fcfed254bba",
-                "reference": "435c94b319fbd02bd37f7847e4168fcfed254bba",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-valuations/zipball/ebb6830f65460663d21fbcbfdb4e0eec4b027e0e",
+                "reference": "ebb6830f65460663d21fbcbfdb4e0eec4b027e0e",
                 "shasum": ""
             },
             "require": {
@@ -9135,12 +9135,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:liberusoftware/module-real-estate-viewings.git",
-                "reference": "a19e24e6beccb07e3f02d599fcbea8689f342ac7"
+                "reference": "df054c74ff184abd09d736cffd8759e7c76807a5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-viewings/zipball/a19e24e6beccb07e3f02d599fcbea8689f342ac7",
-                "reference": "a19e24e6beccb07e3f02d599fcbea8689f342ac7",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-viewings/zipball/df054c74ff184abd09d736cffd8759e7c76807a5",
+                "reference": "df054c74ff184abd09d736cffd8759e7c76807a5",
                 "shasum": ""
             },
             "require": {
@@ -9319,12 +9319,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:liberusoftware/module-real-estate-zoopla.git",
-                "reference": "23224a4a00241a8014224283d22ed95e751825a3"
+                "reference": "82fe36aa30771873af17babf30be98d8e4219a1c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-zoopla/zipball/23224a4a00241a8014224283d22ed95e751825a3",
-                "reference": "23224a4a00241a8014224283d22ed95e751825a3",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-zoopla/zipball/82fe36aa30771873af17babf30be98d8e4219a1c",
+                "reference": "82fe36aa30771873af17babf30be98d8e4219a1c",
                 "shasum": ""
             },
             "require": {

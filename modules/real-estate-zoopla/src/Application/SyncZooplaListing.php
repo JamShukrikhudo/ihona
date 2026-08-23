@@ -22,6 +22,6 @@ final class SyncZooplaListing
             throw $exception;
         }
 
-return $sync->refresh();
+        return $sync->refresh();
     }
 }

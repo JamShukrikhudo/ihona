@@ -22,6 +22,6 @@ final class SyncRightmoveListing
             throw $exception;
         }
 
-return $sync->refresh();
+        return $sync->refresh();
     }
 }

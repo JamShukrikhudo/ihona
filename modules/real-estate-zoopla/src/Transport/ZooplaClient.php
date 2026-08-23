@@ -23,7 +23,7 @@ final class ZooplaClient implements ZooplaTransport
             $options['ssl_key'] = [$key, (string) $keyPassword];
         }
 
-return Http::timeout((int) config('zoopla.timeout', 30))->baseUrl((string) config('zoopla.base_url'))->withOptions($options)->acceptJson();
+        return Http::timeout((int) config('zoopla.timeout', 30))->baseUrl((string) config('zoopla.base_url'))->withOptions($options)->acceptJson();
     }
 
     public function sendProperty(string $reference, array $payload, array $credentials): array

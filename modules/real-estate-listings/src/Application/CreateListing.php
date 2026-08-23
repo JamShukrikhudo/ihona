@@ -18,6 +18,6 @@ final class CreateListing
             throw ValidationException::withMessages(['title' => 'A listing title is required.']);
         }
 
-return DB::transaction(fn (): Listing => Listing::query()->create(['team_id' => $teamId, 'created_by' => $actorId, 'property_id' => $attributes['property_id'] ?? null, 'title' => $title, 'status' => ListingStatus::Draft, 'price' => $attributes['price'] ?? null, 'available_from' => $attributes['available_from'] ?? null, 'channel_content' => $attributes['channel_content'] ?? [], 'publication_rules' => $attributes['publication_rules'] ?? [], 'portal_feeds' => $attributes['portal_feeds'] ?? [], 'reconciliation' => $attributes['reconciliation'] ?? []]));
+        return DB::transaction(fn (): Listing => Listing::query()->create(['team_id' => $teamId, 'created_by' => $actorId, 'property_id' => $attributes['property_id'] ?? null, 'title' => $title, 'status' => ListingStatus::Draft, 'price' => $attributes['price'] ?? null, 'available_from' => $attributes['available_from'] ?? null, 'channel_content' => $attributes['channel_content'] ?? [], 'publication_rules' => $attributes['publication_rules'] ?? [], 'portal_feeds' => $attributes['portal_feeds'] ?? [], 'reconciliation' => $attributes['reconciliation'] ?? []]));
     }
 }

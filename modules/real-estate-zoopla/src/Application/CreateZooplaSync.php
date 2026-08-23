@@ -17,6 +17,6 @@ final class CreateZooplaSync
             throw ValidationException::withMessages(['listing_id' => 'A listing is required for Zoopla synchronization.']);
         }
 
-return DB::transaction(fn (): ZooplaSync => ZooplaSync::query()->updateOrCreate(['team_id' => $teamId, 'listing_id' => $listingId], ['created_by' => $actorId, 'property_id' => $attributes['property_id'] ?? null, 'external_id' => $attributes['external_id'] ?? null, 'status' => $attributes['status'] ?? 'pending', 'payload' => $attributes['payload'] ?? [], 'last_synced_at' => $attributes['last_synced_at'] ?? null, 'error' => $attributes['error'] ?? null]));
+        return DB::transaction(fn (): ZooplaSync => ZooplaSync::query()->updateOrCreate(['team_id' => $teamId, 'listing_id' => $listingId], ['created_by' => $actorId, 'property_id' => $attributes['property_id'] ?? null, 'external_id' => $attributes['external_id'] ?? null, 'status' => $attributes['status'] ?? 'pending', 'payload' => $attributes['payload'] ?? [], 'last_synced_at' => $attributes['last_synced_at'] ?? null, 'error' => $attributes['error'] ?? null]));
     }
 }

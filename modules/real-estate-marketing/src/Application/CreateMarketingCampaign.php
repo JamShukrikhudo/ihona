@@ -21,6 +21,6 @@ final class CreateMarketingCampaign
             throw ValidationException::withMessages(['channel' => 'A campaign channel is required.']);
         }
 
-return DB::transaction(fn (): MarketingCampaign => MarketingCampaign::query()->create(['team_id' => $teamId, 'created_by' => $actorId, 'property_id' => $attributes['property_id'] ?? null, 'listing_id' => $attributes['listing_id'] ?? null, 'name' => $name, 'channel' => $channel, 'status' => $attributes['status'] ?? MarketingCampaignStatus::Draft, 'audience' => $attributes['audience'] ?? [], 'content' => $attributes['content'] ?? [], 'schedule' => $attributes['schedule'] ?? [], 'metrics' => $attributes['metrics'] ?? [], 'notes' => $attributes['notes'] ?? null]));
+        return DB::transaction(fn (): MarketingCampaign => MarketingCampaign::query()->create(['team_id' => $teamId, 'created_by' => $actorId, 'property_id' => $attributes['property_id'] ?? null, 'listing_id' => $attributes['listing_id'] ?? null, 'name' => $name, 'channel' => $channel, 'status' => $attributes['status'] ?? MarketingCampaignStatus::Draft, 'audience' => $attributes['audience'] ?? [], 'content' => $attributes['content'] ?? [], 'schedule' => $attributes['schedule'] ?? [], 'metrics' => $attributes['metrics'] ?? [], 'notes' => $attributes['notes'] ?? null]));
     }
 }

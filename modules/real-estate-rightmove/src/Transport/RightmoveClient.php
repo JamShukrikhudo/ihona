@@ -24,7 +24,7 @@ final class RightmoveClient implements RightmoveTransport
             throw new RuntimeException('Rightmove did not return an access token.');
         }
 
-return Http::timeout((int) config('rightmove.timeout', 30))->baseUrl((string) config('rightmove.base_url'))->withToken($accessToken)->acceptJson();
+        return Http::timeout((int) config('rightmove.timeout', 30))->baseUrl((string) config('rightmove.base_url'))->withToken($accessToken)->acceptJson();
     }
 
     public function sendProperty(string $reference, array $payload, array $credentials): array

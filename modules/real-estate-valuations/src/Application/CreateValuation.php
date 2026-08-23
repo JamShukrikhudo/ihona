@@ -18,6 +18,6 @@ final class CreateValuation
             throw ValidationException::withMessages(['subject' => 'A valuation subject is required.']);
         }
 
-return DB::transaction(fn (): Valuation => Valuation::query()->create(['team_id' => $teamId, 'created_by' => $actorId, 'property_id' => $attributes['property_id'] ?? null, 'party_id' => $attributes['party_id'] ?? null, 'subject' => $subject, 'status' => ValuationStatus::Draft, 'valued_amount' => $attributes['valued_amount'] ?? null, 'fee_amount' => $attributes['fee_amount'] ?? null, 'comparable_data' => $attributes['comparable_data'] ?? [], 'recommendation' => $attributes['recommendation'] ?? [], 'scheduled_at' => $attributes['scheduled_at'] ?? null]));
+        return DB::transaction(fn (): Valuation => Valuation::query()->create(['team_id' => $teamId, 'created_by' => $actorId, 'property_id' => $attributes['property_id'] ?? null, 'party_id' => $attributes['party_id'] ?? null, 'subject' => $subject, 'status' => ValuationStatus::Draft, 'valued_amount' => $attributes['valued_amount'] ?? null, 'fee_amount' => $attributes['fee_amount'] ?? null, 'comparable_data' => $attributes['comparable_data'] ?? [], 'recommendation' => $attributes['recommendation'] ?? [], 'scheduled_at' => $attributes['scheduled_at'] ?? null]));
     }
 }

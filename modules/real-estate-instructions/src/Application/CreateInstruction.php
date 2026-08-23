@@ -18,6 +18,6 @@ final class CreateInstruction
             throw ValidationException::withMessages(['subject' => 'An instruction subject is required.']);
         }
 
-return DB::transaction(fn (): Instruction => Instruction::query()->create(['team_id' => $teamId, 'created_by' => $actorId, 'property_id' => $attributes['property_id'] ?? null, 'party_id' => $attributes['party_id'] ?? null, 'subject' => $subject, 'status' => InstructionStatus::Draft, 'ownership_check' => $attributes['ownership_check'] ?? [], 'terms' => $attributes['terms'] ?? [], 'disclosures' => $attributes['disclosures'] ?? []]));
+        return DB::transaction(fn (): Instruction => Instruction::query()->create(['team_id' => $teamId, 'created_by' => $actorId, 'property_id' => $attributes['property_id'] ?? null, 'party_id' => $attributes['party_id'] ?? null, 'subject' => $subject, 'status' => InstructionStatus::Draft, 'ownership_check' => $attributes['ownership_check'] ?? [], 'terms' => $attributes['terms'] ?? [], 'disclosures' => $attributes['disclosures'] ?? []]));
     }
 }

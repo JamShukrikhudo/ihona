@@ -23,7 +23,7 @@ final class OnTheMarketClient implements OnTheMarketTransport
             $options['ssl_key'] = [$key, (string) $keyPassword];
         }
 
-return Http::timeout((int) config('onthemarket.timeout', 30))->baseUrl((string) config('onthemarket.base_url'))->withOptions($options)->acceptJson();
+        return Http::timeout((int) config('onthemarket.timeout', 30))->baseUrl((string) config('onthemarket.base_url'))->withOptions($options)->acceptJson();
     }
 
     public function sendProperty(string $reference, array $payload, array $credentials): array
