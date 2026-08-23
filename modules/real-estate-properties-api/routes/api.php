@@ -7,4 +7,6 @@ Route::prefix('api/v1/real-estate/properties')->middleware('auth:sanctum')->grou
     Route::get('/', [PropertyController::class, 'index'])->name('real-estate.properties.index');
     Route::post('/', [PropertyController::class, 'store'])->name('real-estate.properties.store');
     Route::get('/{property}', [PropertyController::class, 'show'])->name('real-estate.properties.show');
+    Route::match(['put', 'patch'], '/{property}', [PropertyController::class, 'update'])->name('real-estate.properties.update');
+    Route::delete('/{property}', [PropertyController::class, 'destroy'])->name('real-estate.properties.destroy');
 });

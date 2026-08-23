@@ -10,9 +10,15 @@ use Liberu\RealEstate\PropertiesFilament\Resources\PropertyResource;
 
 final class PropertiesFilamentPlugin implements Plugin
 {
-    public static function make(): self { return new self(); }
+    public static function make(): self
+    {
+        return new self();
+    }
 
-    public function getId(): string { return 'real-estate-properties'; }
+    public function getId(): string
+    {
+        return 'real-estate-properties';
+    }
 
     public function register(Panel $panel): void
     {

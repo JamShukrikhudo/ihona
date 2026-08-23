@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Liberu\RealEstate\PropertiesLivewire\Components;
 
 use Illuminate\Contracts\View\View;
-use Livewire\Component;
 use Liberu\RealEstate\Properties\Models\Property;
+use Livewire\Component;
 
 final class PropertyList extends Component
 {

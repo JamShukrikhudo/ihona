@@ -56,6 +56,17 @@ final class PropertyResource extends Resource
             ->defaultSort('created_at', 'desc');
     }
 
+    public static function getEloquentQuery(): Builder
+    {
+        $teamId = auth()->user()?->current_team_id;
+
+        return parent::getEloquentQuery()->when(
+            $teamId === null,
+            fn (Builder $query): Builder => $query->whereRaw('1 = 0'),
+            fn (Builder $query): Builder => $query->forTeam($teamId),
+        );
+    }
+
     /** @return array<string, PageRegistration> */
     public static function getPages(): array
     {
