@@ -5078,7 +5078,7 @@
             "version": "1.4.2",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-activity-comments.git",
+                "url": "https://github.com/liberusoftware/module-activity-comments.git",
                 "reference": "416a1fdfb51bf5dbe331326709b44fdd7b9d3f32"
             },
             "dist": {
@@ -5129,7 +5129,7 @@
             "version": "1.0.2",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/analytics-contracts.git",
+                "url": "https://github.com/liberusoftware/analytics-contracts.git",
                 "reference": "c950ae334da15762f9b8e55777c844a3c902ab74"
             },
             "dist": {
@@ -5158,7 +5158,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-analytics-core.git",
+                "url": "https://github.com/liberusoftware/module-analytics-core.git",
                 "reference": "b302f2e18910c3589fc3497a241bd56db809da93"
             },
             "dist": {
@@ -5210,7 +5210,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-analytics-google.git",
+                "url": "https://github.com/liberusoftware/module-analytics-google.git",
                 "reference": "60d4b39b689e13557829dd5b1fbb62ebb1d589c6"
             },
             "dist": {
@@ -5261,7 +5261,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-analytics-meta.git",
+                "url": "https://github.com/liberusoftware/module-analytics-meta.git",
                 "reference": "e087a4499ec299462ebdacd574ee12e52d36cc4c"
             },
             "dist": {
@@ -5312,7 +5312,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-api-access.git",
+                "url": "https://github.com/liberusoftware/module-api-access.git",
                 "reference": "5c79a794e1e64e84efde7305bde23a1dca459168"
             },
             "dist": {
@@ -5364,7 +5364,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-application.git",
+                "url": "https://github.com/liberusoftware/module-application.git",
                 "reference": "f4fe1f694a693308398e50c3894ca266bece75ac"
             },
             "dist": {
@@ -5415,7 +5415,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-audit.git",
+                "url": "https://github.com/liberusoftware/module-audit.git",
                 "reference": "78c4f3b0f59484fd928cff4cc1c63a0e32f75857"
             },
             "dist": {
@@ -5466,7 +5466,7 @@
             "version": "1.1.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/composer-installer.git",
+                "url": "https://github.com/liberusoftware/composer-installer.git",
                 "reference": "470e3b95f6232424c69d67e4f7dad6f3619c37c4"
             },
             "dist": {
@@ -5510,7 +5510,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-currency-context.git",
+                "url": "https://github.com/liberusoftware/module-currency-context.git",
                 "reference": "10f4df26157d7c5fee683d75f0a542c689afdd57"
             },
             "dist": {
@@ -5561,7 +5561,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-developer-experience.git",
+                "url": "https://github.com/liberusoftware/module-developer-experience.git",
                 "reference": "2a2f574430611175af6ff430d65156a56be7b657"
             },
             "dist": {
@@ -5612,7 +5612,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-feature-flags.git",
+                "url": "https://github.com/liberusoftware/module-feature-flags.git",
                 "reference": "f0701fbb929b8d5f330204b3b53c1901cec0749e"
             },
             "dist": {
@@ -5663,7 +5663,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-files-media.git",
+                "url": "https://github.com/liberusoftware/module-files-media.git",
                 "reference": "214f00cd168620fe6fa209c6669a206534129ff5"
             },
             "dist": {
@@ -5714,7 +5714,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-identity-core.git",
+                "url": "https://github.com/liberusoftware/module-identity-core.git",
                 "reference": "46d9b48899910a511285761f990a1d7f96531189"
             },
             "dist": {
@@ -5764,7 +5764,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-identity-core-filament.git",
+                "url": "https://github.com/liberusoftware/module-identity-core-filament.git",
                 "reference": "34519fdd11c96b7db55def83ef50321265b81ba8"
             },
             "dist": {
@@ -5814,7 +5814,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-identity-socialstream.git",
+                "url": "https://github.com/liberusoftware/module-identity-socialstream.git",
                 "reference": "faea00423bd97e3de696e37cb5d7cc6bafc0edf2"
             },
             "dist": {
@@ -5868,7 +5868,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-import-export.git",
+                "url": "https://github.com/liberusoftware/module-import-export.git",
                 "reference": "075032d5033056c3b4a10a010673de3d4a57159c"
             },
             "dist": {
@@ -5919,7 +5919,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-integrations.git",
+                "url": "https://github.com/liberusoftware/module-integrations.git",
                 "reference": "9569c7b2e48633fc47131a0a3533dfb7a4d516fc"
             },
             "dist": {
@@ -5970,7 +5970,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-jetstream-bridge.git",
+                "url": "https://github.com/liberusoftware/module-jetstream-bridge.git",
                 "reference": "7ba43cc22d76d231d74b3987bbb7d40dd2a0f445"
             },
             "dist": {
@@ -6023,7 +6023,7 @@
             "version": "1.0.2",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/localization-contracts.git",
+                "url": "https://github.com/liberusoftware/localization-contracts.git",
                 "reference": "7b5121caeeda07379bab2bf8ea1b3947855afed3"
             },
             "dist": {
@@ -6052,7 +6052,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-localization-core.git",
+                "url": "https://github.com/liberusoftware/module-localization-core.git",
                 "reference": "c77a5aed99bd101eeff7a7a94dde0a969a0f38ab"
             },
             "dist": {
@@ -6106,7 +6106,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-localization-core-livewire.git",
+                "url": "https://github.com/liberusoftware/module-localization-core-livewire.git",
                 "reference": "31553cab97641e83fc702974c3159de78afdcec7"
             },
             "dist": {
@@ -6157,7 +6157,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-localization-mymemory.git",
+                "url": "https://github.com/liberusoftware/module-localization-mymemory.git",
                 "reference": "bf11fef28492b3a311cb252f484205b5875c5d9e"
             },
             "dist": {
@@ -6257,7 +6257,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-module-manager-filament.git",
+                "url": "https://github.com/liberusoftware/module-module-manager-filament.git",
                 "reference": "44378fb5b6b5ea3239639f09ad51b1a8b8696026"
             },
             "dist": {
@@ -6308,7 +6308,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-notifications.git",
+                "url": "https://github.com/liberusoftware/module-notifications.git",
                 "reference": "c218aa80a8773b7feadd0a884172a88135446ef9"
             },
             "dist": {
@@ -6359,7 +6359,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-observability.git",
+                "url": "https://github.com/liberusoftware/module-observability.git",
                 "reference": "6adfdab5abf83d6f39473345822fda97f3f05ecb"
             },
             "dist": {
@@ -6460,7 +6460,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-organizations-teams-filament.git",
+                "url": "https://github.com/liberusoftware/module-organizations-teams-filament.git",
                 "reference": "ce57c44ef89eb852c9c1737d65de7a9e5ffa4b76"
             },
             "dist": {
@@ -6510,7 +6510,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-profiles.git",
+                "url": "https://github.com/liberusoftware/module-profiles.git",
                 "reference": "bdf7c4cb01bf602735df5ecf01d02cbb88b659fe"
             },
             "dist": {
@@ -6609,13 +6609,13 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-core-api.git",
-                "reference": "588d347a73086897d7bcd06b334833dd516e58da"
+                "url": "https://github.com/liberusoftware/module-real-estate-core-api.git",
+                "reference": "5e6dfca628fa099288887a25eabfa8716f86bc16"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-core-api/zipball/588d347a73086897d7bcd06b334833dd516e58da",
-                "reference": "588d347a73086897d7bcd06b334833dd516e58da",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-core-api/zipball/5e6dfca628fa099288887a25eabfa8716f86bc16",
+                "reference": "5e6dfca628fa099288887a25eabfa8716f86bc16",
                 "shasum": ""
             },
             "require": {
@@ -6654,7 +6654,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-core-filament.git",
+                "url": "https://github.com/liberusoftware/module-real-estate-core-filament.git",
                 "reference": "785fc6a0c0d3c97982bb3d2d066418793767104b"
             },
             "dist": {
@@ -6698,7 +6698,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-core-livewire.git",
+                "url": "https://github.com/liberusoftware/module-real-estate-core-livewire.git",
                 "reference": "b6054b1fc71812f14a57314613b0d36798c27beb"
             },
             "dist": {
@@ -6742,13 +6742,13 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-instructions.git",
-                "reference": "a6ae00898a24170c16e608dd73a246c95fe56976"
+                "url": "https://github.com/liberusoftware/module-real-estate-instructions.git",
+                "reference": "fefe9098323eed527ca768471da94c24c7a5771d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-instructions/zipball/a6ae00898a24170c16e608dd73a246c95fe56976",
-                "reference": "a6ae00898a24170c16e608dd73a246c95fe56976",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-instructions/zipball/fefe9098323eed527ca768471da94c24c7a5771d",
+                "reference": "fefe9098323eed527ca768471da94c24c7a5771d",
                 "shasum": ""
             },
             "require": {
@@ -6793,13 +6793,13 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-instructions-api.git",
-                "reference": "d3963cafeac5144b9f0b045184b315d7853ef7d7"
+                "url": "https://github.com/liberusoftware/module-real-estate-instructions-api.git",
+                "reference": "9f1f50e31d58c5273645f563f0312ad1522426d9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-instructions-api/zipball/d3963cafeac5144b9f0b045184b315d7853ef7d7",
-                "reference": "d3963cafeac5144b9f0b045184b315d7853ef7d7",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-instructions-api/zipball/9f1f50e31d58c5273645f563f0312ad1522426d9",
+                "reference": "9f1f50e31d58c5273645f563f0312ad1522426d9",
                 "shasum": ""
             },
             "require": {
@@ -6838,7 +6838,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-instructions-filament.git",
+                "url": "https://github.com/liberusoftware/module-real-estate-instructions-filament.git",
                 "reference": "8e04bc9b6d5c077bd766541ef5339af59ba96a90"
             },
             "dist": {
@@ -6882,7 +6882,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-instructions-livewire.git",
+                "url": "https://github.com/liberusoftware/module-real-estate-instructions-livewire.git",
                 "reference": "6acd4406912305ba58fd137062e2b43d945791c9"
             },
             "dist": {
@@ -7113,13 +7113,13 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-listings.git",
-                "reference": "cd76bae52317ebd36d56763654a2940e7855d3d8"
+                "url": "https://github.com/liberusoftware/module-real-estate-listings.git",
+                "reference": "4fd5cba4ee1ede57066a37bbccc16b9700e1943f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-listings/zipball/cd76bae52317ebd36d56763654a2940e7855d3d8",
-                "reference": "cd76bae52317ebd36d56763654a2940e7855d3d8",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-listings/zipball/4fd5cba4ee1ede57066a37bbccc16b9700e1943f",
+                "reference": "4fd5cba4ee1ede57066a37bbccc16b9700e1943f",
                 "shasum": ""
             },
             "require": {
@@ -7164,13 +7164,13 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-listings-api.git",
-                "reference": "c9f3ac430e8b7c3fb058cb1d61dc8002f938848a"
+                "url": "https://github.com/liberusoftware/module-real-estate-listings-api.git",
+                "reference": "a868c685e393cd13217f9cbce8452bc60f388760"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-listings-api/zipball/c9f3ac430e8b7c3fb058cb1d61dc8002f938848a",
-                "reference": "c9f3ac430e8b7c3fb058cb1d61dc8002f938848a",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-listings-api/zipball/a868c685e393cd13217f9cbce8452bc60f388760",
+                "reference": "a868c685e393cd13217f9cbce8452bc60f388760",
                 "shasum": ""
             },
             "require": {
@@ -7209,7 +7209,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-listings-filament.git",
+                "url": "https://github.com/liberusoftware/module-real-estate-listings-filament.git",
                 "reference": "c3fc1bc8374a87f30ca16d8aace16117b197c972"
             },
             "dist": {
@@ -7253,7 +7253,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-listings-livewire.git",
+                "url": "https://github.com/liberusoftware/module-real-estate-listings-livewire.git",
                 "reference": "6c6822c1906a083303d2f653bd33ca9335619cf3"
             },
             "dist": {
@@ -7297,13 +7297,13 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-marketing.git",
-                "reference": "3e45da0072c9ac2923af6cd21b58e36ea32dd523"
+                "url": "https://github.com/liberusoftware/module-real-estate-marketing.git",
+                "reference": "cfc88fb4fe46b74fb1828f9b7e94911d97abd866"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-marketing/zipball/3e45da0072c9ac2923af6cd21b58e36ea32dd523",
-                "reference": "3e45da0072c9ac2923af6cd21b58e36ea32dd523",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-marketing/zipball/cfc88fb4fe46b74fb1828f9b7e94911d97abd866",
+                "reference": "cfc88fb4fe46b74fb1828f9b7e94911d97abd866",
                 "shasum": ""
             },
             "require": {
@@ -7348,13 +7348,13 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-marketing-api.git",
-                "reference": "72339262f18d0d4b47c3357a377cd8aa370593b8"
+                "url": "https://github.com/liberusoftware/module-real-estate-marketing-api.git",
+                "reference": "511829fe5c84d548bc2e226d9271def4096a9965"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-marketing-api/zipball/72339262f18d0d4b47c3357a377cd8aa370593b8",
-                "reference": "72339262f18d0d4b47c3357a377cd8aa370593b8",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-marketing-api/zipball/511829fe5c84d548bc2e226d9271def4096a9965",
+                "reference": "511829fe5c84d548bc2e226d9271def4096a9965",
                 "shasum": ""
             },
             "require": {
@@ -7393,7 +7393,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-marketing-filament.git",
+                "url": "https://github.com/liberusoftware/module-real-estate-marketing-filament.git",
                 "reference": "4a036e4294f8651de7fb2f77bafbed236cf04648"
             },
             "dist": {
@@ -7437,7 +7437,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-marketing-livewire.git",
+                "url": "https://github.com/liberusoftware/module-real-estate-marketing-livewire.git",
                 "reference": "f6777acdbcd3c4d919f49654eeecc52132da86e9"
             },
             "dist": {
@@ -7481,13 +7481,13 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-matching.git",
-                "reference": "09120ec736a752ae1f4a8b921fbfb97518d4a6ef"
+                "url": "https://github.com/liberusoftware/module-real-estate-matching.git",
+                "reference": "a19677fedf009d70890a21e984bbf4a23c69a527"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-matching/zipball/09120ec736a752ae1f4a8b921fbfb97518d4a6ef",
-                "reference": "09120ec736a752ae1f4a8b921fbfb97518d4a6ef",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-matching/zipball/a19677fedf009d70890a21e984bbf4a23c69a527",
+                "reference": "a19677fedf009d70890a21e984bbf4a23c69a527",
                 "shasum": ""
             },
             "require": {
@@ -7532,13 +7532,13 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-matching-api.git",
-                "reference": "b86ce219ee8778ab26470b7088dbaf0473d9b61f"
+                "url": "https://github.com/liberusoftware/module-real-estate-matching-api.git",
+                "reference": "dead04107ad3796d20fab90adb6060022116a3cd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-matching-api/zipball/b86ce219ee8778ab26470b7088dbaf0473d9b61f",
-                "reference": "b86ce219ee8778ab26470b7088dbaf0473d9b61f",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-matching-api/zipball/dead04107ad3796d20fab90adb6060022116a3cd",
+                "reference": "dead04107ad3796d20fab90adb6060022116a3cd",
                 "shasum": ""
             },
             "require": {
@@ -7577,7 +7577,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-matching-filament.git",
+                "url": "https://github.com/liberusoftware/module-real-estate-matching-filament.git",
                 "reference": "9aac6303dd11861ffb3219c768faf1c7124758ca"
             },
             "dist": {
@@ -7621,7 +7621,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-matching-livewire.git",
+                "url": "https://github.com/liberusoftware/module-real-estate-matching-livewire.git",
                 "reference": "c66919b6993c9af2bf746ec67868ba2e1de36b24"
             },
             "dist": {
@@ -7665,13 +7665,13 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-media-and-documents.git",
-                "reference": "a788658cbf83403e7322ef10de9cdab4fa592a93"
+                "url": "https://github.com/liberusoftware/module-real-estate-media-and-documents.git",
+                "reference": "2b12ad82187f1df366bb5f875259fe8b4e960aed"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-media-and-documents/zipball/a788658cbf83403e7322ef10de9cdab4fa592a93",
-                "reference": "a788658cbf83403e7322ef10de9cdab4fa592a93",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-media-and-documents/zipball/2b12ad82187f1df366bb5f875259fe8b4e960aed",
+                "reference": "2b12ad82187f1df366bb5f875259fe8b4e960aed",
                 "shasum": ""
             },
             "require": {
@@ -7716,13 +7716,13 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-media-and-documents-api.git",
-                "reference": "ffa99d937e2db6b04429c634fc6490f7c228f074"
+                "url": "https://github.com/liberusoftware/module-real-estate-media-and-documents-api.git",
+                "reference": "eec43a9d9d675bbbf080a12ee55dc250ca1f2fd0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-media-and-documents-api/zipball/ffa99d937e2db6b04429c634fc6490f7c228f074",
-                "reference": "ffa99d937e2db6b04429c634fc6490f7c228f074",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-media-and-documents-api/zipball/eec43a9d9d675bbbf080a12ee55dc250ca1f2fd0",
+                "reference": "eec43a9d9d675bbbf080a12ee55dc250ca1f2fd0",
                 "shasum": ""
             },
             "require": {
@@ -7761,7 +7761,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-media-and-documents-filament.git",
+                "url": "https://github.com/liberusoftware/module-real-estate-media-and-documents-filament.git",
                 "reference": "5be170593ed2aaadb24d047678d1dd3e1eca51c2"
             },
             "dist": {
@@ -7805,7 +7805,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-media-and-documents-livewire.git",
+                "url": "https://github.com/liberusoftware/module-real-estate-media-and-documents-livewire.git",
                 "reference": "0f0c18b6cc1661b1295ad960c4b7d85d7b63ab6c"
             },
             "dist": {
@@ -7849,13 +7849,13 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-offers.git",
-                "reference": "0b92db0646a54ee4319a5c43c86324b08cfccd01"
+                "url": "https://github.com/liberusoftware/module-real-estate-offers.git",
+                "reference": "b1fcb4ca720f17be086c76c301a7e814f5f8ec0a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-offers/zipball/0b92db0646a54ee4319a5c43c86324b08cfccd01",
-                "reference": "0b92db0646a54ee4319a5c43c86324b08cfccd01",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-offers/zipball/b1fcb4ca720f17be086c76c301a7e814f5f8ec0a",
+                "reference": "b1fcb4ca720f17be086c76c301a7e814f5f8ec0a",
                 "shasum": ""
             },
             "require": {
@@ -7900,13 +7900,13 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-offers-api.git",
-                "reference": "8165e27aa312397a1c82f66066350e720b7c85b3"
+                "url": "https://github.com/liberusoftware/module-real-estate-offers-api.git",
+                "reference": "3947fba34c48b0ec59b021b99d7d212e4094ecc4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-offers-api/zipball/8165e27aa312397a1c82f66066350e720b7c85b3",
-                "reference": "8165e27aa312397a1c82f66066350e720b7c85b3",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-offers-api/zipball/3947fba34c48b0ec59b021b99d7d212e4094ecc4",
+                "reference": "3947fba34c48b0ec59b021b99d7d212e4094ecc4",
                 "shasum": ""
             },
             "require": {
@@ -7945,7 +7945,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-offers-filament.git",
+                "url": "https://github.com/liberusoftware/module-real-estate-offers-filament.git",
                 "reference": "3cc6efa59abd1c5854c51af3e9897b8af374cbe5"
             },
             "dist": {
@@ -7989,7 +7989,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-offers-livewire.git",
+                "url": "https://github.com/liberusoftware/module-real-estate-offers-livewire.git",
                 "reference": "f42355f8a0d5ec3e18606b35393cbd3f6df900ff"
             },
             "dist": {
@@ -8033,7 +8033,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-onthemarket.git",
+                "url": "https://github.com/liberusoftware/module-real-estate-onthemarket.git",
                 "reference": "ef99087cd471a7747026cfb15ce43924915c175c"
             },
             "dist": {
@@ -8085,7 +8085,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-onthemarket-api.git",
+                "url": "https://github.com/liberusoftware/module-real-estate-onthemarket-api.git",
                 "reference": "a6ad6ac53874ac4e671b0cd7bd42e5c8ebedc15a"
             },
             "dist": {
@@ -8130,7 +8130,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-onthemarket-filament.git",
+                "url": "https://github.com/liberusoftware/module-real-estate-onthemarket-filament.git",
                 "reference": "3fc464078b6307e212386902d7722474fd09f0b0"
             },
             "dist": {
@@ -8174,7 +8174,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-onthemarket-livewire.git",
+                "url": "https://github.com/liberusoftware/module-real-estate-onthemarket-livewire.git",
                 "reference": "43508c72985079666406567c67c5d4d2bcab5a04"
             },
             "dist": {
@@ -8266,13 +8266,13 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-parties-api.git",
-                "reference": "2c985d614b537e62b0f015c02d12bfdd04bbf26f"
+                "url": "https://github.com/liberusoftware/module-real-estate-parties-api.git",
+                "reference": "38680b6ee18d712457e923018bdaab7cdf41229d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-parties-api/zipball/2c985d614b537e62b0f015c02d12bfdd04bbf26f",
-                "reference": "2c985d614b537e62b0f015c02d12bfdd04bbf26f",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-parties-api/zipball/38680b6ee18d712457e923018bdaab7cdf41229d",
+                "reference": "38680b6ee18d712457e923018bdaab7cdf41229d",
                 "shasum": ""
             },
             "require": {
@@ -8311,7 +8311,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-parties-filament.git",
+                "url": "https://github.com/liberusoftware/module-real-estate-parties-filament.git",
                 "reference": "be571dddb502e869d646597327c4129f38227b5d"
             },
             "dist": {
@@ -8355,7 +8355,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-parties-livewire.git",
+                "url": "https://github.com/liberusoftware/module-real-estate-parties-livewire.git",
                 "reference": "c9ec82749fa0ab18b4abf1e1e5b71fdfe641663e"
             },
             "dist": {
@@ -8399,13 +8399,13 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-portals-reporting.git",
-                "reference": "c8a0f06b561cf7d40b827032d9a3e2f5e7e1d399"
+                "url": "https://github.com/liberusoftware/module-real-estate-portals-reporting.git",
+                "reference": "0f91b8626735977c6b819ae515282e99ce8812aa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-portals-reporting/zipball/c8a0f06b561cf7d40b827032d9a3e2f5e7e1d399",
-                "reference": "c8a0f06b561cf7d40b827032d9a3e2f5e7e1d399",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-portals-reporting/zipball/0f91b8626735977c6b819ae515282e99ce8812aa",
+                "reference": "0f91b8626735977c6b819ae515282e99ce8812aa",
                 "shasum": ""
             },
             "require": {
@@ -8450,13 +8450,13 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-portals-reporting-api.git",
-                "reference": "b552c208fca47b9c1032d07b331e35ff547f5513"
+                "url": "https://github.com/liberusoftware/module-real-estate-portals-reporting-api.git",
+                "reference": "845a502bb52adaebd3f41e684b68bd8e76524d16"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-portals-reporting-api/zipball/b552c208fca47b9c1032d07b331e35ff547f5513",
-                "reference": "b552c208fca47b9c1032d07b331e35ff547f5513",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-portals-reporting-api/zipball/845a502bb52adaebd3f41e684b68bd8e76524d16",
+                "reference": "845a502bb52adaebd3f41e684b68bd8e76524d16",
                 "shasum": ""
             },
             "require": {
@@ -8495,7 +8495,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-portals-reporting-filament.git",
+                "url": "https://github.com/liberusoftware/module-real-estate-portals-reporting-filament.git",
                 "reference": "a8f4e0f46d9c4911c758c88763433f6feb83b660"
             },
             "dist": {
@@ -8539,7 +8539,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-portals-reporting-livewire.git",
+                "url": "https://github.com/liberusoftware/module-real-estate-portals-reporting-livewire.git",
                 "reference": "3d3f9dbdff4b3a7576f71f7e7f94a637dc9e544e"
             },
             "dist": {
@@ -8943,7 +8943,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-rightmove.git",
+                "url": "https://github.com/liberusoftware/module-real-estate-rightmove.git",
                 "reference": "73003fcd4047bcc6af8f3b37d2f6edd2fe8791ca"
             },
             "dist": {
@@ -8995,7 +8995,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-rightmove-api.git",
+                "url": "https://github.com/liberusoftware/module-real-estate-rightmove-api.git",
                 "reference": "5a219a7a8098789a8cf3772f9d7c03ab7d68e8c2"
             },
             "dist": {
@@ -9040,7 +9040,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-rightmove-filament.git",
+                "url": "https://github.com/liberusoftware/module-real-estate-rightmove-filament.git",
                 "reference": "3841fe8e168db011bb0da125b9aa24f7b43a7c08"
             },
             "dist": {
@@ -9084,7 +9084,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-rightmove-livewire.git",
+                "url": "https://github.com/liberusoftware/module-real-estate-rightmove-livewire.git",
                 "reference": "8ae890f72ede2330675d4cb1cff34b2146946a18"
             },
             "dist": {
@@ -9128,13 +9128,13 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-sales-progression.git",
-                "reference": "09ef14f1513e82484f8803346b7b327319108a1e"
+                "url": "https://github.com/liberusoftware/module-real-estate-sales-progression.git",
+                "reference": "68adefbd20f7ec0534b5bd088e7219ba349eff03"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-sales-progression/zipball/09ef14f1513e82484f8803346b7b327319108a1e",
-                "reference": "09ef14f1513e82484f8803346b7b327319108a1e",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-sales-progression/zipball/68adefbd20f7ec0534b5bd088e7219ba349eff03",
+                "reference": "68adefbd20f7ec0534b5bd088e7219ba349eff03",
                 "shasum": ""
             },
             "require": {
@@ -9179,13 +9179,13 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-sales-progression-api.git",
-                "reference": "348db0aa8fe898de0a49de5211d187d5b9a842ca"
+                "url": "https://github.com/liberusoftware/module-real-estate-sales-progression-api.git",
+                "reference": "18ece4064b58de38249b0a81c2dddd003e4fb47a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-sales-progression-api/zipball/348db0aa8fe898de0a49de5211d187d5b9a842ca",
-                "reference": "348db0aa8fe898de0a49de5211d187d5b9a842ca",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-sales-progression-api/zipball/18ece4064b58de38249b0a81c2dddd003e4fb47a",
+                "reference": "18ece4064b58de38249b0a81c2dddd003e4fb47a",
                 "shasum": ""
             },
             "require": {
@@ -9224,7 +9224,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-sales-progression-filament.git",
+                "url": "https://github.com/liberusoftware/module-real-estate-sales-progression-filament.git",
                 "reference": "a6d5ae25c2a9904f2c448c6dbbbb05c49c0ff162"
             },
             "dist": {
@@ -9268,7 +9268,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-sales-progression-livewire.git",
+                "url": "https://github.com/liberusoftware/module-real-estate-sales-progression-livewire.git",
                 "reference": "5f3ac62758eebabc493d50181b57e9807c010626"
             },
             "dist": {
@@ -9312,13 +9312,13 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-valuations.git",
-                "reference": "ebb6830f65460663d21fbcbfdb4e0eec4b027e0e"
+                "url": "https://github.com/liberusoftware/module-real-estate-valuations.git",
+                "reference": "7207b2ea48e7886561e0fb6b97afcff828424018"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-valuations/zipball/ebb6830f65460663d21fbcbfdb4e0eec4b027e0e",
-                "reference": "ebb6830f65460663d21fbcbfdb4e0eec4b027e0e",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-valuations/zipball/7207b2ea48e7886561e0fb6b97afcff828424018",
+                "reference": "7207b2ea48e7886561e0fb6b97afcff828424018",
                 "shasum": ""
             },
             "require": {
@@ -9363,13 +9363,13 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-valuations-api.git",
-                "reference": "2150627031faf306ce62d6261df24b12ce264469"
+                "url": "https://github.com/liberusoftware/module-real-estate-valuations-api.git",
+                "reference": "42bba782e331b58a5458f3428e341d1a316888fd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-valuations-api/zipball/2150627031faf306ce62d6261df24b12ce264469",
-                "reference": "2150627031faf306ce62d6261df24b12ce264469",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-valuations-api/zipball/42bba782e331b58a5458f3428e341d1a316888fd",
+                "reference": "42bba782e331b58a5458f3428e341d1a316888fd",
                 "shasum": ""
             },
             "require": {
@@ -9408,7 +9408,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-valuations-filament.git",
+                "url": "https://github.com/liberusoftware/module-real-estate-valuations-filament.git",
                 "reference": "ae41a241d360a4e8d069f36477f6527926df4f56"
             },
             "dist": {
@@ -9452,7 +9452,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-valuations-livewire.git",
+                "url": "https://github.com/liberusoftware/module-real-estate-valuations-livewire.git",
                 "reference": "984334ea6369641deb7f00eff2dbd579b3a2345d"
             },
             "dist": {
@@ -9496,13 +9496,13 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-viewings.git",
-                "reference": "df054c74ff184abd09d736cffd8759e7c76807a5"
+                "url": "https://github.com/liberusoftware/module-real-estate-viewings.git",
+                "reference": "ab5f1c74b46b620779cf6115154b18f09d5cebca"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-viewings/zipball/df054c74ff184abd09d736cffd8759e7c76807a5",
-                "reference": "df054c74ff184abd09d736cffd8759e7c76807a5",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-viewings/zipball/ab5f1c74b46b620779cf6115154b18f09d5cebca",
+                "reference": "ab5f1c74b46b620779cf6115154b18f09d5cebca",
                 "shasum": ""
             },
             "require": {
@@ -9547,13 +9547,13 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-viewings-api.git",
-                "reference": "71566d93824875db135c28fe1b1fdb43bb31981a"
+                "url": "https://github.com/liberusoftware/module-real-estate-viewings-api.git",
+                "reference": "33bc1b365529209ed14f9921ce6cde1dfb3fbfb5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-viewings-api/zipball/71566d93824875db135c28fe1b1fdb43bb31981a",
-                "reference": "71566d93824875db135c28fe1b1fdb43bb31981a",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-viewings-api/zipball/33bc1b365529209ed14f9921ce6cde1dfb3fbfb5",
+                "reference": "33bc1b365529209ed14f9921ce6cde1dfb3fbfb5",
                 "shasum": ""
             },
             "require": {
@@ -9592,7 +9592,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-viewings-filament.git",
+                "url": "https://github.com/liberusoftware/module-real-estate-viewings-filament.git",
                 "reference": "13b9f86faac0a8899dd07c86e8cdcc3d7f217a3c"
             },
             "dist": {
@@ -9636,7 +9636,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-viewings-livewire.git",
+                "url": "https://github.com/liberusoftware/module-real-estate-viewings-livewire.git",
                 "reference": "79f6877047323b1eddd945f84e06d11f50f5a42f"
             },
             "dist": {
@@ -9680,7 +9680,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-zoopla.git",
+                "url": "https://github.com/liberusoftware/module-real-estate-zoopla.git",
                 "reference": "82fe36aa30771873af17babf30be98d8e4219a1c"
             },
             "dist": {
@@ -9732,7 +9732,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-zoopla-api.git",
+                "url": "https://github.com/liberusoftware/module-real-estate-zoopla-api.git",
                 "reference": "ac66274abc6634e5f5f3977c6a5df98aaf0e8a05"
             },
             "dist": {
@@ -9777,7 +9777,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-zoopla-filament.git",
+                "url": "https://github.com/liberusoftware/module-real-estate-zoopla-filament.git",
                 "reference": "4059731b6d73715cccd839f47e99cc723089ae37"
             },
             "dist": {
@@ -9821,7 +9821,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-real-estate-zoopla-livewire.git",
+                "url": "https://github.com/liberusoftware/module-real-estate-zoopla-livewire.git",
                 "reference": "e2a47011aa18b9719d98f5a191855490f976f0ff"
             },
             "dist": {
@@ -9865,7 +9865,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-roles-permissions.git",
+                "url": "https://github.com/liberusoftware/module-roles-permissions.git",
                 "reference": "d061b98bbe185ae966e8fe6ea4761bddf48aed9d"
             },
             "dist": {
@@ -9916,7 +9916,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-roles-permissions-filament.git",
+                "url": "https://github.com/liberusoftware/module-roles-permissions-filament.git",
                 "reference": "788117df5f64d16103ce595a42fc3506d97a16d2"
             },
             "dist": {
@@ -9967,7 +9967,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-scheduler-queues.git",
+                "url": "https://github.com/liberusoftware/module-scheduler-queues.git",
                 "reference": "fdfb3b1b3d8b9c3142fa670063da5ae116fa5c76"
             },
             "dist": {
@@ -10018,7 +10018,7 @@
             "version": "1.5.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-search.git",
+                "url": "https://github.com/liberusoftware/module-search.git",
                 "reference": "d2617f80de4c267adf4593b357b545c9ec762188"
             },
             "dist": {
@@ -10070,7 +10070,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-search-api.git",
+                "url": "https://github.com/liberusoftware/module-search-api.git",
                 "reference": "73a5e71c61c7199896ea9a8d01012fa832140f5d"
             },
             "dist": {
@@ -10121,7 +10121,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-sessions-devices.git",
+                "url": "https://github.com/liberusoftware/module-sessions-devices.git",
                 "reference": "164817b59449f6930af4ff08d93c21b93368c738"
             },
             "dist": {
@@ -10172,7 +10172,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-sessions-devices-filament.git",
+                "url": "https://github.com/liberusoftware/module-sessions-devices-filament.git",
                 "reference": "91eb6d30430ad82b21dc57c68ffbaa804299d41f"
             },
             "dist": {
@@ -10222,7 +10222,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-settings.git",
+                "url": "https://github.com/liberusoftware/module-settings.git",
                 "reference": "37c18cd0aaa4d026b7adcfba859516dd7abc39aa"
             },
             "dist": {
@@ -10272,7 +10272,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-settings-filament.git",
+                "url": "https://github.com/liberusoftware/module-settings-filament.git",
                 "reference": "86ee7e6377624baca845121981e6bb8cec092ca2"
             },
             "dist": {
@@ -10326,7 +10326,7 @@
             "version": "2.0.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/theme-base.git",
+                "url": "https://github.com/liberusoftware/theme-base.git",
                 "reference": "a79f3355a9dd7af74f080d66ea82f700cfac09b8"
             },
             "dist": {
@@ -10375,7 +10375,7 @@
             "version": "1.5.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/theme-clear-signal.git",
+                "url": "https://github.com/liberusoftware/theme-clear-signal.git",
                 "reference": "e4f7e56bdf4edc722c59976acdf3acbf9757df28"
             },
             "dist": {
@@ -10425,7 +10425,7 @@
             "version": "1.5.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/theme-dark.git",
+                "url": "https://github.com/liberusoftware/theme-dark.git",
                 "reference": "d5d2027dd87a806cd4faee81ca798caf0ae75845"
             },
             "dist": {
@@ -10475,7 +10475,7 @@
             "version": "1.5.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/theme-default.git",
+                "url": "https://github.com/liberusoftware/theme-default.git",
                 "reference": "759e19abeba7d39d129d6ce9acaa10d9d4e7da50"
             },
             "dist": {
@@ -10573,7 +10573,7 @@
             "version": "1.4.2",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-theme-support.git",
+                "url": "https://github.com/liberusoftware/module-theme-support.git",
                 "reference": "22c3d18d23d802265d68f03e58f8dda8b88b48fa"
             },
             "dist": {
@@ -10631,7 +10631,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-theme-support-livewire.git",
+                "url": "https://github.com/liberusoftware/module-theme-support-livewire.git",
                 "reference": "8db221e424ebd0a1d9bbb61265b41878da59caeb"
             },
             "dist": {
@@ -10683,7 +10683,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-two-factor-authentication.git",
+                "url": "https://github.com/liberusoftware/module-two-factor-authentication.git",
                 "reference": "60e4cb036f76375e9814cf57ca4a32fc343301e5"
             },
             "dist": {
@@ -10734,7 +10734,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-webhooks.git",
+                "url": "https://github.com/liberusoftware/module-webhooks.git",
                 "reference": "308f905ee503c708dce8ffbb78a08c7c5b9d72bb"
             },
             "dist": {
@@ -20499,7 +20499,7 @@
             "version": "1.2.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/boilerplate-scripts.git",
+                "url": "https://github.com/liberusoftware/boilerplate-scripts.git",
                 "reference": "a7461a447049879ef30202cc0a12dfe0919fa9e2"
             },
             "dist": {
