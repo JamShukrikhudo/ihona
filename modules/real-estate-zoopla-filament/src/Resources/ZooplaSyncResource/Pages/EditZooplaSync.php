@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-declare(strict_types=1);
-
 namespace Liberu\RealEstate\ZooplaFilament\Resources\ZooplaSyncResource\Pages;
 
 use Filament\Resources\Pages\EditRecord;

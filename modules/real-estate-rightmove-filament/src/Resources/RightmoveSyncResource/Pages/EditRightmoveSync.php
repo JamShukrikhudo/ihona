@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-declare(strict_types=1);
-
 namespace Liberu\RealEstate\RightmoveFilament\Resources\RightmoveSyncResource\Pages;
 
 use Filament\Resources\Pages\EditRecord;

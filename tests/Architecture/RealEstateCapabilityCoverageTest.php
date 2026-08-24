@@ -106,3 +106,22 @@ it('keeps Livewire list surfaces validated and stateful', function (): void {
         expect($view)->toContain('wire:loading')->and($view)->toContain('@empty');
     }
 });
+
+it('keeps Filament resources tenant-scoped and lifecycle-delegated', function (): void {
+    $root = dirname(__DIR__, 2);
+
+    foreach (glob("{$root}/modules/real-estate-*-filament/src/Resources/*Resource.php") ?: [] as $resourceFile) {
+        $resource = file_get_contents($resourceFile);
+
+        expect($resource)->toContain('getEloquentQuery')
+            ->and($resource)->toContain('current_team_id');
+    }
+
+    foreach (glob("{$root}/modules/real-estate-*-filament/src/Resources/*Resource/Pages/Create*.php") ?: [] as $pageFile) {
+        expect(file_get_contents($pageFile))->toContain('handleRecordCreation');
+    }
+
+    foreach (glob("{$root}/modules/real-estate-*-filament/src/Resources/*Resource/Pages/Edit*.php") ?: [] as $pageFile) {
+        expect(file_get_contents($pageFile))->toContain('handleRecordUpdate');
+    }
+});
