@@ -1,5 +1,7 @@
 openapi: 3.1.0
 info: {title: Real Estate Matching API, version: 1.0.0}
+security: [{sanctum: []}]
+x-liberu-idempotency-header: Idempotency-Key
 paths:
   /api/v1/real-estate/matching:
     get: {operationId: real.estate.matching.list, responses: {"200": {description: Authorized matching profiles}}}
@@ -12,3 +14,6 @@ paths:
 components:
   securitySchemes:
     sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}
+  schemas:
+    Error: {type: object, required: [message], properties: {message: {type: string}, code: {type: string}, errors: {type: object, additionalProperties: true}}}
+    PaginationMeta: {type: object, required: [current_page, per_page, total, last_page], properties: {current_page: {type: integer}, per_page: {type: integer}, total: {type: integer}, last_page: {type: integer}}}

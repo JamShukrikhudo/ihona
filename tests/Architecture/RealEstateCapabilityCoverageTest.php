@@ -73,7 +73,13 @@ it('requires authenticated, throttled API boundaries and OpenAPI 3.1 contracts',
         $openApi = file_get_contents($openApiFile);
 
         expect($openApi)->toContain('openapi: 3.1.0')
-            ->and($openApi)->toContain('securitySchemes:');
+            ->and($openApi)->toContain('securitySchemes:')
+            ->and($openApi)->toContain('operationId:')
+            ->and($openApi)->toContain('security:')
+            ->and($openApi)->toContain('schemas:')
+            ->and($openApi)->toContain('Error:')
+            ->and($openApi)->toContain('PaginationMeta:')
+            ->and($openApi)->toContain('Idempotency-Key');
     }
 });
 

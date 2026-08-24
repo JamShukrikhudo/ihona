@@ -1,14 +1,19 @@
 openapi: 3.1.0
 info: {title: Real Estate Zoopla Sync API, version: 1.0.0}
+security: [{sanctum: []}]
+x-liberu-idempotency-header: Idempotency-Key
 paths:
   /api/v1/real-estate/integrations/zoopla/syncs:
-    get: {summary: List Zoopla syncs, responses: {'200': {description: OK}}}
-    post: {summary: Create a Zoopla sync, responses: {'201': {description: Created}}}
+    get: {operationId: real.estate.zoopla.list, summary: List Zoopla syncs, responses: {'200': {description: OK}}}
+    post: {operationId: real.estate.zoopla.create, responses: {'201': {description: Created}}}
   /api/v1/real-estate/integrations/zoopla/syncs/{zooplaSync}:
-    post: {summary: Synchronize a Zoopla listing, responses: {'200': {description: Synchronized}}}
-    get: {summary: Show a Zoopla sync, responses: {'200': {description: OK}}}
-    patch: {summary: Update a Zoopla sync, responses: {'200': {description: OK}}}
-    delete: {summary: Archive a Zoopla sync, responses: {'204': {description: Archived}}}
+    post: {operationId: real.estate.zoopla.sync, summary: Synchronize a Zoopla listing, responses: {'200': {description: Synchronized}}}
+    get: {operationId: real.estate.zoopla.get, summary: Show a Zoopla sync, responses: {'200': {description: OK}}}
+    patch: {operationId: real.estate.zoopla.update, summary: Update a Zoopla sync, responses: {'200': {description: OK}}}
+    delete: {operationId: real.estate.zoopla.delete, summary: Archive a Zoopla sync, responses: {'204': {description: Archived}}}
 components:
   securitySchemes:
     sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}
+  schemas:
+    Error: {type: object, required: [message], properties: {message: {type: string}, code: {type: string}, errors: {type: object, additionalProperties: true}}}
+    PaginationMeta: {type: object, required: [current_page, per_page, total, last_page], properties: {current_page: {type: integer}, per_page: {type: integer}, total: {type: integer}, last_page: {type: integer}}}
