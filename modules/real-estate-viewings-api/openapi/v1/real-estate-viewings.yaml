@@ -9,3 +9,26 @@ paths:
     get: {operationId: real.estate.viewings.get, responses: {"200": {description: Viewing}}}
     patch: {operationId: real.estate.viewings.update, responses: {"200": {description: Updated viewing}}}
     delete: {operationId: real.estate.viewings.delete, responses: {"204": {description: Deleted viewing}}}
+  /api/v1/real-estate/viewings/{id}/confirm:
+    post:
+      operationId: real.estate.viewings.confirm
+      security: [{sanctum: []}]
+      responses: {'200': {description: Viewing confirmed}}
+  /api/v1/real-estate/viewings/{id}/complete:
+    post:
+      operationId: real.estate.viewings.complete
+      security: [{sanctum: []}]
+      responses: {'200': {description: Viewing completed}}
+  /api/v1/real-estate/viewings/{id}/cancel:
+    post:
+      operationId: real.estate.viewings.cancel
+      security: [{sanctum: []}]
+      responses: {'200': {description: Viewing cancelled}}
+  /api/v1/real-estate/viewings/{id}/no-show:
+    post:
+      operationId: real.estate.viewings.no_show
+      security: [{sanctum: []}]
+      responses: {'200': {description: Viewing marked as a no-show}}
+components:
+  securitySchemes:
+    sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}

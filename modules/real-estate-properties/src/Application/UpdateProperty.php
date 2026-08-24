@@ -25,7 +25,15 @@ final class UpdateProperty
             $property = Property::query()->forTeam($teamId)->findOrFail($propertyId);
             $changes = [];
 
-            foreach (['address', 'property_type', 'characteristics', 'utilities', 'features'] as $field) {
+            $fields = [
+                'address', 'title', 'description', 'price', 'currency', 'bedrooms', 'bathrooms', 'area_sqft',
+                'year_built', 'structured_address', 'latitude', 'longitude', 'postal_code', 'country', 'tenure',
+                'lease_years_remaining', 'service_charge', 'ground_rent', 'energy_rating', 'epc',
+                'virtual_tour_url', 'virtual_tour_provider', 'model_3d_url', 'floor_plan_data', 'property_type',
+                'characteristics', 'utilities', 'features',
+            ];
+
+            foreach ($fields as $field) {
                 if (! array_key_exists($field, $attributes)) {
                     continue;
                 }
@@ -37,9 +45,7 @@ final class UpdateProperty
             }
 
             if ($changes !== []) {
-                $property->fill(array_intersect_key($attributes, array_flip([
-                    'property_type', 'characteristics', 'utilities', 'features',
-                ])) + ($address === null ? [] : ['address' => $address]));
+                $property->fill(array_intersect_key($attributes, array_flip($fields)) + ($address === null ? [] : ['address' => $address]));
                 $property->save();
 
                 $property->history()->create([

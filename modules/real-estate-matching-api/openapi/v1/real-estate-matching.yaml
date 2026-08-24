@@ -9,3 +9,6 @@ paths:
     get: {operationId: real.estate.matching.get, responses: {"200": {description: Profile}}}
     patch: {operationId: real.estate.matching.update, responses: {"200": {description: Updated profile}}}
     delete: {operationId: real.estate.matching.delete, responses: {"204": {description: Deleted profile}}}
+components:
+  securitySchemes:
+    sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}

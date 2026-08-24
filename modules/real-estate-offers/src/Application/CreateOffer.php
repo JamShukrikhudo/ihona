@@ -21,6 +21,11 @@ final class CreateOffer
             throw ValidationException::withMessages(['amount' => 'A non-negative offer amount is required.']);
         }
 
-        return DB::transaction(fn (): Offer => Offer::query()->create(['team_id' => $teamId, 'created_by' => $actorId, 'property_id' => $attributes['property_id'] ?? null, 'party_id' => $attributes['party_id'] ?? null, 'subject' => $subject, 'amount' => $amount, 'status' => OfferStatus::Draft, 'terms' => $attributes['terms'] ?? [], 'qualification' => $attributes['qualification'] ?? [], 'negotiation' => $attributes['negotiation'] ?? [], 'proof' => $attributes['proof'] ?? [], 'decision_history' => $attributes['decision_history'] ?? [], 'accepted_controls' => $attributes['accepted_controls'] ?? []]));
+        return DB::transaction(function () use ($teamId, $actorId, $attributes, $subject, $amount): Offer {
+            $offer = Offer::query()->create(['team_id' => $teamId, 'created_by' => $actorId, 'property_id' => $attributes['property_id'] ?? null, 'party_id' => $attributes['party_id'] ?? null, 'subject' => $subject, 'amount' => $amount, 'currency' => $attributes['currency'] ?? 'GBP', 'status' => OfferStatus::Draft, 'terms' => $attributes['terms'] ?? [], 'qualification' => $attributes['qualification'] ?? [], 'negotiation' => $attributes['negotiation'] ?? [], 'proof' => $attributes['proof'] ?? [], 'decision_history' => $attributes['decision_history'] ?? [], 'accepted_controls' => $attributes['accepted_controls'] ?? [], 'offered_at' => $attributes['offered_at'] ?? now(), 'mortgage_status' => $attributes['mortgage_status'] ?? null, 'chain_information' => $attributes['chain_information'] ?? null, 'conditions' => $attributes['conditions'] ?? null]);
+            $offer->events()->create(['team_id' => $teamId, 'actor_id' => $actorId, 'event_type' => 'created', 'amount' => $amount, 'status' => OfferStatus::Draft, 'changes' => ['subject' => $subject, 'amount' => $amount], 'occurred_at' => now()]);
+
+            return $offer;
+        });
     }
 }

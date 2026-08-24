@@ -18,11 +18,20 @@ final class Viewing extends Model
 
     protected function casts(): array
     {
-        return ['status' => ViewingStatus::class, 'access' => 'array', 'accompaniment' => 'array', 'reminders' => 'array', 'feedback' => 'array', 'starts_at' => 'datetime', 'ends_at' => 'datetime'];
+        return ['status' => ViewingStatus::class, 'access' => 'array', 'accompaniment' => 'array', 'reminders' => 'array', 'feedback' => 'array', 'no_show' => 'boolean', 'starts_at' => 'datetime', 'ends_at' => 'datetime'];
     }
 
     public function scopeForTeam($query, int|string $teamId)
     {
         return $query->where('team_id', $teamId);
+    }
+
+    public function canTransitionTo(ViewingStatus $status): bool
+    {
+        return match ($this->status) {
+            ViewingStatus::Requested => in_array($status, [ViewingStatus::Confirmed, ViewingStatus::Cancelled], true),
+            ViewingStatus::Confirmed => in_array($status, [ViewingStatus::Completed, ViewingStatus::Cancelled, ViewingStatus::NoShow], true),
+            ViewingStatus::Completed, ViewingStatus::Cancelled, ViewingStatus::NoShow => false,
+        };
     }
 }

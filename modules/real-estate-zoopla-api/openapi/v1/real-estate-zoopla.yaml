@@ -1,4 +1,4 @@
-openapi: 3.0.3
+openapi: 3.1.0
 info: {title: Real Estate Zoopla Sync API, version: 1.0.0}
 paths:
   /api/v1/real-estate/integrations/zoopla/syncs:
@@ -9,3 +9,6 @@ paths:
     get: {summary: Show a Zoopla sync, responses: {'200': {description: OK}}}
     patch: {summary: Update a Zoopla sync, responses: {'200': {description: OK}}}
     delete: {summary: Archive a Zoopla sync, responses: {'204': {description: Archived}}}
+components:
+  securitySchemes:
+    sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}

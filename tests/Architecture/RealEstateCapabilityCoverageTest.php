@@ -58,3 +58,21 @@ it('keeps Packagist names free of the source repository module prefix', function
         expect($package['name'])->not->toContain('/module-');
     }
 });
+
+it('requires authenticated, throttled API boundaries and OpenAPI 3.1 contracts', function (): void {
+    $root = dirname(__DIR__, 2);
+
+    foreach (glob("{$root}/modules/real-estate-*-api/routes/api.php") ?: [] as $routeFile) {
+        $routes = file_get_contents($routeFile);
+
+        expect($routes)->toContain("'auth:sanctum'")
+            ->and($routes)->toContain("'throttle:api'");
+    }
+
+    foreach (glob("{$root}/modules/real-estate-*-api/openapi/v1/*.yaml") ?: [] as $openApiFile) {
+        $openApi = file_get_contents($openApiFile);
+
+        expect($openApi)->toContain('openapi: 3.1.0')
+            ->and($openApi)->toContain('securitySchemes:');
+    }
+});

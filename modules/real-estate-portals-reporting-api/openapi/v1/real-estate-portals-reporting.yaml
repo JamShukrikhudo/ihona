@@ -1,4 +1,4 @@
-openapi: 3.0.3
+openapi: 3.1.0
 info:
   title: Real Estate Portals and Reporting API
   version: 1.0.0
@@ -11,3 +11,6 @@ paths:
     get: {summary: Show a portal report, responses: {'200': {description: OK}}}
     patch: {summary: Update a portal report, responses: {'200': {description: OK}}}
     delete: {summary: Archive a portal report, responses: {'204': {description: Archived}}}
+components:
+  securitySchemes:
+    sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}

@@ -9,6 +9,7 @@ use Liberu\RealEstate\PropertyManagement\Application\CreateManagementRecord;
 use Liberu\RealEstate\PropertyManagement\Application\RecordManagementFailure;
 use Liberu\RealEstate\PropertyManagement\Application\TransitionManagementRecord;
 use Liberu\RealEstate\PropertyManagement\Application\UpdateManagementDetails;
+use Liberu\RealEstate\PropertyManagement\Application\UpdateManagementRecord;
 use Liberu\RealEstate\PropertyManagement\Domain\Events\ManagementRecordCreated;
 use Liberu\RealEstate\PropertyManagement\Domain\Events\ManagementRecordStatusChanged;
 use Liberu\RealEstate\PropertyManagement\Domain\ManagementCapability;
@@ -24,6 +25,9 @@ it('supports every property management capability through its validated public b
     expect(fn () => app(UpdateManagementDetails::class)->handle($record, 1, 5, []))->toThrow(ValidationException::class);
     $updated = app(UpdateManagementDetails::class)->handle($record, 1, 5, ['frequency' => 'monthly', 'amount' => 1500]);
     expect($updated->details['amount'])->toBe(1500);
+
+    $updated = app(UpdateManagementRecord::class)->handle($updated, 1, 5, ['subject' => 'Updated rent schedule', 'status' => ManagementStatus::InProgress->value]);
+    expect($updated->subject)->toBe('Updated rent schedule')->and($updated->status)->toBe(ManagementStatus::InProgress);
 });
 
 it('emits lifecycle events, records failures, and keeps records tenant-scoped', function (): void {

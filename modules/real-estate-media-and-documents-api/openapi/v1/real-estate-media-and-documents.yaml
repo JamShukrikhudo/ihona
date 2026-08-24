@@ -15,3 +15,6 @@ paths:
     get: {operationId: real.estate.media.and.documents.get, responses: {"200": {description: Resource}}}
     patch: {operationId: real.estate.media.and.documents.update, responses: {"200": {description: Updated resource}}}
     delete: {operationId: real.estate.media.and.documents.delete, responses: {"204": {description: Deleted resource}}}
+components:
+  securitySchemes:
+    sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}

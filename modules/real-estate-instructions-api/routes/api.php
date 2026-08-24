@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Liberu\RealEstate\InstructionsApi\Http\Controllers\InstructionController;
 
-Route::prefix('api/v1/real-estate/instructions')->middleware(['api', 'auth:sanctum', 'throttle:api'])->group(function (): void {
+Route::prefix('api/v1/real-estate/instructions')->middleware(['api', 'auth:sanctum', 'throttle:api', 'api.idempotency'])->group(function (): void {
     Route::get('/', [InstructionController::class, 'index'])->name('real-estate.instructions.index');
     Route::post('/', [InstructionController::class, 'store'])->name('real-estate.instructions.store');
     Route::get('/{instruction}', [InstructionController::class, 'show'])->name('real-estate.instructions.show');

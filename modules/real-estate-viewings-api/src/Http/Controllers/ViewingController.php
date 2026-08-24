@@ -7,8 +7,12 @@ namespace Liberu\RealEstate\ViewingsApi\Http\Controllers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Liberu\RealEstate\Viewings\Application\CancelViewing;
+use Liberu\RealEstate\Viewings\Application\CompleteViewing;
+use Liberu\RealEstate\Viewings\Application\ConfirmViewing;
 use Liberu\RealEstate\Viewings\Application\CreateViewing;
 use Liberu\RealEstate\Viewings\Application\DeleteViewing;
+use Liberu\RealEstate\Viewings\Application\MarkViewingNoShow;
 use Liberu\RealEstate\Viewings\Application\UpdateViewing;
 use Liberu\RealEstate\Viewings\Models\Viewing;
 
@@ -55,5 +59,37 @@ final class ViewingController
         $delete->handle($viewing, $teamId);
 
         return response()->noContent();
+    }
+
+    public function confirm(Request $request, Viewing $viewing, ConfirmViewing $confirm): JsonResponse
+    {
+        $teamId = $request->user()?->current_team_id;
+        abort_unless((string) $teamId === (string) $viewing->team_id, 404);
+
+        return response()->json(['data' => $confirm->handle($viewing, $teamId)]);
+    }
+
+    public function complete(Request $request, Viewing $viewing, CompleteViewing $complete): JsonResponse
+    {
+        $teamId = $request->user()?->current_team_id;
+        abort_unless((string) $teamId === (string) $viewing->team_id, 404);
+
+        return response()->json(['data' => $complete->handle($viewing, $teamId, $request->validate(['feedback' => ['sometimes', 'array']])['feedback'] ?? [])]);
+    }
+
+    public function cancel(Request $request, Viewing $viewing, CancelViewing $cancel): JsonResponse
+    {
+        $teamId = $request->user()?->current_team_id;
+        abort_unless((string) $teamId === (string) $viewing->team_id, 404);
+
+        return response()->json(['data' => $cancel->handle($viewing, $teamId, $request->validate(['reason' => ['nullable', 'string', 'max:1000']])['reason'] ?? null)]);
+    }
+
+    public function noShow(Request $request, Viewing $viewing, MarkViewingNoShow $noShow): JsonResponse
+    {
+        $teamId = $request->user()?->current_team_id;
+        abort_unless((string) $teamId === (string) $viewing->team_id, 404);
+
+        return response()->json(['data' => $noShow->handle($viewing, $teamId, $request->validate(['note' => ['nullable', 'string', 'max:1000']])['note'] ?? null)]);
     }
 }

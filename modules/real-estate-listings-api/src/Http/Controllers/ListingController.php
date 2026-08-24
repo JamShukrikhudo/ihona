@@ -11,6 +11,7 @@ use Liberu\RealEstate\Listings\Application\CreateListing;
 use Liberu\RealEstate\Listings\Application\DeleteListing;
 use Liberu\RealEstate\Listings\Application\UpdateListing;
 use Liberu\RealEstate\Listings\Models\Listing;
+use Liberu\RealEstate\ListingsApi\Http\Resources\ListingResource;
 
 final class ListingController
 {
@@ -20,7 +21,7 @@ final class ListingController
         abort_unless($teamId !== null, 403);
         $size = max(1, min($request->integer('page_size', 25), 100));
 
-        return response()->json(['data' => Listing::query()->forTeam($teamId)->latest()->paginate($size)]);
+        return ListingResource::collection(Listing::query()->forTeam($teamId)->latest()->paginate($size))->response();
     }
 
     public function store(Request $request, CreateListing $create): JsonResponse
@@ -29,14 +30,14 @@ final class ListingController
         abort_unless($user?->current_team_id !== null, 403);
         $data = $request->validate(['title' => ['required', 'string', 'max:255'], 'property_id' => ['nullable', 'integer'], 'price' => ['nullable', 'numeric', 'min:0'], 'available_from' => ['nullable', 'date'], 'channel_content' => ['sometimes', 'array'], 'publication_rules' => ['sometimes', 'array'], 'portal_feeds' => ['sometimes', 'array'], 'reconciliation' => ['sometimes', 'array']]);
 
-        return response()->json(['data' => $create->handle($user->current_team_id, $user->getAuthIdentifier(), $data)], 201);
+        return (new ListingResource($create->handle($user->current_team_id, $user->getAuthIdentifier(), $data)))->response()->setStatusCode(201);
     }
 
     public function show(Request $request, Listing $listing): JsonResponse
     {
         abort_unless((string) $request->user()?->current_team_id === (string) $listing->team_id, 404);
 
-        return response()->json(['data' => $listing]);
+        return (new ListingResource($listing))->response();
     }
 
     public function update(Request $request, Listing $listing, UpdateListing $update): JsonResponse
@@ -45,7 +46,7 @@ final class ListingController
         abort_unless((string) $teamId === (string) $listing->team_id, 404);
         $data = $request->validate(['title' => ['sometimes', 'string', 'max:255'], 'price' => ['nullable', 'numeric', 'min:0'], 'available_from' => ['nullable', 'date'], 'channel_content' => ['sometimes', 'array'], 'publication_rules' => ['sometimes', 'array'], 'portal_feeds' => ['sometimes', 'array'], 'reconciliation' => ['sometimes', 'array'], 'status' => ['sometimes', 'string', 'in:draft,ready,published,suspended,withdrawn']]);
 
-        return response()->json(['data' => $update->handle($listing, $teamId, $data)]);
+        return (new ListingResource($update->handle($listing, $teamId, $data)))->response();
     }
 
     public function destroy(Request $request, Listing $listing, DeleteListing $delete): Response

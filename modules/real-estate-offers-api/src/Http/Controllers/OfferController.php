@@ -9,7 +9,10 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Liberu\RealEstate\Offers\Application\CreateOffer;
 use Liberu\RealEstate\Offers\Application\DeleteOffer;
+use Liberu\RealEstate\Offers\Application\RecordOfferProof;
+use Liberu\RealEstate\Offers\Application\TransitionOffer;
 use Liberu\RealEstate\Offers\Application\UpdateOffer;
+use Liberu\RealEstate\Offers\Domain\OfferStatus;
 use Liberu\RealEstate\Offers\Models\Offer;
 
 final class OfferController
@@ -43,7 +46,7 @@ final class OfferController
     {
         $teamId = $request->user()?->current_team_id;
         abort_unless((string) $teamId === (string) $offer->team_id, 404);
-        $data = $request->validate(['subject' => ['sometimes', 'string', 'max:255'], 'amount' => ['sometimes', 'numeric', 'min:0'], 'status' => ['sometimes', 'string', 'in:draft,submitted,countered,accepted,rejected,withdrawn'], 'terms' => ['sometimes', 'array'], 'qualification' => ['sometimes', 'array'], 'negotiation' => ['sometimes', 'array'], 'proof' => ['sometimes', 'array'], 'decision_history' => ['sometimes', 'array'], 'accepted_controls' => ['sometimes', 'array']]);
+        $data = $request->validate(['subject' => ['sometimes', 'string', 'max:255'], 'amount' => ['sometimes', 'numeric', 'min:0'], 'currency' => ['sometimes', 'string', 'size:3'], 'terms' => ['sometimes', 'array'], 'qualification' => ['sometimes', 'array'], 'negotiation' => ['sometimes', 'array'], 'proof' => ['sometimes', 'array'], 'decision_history' => ['sometimes', 'array'], 'accepted_controls' => ['sometimes', 'array'], 'mortgage_status' => ['nullable', 'string'], 'chain_information' => ['nullable', 'string'], 'conditions' => ['nullable', 'string']]);
 
         return response()->json(['data' => $update->handle($offer, $teamId, $data)]);
     }
@@ -55,5 +58,30 @@ final class OfferController
         $delete->handle($offer, $teamId);
 
         return response()->noContent();
+    }
+
+    public function transition(Request $request, Offer $offer, string $status, TransitionOffer $transition): JsonResponse
+    {
+        $user = $request->user();
+        abort_unless($user?->current_team_id !== null, 403);
+        $data = $request->validate(['note' => ['nullable', 'string', 'max:5000'], 'amount' => ['sometimes', 'numeric', 'min:0'], 'negotiation' => ['sometimes', 'array'], 'terms' => ['sometimes', 'array']]);
+        abort_unless(in_array($status, array_column(OfferStatus::cases(), 'value'), true), 404);
+
+        return response()->json(['data' => $transition->handle($offer, $user->current_team_id, $user->getAuthIdentifier(), OfferStatus::from($status), $data)]);
+    }
+
+    public function proof(Request $request, Offer $offer, RecordOfferProof $record): JsonResponse
+    {
+        $user = $request->user();
+        abort_unless($user?->current_team_id !== null, 403);
+
+        return response()->json(['data' => $record->handle($offer, $user->current_team_id, $user->getAuthIdentifier(), $request->validate(['proof' => ['required', 'array']])['proof'])]);
+    }
+
+    public function timeline(Request $request, Offer $offer): JsonResponse
+    {
+        abort_unless((string) $request->user()?->current_team_id === (string) $offer->team_id, 404);
+
+        return response()->json(['data' => $offer->events()->get()]);
     }
 }

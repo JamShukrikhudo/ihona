@@ -9,3 +9,12 @@ paths:
     get: {operationId: real.estate.offers.get, responses: {"200": {description: Offer}}}
     patch: {operationId: real.estate.offers.update, responses: {"200": {description: Updated offer}}}
     delete: {operationId: real.estate.offers.delete, responses: {"204": {description: Deleted offer}}}
+  /api/v1/real-estate/offers/{id}/transition/{status}:
+    post: {operationId: real.estate.offers.transition, responses: {"200": {description: Transitioned offer}}}
+  /api/v1/real-estate/offers/{id}/proof:
+    post: {operationId: real.estate.offers.proof, responses: {"200": {description: Recorded proof}}}
+  /api/v1/real-estate/offers/{id}/timeline:
+    get: {operationId: real.estate.offers.timeline, responses: {"200": {description: Offer decision timeline}}}
+components:
+  securitySchemes:
+    sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}

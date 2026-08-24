@@ -27,3 +27,25 @@ it('soft deletes team properties and retains the deletion history', function () 
         ->and(Property::withTrashed()->find($property->getKey()))->not->toBeNull()
         ->and(Property::withTrashed()->find($property->getKey())->history()->where('event', 'deleted')->exists())->toBeTrue();
 });
+
+it('preserves legacy property listing attributes in the modular boundary', function () {
+    $property = app(CreateProperty::class)->handle(10, 20, [
+        'address' => '1 High Street',
+        'title' => 'A restored legacy listing',
+        'description' => 'Carried forward from the former application model.',
+        'price' => 425000,
+        'currency' => 'GBP',
+        'bedrooms' => 3,
+        'bathrooms' => 2,
+        'area_sqft' => 1250,
+        'year_built' => 1901,
+        'postal_code' => 'SW1A 1AA',
+        'virtual_tour_url' => 'https://example.test/tour',
+        'model_3d_url' => 'https://example.test/model.glb',
+    ]);
+
+    expect($property->title)->toBe('A restored legacy listing')
+        ->and($property->price)->toBe('425000.00')
+        ->and($property->bedrooms)->toBe(3)
+        ->and($property->virtual_tour_url)->toBe('https://example.test/tour');
+});

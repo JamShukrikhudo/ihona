@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Liberu\RealEstate\ListingsApi\Http\Controllers\ListingController;
 
-Route::prefix('api/v1/real-estate/listings')->middleware(['api', 'auth:sanctum', 'throttle:api'])->group(function (): void {
+Route::prefix('api/v1/real-estate/listings')->middleware(['api', 'auth:sanctum', 'throttle:api', 'api.idempotency'])->group(function (): void {
     Route::get('/', [ListingController::class, 'index'])->name('real-estate.listings.index');
     Route::post('/', [ListingController::class, 'store'])->name('real-estate.listings.store');
     Route::get('/{listing}', [ListingController::class, 'show'])->name('real-estate.listings.show');
