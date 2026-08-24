@@ -5313,12 +5313,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-api-access.git",
-                "reference": "5c79a794e1e64e84efde7305bde23a1dca459168"
+                "reference": "eb29cd1e65c181596baaced151696de1d1a80e68"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-api-access/zipball/5c79a794e1e64e84efde7305bde23a1dca459168",
-                "reference": "5c79a794e1e64e84efde7305bde23a1dca459168",
+                "url": "https://api.github.com/repos/liberusoftware/module-api-access/zipball/eb29cd1e65c181596baaced151696de1d1a80e68",
+                "reference": "eb29cd1e65c181596baaced151696de1d1a80e68",
                 "shasum": ""
             },
             "require": {
