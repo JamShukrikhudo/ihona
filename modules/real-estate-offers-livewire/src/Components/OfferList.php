@@ -8,10 +8,12 @@ use Illuminate\Contracts\View\View;
 use Liberu\RealEstate\Offers\Application\TransitionOffer;
 use Liberu\RealEstate\Offers\Domain\OfferStatus;
 use Liberu\RealEstate\Offers\Models\Offer;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 final class OfferList extends Component
 {
+    #[Validate('nullable|string|max:255')]
     public string $search = '';
 
     public function submitOffer(int $offerId): void

@@ -6,10 +6,12 @@ namespace Liberu\RealEstate\CoreLivewire\Components;
 
 use Illuminate\Contracts\View\View;
 use Liberu\RealEstate\Core\Models\Territory;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 final class TerritoryList extends Component
 {
+    #[Validate('nullable|string|max:255')]
     public string $search = '';
 
     public function render(): View

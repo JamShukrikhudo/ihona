@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace Liberu\RealEstate\SalesProgressionLivewire\Components;
 
 use Liberu\RealEstate\SalesProgression\Models\SalesProgression;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 final class SalesProgressionList extends Component
 {
+    #[Validate('nullable|string|max:255')]
     public string $search = '';
 
     public function render(): mixed

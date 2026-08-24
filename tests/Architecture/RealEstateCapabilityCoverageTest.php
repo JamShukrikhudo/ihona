@@ -92,3 +92,17 @@ it('keeps API controllers behind explicit response resources', function (): void
         expect($controller)->toContain('Http\\Resources\\');
     }
 });
+
+it('keeps Livewire list surfaces validated and stateful', function (): void {
+    $root = dirname(__DIR__, 2);
+
+    foreach (glob("{$root}/modules/real-estate-*-livewire/src/Components/*.php") ?: [] as $componentFile) {
+        expect(file_get_contents($componentFile))->toContain("#[Validate('nullable|string|max:255')]");
+    }
+
+    foreach (glob("{$root}/modules/real-estate-*-livewire/resources/views/*.blade.php") ?: [] as $viewFile) {
+        $view = file_get_contents($viewFile);
+
+        expect($view)->toContain('wire:loading')->and($view)->toContain('@empty');
+    }
+});

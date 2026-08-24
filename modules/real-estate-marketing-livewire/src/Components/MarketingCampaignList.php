@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace Liberu\RealEstate\MarketingLivewire\Components;
 
 use Liberu\RealEstate\Marketing\Models\MarketingCampaign;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 final class MarketingCampaignList extends Component
 {
+    #[Validate('nullable|string|max:255')]
     public string $search = '';
 
     public function render(): mixed

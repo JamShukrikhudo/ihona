@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace Liberu\RealEstate\PortalsReportingLivewire\Components;
 
 use Liberu\RealEstate\PortalsReporting\Models\PortalReport;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 final class PortalReportList extends Component
 {
+    #[Validate('nullable|string|max:255')]
     public string $search = '';
 
     public function render(): mixed

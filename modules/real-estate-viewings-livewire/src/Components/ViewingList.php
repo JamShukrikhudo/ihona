@@ -9,10 +9,12 @@ use Liberu\RealEstate\Viewings\Application\CancelViewing;
 use Liberu\RealEstate\Viewings\Application\ConfirmViewing;
 use Liberu\RealEstate\Viewings\Application\MarkViewingNoShow;
 use Liberu\RealEstate\Viewings\Models\Viewing;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 final class ViewingList extends Component
 {
+    #[Validate('nullable|string|max:255')]
     public string $search = '';
 
     public ?string $error = null;

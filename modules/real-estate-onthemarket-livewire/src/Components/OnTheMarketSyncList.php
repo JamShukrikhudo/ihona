@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace Liberu\RealEstate\OnTheMarketLivewire\Components;
 
 use Liberu\RealEstate\OnTheMarket\Models\OnTheMarketSync;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 final class OnTheMarketSyncList extends Component
 {
+    #[Validate('nullable|string|max:255')]
     public string $search = '';
 
     public function render(): mixed

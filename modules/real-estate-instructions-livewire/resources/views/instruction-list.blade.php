@@ -1,4 +1,5 @@
 <div>
+    <div wire:loading class="text-sm text-gray-500" role="status">Loading instructions…</div>
     <label for="instruction-search">Search instructions</label>
     <input id="instruction-search" type="search" wire:model.live="search">
     <ul>

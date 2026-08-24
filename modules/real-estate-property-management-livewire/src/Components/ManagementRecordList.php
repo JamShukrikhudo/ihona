@@ -6,10 +6,12 @@ namespace Liberu\RealEstate\PropertyManagementLivewire\Components;
 
 use Illuminate\Contracts\View\View;
 use Liberu\RealEstate\PropertyManagement\Models\ManagementRecord;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 final class ManagementRecordList extends Component
 {
+    #[Validate('nullable|string|max:255')]
     public string $search = '';
 
     public function render(): View

@@ -1,4 +1,5 @@
 <div>
+    <div wire:loading class="text-sm text-gray-500" role="status">Loading viewings…</div>
     <label for="viewing-search">Search viewings</label>
     <input id="viewing-search" type="search" wire:model.live="search">
     @if ($error)

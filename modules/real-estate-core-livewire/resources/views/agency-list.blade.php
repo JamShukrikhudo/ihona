@@ -1,4 +1,5 @@
 <div>
+    <div wire:loading class="text-sm text-gray-500" role="status">Loading agencies…</div>
     <label for="agency-search">Search agencies</label>
     <input id="agency-search" type="search" wire:model.live="search" autocomplete="off">
     <ul aria-live="polite">

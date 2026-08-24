@@ -6,10 +6,12 @@ namespace Liberu\RealEstate\PartiesLivewire\Components;
 
 use Illuminate\Contracts\View\View;
 use Liberu\RealEstate\Parties\Models\Party;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 final class PartyList extends Component
 {
+    #[Validate('nullable|string|max:255')]
     public string $search = '';
 
     public function render(): View
