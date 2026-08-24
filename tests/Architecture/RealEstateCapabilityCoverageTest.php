@@ -76,3 +76,13 @@ it('requires authenticated, throttled API boundaries and OpenAPI 3.1 contracts',
             ->and($openApi)->toContain('securitySchemes:');
     }
 });
+
+it('keeps API controllers behind explicit response resources', function (): void {
+    $root = dirname(__DIR__, 2);
+
+    foreach (glob("{$root}/modules/real-estate-*-api/src/Http/Controllers/*Controller.php") ?: [] as $controllerFile) {
+        $controller = file_get_contents($controllerFile);
+
+        expect($controller)->toContain('Http\\Resources\\');
+    }
+});

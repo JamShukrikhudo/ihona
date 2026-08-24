@@ -15,6 +15,7 @@ use Liberu\RealEstate\Valuations\Application\DeleteValuation;
 use Liberu\RealEstate\Valuations\Application\ScheduleValuation;
 use Liberu\RealEstate\Valuations\Application\UpdateValuation;
 use Liberu\RealEstate\Valuations\Models\Valuation;
+use Liberu\RealEstate\ValuationsApi\Http\Resources\ValuationResource;
 
 final class ValuationController
 {
@@ -24,7 +25,7 @@ final class ValuationController
         abort_unless($teamId !== null, 403);
         $size = max(1, min($request->integer('page_size', 25), 100));
 
-        return response()->json(['data' => Valuation::query()->forTeam($teamId)->latest()->paginate($size)]);
+        return ValuationResource::collection(Valuation::query()->forTeam($teamId)->latest()->paginate($size))->response();
     }
 
     public function store(Request $request, CreateValuation $create): JsonResponse
@@ -33,14 +34,14 @@ final class ValuationController
         abort_unless($user?->current_team_id !== null, 403);
         $data = $request->validate(['subject' => ['required', 'string', 'max:255'], 'property_id' => ['nullable', 'integer'], 'party_id' => ['nullable', 'integer'], 'valued_amount' => ['nullable', 'numeric', 'min:0'], 'fee_amount' => ['nullable', 'numeric', 'min:0'], 'currency' => ['nullable', 'string', 'size:3'], 'comparable_data' => ['sometimes', 'array'], 'recommendation' => ['sometimes', 'array'], 'scheduled_at' => ['nullable', 'date'], 'follow_up_at' => ['nullable', 'date']]);
 
-        return response()->json(['data' => $create->handle($user->current_team_id, $user->getAuthIdentifier(), $data)], 201);
+        return (new ValuationResource($create->handle($user->current_team_id, $user->getAuthIdentifier(), $data)))->response()->setStatusCode(201);
     }
 
     public function show(Request $request, Valuation $valuation): JsonResponse
     {
         abort_unless((string) $request->user()?->current_team_id === (string) $valuation->team_id, 404);
 
-        return response()->json(['data' => $valuation]);
+        return (new ValuationResource($valuation))->response();
     }
 
     public function update(Request $request, Valuation $valuation, UpdateValuation $update): JsonResponse
@@ -49,7 +50,7 @@ final class ValuationController
         abort_unless((string) $teamId === (string) $valuation->team_id, 404);
         $data = $request->validate(['subject' => ['sometimes', 'string', 'max:255'], 'valued_amount' => ['nullable', 'numeric', 'min:0'], 'fee_amount' => ['nullable', 'numeric', 'min:0'], 'currency' => ['nullable', 'string', 'size:3'], 'comparable_data' => ['sometimes', 'array'], 'recommendation' => ['sometimes', 'array'], 'scheduled_at' => ['nullable', 'date'], 'follow_up_at' => ['nullable', 'date'], 'status' => ['sometimes', 'string', 'in:draft,scheduled,completed,converted,cancelled']]);
 
-        return response()->json(['data' => $update->handle($valuation, $teamId, $data)]);
+        return (new ValuationResource($update->handle($valuation, $teamId, $data)))->response();
     }
 
     public function destroy(Request $request, Valuation $valuation, DeleteValuation $delete): Response
@@ -66,7 +67,7 @@ final class ValuationController
         $teamId = $request->user()?->current_team_id;
         abort_unless((string) $teamId === (string) $valuation->team_id, 404);
 
-        return response()->json(['data' => $schedule->handle($valuation, $teamId, (string) $request->validate(['scheduled_at' => ['required', 'date', 'after:now']])['scheduled_at'])]);
+        return (new ValuationResource($schedule->handle($valuation, $teamId, (string) $request->validate(['scheduled_at' => ['required', 'date', 'after:now']])['scheduled_at'])))->response();
     }
 
     public function complete(Request $request, Valuation $valuation, CompleteValuation $complete): JsonResponse
@@ -74,7 +75,7 @@ final class ValuationController
         $teamId = $request->user()?->current_team_id;
         abort_unless((string) $teamId === (string) $valuation->team_id, 404);
 
-        return response()->json(['data' => $complete->handle($valuation, $teamId, $request->validate(['valued_amount' => ['required', 'numeric', 'min:0'], 'recommendation' => ['sometimes', 'array'], 'follow_up_at' => ['nullable', 'date', 'after:now']]))]);
+        return (new ValuationResource($complete->handle($valuation, $teamId, $request->validate(['valued_amount' => ['required', 'numeric', 'min:0'], 'recommendation' => ['sometimes', 'array'], 'follow_up_at' => ['nullable', 'date', 'after:now']]))))->response();
     }
 
     public function convert(Request $request, Valuation $valuation, ConvertValuation $convert): JsonResponse
@@ -82,7 +83,7 @@ final class ValuationController
         $teamId = $request->user()?->current_team_id;
         abort_unless((string) $teamId === (string) $valuation->team_id, 404);
 
-        return response()->json(['data' => $convert->handle($valuation, $teamId, $request->validate(['type' => ['required', 'string', 'max:80'], 'id' => ['nullable', 'integer'], 'metadata' => ['sometimes', 'array']]))]);
+        return (new ValuationResource($convert->handle($valuation, $teamId, $request->validate(['type' => ['required', 'string', 'max:80'], 'id' => ['nullable', 'integer'], 'metadata' => ['sometimes', 'array']]))))->response();
     }
 
     public function comparables(Request $request, Valuation $valuation, CalculateComparables $calculate): JsonResponse

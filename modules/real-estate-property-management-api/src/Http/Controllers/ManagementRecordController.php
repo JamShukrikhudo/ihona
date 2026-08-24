@@ -12,6 +12,7 @@ use Liberu\RealEstate\PropertyManagement\Application\TransitionManagementRecord;
 use Liberu\RealEstate\PropertyManagement\Application\UpdateManagementDetails;
 use Liberu\RealEstate\PropertyManagement\Domain\ManagementStatus;
 use Liberu\RealEstate\PropertyManagement\Models\ManagementRecord;
+use Liberu\RealEstate\PropertyManagementApi\Http\Resources\ManagementRecordResource;
 
 final class ManagementRecordController
 {
@@ -20,7 +21,7 @@ final class ManagementRecordController
         $team = $request->user()?->current_team_id;
         abort_unless($team !== null, 403);
 
-        return response()->json(['data' => ManagementRecord::query()->forTeam($team)->latest()->paginate(min(100, max(1, $request->integer('page_size', 25))))]);
+        return ManagementRecordResource::collection(ManagementRecord::query()->forTeam($team)->latest()->paginate(min(100, max(1, $request->integer('page_size', 25)))))->response();
     }
 
     public function store(Request $request, CreateManagementRecord $create): JsonResponse
@@ -29,14 +30,14 @@ final class ManagementRecordController
         abort_unless($user?->current_team_id !== null, 403);
         $data = $request->validate(['subject' => 'required|string|max:255', 'capability' => 'required|string', 'property_id' => 'nullable|integer', 'party_id' => 'nullable|integer', 'details' => 'sometimes|array']);
 
-        return response()->json(['data' => $create->handle($user->current_team_id, $user->getAuthIdentifier(), $data)], 201);
+        return (new ManagementRecordResource($create->handle($user->current_team_id, $user->getAuthIdentifier(), $data)))->response()->setStatusCode(201);
     }
 
     public function show(Request $request, ManagementRecord $record): JsonResponse
     {
         abort_unless((string) $request->user()?->current_team_id === (string) $record->team_id, 404);
 
-        return response()->json(['data' => $record]);
+        return (new ManagementRecordResource($record))->response();
     }
 
     public function update(Request $request, ManagementRecord $record, TransitionManagementRecord $transition): JsonResponse
@@ -45,7 +46,7 @@ final class ManagementRecordController
         abort_unless((string) $user?->current_team_id === (string) $record->team_id, 404);
         $data = $request->validate(['status' => 'required|string|in:draft,in_progress,completed,cancelled']);
 
-        return response()->json(['data' => $transition->handle($record, $user->current_team_id, $user->getAuthIdentifier(), ManagementStatus::from($data['status']))]);
+        return (new ManagementRecordResource($transition->handle($record, $user->current_team_id, $user->getAuthIdentifier(), ManagementStatus::from($data['status']))))->response();
     }
 
     public function updateDetails(Request $request, ManagementRecord $record, UpdateManagementDetails $update): JsonResponse
@@ -54,7 +55,7 @@ final class ManagementRecordController
         abort_unless((string) $user?->current_team_id === (string) $record->team_id, 404);
         $data = $request->validate(['details' => 'required|array']);
 
-        return response()->json(['data' => $update->handle($record, $user->current_team_id, $user->getAuthIdentifier(), $data['details'])]);
+        return (new ManagementRecordResource($update->handle($record, $user->current_team_id, $user->getAuthIdentifier(), $data['details'])))->response();
     }
 
     public function recordFailure(Request $request, ManagementRecord $record, RecordManagementFailure $failure): JsonResponse
@@ -63,6 +64,6 @@ final class ManagementRecordController
         abort_unless((string) $user?->current_team_id === (string) $record->team_id, 404);
         $data = $request->validate(['reason' => 'required|string|max:2000']);
 
-        return response()->json(['data' => $failure->handle($record, $user->current_team_id, $user->getAuthIdentifier(), $data['reason'])]);
+        return (new ManagementRecordResource($failure->handle($record, $user->current_team_id, $user->getAuthIdentifier(), $data['reason'])))->response();
     }
 }

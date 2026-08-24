@@ -11,6 +11,7 @@ use Liberu\RealEstate\Properties\Application\CreateProperty;
 use Liberu\RealEstate\Properties\Application\DeleteProperty;
 use Liberu\RealEstate\Properties\Application\UpdateProperty;
 use Liberu\RealEstate\Properties\Models\Property;
+use Liberu\RealEstate\PropertiesApi\Http\Resources\PropertyResource;
 
 final class PropertyController
 {
@@ -21,7 +22,7 @@ final class PropertyController
 
         $pageSize = max(1, min($request->integer('page_size', 25), 100));
 
-        return response()->json(['data' => Property::query()->forTeam($teamId)->latest()->paginate($pageSize)]);
+        return PropertyResource::collection(Property::query()->forTeam($teamId)->latest()->paginate($pageSize))->response();
     }
 
     public function store(Request $request, CreateProperty $create): JsonResponse
@@ -61,14 +62,14 @@ final class PropertyController
 
         $property = $create->handle($user->current_team_id, $user->getAuthIdentifier(), $validated);
 
-        return response()->json(['data' => $property], 201);
+        return (new PropertyResource($property))->response()->setStatusCode(201);
     }
 
     public function show(Request $request, Property $property): JsonResponse
     {
         abort_unless($request->user()?->current_team_id === $property->team_id, 404);
 
-        return response()->json(['data' => $property->load('history')]);
+        return (new PropertyResource($property->load('history')))->response();
     }
 
     public function update(Request $request, Property $property, UpdateProperty $update): JsonResponse
@@ -107,9 +108,7 @@ final class PropertyController
             'features' => ['sometimes', 'array'],
         ]);
 
-        return response()->json([
-            'data' => $update->handle($property->team_id, $user->getAuthIdentifier(), $property->getKey(), $validated),
-        ]);
+        return (new PropertyResource($update->handle($property->team_id, $user->getAuthIdentifier(), $property->getKey(), $validated)))->response();
     }
 
     public function destroy(Request $request, Property $property, DeleteProperty $delete): Response

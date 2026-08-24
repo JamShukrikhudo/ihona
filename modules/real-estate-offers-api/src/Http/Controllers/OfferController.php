@@ -14,6 +14,8 @@ use Liberu\RealEstate\Offers\Application\TransitionOffer;
 use Liberu\RealEstate\Offers\Application\UpdateOffer;
 use Liberu\RealEstate\Offers\Domain\OfferStatus;
 use Liberu\RealEstate\Offers\Models\Offer;
+use Liberu\RealEstate\OffersApi\Http\Resources\OfferEventResource;
+use Liberu\RealEstate\OffersApi\Http\Resources\OfferResource;
 
 final class OfferController
 {
@@ -23,7 +25,7 @@ final class OfferController
         abort_unless($teamId !== null, 403);
         $size = max(1, min($request->integer('page_size', 25), 100));
 
-        return response()->json(['data' => Offer::query()->forTeam($teamId)->latest()->paginate($size)]);
+        return OfferResource::collection(Offer::query()->forTeam($teamId)->latest()->paginate($size))->response();
     }
 
     public function store(Request $request, CreateOffer $create): JsonResponse
@@ -32,14 +34,14 @@ final class OfferController
         abort_unless($user?->current_team_id !== null, 403);
         $data = $request->validate(['subject' => ['required', 'string', 'max:255'], 'amount' => ['required', 'numeric', 'min:0'], 'property_id' => ['nullable', 'integer'], 'party_id' => ['nullable', 'integer'], 'terms' => ['sometimes', 'array'], 'qualification' => ['sometimes', 'array'], 'negotiation' => ['sometimes', 'array'], 'proof' => ['sometimes', 'array'], 'decision_history' => ['sometimes', 'array'], 'accepted_controls' => ['sometimes', 'array']]);
 
-        return response()->json(['data' => $create->handle($user->current_team_id, $user->getAuthIdentifier(), $data)], 201);
+        return (new OfferResource($create->handle($user->current_team_id, $user->getAuthIdentifier(), $data)))->response()->setStatusCode(201);
     }
 
     public function show(Request $request, Offer $offer): JsonResponse
     {
         abort_unless((string) $request->user()?->current_team_id === (string) $offer->team_id, 404);
 
-        return response()->json(['data' => $offer]);
+        return (new OfferResource($offer))->response();
     }
 
     public function update(Request $request, Offer $offer, UpdateOffer $update): JsonResponse
@@ -48,7 +50,7 @@ final class OfferController
         abort_unless((string) $teamId === (string) $offer->team_id, 404);
         $data = $request->validate(['subject' => ['sometimes', 'string', 'max:255'], 'amount' => ['sometimes', 'numeric', 'min:0'], 'currency' => ['sometimes', 'string', 'size:3'], 'terms' => ['sometimes', 'array'], 'qualification' => ['sometimes', 'array'], 'negotiation' => ['sometimes', 'array'], 'proof' => ['sometimes', 'array'], 'decision_history' => ['sometimes', 'array'], 'accepted_controls' => ['sometimes', 'array'], 'mortgage_status' => ['nullable', 'string'], 'chain_information' => ['nullable', 'string'], 'conditions' => ['nullable', 'string']]);
 
-        return response()->json(['data' => $update->handle($offer, $teamId, $data)]);
+        return (new OfferResource($update->handle($offer, $teamId, $data)))->response();
     }
 
     public function destroy(Request $request, Offer $offer, DeleteOffer $delete): Response
@@ -67,7 +69,7 @@ final class OfferController
         $data = $request->validate(['note' => ['nullable', 'string', 'max:5000'], 'amount' => ['sometimes', 'numeric', 'min:0'], 'negotiation' => ['sometimes', 'array'], 'terms' => ['sometimes', 'array']]);
         abort_unless(in_array($status, array_column(OfferStatus::cases(), 'value'), true), 404);
 
-        return response()->json(['data' => $transition->handle($offer, $user->current_team_id, $user->getAuthIdentifier(), OfferStatus::from($status), $data)]);
+        return (new OfferResource($transition->handle($offer, $user->current_team_id, $user->getAuthIdentifier(), OfferStatus::from($status), $data)))->response();
     }
 
     public function proof(Request $request, Offer $offer, RecordOfferProof $record): JsonResponse
@@ -75,13 +77,13 @@ final class OfferController
         $user = $request->user();
         abort_unless($user?->current_team_id !== null, 403);
 
-        return response()->json(['data' => $record->handle($offer, $user->current_team_id, $user->getAuthIdentifier(), $request->validate(['proof' => ['required', 'array']])['proof'])]);
+        return (new OfferResource($record->handle($offer, $user->current_team_id, $user->getAuthIdentifier(), $request->validate(['proof' => ['required', 'array']])['proof'])))->response();
     }
 
     public function timeline(Request $request, Offer $offer): JsonResponse
     {
         abort_unless((string) $request->user()?->current_team_id === (string) $offer->team_id, 404);
 
-        return response()->json(['data' => $offer->events()->get()]);
+        return OfferEventResource::collection($offer->events()->get())->response();
     }
 }
