@@ -24,6 +24,14 @@ paths:
         - {name: id, in: path, required: true, schema: {type: string}}
       responses:
         '200': {description: Authorized property}
+    patch: {operationId: real.estate.properties.update, responses: {'200': {description: Updated property}}}
+    delete: {operationId: real.estate.properties.delete, responses: {'204': {description: Archived property}}}
+  /api/v1/real-estate/properties/{id}/transition/{status}:
+    post: {operationId: real.estate.properties.transition, responses: {'200': {description: Transitioned property}}}
+  /api/v1/real-estate/properties/{id}/units:
+    put: {operationId: real.estate.properties.units.upsert, responses: {'200': {description: Upserted property unit}}}
+  /api/v1/real-estate/properties/{id}/keys:
+    post: {operationId: real.estate.properties.keys.create, responses: {'201': {description: Recorded property key}}}
 components:
   securitySchemes:
     sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}

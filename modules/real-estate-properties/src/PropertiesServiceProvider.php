@@ -11,6 +11,8 @@ final class PropertiesServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(Application\CreateProperty::class);
+        $this->app->singleton(Application\UpsertPropertyUnit::class);
+        $this->app->singleton(Application\RecordPropertyKey::class);
     }
 
     public function boot(): void

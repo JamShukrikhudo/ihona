@@ -3,7 +3,21 @@
 use Illuminate\Support\Facades\Route;
 use Liberu\RealEstate\CoreApi\Http\Controllers\AgencyController;
 use Liberu\RealEstate\CoreApi\Http\Controllers\BranchController;
+use Liberu\RealEstate\CoreApi\Http\Controllers\CoreConfigurationController;
+use Liberu\RealEstate\CoreApi\Http\Controllers\NumberingController;
+
+Route::middleware(['api', 'auth:sanctum', 'throttle:api', 'api.idempotency'])->group(function (): void {
+    Route::get('api/v1/real-estate/core/{kind}', [CoreConfigurationController::class, 'list'])->whereIn('kind', ['terminology', 'statuses', 'audit']);
+    Route::put('api/v1/real-estate/core/terminology/{key}', [CoreConfigurationController::class, 'terminology']);
+    Route::post('api/v1/real-estate/core/statuses', [CoreConfigurationController::class, 'status']);
+    Route::post('api/v1/real-estate/core/audit', [CoreConfigurationController::class, 'audit']);
+});
 use Liberu\RealEstate\CoreApi\Http\Controllers\TerritoryController;
+
+Route::post('api/v1/real-estate/numbering/{key}/next', [NumberingController::class, 'next'])
+    ->middleware(['api', 'auth:sanctum', 'throttle:api', 'api.idempotency'])
+    ->where('key', '[A-Za-z0-9_.-]{1,80}')
+    ->name('real-estate.numbering.next');
 
 Route::prefix('api/v1/real-estate/branches')->middleware(['api', 'auth:sanctum', 'throttle:api', 'api.idempotency'])->group(function (): void {
     Route::get('/', [BranchController::class, 'index'])->name('real-estate.branches.index');

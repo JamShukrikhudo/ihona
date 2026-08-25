@@ -6,6 +6,8 @@ paths:
   /api/v1/real-estate/valuations:
     get: {operationId: real.estate.valuations.list, responses: {"200": {description: Authorized valuations}}}
     post: {operationId: real.estate.valuations.create, responses: {"201": {description: Created valuation}}}
+  /api/v1/real-estate/valuations/calculate-home:
+    post: {operationId: real.estate.valuations.calculateHome, responses: {"200": {description: Calculated home valuation}, "422": {description: Validation error}}}
   /api/v1/real-estate/valuations/{id}:
     parameters: [{name: id, in: path, required: true, schema: {type: string}}]
     get: {operationId: real.estate.valuations.get, responses: {"200": {description: Valuation}}}

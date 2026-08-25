@@ -13,8 +13,8 @@
 | Viewings | liberusoftware/real-estate-viewings |
 | Offers | liberusoftware/real-estate-offers |
 | Sales Progression | liberusoftware/real-estate-sales-progression |
-| Lettings | planned |
-| Property Management | planned |
+| Lettings | liberusoftware/real-estate-lettings |
+| Property Management | liberusoftware/real-estate-property-management |
 | Marketing | liberusoftware/real-estate-marketing |
 | Portals and Reporting | liberusoftware/real-estate-portals-reporting |
 

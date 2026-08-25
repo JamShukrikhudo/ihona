@@ -4,6 +4,7 @@ declare(strict_types=1);
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Validation\ValidationException;
 use Liberu\RealEstate\Valuations\Application\CalculateComparables;
+use Liberu\RealEstate\Valuations\Application\CalculateHomeValuation;
 use Liberu\RealEstate\Valuations\Application\CompleteValuation;
 use Liberu\RealEstate\Valuations\Application\ConvertValuation;
 use Liberu\RealEstate\Valuations\Application\CreateValuation;
@@ -42,4 +43,13 @@ it('supports comparable pricing, appraisal completion, follow-up, and conversion
         ->and($valuation->recommendation['price_band']['min'])->toBe(340000)
         ->and($valuation->conversion['type'])->toBe('instruction')
         ->and($valuation->follow_up_at)->not->toBeNull();
+});
+
+it('carries the legacy home valuation calculator into the valuation boundary', function (): void {
+    $result = app(CalculateHomeValuation::class)->handle(1200, 3, 2, 2018, 'semi-detached', 'good', 'prime', 3000);
+
+    expect($result['estimated_value'])->toBeGreaterThan($result['min_value'])
+        ->and($result['max_value'])->toBeGreaterThan($result['estimated_value'])
+        ->and($result['confidence_level'])->toBeBetween(70, 95)
+        ->and($result['breakdown']['room_bonus'])->toBe(23000.0);
 });

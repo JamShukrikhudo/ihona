@@ -19,6 +19,10 @@ final class RealEstateCoreServiceProvider extends ServiceProvider
         $this->app->singleton(Application\CreateTerritory::class);
         $this->app->singleton(Application\UpdateTerritory::class);
         $this->app->singleton(Application\DeleteTerritory::class);
+        $this->app->singleton(Application\NextNumber::class);
+        $this->app->singleton(Application\SetTerminology::class);
+        $this->app->singleton(Application\DefineStatus::class);
+        $this->app->singleton(Application\RecordAuditEntry::class);
     }
 
     public function boot(): void

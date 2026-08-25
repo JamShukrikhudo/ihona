@@ -13,6 +13,7 @@ final class PropertiesLivewireServiceProvider extends ServiceProvider
     {
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'real-estate-properties-livewire');
         Livewire::component('module-real-estate-properties::property-list', Components\PropertyList::class);
+        Livewire::component('module-real-estate-properties::advanced-property-search', Components\AdvancedPropertySearch::class);
         Livewire::component('real-estate-properties-list', Components\PropertyList::class);
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Liberu\RealEstate\SalesProgressionFilament\Resources;
 
+use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Textarea;
@@ -15,6 +16,10 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Liberu\RealEstate\SalesProgression\Application\DeleteSalesProgression;
+use Liberu\RealEstate\SalesProgression\Application\TransitionSalesProgression;
+use Liberu\RealEstate\SalesProgression\Application\UpdateSalesProgressionSection;
+use Liberu\RealEstate\SalesProgression\Domain\SalesProgressionSection;
+use Liberu\RealEstate\SalesProgression\Domain\SalesProgressionStatus;
 use Liberu\RealEstate\SalesProgression\Models\SalesProgression;
 use Liberu\RealEstate\SalesProgressionFilament\Resources\SalesProgressionResource\Pages\CreateSalesProgression;
 use Liberu\RealEstate\SalesProgressionFilament\Resources\SalesProgressionResource\Pages\EditSalesProgression;
@@ -33,6 +38,9 @@ final class SalesProgressionResource extends Resource
     {
         return $table->columns([TextColumn::make('subject')->searchable(), TextColumn::make('status')->badge(), TextColumn::make('created_at')->dateTime()])->recordActions([
             EditAction::make(),
+            Action::make('exchange')->requiresConfirmation()->action(fn (Model $record): SalesProgression => app(TransitionSalesProgression::class)->handle($record, (int) auth()->user()->current_team_id, SalesProgressionStatus::Exchanged)),
+            Action::make('complete')->requiresConfirmation()->action(fn (Model $record): SalesProgression => app(TransitionSalesProgression::class)->handle($record, (int) auth()->user()->current_team_id, SalesProgressionStatus::Completed)),
+            Action::make('section')->form([TextInput::make('section')->required(), Textarea::make('value')->json()->required()])->action(fn (Model $record, array $data): SalesProgression => app(UpdateSalesProgressionSection::class)->handle($record, (int) auth()->user()->current_team_id, SalesProgressionSection::from($data['section']), $data['value'])),
             DeleteAction::make()->action(function (Model $record): void {
                 $teamId = auth()->user()?->current_team_id;
                 abort_unless($teamId !== null, 403);

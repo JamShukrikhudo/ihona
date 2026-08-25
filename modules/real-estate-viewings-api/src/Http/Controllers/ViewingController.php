@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Liberu\RealEstate\ViewingsApi\Http\Controllers;
 
+use Carbon\CarbonImmutable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -15,6 +16,7 @@ use Liberu\RealEstate\Viewings\Application\DeleteViewing;
 use Liberu\RealEstate\Viewings\Application\MarkViewingNoShow;
 use Liberu\RealEstate\Viewings\Application\UpdateViewing;
 use Liberu\RealEstate\Viewings\Models\Viewing;
+use Liberu\RealEstate\Viewings\Queries\AvailableViewingSlots;
 use Liberu\RealEstate\ViewingsApi\Http\Resources\ViewingResource;
 
 final class ViewingController
@@ -26,6 +28,26 @@ final class ViewingController
         $size = max(1, min($request->integer('page_size', 25), 100));
 
         return ViewingResource::collection(Viewing::query()->forTeam($teamId)->latest('starts_at')->paginate($size))->response();
+    }
+
+    public function availability(Request $request, AvailableViewingSlots $slots): JsonResponse
+    {
+        $teamId = $request->user()?->current_team_id;
+        abort_unless($teamId !== null, 403);
+        $data = $request->validate([
+            'property_id' => ['nullable', 'integer'],
+            'date' => ['required', 'date', 'after_or_equal:today'],
+            'duration_minutes' => ['sometimes', 'integer', 'between:15,240'],
+        ]);
+
+        return response()->json([
+            'data' => $slots->handle(
+                $teamId,
+                $data['property_id'] ?? null,
+                CarbonImmutable::parse($data['date']),
+                $data['duration_minutes'] ?? 60,
+            ),
+        ]);
     }
 
     public function store(Request $request, CreateViewing $create): JsonResponse
@@ -48,7 +70,7 @@ final class ViewingController
     {
         $teamId = $request->user()?->current_team_id;
         abort_unless((string) $teamId === (string) $viewing->team_id, 404);
-        $data = $request->validate(['subject' => ['sometimes', 'string', 'max:255'], 'starts_at' => ['sometimes', 'date'], 'ends_at' => ['nullable', 'date'], 'status' => ['sometimes', 'string', 'in:requested,confirmed,completed,cancelled,no_show'], 'access' => ['sometimes', 'array'], 'accompaniment' => ['sometimes', 'array'], 'reminders' => ['sometimes', 'array'], 'feedback' => ['sometimes', 'array'], 'no_show' => ['sometimes', 'boolean']]);
+        $data = $request->validate(['subject' => ['sometimes', 'string', 'max:255'], 'starts_at' => ['sometimes', 'date'], 'ends_at' => ['nullable', 'date'], 'access' => ['sometimes', 'array'], 'accompaniment' => ['sometimes', 'array'], 'reminders' => ['sometimes', 'array'], 'feedback' => ['sometimes', 'array'], 'no_show' => ['sometimes', 'boolean']]);
 
         return (new ViewingResource($update->handle($viewing, $teamId, $data)))->response();
     }

@@ -11,6 +11,12 @@ paths:
     get: {operationId: real.estate.listings.get, responses: {"200": {description: Listing}}}
     patch: {operationId: real.estate.listings.update, responses: {"200": {description: Updated listing}}}
     delete: {operationId: real.estate.listings.delete, responses: {"204": {description: Deleted listing}}}
+  /api/v1/real-estate/listings/{id}/transition/{status}:
+    post: {operationId: real.estate.listings.transition, responses: {"200": {description: Transitioned listing}}}
+  /api/v1/real-estate/listings/{id}/{section}:
+    parameters:
+      - {name: section, in: path, required: true, schema: {type: string, enum: [channel_content, publication_rules, portal_feeds, reconciliation]}}
+    patch: {operationId: real.estate.listings.updateSection, responses: {"200": {description: Section updated}}}
 components:
   securitySchemes:
     sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}

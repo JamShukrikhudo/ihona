@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Liberu\RealEstate\ValuationsFilament\Resources;
 
+use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
@@ -14,6 +15,10 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Liberu\RealEstate\Valuations\Application\CompleteValuation;
+use Liberu\RealEstate\Valuations\Application\ConvertValuation;
+use Liberu\RealEstate\Valuations\Application\ScheduleValuation;
+use Liberu\RealEstate\Valuations\Domain\ValuationStatus;
 use Liberu\RealEstate\Valuations\Models\Valuation;
 use Liberu\RealEstate\ValuationsFilament\Resources\ValuationResource\Pages\CreateValuation;
 use Liberu\RealEstate\ValuationsFilament\Resources\ValuationResource\Pages\EditValuation;
@@ -34,7 +39,29 @@ final class ValuationResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table->columns([TextColumn::make('subject')->searchable(), TextColumn::make('status')->badge(), TextColumn::make('valued_amount')->money('GBP'), TextColumn::make('created_at')->dateTime()->sortable()])->recordActions([EditAction::make(), DeleteAction::make()])->defaultSort('created_at', 'desc');
+        return $table->columns([TextColumn::make('subject')->searchable(), TextColumn::make('status')->badge(), TextColumn::make('valued_amount')->money('GBP'), TextColumn::make('created_at')->dateTime()->sortable()])
+            ->recordActions([
+                EditAction::make(),
+                Action::make('schedule')
+                    ->form([TextInput::make('scheduled_at')->required()->dateTime()->after('now')])
+                    ->action(function (Valuation $record, array $data): void {
+                        app(ScheduleValuation::class)->handle($record, auth()->user()->current_team_id, $data['scheduled_at']);
+                    })
+                    ->visible(fn (Valuation $record): bool => $record->status === ValuationStatus::Draft),
+                Action::make('complete')
+                    ->form([TextInput::make('valued_amount')->required()->numeric()->minValue(0)])
+                    ->action(function (Valuation $record, array $data): void {
+                        app(CompleteValuation::class)->handle($record, auth()->user()->current_team_id, $data);
+                    })
+                    ->visible(fn (Valuation $record): bool => $record->status === ValuationStatus::Scheduled),
+                Action::make('convert')
+                    ->form([TextInput::make('type')->required()->maxLength(80)])
+                    ->action(function (Valuation $record, array $data): void {
+                        app(ConvertValuation::class)->handle($record, auth()->user()->current_team_id, $data);
+                    })
+                    ->visible(fn (Valuation $record): bool => $record->status === ValuationStatus::Completed),
+                DeleteAction::make(),
+            ])->defaultSort('created_at', 'desc');
     }
 
     public static function getEloquentQuery(): Builder

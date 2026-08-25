@@ -13,10 +13,13 @@ final class UpdateMarketingCampaign
     {
         if ((string) $campaign->team_id !== (string) $teamId) {
             throw ValidationException::withMessages(['campaign' => 'The campaign does not belong to this team.']);
-        }$data = $attributes;
+        }
+        $data = $attributes;
+        unset($data['status']);
         if (array_key_exists('name', $data) && trim((string) $data['name']) === '') {
             throw ValidationException::withMessages(['name' => 'A campaign name is required.']);
-        }$campaign->fill($data)->save();
+        }
+        $campaign->fill($data)->save();
 
         return $campaign->refresh();
     }

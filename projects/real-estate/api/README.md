@@ -16,5 +16,5 @@
 | Marketing | liberusoftware/real-estate-marketing-api |
 | Portals and Reporting | liberusoftware/real-estate-portals-reporting-api |
 
-The remaining API adapters follow the core delivery order and remain
-deliberately marked planned until their matching core contracts exist.
+All issue-defined API adapters have matching core contracts. Provider
+integration surfaces remain separate optional packages.

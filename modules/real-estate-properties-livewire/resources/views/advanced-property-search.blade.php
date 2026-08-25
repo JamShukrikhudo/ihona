@@ -1,0 +1,30 @@
+<div>
+    <form wire:submit="applyFilters" class="space-y-3" aria-label="Advanced property search">
+        <div wire:loading class="text-sm text-gray-500" role="status">Loading properties…</div>
+        <label for="advanced-property-search">Search</label>
+        <input id="advanced-property-search" type="search" wire:model.live="search" autocomplete="off">
+        <label for="advanced-min-price">Minimum price</label>
+        <input id="advanced-min-price" type="number" wire:model="minPrice" min="0">
+        <label for="advanced-max-price">Maximum price</label>
+        <input id="advanced-max-price" type="number" wire:model="maxPrice" min="0">
+        <label for="advanced-property-type">Property type</label>
+        <input id="advanced-property-type" type="text" wire:model="propertyType" maxlength="40">
+        <label for="advanced-country">Country</label>
+        <input id="advanced-country" type="text" wire:model="country" maxlength="2">
+        <label for="advanced-featured">
+            <input id="advanced-featured" type="checkbox" wire:model="featuredOnly">
+            Featured only
+        </label>
+        <button type="submit">Apply filters</button>
+    </form>
+
+    <ul aria-live="polite">
+        @forelse ($properties as $property)
+            <li wire:key="advanced-property-{{ $property->getKey() }}">
+                {{ $property->title ?: $property->address }}
+            </li>
+        @empty
+            <li>No properties match these filters.</li>
+        @endforelse
+    </ul>
+</div>

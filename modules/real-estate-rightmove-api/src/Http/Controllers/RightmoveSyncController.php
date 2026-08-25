@@ -52,7 +52,7 @@ final class RightmoveSyncController
     {
         $teamId = $request->user()?->current_team_id;
         abort_unless((string) $teamId === (string) $rightmoveSync->team_id, 404);
-        $data = $request->validate(['external_id' => ['sometimes', 'nullable', 'string', 'max:255'], 'status' => ['sometimes', 'string', 'in:pending,syncing,synced,failed,disabled'], 'payload' => ['sometimes', 'array'], 'last_synced_at' => ['nullable', 'date'], 'error' => ['nullable', 'string']]);
+        $data = $request->validate(['external_id' => ['sometimes', 'nullable', 'string', 'max:255'], 'payload' => ['sometimes', 'array'], 'last_synced_at' => ['nullable', 'date'], 'error' => ['nullable', 'string']]);
 
         return (new RightmoveSyncResource($update->handle($rightmoveSync, $teamId, $data)))->response();
     }
