@@ -11,6 +11,7 @@ use Liberu\RealEstate\Core\Application\CreateBranch;
 use Liberu\RealEstate\Core\Application\DeleteBranch;
 use Liberu\RealEstate\Core\Application\UpdateBranch;
 use Liberu\RealEstate\Core\Models\Branch;
+use Liberu\RealEstate\CoreApi\Http\Resources\BranchResource;
 
 final class BranchController
 {
@@ -19,7 +20,7 @@ final class BranchController
         $teamId = $request->user()?->current_team_id;
         abort_unless($teamId !== null, 403);
 
-        return response()->json(['data' => Branch::query()->forTeam($teamId)->latest()->paginate(max(1, min($request->integer('page_size', 25), 100)))]);
+        return BranchResource::collection(Branch::query()->forTeam($teamId)->latest()->paginate(max(1, min($request->integer('page_size', 25), 100))))->response();
     }
 
     public function store(Request $request, CreateBranch $create): JsonResponse
@@ -35,14 +36,14 @@ final class BranchController
             'metadata' => ['sometimes', 'array'],
         ]);
 
-        return response()->json(['data' => $create->handle($user->current_team_id, $validated)], 201);
+        return (new BranchResource($create->handle($user->current_team_id, $validated)))->response()->setStatusCode(201);
     }
 
     public function show(Request $request, Branch $branch): JsonResponse
     {
         abort_unless($request->user()?->current_team_id === $branch->team_id, 404);
 
-        return response()->json(['data' => $branch]);
+        return (new BranchResource($branch))->response();
     }
 
     public function update(Request $request, Branch $branch, UpdateBranch $update): JsonResponse
@@ -57,7 +58,7 @@ final class BranchController
             'metadata' => ['sometimes', 'array'],
         ]);
 
-        return response()->json(['data' => $update->handle($branch->team_id, $branch->getKey(), $validated)]);
+        return (new BranchResource($update->handle($branch->team_id, $branch->getKey(), $validated)))->response();
     }
 
     public function destroy(Request $request, Branch $branch, DeleteBranch $delete): Response

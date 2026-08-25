@@ -3,8 +3,12 @@
 declare(strict_types=1);
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Validation\ValidationException;
+use Liberu\RealEstate\Valuations\Application\CalculateComparables;
+use Liberu\RealEstate\Valuations\Application\CompleteValuation;
+use Liberu\RealEstate\Valuations\Application\ConvertValuation;
 use Liberu\RealEstate\Valuations\Application\CreateValuation;
 use Liberu\RealEstate\Valuations\Application\DeleteValuation;
+use Liberu\RealEstate\Valuations\Application\ScheduleValuation;
 use Liberu\RealEstate\Valuations\Models\Valuation;
 
 uses(RefreshDatabase::class);
@@ -17,4 +21,25 @@ it('rejects empty subjects and archives a valuation for its team', function (): 
     $valuation = Valuation::query()->create(['team_id' => 1, 'subject' => 'Valuation', 'status' => 'draft']);
     app(DeleteValuation::class)->handle($valuation, 1);
     expect(Valuation::withTrashed()->find($valuation->id)->deleted_at)->not->toBeNull();
+});
+
+it('supports comparable pricing, appraisal completion, follow-up, and conversion', function (): void {
+    $valuation = app(CreateValuation::class)->handle(1, 5, ['subject' => 'Full appraisal']);
+    $valuation = app(CalculateComparables::class)->handle($valuation, 1, [
+        ['reference' => 'A', 'amount' => 300000],
+        ['reference' => 'B', 'amount' => 400000],
+    ]);
+    $valuation = app(ScheduleValuation::class)->handle($valuation, 1, now()->addDay()->toDateTimeString());
+    $valuation = app(CompleteValuation::class)->handle($valuation, 1, [
+        'valued_amount' => 350000,
+        'recommendation' => ['price_band' => ['min' => 340000, 'max' => 360000]],
+        'follow_up_at' => now()->addWeek()->toDateTimeString(),
+    ]);
+    $valuation = app(ConvertValuation::class)->handle($valuation, 1, ['type' => 'instruction', 'id' => 42]);
+
+    expect($valuation->status->value)->toBe('converted')
+        ->and($valuation->comparable_data['average_amount'])->toBe(350000)
+        ->and($valuation->recommendation['price_band']['min'])->toBe(340000)
+        ->and($valuation->conversion['type'])->toBe('instruction')
+        ->and($valuation->follow_up_at)->not->toBeNull();
 });

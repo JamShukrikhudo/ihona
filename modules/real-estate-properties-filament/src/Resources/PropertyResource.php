@@ -32,8 +32,21 @@ final class PropertyResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
+            TextInput::make('title')->maxLength(255),
             Textarea::make('address')->required()->columnSpanFull(),
+            Textarea::make('description')->columnSpanFull(),
+            TextInput::make('price')->numeric()->minValue(0),
+            TextInput::make('currency')->length(3)->default('GBP'),
+            TextInput::make('bedrooms')->numeric()->minValue(0),
+            TextInput::make('bathrooms')->numeric()->minValue(0),
+            TextInput::make('area_sqft')->numeric()->minValue(0),
+            TextInput::make('year_built')->numeric()->minValue(1066)->maxValue((int) now()->year + 2),
             TextInput::make('property_type')->maxLength(40),
+            TextInput::make('postal_code')->maxLength(20),
+            TextInput::make('country')->length(2),
+            TextInput::make('tenure')->maxLength(40),
+            TextInput::make('virtual_tour_url')->url()->maxLength(2048),
+            TextInput::make('model_3d_url')->url()->maxLength(2048),
         ]);
     }
 

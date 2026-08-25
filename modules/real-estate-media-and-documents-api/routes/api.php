@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Liberu\RealEstate\MediaAndDocumentsApi\Http\Controllers\MediaDocumentController;
 
-Route::prefix('api/v1/real-estate/media-and-documents')->middleware(['api', 'auth:sanctum', 'throttle:api'])->group(function (): void {
+Route::prefix('api/v1/real-estate/media-and-documents')->middleware(['api', 'auth:sanctum', 'throttle:api', 'api.idempotency'])->group(function (): void {
     Route::get('/', [MediaDocumentController::class, 'index'])->name('real-estate.media-documents.index');
     Route::post('/', [MediaDocumentController::class, 'store'])->name('real-estate.media-documents.store');
     Route::get('/{mediaDocument}', [MediaDocumentController::class, 'show'])->name('real-estate.media-documents.show');

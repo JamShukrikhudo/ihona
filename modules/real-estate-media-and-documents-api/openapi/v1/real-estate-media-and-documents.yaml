@@ -2,6 +2,8 @@ openapi: 3.1.0
 info:
   title: Real Estate Media and Documents API
   version: 1.0.0
+security: [{sanctum: []}]
+x-liberu-idempotency-header: Idempotency-Key
 paths:
   /api/v1/real-estate/media-and-documents:
     get:
@@ -15,3 +17,9 @@ paths:
     get: {operationId: real.estate.media.and.documents.get, responses: {"200": {description: Resource}}}
     patch: {operationId: real.estate.media.and.documents.update, responses: {"200": {description: Updated resource}}}
     delete: {operationId: real.estate.media.and.documents.delete, responses: {"204": {description: Deleted resource}}}
+components:
+  securitySchemes:
+    sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}
+  schemas:
+    Error: {type: object, required: [message], properties: {message: {type: string}, code: {type: string}, errors: {type: object, additionalProperties: true}}}
+    PaginationMeta: {type: object, required: [current_page, per_page, total, last_page], properties: {current_page: {type: integer}, per_page: {type: integer}, total: {type: integer}, last_page: {type: integer}}}

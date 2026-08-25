@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Liberu\RealEstate\LettingsApi\Http\Controllers\LettingController;
 
-Route::middleware(['api', 'auth:sanctum', 'throttle:api'])->prefix('api/v1/real-estate/lettings')->group(function (): void {
+Route::middleware(['api', 'auth:sanctum', 'throttle:api', 'api.idempotency'])->prefix('api/v1/real-estate/lettings')->group(function (): void {
     Route::get('/', [LettingController::class, 'index']);
     Route::post('/', [LettingController::class, 'store']);
     Route::get('/{letting}', [LettingController::class, 'show']);

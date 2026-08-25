@@ -6,10 +6,12 @@ namespace Liberu\RealEstate\MatchingLivewire\Components;
 
 use Illuminate\Contracts\View\View;
 use Liberu\RealEstate\Matching\Models\MatchProfile;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 final class MatchProfileList extends Component
 {
+    #[Validate('nullable|string|max:255')]
     public string $search = '';
 
     public function render(): View

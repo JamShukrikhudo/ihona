@@ -6,10 +6,12 @@ namespace Liberu\RealEstate\ValuationsLivewire\Components;
 
 use Illuminate\Contracts\View\View;
 use Liberu\RealEstate\Valuations\Models\Valuation;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 final class ValuationList extends Component
 {
+    #[Validate('nullable|string|max:255')]
     public string $search = '';
 
     public function render(): View

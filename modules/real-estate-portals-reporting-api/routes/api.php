@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Liberu\RealEstate\PortalsReportingApi\Http\Controllers\PortalReportController;
 
-Route::prefix('api/v1/real-estate/portals-and-reporting')->middleware(['api', 'auth:sanctum', 'throttle:api'])->group(function (): void {
+Route::prefix('api/v1/real-estate/portals-and-reporting')->middleware(['api', 'auth:sanctum', 'throttle:api', 'api.idempotency'])->group(function (): void {
     Route::get('/', [PortalReportController::class, 'index']);
     Route::post('/', [PortalReportController::class, 'store']);
     Route::get('/{portalReport}', [PortalReportController::class, 'show']);

@@ -11,6 +11,7 @@ use Liberu\RealEstate\MediaAndDocuments\Application\CreateMediaDocument;
 use Liberu\RealEstate\MediaAndDocuments\Application\DeleteMediaDocument;
 use Liberu\RealEstate\MediaAndDocuments\Application\UpdateMediaDocument;
 use Liberu\RealEstate\MediaAndDocuments\Models\MediaDocument;
+use Liberu\RealEstate\MediaAndDocumentsApi\Http\Resources\MediaDocumentResource;
 
 final class MediaDocumentController
 {
@@ -20,7 +21,7 @@ final class MediaDocumentController
         abort_unless($teamId !== null, 403);
         $pageSize = max(1, min($request->integer('page_size', 25), 100));
 
-        return response()->json(['data' => MediaDocument::query()->forTeam($teamId)->latest()->paginate($pageSize)]);
+        return MediaDocumentResource::collection(MediaDocument::query()->forTeam($teamId)->latest()->paginate($pageSize))->response();
     }
 
     public function store(Request $request, CreateMediaDocument $create): JsonResponse
@@ -38,14 +39,14 @@ final class MediaDocumentController
             'retention_until' => ['nullable', 'date'],
         ]);
 
-        return response()->json(['data' => $create->handle($user->current_team_id, $user->getAuthIdentifier(), $validated)], 201);
+        return (new MediaDocumentResource($create->handle($user->current_team_id, $user->getAuthIdentifier(), $validated)))->response()->setStatusCode(201);
     }
 
     public function show(Request $request, MediaDocument $mediaDocument): JsonResponse
     {
         abort_unless((string) $request->user()?->current_team_id === (string) $mediaDocument->team_id, 404);
 
-        return response()->json(['data' => $mediaDocument]);
+        return (new MediaDocumentResource($mediaDocument))->response();
     }
 
     public function update(Request $request, MediaDocument $mediaDocument, UpdateMediaDocument $update): JsonResponse
@@ -54,7 +55,7 @@ final class MediaDocumentController
         abort_unless((string) $teamId === (string) $mediaDocument->team_id, 404);
         $validated = $request->validate(['path' => ['sometimes', 'string', 'max:2048'], 'title' => ['nullable', 'string', 'max:255'], 'rights' => ['sometimes', 'array'], 'metadata' => ['sometimes', 'array'], 'sort_order' => ['sometimes', 'integer', 'min:0'], 'retention_until' => ['nullable', 'date']]);
 
-        return response()->json(['data' => $update->handle($mediaDocument, $teamId, $validated)]);
+        return (new MediaDocumentResource($update->handle($mediaDocument, $teamId, $validated)))->response();
     }
 
     public function destroy(Request $request, MediaDocument $mediaDocument, DeleteMediaDocument $delete): Response

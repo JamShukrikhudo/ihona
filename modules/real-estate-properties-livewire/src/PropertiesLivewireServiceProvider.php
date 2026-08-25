@@ -12,6 +12,7 @@ final class PropertiesLivewireServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'real-estate-properties-livewire');
+        Livewire::component('module-real-estate-properties::property-list', Components\PropertyList::class);
         Livewire::component('real-estate-properties-list', Components\PropertyList::class);
     }
 }

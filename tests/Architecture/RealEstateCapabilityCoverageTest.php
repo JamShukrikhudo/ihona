@@ -58,3 +58,70 @@ it('keeps Packagist names free of the source repository module prefix', function
         expect($package['name'])->not->toContain('/module-');
     }
 });
+
+it('requires authenticated, throttled API boundaries and OpenAPI 3.1 contracts', function (): void {
+    $root = dirname(__DIR__, 2);
+
+    foreach (glob("{$root}/modules/real-estate-*-api/routes/api.php") ?: [] as $routeFile) {
+        $routes = file_get_contents($routeFile);
+
+        expect($routes)->toContain("'auth:sanctum'")
+            ->and($routes)->toContain("'throttle:api'");
+    }
+
+    foreach (glob("{$root}/modules/real-estate-*-api/openapi/v1/*.yaml") ?: [] as $openApiFile) {
+        $openApi = file_get_contents($openApiFile);
+
+        expect($openApi)->toContain('openapi: 3.1.0')
+            ->and($openApi)->toContain('securitySchemes:')
+            ->and($openApi)->toContain('operationId:')
+            ->and($openApi)->toContain('security:')
+            ->and($openApi)->toContain('schemas:')
+            ->and($openApi)->toContain('Error:')
+            ->and($openApi)->toContain('PaginationMeta:')
+            ->and($openApi)->toContain('Idempotency-Key');
+    }
+});
+
+it('keeps API controllers behind explicit response resources', function (): void {
+    $root = dirname(__DIR__, 2);
+
+    foreach (glob("{$root}/modules/real-estate-*-api/src/Http/Controllers/*Controller.php") ?: [] as $controllerFile) {
+        $controller = file_get_contents($controllerFile);
+
+        expect($controller)->toContain('Http\\Resources\\');
+    }
+});
+
+it('keeps Livewire list surfaces validated and stateful', function (): void {
+    $root = dirname(__DIR__, 2);
+
+    foreach (glob("{$root}/modules/real-estate-*-livewire/src/Components/*.php") ?: [] as $componentFile) {
+        expect(file_get_contents($componentFile))->toContain("#[Validate('nullable|string|max:255')]");
+    }
+
+    foreach (glob("{$root}/modules/real-estate-*-livewire/resources/views/*.blade.php") ?: [] as $viewFile) {
+        $view = file_get_contents($viewFile);
+
+        expect($view)->toContain('wire:loading')->and($view)->toContain('@empty');
+    }
+});
+
+it('keeps Filament resources tenant-scoped and lifecycle-delegated', function (): void {
+    $root = dirname(__DIR__, 2);
+
+    foreach (glob("{$root}/modules/real-estate-*-filament/src/Resources/*Resource.php") ?: [] as $resourceFile) {
+        $resource = file_get_contents($resourceFile);
+
+        expect($resource)->toContain('getEloquentQuery')
+            ->and($resource)->toContain('current_team_id');
+    }
+
+    foreach (glob("{$root}/modules/real-estate-*-filament/src/Resources/*Resource/Pages/Create*.php") ?: [] as $pageFile) {
+        expect(file_get_contents($pageFile))->toContain('handleRecordCreation');
+    }
+
+    foreach (glob("{$root}/modules/real-estate-*-filament/src/Resources/*Resource/Pages/Edit*.php") ?: [] as $pageFile) {
+        expect(file_get_contents($pageFile))->toContain('handleRecordUpdate');
+    }
+});

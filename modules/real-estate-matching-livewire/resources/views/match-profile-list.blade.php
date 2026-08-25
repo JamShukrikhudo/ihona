@@ -1,4 +1,5 @@
 <div>
+    <div wire:loading class="text-sm text-gray-500" role="status">Loading matching profiles…</div>
     <label for="matching-search">Search matching profiles</label>
     <input id="matching-search" type="search" wire:model.live="search">
     <ul>

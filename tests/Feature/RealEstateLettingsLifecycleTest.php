@@ -8,6 +8,7 @@ use Illuminate\Validation\ValidationException;
 use Liberu\RealEstate\Lettings\Application\CreateLetting;
 use Liberu\RealEstate\Lettings\Application\RecordLettingFailure;
 use Liberu\RealEstate\Lettings\Application\TransitionLetting;
+use Liberu\RealEstate\Lettings\Application\UpdateLetting;
 use Liberu\RealEstate\Lettings\Application\UpdateLettingDetails;
 use Liberu\RealEstate\Lettings\Domain\Events\LettingCreated;
 use Liberu\RealEstate\Lettings\Domain\Events\LettingStatusChanged;
@@ -26,6 +27,9 @@ it('supports every letting capability through its validated public boundary', fu
     expect(fn () => app(UpdateLettingDetails::class)->handle($letting, 1, 5, []))->toThrow(ValidationException::class);
     $updated = app(UpdateLettingDetails::class)->handle($letting, 1, 5, ['applicant_id' => 12]);
     expect($updated->details['applicant_id'])->toBe(12);
+
+    $updated = app(UpdateLetting::class)->handle($updated, 1, 5, ['subject' => 'Updated application', 'status' => LettingStatus::InProgress->value]);
+    expect($updated->subject)->toBe('Updated application')->and($updated->status)->toBe(LettingStatus::InProgress);
 });
 
 it('emits lifecycle events, records failure recovery evidence, and isolates teams', function (): void {

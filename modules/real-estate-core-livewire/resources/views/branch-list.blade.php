@@ -1,4 +1,5 @@
 <div>
+    <div wire:loading class="text-sm text-gray-500" role="status">Loading branches…</div>
     <label for="branch-search">Search branches</label>
     <input id="branch-search" type="search" wire:model.live="search" autocomplete="off">
     <ul aria-live="polite">

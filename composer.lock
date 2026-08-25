@@ -5313,12 +5313,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-api-access.git",
-                "reference": "5c79a794e1e64e84efde7305bde23a1dca459168"
+                "reference": "eb29cd1e65c181596baaced151696de1d1a80e68"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-api-access/zipball/5c79a794e1e64e84efde7305bde23a1dca459168",
-                "reference": "5c79a794e1e64e84efde7305bde23a1dca459168",
+                "url": "https://api.github.com/repos/liberusoftware/module-api-access/zipball/eb29cd1e65c181596baaced151696de1d1a80e68",
+                "reference": "eb29cd1e65c181596baaced151696de1d1a80e68",
                 "shasum": ""
             },
             "require": {
@@ -6610,12 +6610,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-real-estate-core-api.git",
-                "reference": "5e6dfca628fa099288887a25eabfa8716f86bc16"
+                "reference": "588d347a73086897d7bcd06b334833dd516e58da"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-core-api/zipball/5e6dfca628fa099288887a25eabfa8716f86bc16",
-                "reference": "5e6dfca628fa099288887a25eabfa8716f86bc16",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-core-api/zipball/f38a7741531ebb0a63bb64801dbbdc4364de6b0f",
+                "reference": "f38a7741531ebb0a63bb64801dbbdc4364de6b0f",
                 "shasum": ""
             },
             "require": {
@@ -6638,15 +6638,15 @@
                     "Liberu\\RealEstate\\CoreApi\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Versioned API adapter for real-estate branches.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-core-api/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-core-api/tree/1.0.0"
+            },
             "time": "2026-08-23T01:20:09+00:00"
         },
         {
@@ -6659,8 +6659,8 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-core-filament/zipball/785fc6a0c0d3c97982bb3d2d066418793767104b",
-                "reference": "785fc6a0c0d3c97982bb3d2d066418793767104b",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-core-filament/zipball/92bbf03eb9a6d5f966ee19cc6743f6cae52c1921",
+                "reference": "92bbf03eb9a6d5f966ee19cc6743f6cae52c1921",
                 "shasum": ""
             },
             "require": {
@@ -6682,15 +6682,15 @@
                     "Liberu\\RealEstate\\CoreFilament\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Filament 5 adapter for real-estate branches.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-core-filament/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-core-filament/tree/1.0.0"
+            },
             "time": "2026-08-23T01:20:14+00:00"
         },
         {
@@ -6703,8 +6703,8 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-core-livewire/zipball/b6054b1fc71812f14a57314613b0d36798c27beb",
-                "reference": "b6054b1fc71812f14a57314613b0d36798c27beb",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-core-livewire/zipball/28c495854f4efcc133a3db019e80b5ad97787f94",
+                "reference": "28c495854f4efcc133a3db019e80b5ad97787f94",
                 "shasum": ""
             },
             "require": {
@@ -6726,15 +6726,15 @@
                     "Liberu\\RealEstate\\CoreLivewire\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Livewire 4 adapter for real-estate branches.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-core-livewire/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-core-livewire/tree/1.0.0"
+            },
             "time": "2026-08-23T01:20:18+00:00"
         },
         {
@@ -6743,7 +6743,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-real-estate-instructions.git",
-                "reference": "fefe9098323eed527ca768471da94c24c7a5771d"
+                "reference": "a8ba27e556757fb091f4f5a8b1374b6bb4cc1078"
             },
             "dist": {
                 "type": "zip",
@@ -6763,13 +6763,13 @@
             },
             "type": "liberu-module",
             "extra": {
+                "liberu": {
+                    "name": "real-estate-instructions"
+                },
                 "laravel": {
                     "providers": [
                         "Liberu\\RealEstate\\Instructions\\InstructionsServiceProvider"
                     ]
-                },
-                "liberu": {
-                    "name": "real-estate-instructions"
                 }
             },
             "autoload": {
@@ -6777,15 +6777,15 @@
                     "Liberu\\RealEstate\\Instructions\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Provider-neutral agency instruction records and lifecycle actions.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-instructions/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-instructions/tree/1.0.0"
+            },
             "time": "2026-08-23T01:47:04+00:00"
         },
         {
@@ -6794,12 +6794,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-real-estate-instructions-api.git",
-                "reference": "9f1f50e31d58c5273645f563f0312ad1522426d9"
+                "reference": "293b37636cb14e2c6c265e2931a7eccd64554863"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-instructions-api/zipball/9f1f50e31d58c5273645f563f0312ad1522426d9",
-                "reference": "9f1f50e31d58c5273645f563f0312ad1522426d9",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-instructions-api/zipball/8924db003689646f7c7566d7416c392cc5907b52",
+                "reference": "8924db003689646f7c7566d7416c392cc5907b52",
                 "shasum": ""
             },
             "require": {
@@ -6822,15 +6822,15 @@
                     "Liberu\\RealEstate\\InstructionsApi\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Versioned API adapter for real-estate instructions.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-instructions-api/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-instructions-api/tree/1.0.0"
+            },
             "time": "2026-08-23T01:47:08+00:00"
         },
         {
@@ -6839,12 +6839,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-real-estate-instructions-filament.git",
-                "reference": "8e04bc9b6d5c077bd766541ef5339af59ba96a90"
+                "reference": "c41dafec3ea55640c3c6606019a1440f73d08416"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-instructions-filament/zipball/8e04bc9b6d5c077bd766541ef5339af59ba96a90",
-                "reference": "8e04bc9b6d5c077bd766541ef5339af59ba96a90",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-instructions-filament/zipball/a88ea52c97b36923ff0d9c32dd2011df0f0a4fba",
+                "reference": "a88ea52c97b36923ff0d9c32dd2011df0f0a4fba",
                 "shasum": ""
             },
             "require": {
@@ -6866,15 +6866,15 @@
                     "Liberu\\RealEstate\\InstructionsFilament\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Filament 5 adapter for real-estate instructions.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-instructions-filament/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-instructions-filament/tree/1.0.0"
+            },
             "time": "2026-08-23T01:47:13+00:00"
         },
         {
@@ -6883,12 +6883,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-real-estate-instructions-livewire.git",
-                "reference": "6acd4406912305ba58fd137062e2b43d945791c9"
+                "reference": "68cdc4afe3a380d835520d02857b6447cab39b57"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-instructions-livewire/zipball/6acd4406912305ba58fd137062e2b43d945791c9",
-                "reference": "6acd4406912305ba58fd137062e2b43d945791c9",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-instructions-livewire/zipball/2b148e11c837faebafd85f5d64195d39672687f8",
+                "reference": "2b148e11c837faebafd85f5d64195d39672687f8",
                 "shasum": ""
             },
             "require": {
@@ -6910,15 +6910,15 @@
                     "Liberu\\RealEstate\\InstructionsLivewire\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Livewire 4 adapter for real-estate instructions.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-instructions-livewire/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-instructions-livewire/tree/1.0.0"
+            },
             "time": "2026-08-23T01:47:18+00:00"
         },
         {
@@ -7114,7 +7114,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-real-estate-listings.git",
-                "reference": "4fd5cba4ee1ede57066a37bbccc16b9700e1943f"
+                "reference": "7b108de5222dc58169a50354c1a86e9c771ad74d"
             },
             "dist": {
                 "type": "zip",
@@ -7134,13 +7134,13 @@
             },
             "type": "liberu-module",
             "extra": {
+                "liberu": {
+                    "name": "real-estate-listings"
+                },
                 "laravel": {
                     "providers": [
                         "Liberu\\RealEstate\\Listings\\ListingsServiceProvider"
                     ]
-                },
-                "liberu": {
-                    "name": "real-estate-listings"
                 }
             },
             "autoload": {
@@ -7148,15 +7148,15 @@
                     "Liberu\\RealEstate\\Listings\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Provider-neutral listing records and publication lifecycle actions.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-listings/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-listings/tree/1.0.0"
+            },
             "time": "2026-08-23T01:51:32+00:00"
         },
         {
@@ -7165,12 +7165,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-real-estate-listings-api.git",
-                "reference": "a868c685e393cd13217f9cbce8452bc60f388760"
+                "reference": "879f60d0e7fea7a3e63b1f17ed8841b241b0e3e3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-listings-api/zipball/a868c685e393cd13217f9cbce8452bc60f388760",
-                "reference": "a868c685e393cd13217f9cbce8452bc60f388760",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-listings-api/zipball/f633a67760bf25b38fb7d8105f0abde564934ba3",
+                "reference": "f633a67760bf25b38fb7d8105f0abde564934ba3",
                 "shasum": ""
             },
             "require": {
@@ -7193,15 +7193,15 @@
                     "Liberu\\RealEstate\\ListingsApi\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Versioned API adapter for real-estate listings.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-listings-api/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-listings-api/tree/1.0.0"
+            },
             "time": "2026-08-23T01:51:37+00:00"
         },
         {
@@ -7210,12 +7210,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-real-estate-listings-filament.git",
-                "reference": "c3fc1bc8374a87f30ca16d8aace16117b197c972"
+                "reference": "70f33554d74e1fee6a9ec861eb51943fb58108fc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-listings-filament/zipball/c3fc1bc8374a87f30ca16d8aace16117b197c972",
-                "reference": "c3fc1bc8374a87f30ca16d8aace16117b197c972",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-listings-filament/zipball/50f7cc917459ca02a24bcb3746b5b5b453c878e0",
+                "reference": "50f7cc917459ca02a24bcb3746b5b5b453c878e0",
                 "shasum": ""
             },
             "require": {
@@ -7237,15 +7237,15 @@
                     "Liberu\\RealEstate\\ListingsFilament\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Filament 5 adapter for real-estate listings.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-listings-filament/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-listings-filament/tree/1.0.0"
+            },
             "time": "2026-08-23T01:51:42+00:00"
         },
         {
@@ -7254,12 +7254,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-real-estate-listings-livewire.git",
-                "reference": "6c6822c1906a083303d2f653bd33ca9335619cf3"
+                "reference": "1a6b46f95f5309c9083e8209fe8622aaef7463c3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-listings-livewire/zipball/6c6822c1906a083303d2f653bd33ca9335619cf3",
-                "reference": "6c6822c1906a083303d2f653bd33ca9335619cf3",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-listings-livewire/zipball/107a9ed361ea51b79596f2cc4647472079d5d05e",
+                "reference": "107a9ed361ea51b79596f2cc4647472079d5d05e",
                 "shasum": ""
             },
             "require": {
@@ -7281,15 +7281,15 @@
                     "Liberu\\RealEstate\\ListingsLivewire\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Livewire 4 adapter for real-estate listings.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-listings-livewire/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-listings-livewire/tree/1.0.0"
+            },
             "time": "2026-08-23T01:51:47+00:00"
         },
         {
@@ -7298,7 +7298,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-real-estate-marketing.git",
-                "reference": "cfc88fb4fe46b74fb1828f9b7e94911d97abd866"
+                "reference": "8f09e6f95cb4c9d60c37b215645c54a00e7bd390"
             },
             "dist": {
                 "type": "zip",
@@ -7318,13 +7318,13 @@
             },
             "type": "liberu-module",
             "extra": {
+                "liberu": {
+                    "name": "real-estate-marketing"
+                },
                 "laravel": {
                     "providers": [
                         "Liberu\\RealEstate\\Marketing\\MarketingServiceProvider"
                     ]
-                },
-                "liberu": {
-                    "name": "real-estate-marketing"
                 }
             },
             "autoload": {
@@ -7332,15 +7332,15 @@
                     "Liberu\\RealEstate\\Marketing\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Provider-neutral, team-scoped real-estate campaigns, content, audiences, and delivery metrics.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-marketing/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-marketing/tree/1.0.0"
+            },
             "time": "2026-08-23T02:26:42+00:00"
         },
         {
@@ -7349,12 +7349,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-real-estate-marketing-api.git",
-                "reference": "511829fe5c84d548bc2e226d9271def4096a9965"
+                "reference": "72339262f18d0d4b47c3357a377cd8aa370593b8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-marketing-api/zipball/511829fe5c84d548bc2e226d9271def4096a9965",
-                "reference": "511829fe5c84d548bc2e226d9271def4096a9965",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-marketing-api/zipball/e81adb4275f961c0d05ffaeebd75b8d36fbc6e6f",
+                "reference": "e81adb4275f961c0d05ffaeebd75b8d36fbc6e6f",
                 "shasum": ""
             },
             "require": {
@@ -7377,15 +7377,15 @@
                     "Liberu\\RealEstate\\MarketingApi\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Versioned API adapter for real-estate marketing campaigns.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-marketing-api/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-marketing-api/tree/1.0.0"
+            },
             "time": "2026-08-23T02:26:47+00:00"
         },
         {
@@ -7398,8 +7398,8 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-marketing-filament/zipball/4a036e4294f8651de7fb2f77bafbed236cf04648",
-                "reference": "4a036e4294f8651de7fb2f77bafbed236cf04648",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-marketing-filament/zipball/73673ffd249eed7b06880dbd748a9aee29d68137",
+                "reference": "73673ffd249eed7b06880dbd748a9aee29d68137",
                 "shasum": ""
             },
             "require": {
@@ -7421,15 +7421,15 @@
                     "Liberu\\RealEstate\\MarketingFilament\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Filament 5 adapter for real-estate marketing campaigns.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-marketing-filament/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-marketing-filament/tree/1.0.0"
+            },
             "time": "2026-08-23T02:26:52+00:00"
         },
         {
@@ -7442,8 +7442,8 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-marketing-livewire/zipball/f6777acdbcd3c4d919f49654eeecc52132da86e9",
-                "reference": "f6777acdbcd3c4d919f49654eeecc52132da86e9",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-marketing-livewire/zipball/724cebcb17e38ff81ac78d42cc5af93f32ae0917",
+                "reference": "724cebcb17e38ff81ac78d42cc5af93f32ae0917",
                 "shasum": ""
             },
             "require": {
@@ -7465,15 +7465,15 @@
                     "Liberu\\RealEstate\\MarketingLivewire\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Livewire 4 adapter for real-estate marketing campaigns.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-marketing-livewire/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-marketing-livewire/tree/1.0.0"
+            },
             "time": "2026-08-23T02:26:58+00:00"
         },
         {
@@ -7482,7 +7482,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-real-estate-matching.git",
-                "reference": "a19677fedf009d70890a21e984bbf4a23c69a527"
+                "reference": "fe155030f16e14cceea211b7659ee82180ba0b5a"
             },
             "dist": {
                 "type": "zip",
@@ -7502,13 +7502,13 @@
             },
             "type": "liberu-module",
             "extra": {
+                "liberu": {
+                    "name": "real-estate-matching"
+                },
                 "laravel": {
                     "providers": [
                         "Liberu\\RealEstate\\Matching\\MatchingServiceProvider"
                     ]
-                },
-                "liberu": {
-                    "name": "real-estate-matching"
                 }
             },
             "autoload": {
@@ -7516,15 +7516,15 @@
                     "Liberu\\RealEstate\\Matching\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Provider-neutral applicant matching requirements and scoring actions.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-matching/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-matching/tree/1.0.0"
+            },
             "time": "2026-08-23T01:55:52+00:00"
         },
         {
@@ -7533,12 +7533,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-real-estate-matching-api.git",
-                "reference": "dead04107ad3796d20fab90adb6060022116a3cd"
+                "reference": "5e2b4471c34091fd831fceb925b152ca6867f372"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-matching-api/zipball/dead04107ad3796d20fab90adb6060022116a3cd",
-                "reference": "dead04107ad3796d20fab90adb6060022116a3cd",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-matching-api/zipball/778c8eabc5743ce0bdcdebd0c02b515fb0588eed",
+                "reference": "778c8eabc5743ce0bdcdebd0c02b515fb0588eed",
                 "shasum": ""
             },
             "require": {
@@ -7561,15 +7561,15 @@
                     "Liberu\\RealEstate\\MatchingApi\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Versioned API adapter for real-estate matching.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-matching-api/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-matching-api/tree/1.0.0"
+            },
             "time": "2026-08-23T01:55:57+00:00"
         },
         {
@@ -7578,12 +7578,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-real-estate-matching-filament.git",
-                "reference": "9aac6303dd11861ffb3219c768faf1c7124758ca"
+                "reference": "21697e436280772bd7d17e391887665bf87205b7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-matching-filament/zipball/9aac6303dd11861ffb3219c768faf1c7124758ca",
-                "reference": "9aac6303dd11861ffb3219c768faf1c7124758ca",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-matching-filament/zipball/61ee9c45f6212ff6b0913bd76b8e9d81fbcaa266",
+                "reference": "61ee9c45f6212ff6b0913bd76b8e9d81fbcaa266",
                 "shasum": ""
             },
             "require": {
@@ -7605,15 +7605,15 @@
                     "Liberu\\RealEstate\\MatchingFilament\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Filament 5 adapter for real-estate matching.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-matching-filament/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-matching-filament/tree/1.0.0"
+            },
             "time": "2026-08-23T01:56:02+00:00"
         },
         {
@@ -7622,12 +7622,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-real-estate-matching-livewire.git",
-                "reference": "c66919b6993c9af2bf746ec67868ba2e1de36b24"
+                "reference": "285ce9d2776082745a958aa90b40b213c116f07c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-matching-livewire/zipball/c66919b6993c9af2bf746ec67868ba2e1de36b24",
-                "reference": "c66919b6993c9af2bf746ec67868ba2e1de36b24",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-matching-livewire/zipball/45e05ab88a0604ec31213da374abd242919bab1b",
+                "reference": "45e05ab88a0604ec31213da374abd242919bab1b",
                 "shasum": ""
             },
             "require": {
@@ -7649,15 +7649,15 @@
                     "Liberu\\RealEstate\\MatchingLivewire\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Livewire 4 adapter for real-estate matching.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-matching-livewire/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-matching-livewire/tree/1.0.0"
+            },
             "time": "2026-08-23T01:56:07+00:00"
         },
         {
@@ -7666,7 +7666,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-real-estate-media-and-documents.git",
-                "reference": "2b12ad82187f1df366bb5f875259fe8b4e960aed"
+                "reference": "a1f01b2e546d2e32d64149a9c30d48d080f820ca"
             },
             "dist": {
                 "type": "zip",
@@ -7681,18 +7681,15 @@
                 "liberusoftware/organizations-teams": "^1.0",
                 "php": "^8.5"
             },
-            "require-dev": {
-                "pestphp/pest": "^5.0"
-            },
             "type": "liberu-module",
             "extra": {
+                "liberu": {
+                    "name": "real-estate-media-and-documents"
+                },
                 "laravel": {
                     "providers": [
                         "Liberu\\RealEstate\\MediaAndDocuments\\MediaAndDocumentsServiceProvider"
                     ]
-                },
-                "liberu": {
-                    "name": "real-estate-media-and-documents"
                 }
             },
             "autoload": {
@@ -7700,16 +7697,16 @@
                     "Liberu\\RealEstate\\MediaAndDocuments\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Provider-neutral media and document records for Liberu real-estate applications.",
-            "time": "2026-08-23T01:32:57+00:00"
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-media-and-documents/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-media-and-documents/tree/1.0.0"
+            },
+            "time": "2026-08-23T01:28:39+00:00"
         },
         {
             "name": "liberusoftware/real-estate-media-and-documents-api",
@@ -7717,12 +7714,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-real-estate-media-and-documents-api.git",
-                "reference": "eec43a9d9d675bbbf080a12ee55dc250ca1f2fd0"
+                "reference": "20969d05822f2012e69dadb7412db90b703bf17f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-media-and-documents-api/zipball/eec43a9d9d675bbbf080a12ee55dc250ca1f2fd0",
-                "reference": "eec43a9d9d675bbbf080a12ee55dc250ca1f2fd0",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-media-and-documents-api/zipball/fd4fb161a3b34551c9481aabb3f453c27a48e83a",
+                "reference": "fd4fb161a3b34551c9481aabb3f453c27a48e83a",
                 "shasum": ""
             },
             "require": {
@@ -7745,15 +7742,15 @@
                     "Liberu\\RealEstate\\MediaAndDocumentsApi\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Versioned API adapter for real-estate media and documents.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-media-and-documents-api/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-media-and-documents-api/tree/1.0.0"
+            },
             "time": "2026-08-23T01:32:25+00:00"
         },
         {
@@ -7762,12 +7759,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-real-estate-media-and-documents-filament.git",
-                "reference": "5be170593ed2aaadb24d047678d1dd3e1eca51c2"
+                "reference": "9407e604d1f23da08bdb5ea9232c906a7b384899"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-media-and-documents-filament/zipball/5be170593ed2aaadb24d047678d1dd3e1eca51c2",
-                "reference": "5be170593ed2aaadb24d047678d1dd3e1eca51c2",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-media-and-documents-filament/zipball/91151fd445424bc938ee69897257dd0ba26f6d6b",
+                "reference": "91151fd445424bc938ee69897257dd0ba26f6d6b",
                 "shasum": ""
             },
             "require": {
@@ -7789,15 +7786,15 @@
                     "Liberu\\RealEstate\\MediaAndDocumentsFilament\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Filament 5 adapter for real-estate media and documents.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-media-and-documents-filament/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-media-and-documents-filament/tree/1.0.0"
+            },
             "time": "2026-08-23T01:35:30+00:00"
         },
         {
@@ -7806,12 +7803,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-real-estate-media-and-documents-livewire.git",
-                "reference": "0f0c18b6cc1661b1295ad960c4b7d85d7b63ab6c"
+                "reference": "93d8be5e029980808685dd4388fea5ecc0cc9ac2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-media-and-documents-livewire/zipball/0f0c18b6cc1661b1295ad960c4b7d85d7b63ab6c",
-                "reference": "0f0c18b6cc1661b1295ad960c4b7d85d7b63ab6c",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-media-and-documents-livewire/zipball/eb1102214ffc5f97ad53a88e1c45100fb47dbef9",
+                "reference": "eb1102214ffc5f97ad53a88e1c45100fb47dbef9",
                 "shasum": ""
             },
             "require": {
@@ -7833,15 +7830,15 @@
                     "Liberu\\RealEstate\\MediaAndDocumentsLivewire\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Livewire 4 adapter for real-estate media and documents.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-media-and-documents-livewire/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-media-and-documents-livewire/tree/1.0.0"
+            },
             "time": "2026-08-23T01:35:34+00:00"
         },
         {
@@ -7850,12 +7847,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-real-estate-offers.git",
-                "reference": "b1fcb4ca720f17be086c76c301a7e814f5f8ec0a"
+                "reference": "eb87bb442d39439bfb029e6b88a798dcb469cd36"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-offers/zipball/b1fcb4ca720f17be086c76c301a7e814f5f8ec0a",
-                "reference": "b1fcb4ca720f17be086c76c301a7e814f5f8ec0a",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-offers/zipball/2b20436f8e30f20a51ad76cca913dcbfe1b2a232",
+                "reference": "2b20436f8e30f20a51ad76cca913dcbfe1b2a232",
                 "shasum": ""
             },
             "require": {
@@ -7870,13 +7867,13 @@
             },
             "type": "liberu-module",
             "extra": {
+                "liberu": {
+                    "name": "real-estate-offers"
+                },
                 "laravel": {
                     "providers": [
                         "Liberu\\RealEstate\\Offers\\OffersServiceProvider"
                     ]
-                },
-                "liberu": {
-                    "name": "real-estate-offers"
                 }
             },
             "autoload": {
@@ -7884,15 +7881,15 @@
                     "Liberu\\RealEstate\\Offers\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Provider-neutral offer terms, qualification, negotiation, proof, and acceptance actions.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-offers/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-offers/tree/1.0.0"
+            },
             "time": "2026-08-23T02:11:06+00:00"
         },
         {
@@ -7901,12 +7898,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-real-estate-offers-api.git",
-                "reference": "3947fba34c48b0ec59b021b99d7d212e4094ecc4"
+                "reference": "5454d59ec9ba5d6cb5fc079fbcd3980c67071948"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-offers-api/zipball/3947fba34c48b0ec59b021b99d7d212e4094ecc4",
-                "reference": "3947fba34c48b0ec59b021b99d7d212e4094ecc4",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-offers-api/zipball/04aeb8b8c52a40612baba533c98784792ebe4db2",
+                "reference": "04aeb8b8c52a40612baba533c98784792ebe4db2",
                 "shasum": ""
             },
             "require": {
@@ -7929,15 +7926,15 @@
                     "Liberu\\RealEstate\\OffersApi\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Versioned API adapter for real-estate offers.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-offers-api/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-offers-api/tree/1.0.0"
+            },
             "time": "2026-08-23T02:11:11+00:00"
         },
         {
@@ -7946,12 +7943,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-real-estate-offers-filament.git",
-                "reference": "3cc6efa59abd1c5854c51af3e9897b8af374cbe5"
+                "reference": "781c4797f560c7542206b9f6e55ae459dd4f92af"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-offers-filament/zipball/3cc6efa59abd1c5854c51af3e9897b8af374cbe5",
-                "reference": "3cc6efa59abd1c5854c51af3e9897b8af374cbe5",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-offers-filament/zipball/f9fedfbcbb5ac761d74778799504a0fadff178b9",
+                "reference": "f9fedfbcbb5ac761d74778799504a0fadff178b9",
                 "shasum": ""
             },
             "require": {
@@ -7973,15 +7970,15 @@
                     "Liberu\\RealEstate\\OffersFilament\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Filament 5 adapter for real-estate offers.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-offers-filament/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-offers-filament/tree/1.0.0"
+            },
             "time": "2026-08-23T02:11:16+00:00"
         },
         {
@@ -7990,12 +7987,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-real-estate-offers-livewire.git",
-                "reference": "f42355f8a0d5ec3e18606b35393cbd3f6df900ff"
+                "reference": "63f77ad4cd2a52ef3e7685ac1a840bb686dac4f7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-offers-livewire/zipball/f42355f8a0d5ec3e18606b35393cbd3f6df900ff",
-                "reference": "f42355f8a0d5ec3e18606b35393cbd3f6df900ff",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-offers-livewire/zipball/1fc9682a36bedc2735016fade199e87643fa6779",
+                "reference": "1fc9682a36bedc2735016fade199e87643fa6779",
                 "shasum": ""
             },
             "require": {
@@ -8017,15 +8014,15 @@
                     "Liberu\\RealEstate\\OffersLivewire\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Livewire 4 adapter for real-estate offers.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-offers-livewire/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-offers-livewire/tree/1.0.0"
+            },
             "time": "2026-08-23T02:11:22+00:00"
         },
         {
@@ -8034,7 +8031,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-real-estate-onthemarket.git",
-                "reference": "ef99087cd471a7747026cfb15ce43924915c175c"
+                "reference": "39223cdbf2f0693d7baf55794d5542e8b43bd5b0"
             },
             "dist": {
                 "type": "zip",
@@ -8044,7 +8041,6 @@
             },
             "require": {
                 "illuminate/database": "^13.0",
-                "illuminate/http": "^13.0",
                 "illuminate/validation": "^13.0",
                 "liberusoftware/module-manager": "^1.0",
                 "liberusoftware/organizations-teams": "^1.0",
@@ -8055,13 +8051,13 @@
             },
             "type": "liberu-module",
             "extra": {
+                "liberu": {
+                    "name": "real-estate-onthemarket"
+                },
                 "laravel": {
                     "providers": [
                         "Liberu\\RealEstate\\OnTheMarket\\OnTheMarketServiceProvider"
                     ]
-                },
-                "liberu": {
-                    "name": "real-estate-onthemarket"
                 }
             },
             "autoload": {
@@ -8069,16 +8065,16 @@
                     "Liberu\\RealEstate\\OnTheMarket\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Independent OnTheMarket listing synchronization core for Liberu Real Estate.",
-            "time": "2026-08-23T02:58:44+00:00"
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-onthemarket/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-onthemarket/tree/1.0.0"
+            },
+            "time": "2026-08-23T02:46:22+00:00"
         },
         {
             "name": "liberusoftware/real-estate-onthemarket-api",
@@ -8086,12 +8082,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-real-estate-onthemarket-api.git",
-                "reference": "a6ad6ac53874ac4e671b0cd7bd42e5c8ebedc15a"
+                "reference": "14cf1ccd0b6ad1a1c971407ef3528d5339e6f6a2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-onthemarket-api/zipball/a6ad6ac53874ac4e671b0cd7bd42e5c8ebedc15a",
-                "reference": "a6ad6ac53874ac4e671b0cd7bd42e5c8ebedc15a",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-onthemarket-api/zipball/91111dbf01c1a5ef4852e5d7c6d17f6f3794d6df",
+                "reference": "91111dbf01c1a5ef4852e5d7c6d17f6f3794d6df",
                 "shasum": ""
             },
             "require": {
@@ -8114,16 +8110,16 @@
                     "Liberu\\RealEstate\\OnTheMarketApi\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Independent API adapter for OnTheMarket synchronization.",
-            "time": "2026-08-23T03:16:48+00:00"
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-onthemarket-api/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-onthemarket-api/tree/1.0.0"
+            },
+            "time": "2026-08-23T02:46:28+00:00"
         },
         {
             "name": "liberusoftware/real-estate-onthemarket-filament",
@@ -8135,8 +8131,8 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-onthemarket-filament/zipball/3fc464078b6307e212386902d7722474fd09f0b0",
-                "reference": "3fc464078b6307e212386902d7722474fd09f0b0",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-onthemarket-filament/zipball/6f72cb29fc4e3218f8eb94d4821439b8f229e52f",
+                "reference": "6f72cb29fc4e3218f8eb94d4821439b8f229e52f",
                 "shasum": ""
             },
             "require": {
@@ -8158,15 +8154,15 @@
                     "Liberu\\RealEstate\\OnTheMarketFilament\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Independent Filament adapter for OnTheMarket synchronization.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-onthemarket-filament/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-onthemarket-filament/tree/1.0.0"
+            },
             "time": "2026-08-23T02:46:34+00:00"
         },
         {
@@ -8179,8 +8175,8 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-onthemarket-livewire/zipball/43508c72985079666406567c67c5d4d2bcab5a04",
-                "reference": "43508c72985079666406567c67c5d4d2bcab5a04",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-onthemarket-livewire/zipball/af1d4321f8e9ca3a99a775927f916e64d289a173",
+                "reference": "af1d4321f8e9ca3a99a775927f916e64d289a173",
                 "shasum": ""
             },
             "require": {
@@ -8202,15 +8198,15 @@
                     "Liberu\\RealEstate\\OnTheMarketLivewire\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Independent Livewire adapter for OnTheMarket synchronization.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-onthemarket-livewire/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-onthemarket-livewire/tree/1.0.0"
+            },
             "time": "2026-08-23T02:46:41+00:00"
         },
         {
@@ -8267,12 +8263,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-real-estate-parties-api.git",
-                "reference": "38680b6ee18d712457e923018bdaab7cdf41229d"
+                "reference": "2c985d614b537e62b0f015c02d12bfdd04bbf26f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-parties-api/zipball/38680b6ee18d712457e923018bdaab7cdf41229d",
-                "reference": "38680b6ee18d712457e923018bdaab7cdf41229d",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-parties-api/zipball/d8d08f91a6da6d4aae9a4e6d2a23807dc4c4ff36",
+                "reference": "d8d08f91a6da6d4aae9a4e6d2a23807dc4c4ff36",
                 "shasum": ""
             },
             "require": {
@@ -8295,15 +8291,15 @@
                     "Liberu\\RealEstate\\PartiesApi\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Versioned API adapter for real-estate parties.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-parties-api/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-parties-api/tree/1.0.0"
+            },
             "time": "2026-08-23T01:12:24+00:00"
         },
         {
@@ -8312,7 +8308,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-real-estate-parties-filament.git",
-                "reference": "be571dddb502e869d646597327c4129f38227b5d"
+                "reference": "4a704d5f5144a8fb99772045f113bd96a17e5b5f"
             },
             "dist": {
                 "type": "zip",
@@ -8339,15 +8335,15 @@
                     "Liberu\\RealEstate\\PartiesFilament\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Filament 5 adapter for real-estate parties.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-parties-filament/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-parties-filament/tree/1.0.0"
+            },
             "time": "2026-08-23T01:12:29+00:00"
         },
         {
@@ -8360,8 +8356,8 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-parties-livewire/zipball/c9ec82749fa0ab18b4abf1e1e5b71fdfe641663e",
-                "reference": "c9ec82749fa0ab18b4abf1e1e5b71fdfe641663e",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-parties-livewire/zipball/15d4d53f52e3c3406d28c64576b15c0495d0a71d",
+                "reference": "15d4d53f52e3c3406d28c64576b15c0495d0a71d",
                 "shasum": ""
             },
             "require": {
@@ -8383,15 +8379,15 @@
                     "Liberu\\RealEstate\\PartiesLivewire\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Livewire 4 adapter for real-estate parties.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-parties-livewire/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-parties-livewire/tree/1.0.0"
+            },
             "time": "2026-08-23T01:12:33+00:00"
         },
         {
@@ -8400,7 +8396,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-real-estate-portals-reporting.git",
-                "reference": "0f91b8626735977c6b819ae515282e99ce8812aa"
+                "reference": "9f58a53c435a07547e2575eea167ca6167574f2e"
             },
             "dist": {
                 "type": "zip",
@@ -8420,13 +8416,13 @@
             },
             "type": "liberu-module",
             "extra": {
+                "liberu": {
+                    "name": "real-estate-portals-reporting"
+                },
                 "laravel": {
                     "providers": [
                         "Liberu\\RealEstate\\PortalsReporting\\PortalsReportingServiceProvider"
                     ]
-                },
-                "liberu": {
-                    "name": "real-estate-portals-reporting"
                 }
             },
             "autoload": {
@@ -8434,15 +8430,15 @@
                     "Liberu\\RealEstate\\PortalsReporting\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Provider-neutral, team-scoped portal publication and reporting records for real estate.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-portals-reporting/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-portals-reporting/tree/1.0.0"
+            },
             "time": "2026-08-23T02:34:02+00:00"
         },
         {
@@ -8451,12 +8447,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-real-estate-portals-reporting-api.git",
-                "reference": "845a502bb52adaebd3f41e684b68bd8e76524d16"
+                "reference": "b552c208fca47b9c1032d07b331e35ff547f5513"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-portals-reporting-api/zipball/845a502bb52adaebd3f41e684b68bd8e76524d16",
-                "reference": "845a502bb52adaebd3f41e684b68bd8e76524d16",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-portals-reporting-api/zipball/65c126469d92bfbf7363b1432459a6d0005cf5ac",
+                "reference": "65c126469d92bfbf7363b1432459a6d0005cf5ac",
                 "shasum": ""
             },
             "require": {
@@ -8479,15 +8475,15 @@
                     "Liberu\\RealEstate\\PortalsReportingApi\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Versioned API adapter for real-estate portal reports.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-portals-reporting-api/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-portals-reporting-api/tree/1.0.0"
+            },
             "time": "2026-08-23T02:34:08+00:00"
         },
         {
@@ -8500,8 +8496,8 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-portals-reporting-filament/zipball/a8f4e0f46d9c4911c758c88763433f6feb83b660",
-                "reference": "a8f4e0f46d9c4911c758c88763433f6feb83b660",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-portals-reporting-filament/zipball/7aa891e9b2c37a0378dd8a7f319c49ddc411772c",
+                "reference": "7aa891e9b2c37a0378dd8a7f319c49ddc411772c",
                 "shasum": ""
             },
             "require": {
@@ -8523,15 +8519,15 @@
                     "Liberu\\RealEstate\\PortalsReportingFilament\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Filament 5 adapter for real-estate portal reports.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-portals-reporting-filament/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-portals-reporting-filament/tree/1.0.0"
+            },
             "time": "2026-08-23T02:34:15+00:00"
         },
         {
@@ -8544,8 +8540,8 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-portals-reporting-livewire/zipball/3d3f9dbdff4b3a7576f71f7e7f94a637dc9e544e",
-                "reference": "3d3f9dbdff4b3a7576f71f7e7f94a637dc9e544e",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-portals-reporting-livewire/zipball/6634ad82d4885f8a638407937139b10e859ffd81",
+                "reference": "6634ad82d4885f8a638407937139b10e859ffd81",
                 "shasum": ""
             },
             "require": {
@@ -8567,15 +8563,15 @@
                     "Liberu\\RealEstate\\PortalsReportingLivewire\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Livewire 4 adapter for real-estate portal reports.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-portals-reporting-livewire/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-portals-reporting-livewire/tree/1.0.0"
+            },
             "time": "2026-08-23T02:34:21+00:00"
         },
         {
@@ -8944,7 +8940,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-real-estate-rightmove.git",
-                "reference": "73003fcd4047bcc6af8f3b37d2f6edd2fe8791ca"
+                "reference": "e430a3f3493674bbd75b6f445396aef79ffbb601"
             },
             "dist": {
                 "type": "zip",
@@ -8954,7 +8950,6 @@
             },
             "require": {
                 "illuminate/database": "^13.0",
-                "illuminate/http": "^13.0",
                 "illuminate/validation": "^13.0",
                 "liberusoftware/module-manager": "^1.0",
                 "liberusoftware/organizations-teams": "^1.0",
@@ -8965,13 +8960,13 @@
             },
             "type": "liberu-module",
             "extra": {
+                "liberu": {
+                    "name": "real-estate-rightmove"
+                },
                 "laravel": {
                     "providers": [
                         "Liberu\\RealEstate\\Rightmove\\RightmoveServiceProvider"
                     ]
-                },
-                "liberu": {
-                    "name": "real-estate-rightmove"
                 }
             },
             "autoload": {
@@ -8979,16 +8974,16 @@
                     "Liberu\\RealEstate\\Rightmove\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Independent Rightmove listing synchronization core for Liberu Real Estate.",
-            "time": "2026-08-23T02:58:27+00:00"
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-rightmove/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-rightmove/tree/1.0.0"
+            },
+            "time": "2026-08-23T02:45:31+00:00"
         },
         {
             "name": "liberusoftware/real-estate-rightmove-api",
@@ -8996,12 +8991,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-real-estate-rightmove-api.git",
-                "reference": "5a219a7a8098789a8cf3772f9d7c03ab7d68e8c2"
+                "reference": "ab2382ed67749e2399ba3656e7ba69b3ac5c2537"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-rightmove-api/zipball/5a219a7a8098789a8cf3772f9d7c03ab7d68e8c2",
-                "reference": "5a219a7a8098789a8cf3772f9d7c03ab7d68e8c2",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-rightmove-api/zipball/65839a63748d3d6e6cfe96ee25af8761d026c6a1",
+                "reference": "65839a63748d3d6e6cfe96ee25af8761d026c6a1",
                 "shasum": ""
             },
             "require": {
@@ -9024,16 +9019,16 @@
                     "Liberu\\RealEstate\\RightmoveApi\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Independent API adapter for Rightmove synchronization.",
-            "time": "2026-08-23T03:16:39+00:00"
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-rightmove-api/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-rightmove-api/tree/1.0.0"
+            },
+            "time": "2026-08-23T02:45:37+00:00"
         },
         {
             "name": "liberusoftware/real-estate-rightmove-filament",
@@ -9045,8 +9040,8 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-rightmove-filament/zipball/3841fe8e168db011bb0da125b9aa24f7b43a7c08",
-                "reference": "3841fe8e168db011bb0da125b9aa24f7b43a7c08",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-rightmove-filament/zipball/c64948994ede43e92690219e871604945aa9a1bb",
+                "reference": "c64948994ede43e92690219e871604945aa9a1bb",
                 "shasum": ""
             },
             "require": {
@@ -9068,15 +9063,15 @@
                     "Liberu\\RealEstate\\RightmoveFilament\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Independent Filament adapter for Rightmove synchronization.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-rightmove-filament/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-rightmove-filament/tree/1.0.0"
+            },
             "time": "2026-08-23T02:45:44+00:00"
         },
         {
@@ -9089,8 +9084,8 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-rightmove-livewire/zipball/8ae890f72ede2330675d4cb1cff34b2146946a18",
-                "reference": "8ae890f72ede2330675d4cb1cff34b2146946a18",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-rightmove-livewire/zipball/b78d322ba18fd6f82c437318c771f1123e6ab83d",
+                "reference": "b78d322ba18fd6f82c437318c771f1123e6ab83d",
                 "shasum": ""
             },
             "require": {
@@ -9112,15 +9107,15 @@
                     "Liberu\\RealEstate\\RightmoveLivewire\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Independent Livewire adapter for Rightmove synchronization.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-rightmove-livewire/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-rightmove-livewire/tree/1.0.0"
+            },
             "time": "2026-08-23T02:45:50+00:00"
         },
         {
@@ -9129,7 +9124,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-real-estate-sales-progression.git",
-                "reference": "68adefbd20f7ec0534b5bd088e7219ba349eff03"
+                "reference": "c9a2fbb531e4363e7d468e5ece56c961d02b54d6"
             },
             "dist": {
                 "type": "zip",
@@ -9149,13 +9144,13 @@
             },
             "type": "liberu-module",
             "extra": {
+                "liberu": {
+                    "name": "real-estate-sales-progression"
+                },
                 "laravel": {
                     "providers": [
                         "Liberu\\RealEstate\\SalesProgression\\SalesProgressionServiceProvider"
                     ]
-                },
-                "liberu": {
-                    "name": "real-estate-sales-progression"
                 }
             },
             "autoload": {
@@ -9163,15 +9158,15 @@
                     "Liberu\\RealEstate\\SalesProgression\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Team-scoped sales progression milestones, chains, and completion controls.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-sales-progression/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-sales-progression/tree/1.0.0"
+            },
             "time": "2026-08-23T02:18:45+00:00"
         },
         {
@@ -9180,12 +9175,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-real-estate-sales-progression-api.git",
-                "reference": "18ece4064b58de38249b0a81c2dddd003e4fb47a"
+                "reference": "348db0aa8fe898de0a49de5211d187d5b9a842ca"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-sales-progression-api/zipball/18ece4064b58de38249b0a81c2dddd003e4fb47a",
-                "reference": "18ece4064b58de38249b0a81c2dddd003e4fb47a",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-sales-progression-api/zipball/97b8048d7738666040e3b883337db56729cae557",
+                "reference": "97b8048d7738666040e3b883337db56729cae557",
                 "shasum": ""
             },
             "require": {
@@ -9208,15 +9203,15 @@
                     "Liberu\\RealEstate\\SalesProgressionApi\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Versioned API adapter for real-estate sales progression.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-sales-progression-api/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-sales-progression-api/tree/1.0.0"
+            },
             "time": "2026-08-23T02:18:50+00:00"
         },
         {
@@ -9229,8 +9224,8 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-sales-progression-filament/zipball/a6d5ae25c2a9904f2c448c6dbbbb05c49c0ff162",
-                "reference": "a6d5ae25c2a9904f2c448c6dbbbb05c49c0ff162",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-sales-progression-filament/zipball/b8937ee8e2894c7256a7a93446375c34cefc9616",
+                "reference": "b8937ee8e2894c7256a7a93446375c34cefc9616",
                 "shasum": ""
             },
             "require": {
@@ -9252,15 +9247,15 @@
                     "Liberu\\RealEstate\\SalesProgressionFilament\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Filament 5 adapter for real-estate sales progression.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-sales-progression-filament/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-sales-progression-filament/tree/1.0.0"
+            },
             "time": "2026-08-23T02:18:55+00:00"
         },
         {
@@ -9273,8 +9268,8 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-sales-progression-livewire/zipball/5f3ac62758eebabc493d50181b57e9807c010626",
-                "reference": "5f3ac62758eebabc493d50181b57e9807c010626",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-sales-progression-livewire/zipball/e14137ec9fa54e7bae95bde1cd8764d72e862b01",
+                "reference": "e14137ec9fa54e7bae95bde1cd8764d72e862b01",
                 "shasum": ""
             },
             "require": {
@@ -9296,15 +9291,15 @@
                     "Liberu\\RealEstate\\SalesProgressionLivewire\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Livewire 4 adapter for real-estate sales progression.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-sales-progression-livewire/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-sales-progression-livewire/tree/1.0.0"
+            },
             "time": "2026-08-23T02:19:00+00:00"
         },
         {
@@ -9313,12 +9308,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-real-estate-valuations.git",
-                "reference": "7207b2ea48e7886561e0fb6b97afcff828424018"
+                "reference": "9efb7e9e72f3f009e8ad9519a32335105366e141"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-valuations/zipball/7207b2ea48e7886561e0fb6b97afcff828424018",
-                "reference": "7207b2ea48e7886561e0fb6b97afcff828424018",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-valuations/zipball/f4ce722c2049012e4cf4400f31173043980bc952",
+                "reference": "f4ce722c2049012e4cf4400f31173043980bc952",
                 "shasum": ""
             },
             "require": {
@@ -9333,13 +9328,13 @@
             },
             "type": "liberu-module",
             "extra": {
+                "liberu": {
+                    "name": "real-estate-valuations"
+                },
                 "laravel": {
                     "providers": [
                         "Liberu\\RealEstate\\Valuations\\ValuationsServiceProvider"
                     ]
-                },
-                "liberu": {
-                    "name": "real-estate-valuations"
                 }
             },
             "autoload": {
@@ -9347,15 +9342,15 @@
                     "Liberu\\RealEstate\\Valuations\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Provider-neutral valuation records and lifecycle actions.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-valuations/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-valuations/tree/1.0.0"
+            },
             "time": "2026-08-23T01:38:03+00:00"
         },
         {
@@ -9364,12 +9359,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-real-estate-valuations-api.git",
-                "reference": "42bba782e331b58a5458f3428e341d1a316888fd"
+                "reference": "4851e35886943c6aa518420d817ec751fb7eb7e1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-valuations-api/zipball/42bba782e331b58a5458f3428e341d1a316888fd",
-                "reference": "42bba782e331b58a5458f3428e341d1a316888fd",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-valuations-api/zipball/62086885685c8fd02c88360bfee108f10279ef2b",
+                "reference": "62086885685c8fd02c88360bfee108f10279ef2b",
                 "shasum": ""
             },
             "require": {
@@ -9392,15 +9387,15 @@
                     "Liberu\\RealEstate\\ValuationsApi\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Versioned API adapter for real-estate valuations.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-valuations-api/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-valuations-api/tree/1.0.0"
+            },
             "time": "2026-08-23T01:40:05+00:00"
         },
         {
@@ -9409,12 +9404,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-real-estate-valuations-filament.git",
-                "reference": "ae41a241d360a4e8d069f36477f6527926df4f56"
+                "reference": "344628f2da2bde8b60a7f51986f5b34a6244d719"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-valuations-filament/zipball/ae41a241d360a4e8d069f36477f6527926df4f56",
-                "reference": "ae41a241d360a4e8d069f36477f6527926df4f56",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-valuations-filament/zipball/51a4de1fd4ef5fba4688b4484d2659ffbdac3738",
+                "reference": "51a4de1fd4ef5fba4688b4484d2659ffbdac3738",
                 "shasum": ""
             },
             "require": {
@@ -9436,15 +9431,15 @@
                     "Liberu\\RealEstate\\ValuationsFilament\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Filament 5 adapter for real-estate valuations.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-valuations-filament/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-valuations-filament/tree/1.0.0"
+            },
             "time": "2026-08-23T01:42:54+00:00"
         },
         {
@@ -9453,12 +9448,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-real-estate-valuations-livewire.git",
-                "reference": "984334ea6369641deb7f00eff2dbd579b3a2345d"
+                "reference": "9b8142e9b35714e67254bf13ded6d3ffd5689a08"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-valuations-livewire/zipball/984334ea6369641deb7f00eff2dbd579b3a2345d",
-                "reference": "984334ea6369641deb7f00eff2dbd579b3a2345d",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-valuations-livewire/zipball/4d4880f0efc884d644ee8cb038d7db694ce73968",
+                "reference": "4d4880f0efc884d644ee8cb038d7db694ce73968",
                 "shasum": ""
             },
             "require": {
@@ -9480,15 +9475,15 @@
                     "Liberu\\RealEstate\\ValuationsLivewire\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Livewire 4 adapter for real-estate valuations.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-valuations-livewire/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-valuations-livewire/tree/1.0.0"
+            },
             "time": "2026-08-23T01:42:58+00:00"
         },
         {
@@ -9497,12 +9492,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-real-estate-viewings.git",
-                "reference": "ab5f1c74b46b620779cf6115154b18f09d5cebca"
+                "reference": "59005bd978a25527563584bc467be743eda74949"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-viewings/zipball/ab5f1c74b46b620779cf6115154b18f09d5cebca",
-                "reference": "ab5f1c74b46b620779cf6115154b18f09d5cebca",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-viewings/zipball/dd853a462347e5d3afcb9d39d698d6014af6ea34",
+                "reference": "dd853a462347e5d3afcb9d39d698d6014af6ea34",
                 "shasum": ""
             },
             "require": {
@@ -9517,13 +9512,13 @@
             },
             "type": "liberu-module",
             "extra": {
+                "liberu": {
+                    "name": "real-estate-viewings"
+                },
                 "laravel": {
                     "providers": [
                         "Liberu\\RealEstate\\Viewings\\ViewingsServiceProvider"
                     ]
-                },
-                "liberu": {
-                    "name": "real-estate-viewings"
                 }
             },
             "autoload": {
@@ -9531,15 +9526,15 @@
                     "Liberu\\RealEstate\\Viewings\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Provider-neutral viewing bookings and attendance lifecycle actions.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-viewings/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-viewings/tree/1.0.0"
+            },
             "time": "2026-08-23T02:00:26+00:00"
         },
         {
@@ -9548,12 +9543,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-real-estate-viewings-api.git",
-                "reference": "33bc1b365529209ed14f9921ce6cde1dfb3fbfb5"
+                "reference": "c2cce756b93e82babf11e88c0fef9958e136d470"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-viewings-api/zipball/33bc1b365529209ed14f9921ce6cde1dfb3fbfb5",
-                "reference": "33bc1b365529209ed14f9921ce6cde1dfb3fbfb5",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-viewings-api/zipball/f2b7cbf9bf24065bfce66265bc9d61a020649cc0",
+                "reference": "f2b7cbf9bf24065bfce66265bc9d61a020649cc0",
                 "shasum": ""
             },
             "require": {
@@ -9576,15 +9571,15 @@
                     "Liberu\\RealEstate\\ViewingsApi\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Versioned API adapter for real-estate viewings.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-viewings-api/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-viewings-api/tree/1.0.0"
+            },
             "time": "2026-08-23T02:00:31+00:00"
         },
         {
@@ -9593,12 +9588,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-real-estate-viewings-filament.git",
-                "reference": "13b9f86faac0a8899dd07c86e8cdcc3d7f217a3c"
+                "reference": "4fd61cacd1f0678d07e3d797eee808496990e0f8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-viewings-filament/zipball/13b9f86faac0a8899dd07c86e8cdcc3d7f217a3c",
-                "reference": "13b9f86faac0a8899dd07c86e8cdcc3d7f217a3c",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-viewings-filament/zipball/f026d25a3b6e98715b7111338d4875d1ce0f4f63",
+                "reference": "f026d25a3b6e98715b7111338d4875d1ce0f4f63",
                 "shasum": ""
             },
             "require": {
@@ -9620,15 +9615,15 @@
                     "Liberu\\RealEstate\\ViewingsFilament\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Filament 5 adapter for real-estate viewings.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-viewings-filament/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-viewings-filament/tree/1.0.0"
+            },
             "time": "2026-08-23T02:00:36+00:00"
         },
         {
@@ -9637,12 +9632,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-real-estate-viewings-livewire.git",
-                "reference": "79f6877047323b1eddd945f84e06d11f50f5a42f"
+                "reference": "72beddafb7bd90181295d89df1e65664c0038f23"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-viewings-livewire/zipball/79f6877047323b1eddd945f84e06d11f50f5a42f",
-                "reference": "79f6877047323b1eddd945f84e06d11f50f5a42f",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-viewings-livewire/zipball/6a4ab0107d8e20d63276a4835ececa09c26d2572",
+                "reference": "6a4ab0107d8e20d63276a4835ececa09c26d2572",
                 "shasum": ""
             },
             "require": {
@@ -9664,15 +9659,15 @@
                     "Liberu\\RealEstate\\ViewingsLivewire\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Livewire 4 adapter for real-estate viewings.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-viewings-livewire/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-viewings-livewire/tree/1.0.0"
+            },
             "time": "2026-08-23T02:00:41+00:00"
         },
         {
@@ -9681,7 +9676,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-real-estate-zoopla.git",
-                "reference": "82fe36aa30771873af17babf30be98d8e4219a1c"
+                "reference": "2340dc3c1b0d7e3a7a206b43e697dc0902ae5448"
             },
             "dist": {
                 "type": "zip",
@@ -9691,7 +9686,6 @@
             },
             "require": {
                 "illuminate/database": "^13.0",
-                "illuminate/http": "^13.0",
                 "illuminate/validation": "^13.0",
                 "liberusoftware/module-manager": "^1.0",
                 "liberusoftware/organizations-teams": "^1.0",
@@ -9702,13 +9696,13 @@
             },
             "type": "liberu-module",
             "extra": {
+                "liberu": {
+                    "name": "real-estate-zoopla"
+                },
                 "laravel": {
                     "providers": [
                         "Liberu\\RealEstate\\Zoopla\\ZooplaServiceProvider"
                     ]
-                },
-                "liberu": {
-                    "name": "real-estate-zoopla"
                 }
             },
             "autoload": {
@@ -9716,16 +9710,16 @@
                     "Liberu\\RealEstate\\Zoopla\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Independent Zoopla listing synchronization core for Liberu Real Estate.",
-            "time": "2026-08-23T02:58:35+00:00"
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-zoopla/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-zoopla/tree/1.0.0"
+            },
+            "time": "2026-08-23T02:45:56+00:00"
         },
         {
             "name": "liberusoftware/real-estate-zoopla-api",
@@ -9733,12 +9727,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liberusoftware/module-real-estate-zoopla-api.git",
-                "reference": "ac66274abc6634e5f5f3977c6a5df98aaf0e8a05"
+                "reference": "f3e3ca412824a9ddca82e237faed560944d9f150"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-zoopla-api/zipball/ac66274abc6634e5f5f3977c6a5df98aaf0e8a05",
-                "reference": "ac66274abc6634e5f5f3977c6a5df98aaf0e8a05",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-zoopla-api/zipball/d70e59b5ef4b90aa10b9bac16b6365ac49bf2daa",
+                "reference": "d70e59b5ef4b90aa10b9bac16b6365ac49bf2daa",
                 "shasum": ""
             },
             "require": {
@@ -9761,16 +9755,16 @@
                     "Liberu\\RealEstate\\ZooplaApi\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Independent API adapter for Zoopla synchronization.",
-            "time": "2026-08-23T03:16:43+00:00"
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-zoopla-api/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-zoopla-api/tree/1.0.0"
+            },
+            "time": "2026-08-23T02:46:03+00:00"
         },
         {
             "name": "liberusoftware/real-estate-zoopla-filament",
@@ -9782,8 +9776,8 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-zoopla-filament/zipball/4059731b6d73715cccd839f47e99cc723089ae37",
-                "reference": "4059731b6d73715cccd839f47e99cc723089ae37",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-zoopla-filament/zipball/bffb5c8752db7d55551f6827d2e653f0be77ee95",
+                "reference": "bffb5c8752db7d55551f6827d2e653f0be77ee95",
                 "shasum": ""
             },
             "require": {
@@ -9805,15 +9799,15 @@
                     "Liberu\\RealEstate\\ZooplaFilament\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Independent Filament adapter for Zoopla synchronization.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-zoopla-filament/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-zoopla-filament/tree/1.0.0"
+            },
             "time": "2026-08-23T02:46:09+00:00"
         },
         {
@@ -9826,8 +9820,8 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-zoopla-livewire/zipball/e2a47011aa18b9719d98f5a191855490f976f0ff",
-                "reference": "e2a47011aa18b9719d98f5a191855490f976f0ff",
+                "url": "https://api.github.com/repos/liberusoftware/module-real-estate-zoopla-livewire/zipball/86616ae8dfc673bd6b506cea45e7f685478ef5f7",
+                "reference": "86616ae8dfc673bd6b506cea45e7f685478ef5f7",
                 "shasum": ""
             },
             "require": {
@@ -9849,15 +9843,15 @@
                     "Liberu\\RealEstate\\ZooplaLivewire\\": "src/"
                 }
             },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Independent Livewire adapter for Zoopla synchronization.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/module-real-estate-zoopla-livewire/issues",
+                "source": "https://github.com/liberusoftware/module-real-estate-zoopla-livewire/tree/1.0.0"
+            },
             "time": "2026-08-23T02:46:15+00:00"
         },
         {

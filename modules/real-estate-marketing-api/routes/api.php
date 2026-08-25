@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Liberu\RealEstate\MarketingApi\Http\Controllers\MarketingCampaignController;
 
-Route::prefix('api/v1/real-estate/marketing')->middleware(['api', 'auth:sanctum', 'throttle:api'])->group(function (): void {
+Route::prefix('api/v1/real-estate/marketing')->middleware(['api', 'auth:sanctum', 'throttle:api', 'api.idempotency'])->group(function (): void {
     Route::get('/', [MarketingCampaignController::class, 'index']);
     Route::post('/', [MarketingCampaignController::class, 'store']);
     Route::get('/{marketingCampaign}', [MarketingCampaignController::class, 'show']);

@@ -11,6 +11,7 @@ use Liberu\RealEstate\Parties\Application\CreateParty;
 use Liberu\RealEstate\Parties\Application\DeleteParty;
 use Liberu\RealEstate\Parties\Application\UpdateParty;
 use Liberu\RealEstate\Parties\Models\Party;
+use Liberu\RealEstate\PartiesApi\Http\Resources\PartyResource;
 
 final class PartyController
 {
@@ -20,7 +21,7 @@ final class PartyController
         abort_unless($teamId !== null, 403);
         $pageSize = max(1, min($request->integer('page_size', 25), 100));
 
-        return response()->json(['data' => Party::query()->forTeam($teamId)->latest()->paginate($pageSize)]);
+        return PartyResource::collection(Party::query()->forTeam($teamId)->latest()->paginate($pageSize))->response();
     }
 
     public function store(Request $request, CreateParty $create): JsonResponse
@@ -36,14 +37,14 @@ final class PartyController
             'consent_at' => ['nullable', 'date'],
         ]);
 
-        return response()->json(['data' => $create->handle($user->current_team_id, $user->getAuthIdentifier(), $validated)], 201);
+        return (new PartyResource($create->handle($user->current_team_id, $user->getAuthIdentifier(), $validated)))->response()->setStatusCode(201);
     }
 
     public function show(Request $request, Party $party): JsonResponse
     {
         abort_unless($request->user()?->current_team_id === $party->team_id, 404);
 
-        return response()->json(['data' => $party]);
+        return (new PartyResource($party))->response();
     }
 
     public function update(Request $request, Party $party, UpdateParty $update): JsonResponse
@@ -58,7 +59,7 @@ final class PartyController
             'consent_at' => ['nullable', 'date'],
         ]);
 
-        return response()->json(['data' => $update->handle($party->team_id, $party->getKey(), $validated)]);
+        return (new PartyResource($update->handle($party->team_id, $party->getKey(), $validated)))->response();
     }
 
     public function destroy(Request $request, Party $party, DeleteParty $delete): Response

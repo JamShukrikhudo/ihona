@@ -6,10 +6,12 @@ namespace Liberu\RealEstate\LettingsLivewire\Components;
 
 use Illuminate\Contracts\View\View;
 use Liberu\RealEstate\Lettings\Models\Letting;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 final class LettingList extends Component
 {
+    #[Validate('nullable|string|max:255')]
     public string $search = '';
 
     public function render(): View

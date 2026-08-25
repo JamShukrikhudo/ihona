@@ -13,11 +13,16 @@ final class CreateValuation
 {
     public function handle(int|string $teamId, int|string $actorId, array $attributes): Valuation
     {
+        foreach (['comparable_data', 'recommendation'] as $field) {
+            if (is_string($attributes[$field] ?? null)) {
+                $attributes[$field] = json_decode($attributes[$field], true) ?: [];
+            }
+        }
         $subject = trim((string) ($attributes['subject'] ?? ''));
         if ($subject === '') {
             throw ValidationException::withMessages(['subject' => 'A valuation subject is required.']);
         }
 
-        return DB::transaction(fn (): Valuation => Valuation::query()->create(['team_id' => $teamId, 'created_by' => $actorId, 'property_id' => $attributes['property_id'] ?? null, 'party_id' => $attributes['party_id'] ?? null, 'subject' => $subject, 'status' => ValuationStatus::Draft, 'valued_amount' => $attributes['valued_amount'] ?? null, 'fee_amount' => $attributes['fee_amount'] ?? null, 'comparable_data' => $attributes['comparable_data'] ?? [], 'recommendation' => $attributes['recommendation'] ?? [], 'scheduled_at' => $attributes['scheduled_at'] ?? null]));
+        return DB::transaction(fn (): Valuation => Valuation::query()->create(['team_id' => $teamId, 'created_by' => $actorId, 'property_id' => $attributes['property_id'] ?? null, 'party_id' => $attributes['party_id'] ?? null, 'subject' => $subject, 'status' => ValuationStatus::Draft, 'valued_amount' => $attributes['valued_amount'] ?? null, 'fee_amount' => $attributes['fee_amount'] ?? null, 'currency' => $attributes['currency'] ?? null, 'comparable_data' => $attributes['comparable_data'] ?? [], 'recommendation' => $attributes['recommendation'] ?? [], 'scheduled_at' => $attributes['scheduled_at'] ?? null, 'follow_up_at' => $attributes['follow_up_at'] ?? null]));
     }
 }

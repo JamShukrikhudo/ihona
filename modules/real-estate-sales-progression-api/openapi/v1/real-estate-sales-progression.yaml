@@ -1,13 +1,21 @@
-openapi: 3.0.3
+openapi: 3.1.0
 info:
   title: Real Estate Sales Progression API
   version: 1.0.0
+security: [{sanctum: []}]
+x-liberu-idempotency-header: Idempotency-Key
 paths:
   /api/v1/real-estate/sales-progressions:
-    get: {summary: List team sales progressions, responses: {'200': {description: OK}}}
-    post: {summary: Create a sales progression, responses: {'201': {description: Created}}}
+    get: {operationId: real.estate.sales.progression.list, summary: List team sales progressions, responses: {'200': {description: OK}}}
+    post: {operationId: real.estate.sales.progression.create, responses: {'201': {description: Created}}}
   /api/v1/real-estate/sales-progressions/{salesProgression}:
     parameters: [{name: salesProgression, in: path, required: true, schema: {type: integer}}]
-    get: {summary: Show a sales progression, responses: {'200': {description: OK}}}
-    patch: {summary: Update a sales progression, responses: {'200': {description: OK}}}
-    delete: {summary: Archive a sales progression, responses: {'204': {description: Archived}}}
+    get: {operationId: real.estate.sales.progression.get, summary: Show a sales progression, responses: {'200': {description: OK}}}
+    patch: {operationId: real.estate.sales.progression.update, summary: Update a sales progression, responses: {'200': {description: OK}}}
+    delete: {operationId: real.estate.sales.progression.delete, summary: Archive a sales progression, responses: {'204': {description: Archived}}}
+components:
+  securitySchemes:
+    sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}
+  schemas:
+    Error: {type: object, required: [message], properties: {message: {type: string}, code: {type: string}, errors: {type: object, additionalProperties: true}}}
+    PaginationMeta: {type: object, required: [current_page, per_page, total, last_page], properties: {current_page: {type: integer}, per_page: {type: integer}, total: {type: integer}, last_page: {type: integer}}}

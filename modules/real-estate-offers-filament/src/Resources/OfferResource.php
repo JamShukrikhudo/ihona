@@ -7,6 +7,7 @@ namespace Liberu\RealEstate\OffersFilament\Resources;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -28,7 +29,7 @@ final class OfferResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return $schema->components([TextInput::make('subject')->required()->maxLength(255), TextInput::make('amount')->numeric()->minValue(0)->required(), Select::make('status')->options(['draft' => 'Draft', 'submitted' => 'Submitted', 'countered' => 'Countered', 'accepted' => 'Accepted', 'rejected' => 'Rejected', 'withdrawn' => 'Withdrawn'])->required()]);
+        return $schema->components([TextInput::make('subject')->required()->maxLength(255), TextInput::make('amount')->numeric()->minValue(0)->required(), TextInput::make('currency')->default('GBP')->length(3), Textarea::make('terms')->json(), Textarea::make('qualification')->json(), Textarea::make('negotiation')->json(), Textarea::make('proof')->json(), Textarea::make('conditions'), Select::make('status')->options(['draft' => 'Draft', 'submitted' => 'Submitted', 'countered' => 'Countered', 'accepted' => 'Accepted', 'rejected' => 'Rejected', 'withdrawn' => 'Withdrawn'])->disabled()->dehydrated(false)]);
     }
 
     public static function table(Table $table): Table

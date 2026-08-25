@@ -3,8 +3,12 @@
 declare(strict_types=1);
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Validation\ValidationException;
+use Liberu\RealEstate\Viewings\Application\CancelViewing;
+use Liberu\RealEstate\Viewings\Application\CompleteViewing;
+use Liberu\RealEstate\Viewings\Application\ConfirmViewing;
 use Liberu\RealEstate\Viewings\Application\CreateViewing;
 use Liberu\RealEstate\Viewings\Application\DeleteViewing;
+use Liberu\RealEstate\Viewings\Application\MarkViewingNoShow;
 use Liberu\RealEstate\Viewings\Models\Viewing;
 
 uses(RefreshDatabase::class);
@@ -17,4 +21,39 @@ it('requires a start time and archives a viewing for its team', function (): voi
     $viewing = Viewing::query()->create(['team_id' => 1, 'subject' => 'Viewing', 'status' => 'requested', 'starts_at' => '2026-09-01 10:00']);
     app(DeleteViewing::class)->handle($viewing, 1);
     expect(Viewing::withTrashed()->find($viewing->id)->deleted_at)->not->toBeNull();
+});
+
+it('guards viewing availability and supports confirmation, completion, feedback, and no-shows', function (): void {
+    $startsAt = now()->addDays(2)->startOfHour();
+    $viewing = app(CreateViewing::class)->handle(1, 5, [
+        'subject' => 'Viewing workflow',
+        'property_id' => 7,
+        'starts_at' => $startsAt,
+    ]);
+
+    expect(fn () => app(CreateViewing::class)->handle(1, 6, [
+        'subject' => 'Overlapping viewing',
+        'property_id' => 7,
+        'starts_at' => $startsAt->copy()->addMinutes(15),
+    ]))->toThrow(ValidationException::class);
+
+    $viewing = app(ConfirmViewing::class)->handle($viewing, 1);
+    $viewing = app(CompleteViewing::class)->handle($viewing, 1, ['rating' => 5]);
+
+    expect($viewing->status->value)->toBe('completed')
+        ->and($viewing->feedback['rating'])->toBe(5);
+
+    $noShow = app(CreateViewing::class)->handle(1, 5, [
+        'subject' => 'No-show workflow',
+        'property_id' => 8,
+        'starts_at' => $startsAt->copy()->addDay(),
+    ]);
+    $noShow = app(ConfirmViewing::class)->handle($noShow, 1);
+    $noShow = app(MarkViewingNoShow::class)->handle($noShow, 1, 'Party did not attend.');
+
+    expect($noShow->status->value)->toBe('no_show')
+        ->and($noShow->no_show)->toBeTrue()
+        ->and($noShow->feedback['no_show_note'])->toBe('Party did not attend.');
+
+    expect(fn () => app(CancelViewing::class)->handle($viewing, 1))->toThrow(ValidationException::class);
 });

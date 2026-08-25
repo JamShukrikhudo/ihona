@@ -1,4 +1,5 @@
 <div>
+    <div wire:loading class="text-sm text-gray-500" role="status">Loading media and documents…</div>
     <label for="media-document-search">Search media and documents</label>
     <input id="media-document-search" type="search" wire:model.live="search">
     <ul>

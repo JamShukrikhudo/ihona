@@ -12,4 +12,15 @@ final class ValuationsServiceProvider extends ServiceProvider
     {
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
     }
+
+    public function register(): void
+    {
+        $this->app->singleton(Application\CreateValuation::class);
+        $this->app->singleton(Application\UpdateValuation::class);
+        $this->app->singleton(Application\DeleteValuation::class);
+        $this->app->singleton(Application\ScheduleValuation::class);
+        $this->app->singleton(Application\CompleteValuation::class);
+        $this->app->singleton(Application\ConvertValuation::class);
+        $this->app->singleton(Application\CalculateComparables::class);
+    }
 }

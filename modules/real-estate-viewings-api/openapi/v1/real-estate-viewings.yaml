@@ -1,5 +1,7 @@
 openapi: 3.1.0
 info: {title: Real Estate Viewings API, version: 1.0.0}
+security: [{sanctum: []}]
+x-liberu-idempotency-header: Idempotency-Key
 paths:
   /api/v1/real-estate/viewings:
     get: {operationId: real.estate.viewings.list, responses: {"200": {description: Authorized viewings}}}
@@ -9,3 +11,29 @@ paths:
     get: {operationId: real.estate.viewings.get, responses: {"200": {description: Viewing}}}
     patch: {operationId: real.estate.viewings.update, responses: {"200": {description: Updated viewing}}}
     delete: {operationId: real.estate.viewings.delete, responses: {"204": {description: Deleted viewing}}}
+  /api/v1/real-estate/viewings/{id}/confirm:
+    post:
+      operationId: real.estate.viewings.confirm
+      security: [{sanctum: []}]
+      responses: {'200': {description: Viewing confirmed}}
+  /api/v1/real-estate/viewings/{id}/complete:
+    post:
+      operationId: real.estate.viewings.complete
+      security: [{sanctum: []}]
+      responses: {'200': {description: Viewing completed}}
+  /api/v1/real-estate/viewings/{id}/cancel:
+    post:
+      operationId: real.estate.viewings.cancel
+      security: [{sanctum: []}]
+      responses: {'200': {description: Viewing cancelled}}
+  /api/v1/real-estate/viewings/{id}/no-show:
+    post:
+      operationId: real.estate.viewings.no_show
+      security: [{sanctum: []}]
+      responses: {'200': {description: Viewing marked as a no-show}}
+components:
+  securitySchemes:
+    sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}
+  schemas:
+    Error: {type: object, required: [message], properties: {message: {type: string}, code: {type: string}, errors: {type: object, additionalProperties: true}}}
+    PaginationMeta: {type: object, required: [current_page, per_page, total, last_page], properties: {current_page: {type: integer}, per_page: {type: integer}, total: {type: integer}, last_page: {type: integer}}}

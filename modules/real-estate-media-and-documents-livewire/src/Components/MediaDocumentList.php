@@ -6,10 +6,12 @@ namespace Liberu\RealEstate\MediaAndDocumentsLivewire\Components;
 
 use Illuminate\Contracts\View\View;
 use Liberu\RealEstate\MediaAndDocuments\Models\MediaDocument;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 final class MediaDocumentList extends Component
 {
+    #[Validate('nullable|string|max:255')]
     public string $search = '';
 
     public function render(): View

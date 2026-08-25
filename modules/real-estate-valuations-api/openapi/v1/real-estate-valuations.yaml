@@ -1,5 +1,7 @@
 openapi: 3.1.0
 info: {title: Real Estate Valuations API, version: 1.0.0}
+security: [{sanctum: []}]
+x-liberu-idempotency-header: Idempotency-Key
 paths:
   /api/v1/real-estate/valuations:
     get: {operationId: real.estate.valuations.list, responses: {"200": {description: Authorized valuations}}}
@@ -9,3 +11,29 @@ paths:
     get: {operationId: real.estate.valuations.get, responses: {"200": {description: Valuation}}}
     patch: {operationId: real.estate.valuations.update, responses: {"200": {description: Updated valuation}}}
     delete: {operationId: real.estate.valuations.delete, responses: {"204": {description: Deleted valuation}}}
+  /api/v1/real-estate/valuations/{id}/schedule:
+    post:
+      operationId: real.estate.valuations.schedule
+      security: [{sanctum: []}]
+      responses: {'200': {description: Valuation scheduled}}
+  /api/v1/real-estate/valuations/{id}/complete:
+    post:
+      operationId: real.estate.valuations.complete
+      security: [{sanctum: []}]
+      responses: {'200': {description: Valuation completed}}
+  /api/v1/real-estate/valuations/{id}/convert:
+    post:
+      operationId: real.estate.valuations.convert
+      security: [{sanctum: []}]
+      responses: {'200': {description: Valuation converted}}
+  /api/v1/real-estate/valuations/{id}/comparables:
+    post:
+      operationId: real.estate.valuations.comparables
+      security: [{sanctum: []}]
+      responses: {'200': {description: Comparable pricing calculated}}
+components:
+  securitySchemes:
+    sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}
+  schemas:
+    Error: {type: object, required: [message], properties: {message: {type: string}, code: {type: string}, errors: {type: object, additionalProperties: true}}}
+    PaginationMeta: {type: object, required: [current_page, per_page, total, last_page], properties: {current_page: {type: integer}, per_page: {type: integer}, total: {type: integer}, last_page: {type: integer}}}

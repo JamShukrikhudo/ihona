@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace Liberu\RealEstate\ZooplaLivewire\Components;
 
 use Liberu\RealEstate\Zoopla\Models\ZooplaSync;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 final class ZooplaSyncList extends Component
 {
+    #[Validate('nullable|string|max:255')]
     public string $search = '';
 
     public function render(): mixed

@@ -24,6 +24,16 @@ final class Property extends Model
             'characteristics' => 'array',
             'utilities' => 'array',
             'features' => 'array',
+            'structured_address' => 'array',
+            'epc' => 'array',
+            'floor_plan_data' => 'array',
+            'price' => 'decimal:2',
+            'area_sqft' => 'decimal:2',
+            'service_charge' => 'decimal:2',
+            'ground_rent' => 'decimal:2',
+            'latitude' => 'float',
+            'longitude' => 'float',
+            'last_synced_at' => 'datetime',
             'published_at' => 'datetime',
         ];
     }
