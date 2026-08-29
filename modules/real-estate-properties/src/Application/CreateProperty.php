@@ -9,6 +9,7 @@ use Illuminate\Validation\ValidationException;
 use Liberu\RealEstate\Core\Models\Branch;
 use Liberu\RealEstate\Properties\Domain\PropertyStatus;
 use Liberu\RealEstate\Properties\Models\PropertyCategory;
+use Liberu\RealEstate\Properties\Models\PropertyTemplate;
 use Liberu\RealEstate\Properties\Models\Property;
 
 final class CreateProperty
@@ -29,8 +30,12 @@ final class CreateProperty
         if ($categoryId !== null && ! PropertyCategory::query()->forTeam($teamId)->whereKey($categoryId)->exists()) {
             throw ValidationException::withMessages(['property_category_id' => 'The category must belong to the current team.']);
         }
+        $templateId = $attributes['property_template_id'] ?? null;
+        if ($templateId !== null && ! PropertyTemplate::query()->forTeam($teamId)->whereKey($templateId)->exists()) {
+            throw ValidationException::withMessages(['property_template_id' => 'The template must belong to the current team.']);
+        }
 
-        return DB::transaction(function () use ($teamId, $actorId, $attributes, $address, $categoryId): Property {
+        return DB::transaction(function () use ($teamId, $actorId, $attributes, $address, $categoryId, $templateId): Property {
             $property = Property::query()->create([
                 'team_id' => $teamId,
                 'branch_id' => $attributes['branch_id'] ?? null,
@@ -92,6 +97,7 @@ final class CreateProperty
                 'jupix_id' => $attributes['jupix_id'] ?? null,
                 'property_type' => $attributes['property_type'] ?? 'residential',
                 'property_category_id' => $categoryId,
+                'property_template_id' => $templateId,
                 'characteristics' => $attributes['characteristics'] ?? [],
                 'utilities' => $attributes['utilities'] ?? [],
                 'features' => $attributes['features'] ?? [],

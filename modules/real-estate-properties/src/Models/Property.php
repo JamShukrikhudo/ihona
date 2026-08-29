@@ -68,6 +68,11 @@ final class Property extends Model
         return $this->belongsTo(PropertyCategory::class, 'property_category_id');
     }
 
+    public function template(): BelongsTo
+    {
+        return $this->belongsTo(PropertyTemplate::class, 'property_template_id');
+    }
+
     public function scopeForTeam(Builder $query, int|string $teamId): Builder
     {
         return $query->where('team_id', $teamId);

@@ -9,6 +9,7 @@ use Illuminate\Validation\ValidationException;
 use Liberu\RealEstate\Core\Models\Branch;
 use Liberu\RealEstate\Properties\Models\Property;
 use Liberu\RealEstate\Properties\Models\PropertyCategory;
+use Liberu\RealEstate\Properties\Models\PropertyTemplate;
 
 final class UpdateProperty
 {
@@ -34,6 +35,9 @@ final class UpdateProperty
             if (array_key_exists('property_category_id', $attributes) && $attributes['property_category_id'] !== null && ! PropertyCategory::query()->forTeam($teamId)->whereKey($attributes['property_category_id'])->exists()) {
                 throw ValidationException::withMessages(['property_category_id' => 'The category must belong to the current team.']);
             }
+            if (array_key_exists('property_template_id', $attributes) && $attributes['property_template_id'] !== null && ! PropertyTemplate::query()->forTeam($teamId)->whereKey($attributes['property_template_id'])->exists()) {
+                throw ValidationException::withMessages(['property_template_id' => 'The template must belong to the current team.']);
+            }
             $changes = [];
 
             $fields = [
@@ -43,7 +47,7 @@ final class UpdateProperty
                 'council_tax_band', 'energy_score', 'walkability_score', 'walkability_description',
                 'transit_score', 'transit_description', 'bike_score', 'bike_description',
                 'walkability_updated_at',
-                'virtual_tour_url', 'virtual_tour_provider', 'model_3d_url', 'floor_plan_data', 'property_type', 'property_category_id',
+                'virtual_tour_url', 'virtual_tour_provider', 'model_3d_url', 'floor_plan_data', 'property_type', 'property_category_id', 'property_template_id',
                 'characteristics', 'utilities', 'features', 'list_date', 'sold_date', 'last_synced_at', 'is_featured',
                 'live_tour_available', 'ar_tour_enabled', 'ar_tour_settings', 'ar_placement_guide',
                 'ar_model_scale', 'holographic_tour_url', 'holographic_provider', 'holographic_metadata',

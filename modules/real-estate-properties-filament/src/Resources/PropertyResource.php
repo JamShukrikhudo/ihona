@@ -27,6 +27,7 @@ use Liberu\RealEstate\Properties\Application\UpsertPropertyUnit;
 use Liberu\RealEstate\Properties\Domain\PropertyStatus;
 use Liberu\RealEstate\Properties\Models\Property;
 use Liberu\RealEstate\Properties\Models\PropertyCategory;
+use Liberu\RealEstate\Properties\Models\PropertyTemplate;
 use Liberu\RealEstate\PropertiesFilament\Resources\PropertyResource\Pages\CreateProperty;
 use Liberu\RealEstate\PropertiesFilament\Resources\PropertyResource\Pages\EditProperty;
 use Liberu\RealEstate\PropertiesFilament\Resources\PropertyResource\Pages\ListProperties;
@@ -74,6 +75,11 @@ final class PropertyResource extends Resource
             Select::make('property_category_id')
                 ->label('Category')
                 ->options(fn (): array => PropertyCategory::query()->forTeam(auth()->user()?->current_team_id ?? 0)->orderBy('name')->pluck('name', 'id')->all())
+                ->searchable()
+                ->nullable(),
+            Select::make('property_template_id')
+                ->label('Listing template')
+                ->options(fn (): array => PropertyTemplate::query()->forTeam(auth()->user()?->current_team_id ?? 0)->orderBy('name')->pluck('name', 'id')->all())
                 ->searchable()
                 ->nullable(),
             TextInput::make('postal_code')->maxLength(20),
