@@ -43,6 +43,9 @@ final class AdvancedPropertySearch extends Component
 
     public ?string $energyRating = null;
 
+    /** @var array<int, string> */
+    public array $selectedAmenities = [];
+
     public ?float $latitude = null;
 
     public ?float $longitude = null;
@@ -71,6 +74,8 @@ final class AdvancedPropertySearch extends Component
             'postalCode' => ['nullable', 'string', 'max:20'],
             'country' => ['nullable', 'string', 'size:2'],
             'energyRating' => ['nullable', 'string', 'max:10'],
+            'selectedAmenities' => ['array', 'max:20'],
+            'selectedAmenities.*' => ['string', 'max:80'],
             'latitude' => ['nullable', 'numeric', 'between:-90,90'],
             'longitude' => ['nullable', 'numeric', 'between:-180,180'],
             'radius' => ['nullable', 'numeric', 'gt:0', 'max:500'],
@@ -97,6 +102,7 @@ final class AdvancedPropertySearch extends Component
                 ->propertyType($this->propertyType)
                 ->country($this->country)
                 ->energyRating($this->energyRating)
+                ->hasAmenities($this->selectedAmenities)
                 ->when($this->latitude !== null && $this->longitude !== null && $this->radius !== null, fn ($query) => $query->nearby($this->latitude, $this->longitude, $this->radius))
                 ->when($this->featuredOnly, fn ($query) => $query->featured())
                 ->latest()->paginate(12);

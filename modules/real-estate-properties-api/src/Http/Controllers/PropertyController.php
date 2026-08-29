@@ -32,6 +32,8 @@ final class PropertyController
             'search' => ['sometimes', 'nullable', 'string', 'max:255'],
             'postal_code' => ['sometimes', 'nullable', 'string', 'max:20'],
             'needs_syncing' => ['sometimes', 'boolean'],
+            'amenities' => ['sometimes', 'array', 'max:20'],
+            'amenities.*' => ['string', 'max:80'],
             'latitude' => ['sometimes', 'nullable', 'numeric', 'between:-90,90'],
             'longitude' => ['sometimes', 'nullable', 'numeric', 'between:-180,180'],
             'radius' => ['sometimes', 'nullable', 'numeric', 'gt:0', 'max:500'],
@@ -58,6 +60,7 @@ final class PropertyController
             ->search($filters['search'] ?? null)
             ->postalCode($filters['postal_code'] ?? null)
             ->when($filters['needs_syncing'] ?? false, fn ($query) => $query->needsSyncing())
+            ->hasAmenities($filters['amenities'] ?? [])
             ->when($filters['latitude'] !== null && $filters['longitude'] !== null && $filters['radius'] !== null, fn ($query) => $query->nearby($filters['latitude'], $filters['longitude'], $filters['radius']))
             ->when(array_key_exists('branch_id', $filters), fn ($query) => $query->where('branch_id', $filters['branch_id']))
             ->priceRange($filters['min_price'] ?? null, $filters['max_price'] ?? null)

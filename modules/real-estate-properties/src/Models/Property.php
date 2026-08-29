@@ -124,6 +124,21 @@ final class Property extends Model
         });
     }
 
+    /** @param array<int, string> $amenities */
+    public function scopeHasAmenities(Builder $query, array $amenities): Builder
+    {
+        $amenities = array_values(array_filter(array_map(
+            static fn (mixed $amenity): string => trim((string) $amenity),
+            $amenities,
+        ), static fn (string $amenity): bool => $amenity !== ''));
+
+        foreach ($amenities as $amenity) {
+            $query->whereJsonContains('features', $amenity);
+        }
+
+        return $query;
+    }
+
     public function needsWalkabilityUpdate(): bool
     {
         return $this->walkability_updated_at === null

@@ -19,6 +19,15 @@
         <input id="advanced-longitude" type="number" wire:model="longitude" min="-180" max="180" step="any">
         <label for="advanced-radius">Radius (km)</label>
         <input id="advanced-radius" type="number" wire:model="radius" min="0.1" max="500" step="any">
+        <fieldset>
+            <legend>Amenities</legend>
+            @foreach (['garden' => 'Garden', 'parking' => 'Parking', 'balcony' => 'Balcony', 'garage' => 'Garage', 'fireplace' => 'Fireplace'] as $amenity => $label)
+                <label for="advanced-amenity-{{ $amenity }}">
+                    <input id="advanced-amenity-{{ $amenity }}" type="checkbox" value="{{ $amenity }}" wire:model="selectedAmenities">
+                    {{ $label }}
+                </label>
+            @endforeach
+        </fieldset>
         <label for="advanced-featured">
             <input id="advanced-featured" type="checkbox" wire:model="featuredOnly">
             Featured only
