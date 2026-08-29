@@ -233,6 +233,69 @@ final class Property extends Model
             && $this->insurance_expiry_date->isFuture();
     }
 
+    public function daysListed(): ?int
+    {
+        if ($this->list_date === null || $this->list_date->isFuture()) {
+            return $this->list_date === null ? null : 0;
+        }
+
+        return (int) $this->list_date->startOfDay()->diffInDays(now()->startOfDay());
+    }
+
+    public function pricePerSquareFoot(): ?float
+    {
+        if ($this->price === null || $this->area_sqft === null || (float) $this->area_sqft <= 0) {
+            return null;
+        }
+
+        return round((float) $this->price / (float) $this->area_sqft, 2);
+    }
+
+    /** @return array<string, array{label: string, value: int|float|string|null, source: string}> */
+    public function disclosureFacts(): array
+    {
+        $epcDate = data_get($this->epc, 'assessment_date') ?: $this->energy_rating_date?->toDateString();
+        $energyValue = $this->energy_rating;
+        if ($this->energy_score !== null) {
+            $energyValue = $energyValue === null
+                ? (string) $this->energy_score
+                : trim((string) $energyValue.' ('.$this->energy_score.')');
+        }
+
+        return [
+            'energy' => [
+                'label' => 'Energy',
+                'value' => $energyValue,
+                'source' => $epcDate ? 'Certificate, assessed '.$epcDate : 'Certificate',
+            ],
+            'floor_area' => [
+                'label' => 'Floor area',
+                'value' => $this->area_sqft,
+                'source' => 'Property record',
+            ],
+            'year_built' => [
+                'label' => 'Built',
+                'value' => $this->year_built,
+                'source' => 'Property record',
+            ],
+            'price_per_square_foot' => [
+                'label' => 'Price per square foot',
+                'value' => $this->pricePerSquareFoot(),
+                'source' => 'Derived from price and floor area',
+            ],
+            'days_listed' => [
+                'label' => 'Days listed',
+                'value' => $this->daysListed(),
+                'source' => $this->list_date ? 'Derived from listing date' : 'Listing date',
+            ],
+            'council_tax_band' => [
+                'label' => 'Council tax band',
+                'value' => $this->council_tax_band,
+                'source' => 'Property record',
+            ],
+        ];
+    }
+
     private function virtualTourEmbed(): ?string
     {
         $url = (string) $this->virtual_tour_url;

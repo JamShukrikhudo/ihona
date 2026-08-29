@@ -126,6 +126,8 @@ final class PropertyResource extends Resource
                 TextColumn::make('bathrooms')->sortable(),
                 TextColumn::make('area_sqft')->sortable(),
                 TextColumn::make('year_built')->sortable(),
+                TextColumn::make('price_per_square_foot')->label('Price / sq ft')->state(fn (Property $record): ?float => $record->pricePerSquareFoot())->numeric(decimalPlaces: 2),
+                TextColumn::make('days_listed')->label('Days listed')->state(fn (Property $record): ?int => $record->daysListed())->numeric(),
                 TextColumn::make('created_at')->dateTime()->sortable(),
             ])
             ->filters([

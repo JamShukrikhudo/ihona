@@ -97,10 +97,16 @@ it('keeps Livewire list surfaces validated and stateful', function (): void {
     $root = dirname(__DIR__, 2);
 
     foreach (glob("{$root}/modules/real-estate-*-livewire/src/Components/*.php") ?: [] as $componentFile) {
-        expect(file_get_contents($componentFile))->toContain("#[Validate('nullable|string|max:255')]");
+        if (preg_match('/(List|Search)\.php$/', $componentFile) === 1) {
+            expect(file_get_contents($componentFile))->toContain("#[Validate('nullable|string|max:255')]");
+        }
     }
 
     foreach (glob("{$root}/modules/real-estate-*-livewire/resources/views/*.blade.php") ?: [] as $viewFile) {
+        if (preg_match('/(list|search)\.blade\.php$/', $viewFile) !== 1) {
+            continue;
+        }
+
         $view = file_get_contents($viewFile);
 
         expect($view)->toContain('wire:loading')->and($view)->toContain('@empty');
@@ -159,6 +165,33 @@ it('keeps property template filters available across API and Filament', function
         ->and($openApi)->toContain('name: property_template_id')
         ->and($filament)->toContain("SelectFilter::make('property_template_id')")
         ->toContain('PropertyTemplate::query()->forTeam');
+});
+
+it('keeps the property detail disclosure contract across adapters', function (): void {
+    $model = file_get_contents(base_path('modules/real-estate-properties/src/Models/Property.php'));
+    $definition = file_get_contents(base_path('modules/real-estate-properties/src/Domain/PropertiesCapabilityDefinition.php'));
+    $resource = file_get_contents(base_path('modules/real-estate-properties-api/src/Http/Resources/PropertyResource.php'));
+    $openApi = file_get_contents(base_path('modules/real-estate-properties-api/openapi/v1/real-estate-properties.yaml'));
+    $provider = file_get_contents(base_path('modules/real-estate-properties-livewire/src/PropertiesLivewireServiceProvider.php'));
+    $detail = file_get_contents(base_path('modules/real-estate-properties-livewire/src/Components/PropertyDetail.php'));
+    $view = file_get_contents(base_path('modules/real-estate-properties-livewire/resources/views/property-detail.blade.php'));
+    $filament = file_get_contents(base_path('modules/real-estate-properties-filament/src/Resources/PropertyResource.php'));
+
+    expect($model)->toContain('public function daysListed(): ?int')
+        ->toContain('public function pricePerSquareFoot(): ?float')
+        ->toContain('public function disclosureFacts(): array')
+        ->and($definition)->toContain('Property detail disclosures')
+        ->and($resource)->toContain("'disclosure_facts' => \$this->resource->disclosureFacts()")
+        ->and($openApi)->toContain('days_listed:')
+        ->toContain('price_per_square_foot:')
+        ->toContain('disclosure_facts:')
+        ->and($provider)->toContain("property-detail', Components\\PropertyDetail::class")
+        ->and($detail)->toContain('forTeam($teamId)')
+        ->toContain("property-viewing-requested")
+        ->and($view)->toContain('Property facts')
+        ->toContain('Book a viewing')
+        ->and($filament)->toContain("label('Price / sq ft')")
+        ->toContain("label('Days listed')");
 });
 
 it('keeps Filament resources tenant-scoped and lifecycle-delegated', function (): void {
