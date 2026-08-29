@@ -149,6 +149,18 @@ it('does not narrow advanced Livewire search when no template is selected', func
     expect($source)->toContain('->when($this->propertyTemplateId !== null, fn ($query) => $query->where(\'property_template_id\', $this->propertyTemplateId))');
 });
 
+it('keeps property template filters available across API and Filament', function (): void {
+    $api = file_get_contents(base_path('modules/real-estate-properties-api/src/Http/Controllers/PropertyController.php'));
+    $openApi = file_get_contents(base_path('modules/real-estate-properties-api/openapi/v1/real-estate-properties.yaml'));
+    $filament = file_get_contents(base_path('modules/real-estate-properties-filament/src/Resources/PropertyResource.php'));
+
+    expect($api)->toContain("'property_template_id' => ['sometimes', 'nullable'")
+        ->toContain('where(\'property_template_id\', $filters[\'property_template_id\'])')
+        ->and($openApi)->toContain('name: property_template_id')
+        ->and($filament)->toContain("SelectFilter::make('property_template_id')")
+        ->toContain('PropertyTemplate::query()->forTeam');
+});
+
 it('keeps Filament resources tenant-scoped and lifecycle-delegated', function (): void {
     $root = dirname(__DIR__, 2);
 

@@ -130,6 +130,9 @@ final class PropertyResource extends Resource
             ])
             ->filters([
                 SelectFilter::make('status')->options(collect(PropertyStatus::cases())->mapWithKeys(fn (PropertyStatus $status): array => [$status->value => str($status->value)->headline()->toString()])->all()),
+                SelectFilter::make('property_template_id')
+                    ->label('Template')
+                    ->options(fn (): array => PropertyTemplate::query()->forTeam(auth()->user()?->current_team_id ?? 0)->orderBy('name')->pluck('name', 'id')->all()),
                 Filter::make('minimum_scores')
                     ->form([
                         TextInput::make('energy_score')->numeric()->minValue(0)->maxValue(100),
