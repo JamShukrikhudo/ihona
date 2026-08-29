@@ -32,6 +32,11 @@ final class MediaDocument extends Model
         return self::GALLERY_KINDS[$this->kind] ?? null;
     }
 
+    public function isVideo(): bool
+    {
+        return $this->kind === 'video';
+    }
+
     public function publicUrl(): ?string
     {
         $explicit = data_get($this->metadata, 'public_url');

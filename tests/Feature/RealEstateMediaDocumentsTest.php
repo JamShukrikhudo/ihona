@@ -73,3 +73,14 @@ it('supports site-plan gallery media and only accepts explicit public URLs', fun
 
     expect($document->publicUrl())->toBeNull();
 });
+
+it('identifies video media separately from gallery media', function (): void {
+    $video = app(CreateMediaDocument::class)->handle(1, 5, [
+        'kind' => 'video',
+        'path' => 'properties/1/tour.mp4',
+        'metadata' => ['public_url' => 'https://cdn.example.test/tour.mp4'],
+    ]);
+
+    expect($video->isVideo())->toBeTrue()
+        ->and($video->publicUrl())->toBe('https://cdn.example.test/tour.mp4');
+});

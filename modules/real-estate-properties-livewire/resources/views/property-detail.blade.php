@@ -66,6 +66,16 @@
             </section>
         @endif
 
+        @if ($videoUrl)
+            <section aria-label="Property video">
+                <h2>Property video</h2>
+                <video class="h-full w-full" controls preload="none" aria-label="Video tour of {{ $property->title ?: $property->address }}">
+                    <source src="{{ $videoUrl }}">
+                    Your browser cannot play this video.
+                </video>
+            </section>
+        @endif
+
         <button type="button" wire:click="toggleFavorite">{{ $isFavorited ? 'Unfavorite' : 'Favorite' }}</button>
         <button type="button" wire:click="requestViewing">Book a viewing</button>
     </article>

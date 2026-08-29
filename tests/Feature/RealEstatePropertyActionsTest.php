@@ -16,6 +16,7 @@ use Liberu\RealEstate\Properties\Models\PropertyCategory;
 use Liberu\RealEstate\Properties\Models\PropertyTemplate;
 use Liberu\RealEstate\Properties\Models\PropertyFavorite;
 use Liberu\RealEstate\PropertiesLivewire\Components\PropertyDetail;
+use Liberu\RealEstate\MediaAndDocuments\Application\CreateMediaDocument;
 use Livewire\Livewire;
 
 it('updates team properties and retains a change history', function () {
@@ -88,6 +89,26 @@ it('reveals a valid 3D property model only after an explicit Livewire action', f
         ->assertSet('show3dModel', true)
         ->assertSee('src="https://example.test/model.glb"', escape: false)
         ->assertSee('loading="lazy"', escape: false);
+});
+
+it('renders the first team-scoped public property video without preloading it', function (): void {
+    $user = User::factory()->create(['current_team_id' => 10]);
+    $property = app(CreateProperty::class)->handle(10, $user->getKey(), ['address' => '1 High Street']);
+    app(CreateMediaDocument::class)->handle(10, $user->getKey(), [
+        'property_id' => $property->getKey(),
+        'kind' => 'video',
+        'path' => 'properties/1/tour.mp4',
+        'metadata' => ['public_url' => 'https://cdn.example.test/tour.mp4'],
+    ]);
+
+    $this->actingAs($user);
+
+    Livewire::component('test-property-detail-video', PropertyDetail::class);
+
+    Livewire::test('test-property-detail-video', ['propertyId' => $property->getKey()])
+        ->assertSee('Property video')
+        ->assertSee('src="https://cdn.example.test/tour.mp4"', escape: false)
+        ->assertSee('preload="none"', escape: false);
 });
 
 it('provides portable property detail disclosure facts', function (): void {

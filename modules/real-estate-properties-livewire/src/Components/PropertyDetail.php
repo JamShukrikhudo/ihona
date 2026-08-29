@@ -64,6 +64,7 @@ final class PropertyDetail extends Component
             'property' => $property,
             'facts' => $property->disclosureFacts(),
             'gallery' => $property->galleryItems($this->mediaItems($property)),
+            'videoUrl' => $this->videoUrl($property),
         ]);
     }
 
@@ -87,6 +88,23 @@ final class PropertyDetail extends Component
                 'caption' => $document->title,
                 'staged' => (bool) data_get($document->metadata, 'staged', false),
             ])->all();
+    }
+
+    private function videoUrl(Property $property): ?string
+    {
+        if (! Schema::hasTable('real_estate_media_documents')) {
+            return null;
+        }
+
+        $video = MediaDocument::query()
+            ->forTeam($property->team_id)
+            ->where('property_id', $property->getKey())
+            ->where('kind', 'video')
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->first();
+
+        return $video?->isVideo() ? $video->publicUrl() : null;
     }
 
     private function property(): Property
