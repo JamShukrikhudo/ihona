@@ -13,6 +13,7 @@ use Liberu\RealEstate\Properties\Domain\PropertyStatus;
 use Liberu\RealEstate\Properties\Models\Property;
 use Liberu\RealEstate\Properties\Models\PropertyCategory;
 use Liberu\RealEstate\Properties\Models\PropertyTemplate;
+use Liberu\RealEstate\Properties\Models\PropertyFavorite;
 
 it('updates team properties and retains a change history', function () {
     expect(Schema::hasTable('real_estate_properties'))->toBeTrue();
@@ -226,6 +227,18 @@ it('preserves legacy property metadata and year normalization', function (): voi
         ->and($property->description_generated_at)->not->toBeNull()
         ->and($property->internal_notes)->toBe('Review title documents.')
         ->and($property->floor_plan_image)->toBe('https://example.test/floor-plan.png');
+});
+
+it('supports tenant and user-scoped property favorites', function (): void {
+    $property = app(CreateProperty::class)->handle(10, 20, ['address' => '1 High Street']);
+    $otherUserProperty = app(CreateProperty::class)->handle(10, 21, ['address' => '2 High Street']);
+
+    expect(app(\Liberu\RealEstate\Properties\Application\TogglePropertyFavorite::class)->handle(10, 20, $property->getKey()))->toBeTrue()
+        ->and(Property::query()->forTeam(10)->favoritedBy(10, 20)->pluck('id')->all())->toBe([$property->getKey()])
+        ->and(PropertyFavorite::query()->where('user_id', 21)->exists())->toBeFalse()
+        ->and(app(\Liberu\RealEstate\Properties\Application\TogglePropertyFavorite::class)->handle(10, 20, $property->getKey()))->toBeFalse()
+        ->and(Property::query()->forTeam(10)->favoritedBy(10, 20)->exists())->toBeFalse()
+        ->and(fn () => app(\Liberu\RealEstate\Properties\Application\TogglePropertyFavorite::class)->handle(11, 20, $otherUserProperty->getKey()))->toThrow(\Illuminate\Database\Eloquent\ModelNotFoundException::class);
 });
 
 it('validates legacy property tour helpers and walkability freshness', function () {

@@ -7,6 +7,7 @@ namespace Liberu\RealEstate\PropertiesLivewire\Components;
 use Illuminate\Contracts\View\View;
 use Liberu\RealEstate\Properties\Application\RecordPropertyKey;
 use Liberu\RealEstate\Properties\Application\TransitionProperty;
+use Liberu\RealEstate\Properties\Application\TogglePropertyFavorite;
 use Liberu\RealEstate\Properties\Application\UpsertPropertyUnit;
 use Liberu\RealEstate\Properties\Domain\PropertyStatus;
 use Liberu\RealEstate\Properties\Models\Property;
@@ -36,6 +37,13 @@ final class PropertyList extends Component
     public ?int $maxBedrooms = null;
 
     public bool $featuredOnly = false;
+
+    public function toggleFavorite(int $propertyId, TogglePropertyFavorite $toggle): void
+    {
+        $user = auth()->user();
+        abort_unless($user?->current_team_id !== null, 403);
+        $toggle->handle($user->current_team_id, $user->getAuthIdentifier(), $propertyId);
+    }
 
     public ?string $error = null;
 
