@@ -31,6 +31,10 @@ final class PropertyList extends Component
 
     public ?string $status = null;
 
+    public string $sortBy = 'created_at';
+
+    public string $sortDirection = 'desc';
+
     public ?float $minPrice = null;
 
     public ?float $maxPrice = null;
@@ -135,7 +139,7 @@ final class PropertyList extends Component
         $propertyTypes = Property::TYPES;
         $properties = $teamId === null
             ? collect()
-            : $this->buildQuery()->latest()->paginate(20);
+            : $this->buildQuery()->sorted($this->sortBy, $this->sortDirection)->paginate(20);
 
         return view('real-estate-properties-livewire::property-list', ['properties' => $properties, 'propertyTypes' => $propertyTypes]);
     }

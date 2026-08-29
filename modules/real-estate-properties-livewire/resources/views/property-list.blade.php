@@ -39,6 +39,17 @@
             <option value="{{ $value }}">{{ $label }}</option>
         @endforeach
     </select>
+    <label for="property-sort-by">Sort by</label>
+    <select id="property-sort-by" wire:model.live="sortBy">
+        @foreach (['created_at' => 'Newest', 'updated_at' => 'Recently updated', 'price' => 'Price', 'year_built' => 'Year built', 'bedrooms' => 'Bedrooms', 'bathrooms' => 'Bathrooms', 'area_sqft' => 'Area', 'address' => 'Address'] as $value => $label)
+            <option value="{{ $value }}">{{ $label }}</option>
+        @endforeach
+    </select>
+    <label for="property-sort-direction">Direction</label>
+    <select id="property-sort-direction" wire:model.live="sortDirection">
+        <option value="desc">Descending</option>
+        <option value="asc">Ascending</option>
+    </select>
     <label for="min-price">Minimum price</label>
     <input id="min-price" type="number" wire:model.live="minPrice" min="0">
     <label for="max-price">Maximum price</label>

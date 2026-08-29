@@ -34,6 +34,9 @@ final class Property extends Model
         'hmo' => 'HMO',
     ];
 
+    /** @var list<string> */
+    public const SORTABLE_COLUMNS = ['created_at', 'updated_at', 'price', 'year_built', 'bedrooms', 'bathrooms', 'area_sqft', 'address'];
+
     protected $table = 'real_estate_properties';
 
     protected $guarded = ['id'];
@@ -332,6 +335,14 @@ final class Property extends Model
         $value = $status instanceof PropertyStatus ? $status->value : $status;
 
         return $query->when(filled($value), fn (Builder $query): Builder => $query->where('status', $value));
+    }
+
+    public function scopeSorted(Builder $query, ?string $column, ?string $direction = 'desc'): Builder
+    {
+        $column = in_array($column, self::SORTABLE_COLUMNS, true) ? $column : 'created_at';
+        $direction = strtolower((string) $direction) === 'asc' ? 'asc' : 'desc';
+
+        return $query->orderBy($column, $direction);
     }
 
     public function scopeMinimumScore(Builder $query, string $column, mixed $minimum): Builder

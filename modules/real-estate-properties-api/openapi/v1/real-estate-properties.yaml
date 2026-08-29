@@ -14,6 +14,8 @@ paths:
         - {name: longitude, in: query, schema: {type: number, minimum: -180, maximum: 180}}
         - {name: radius, in: query, schema: {type: number, exclusiveMinimum: 0, maximum: 500, description: Radius in kilometres}}
         - {name: status, in: query, schema: {type: string, enum: [draft, available, under_offer, sold, let, withdrawn]}}
+        - {name: sort_by, in: query, schema: {type: string, enum: [created_at, updated_at, price, year_built, bedrooms, bathrooms, area_sqft, address]}}
+        - {name: sort_direction, in: query, schema: {type: string, enum: [asc, desc], default: desc}}
         - {name: amenities[], in: query, style: form, explode: true, schema: {type: array, maxItems: 20, items: {type: string, maxLength: 80}}}
       responses:
         '200': {description: Authorized paginated properties}
