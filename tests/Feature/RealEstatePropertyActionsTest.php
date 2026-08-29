@@ -139,6 +139,24 @@ it('supports legacy postal-prefix and stale-sync listing filters', function () {
         ->and(Property::query()->forTeam(10)->postalCode('SW1B')->needsSyncing()->count())->toBe(0);
 });
 
+it('supports legacy nearby-property searching in kilometres', function () {
+    $near = app(CreateProperty::class)->handle(10, 20, [
+        'address' => '1 High Street',
+        'latitude' => 51.5074,
+        'longitude' => -0.1278,
+    ]);
+    app(CreateProperty::class)->handle(10, 20, [
+        'address' => '2 Far Street',
+        'latitude' => 52.4862,
+        'longitude' => -1.8904,
+    ]);
+
+    $results = Property::query()->forTeam(10)->nearby(51.5074, -0.1278, 5)->get();
+
+    expect($results->pluck('id')->all())->toBe([$near->getKey()])
+        ->and($results->first()->distance)->toBeLessThan(0.01);
+});
+
 it('validates legacy property tour helpers and walkability freshness', function () {
     $property = app(CreateProperty::class)->handle(10, 20, [
         'address' => '1 High Street',

@@ -9,6 +9,10 @@ paths:
     get:
       operationId: real.estate.properties.list
       security: [{sanctum: []}]
+      parameters:
+        - {name: latitude, in: query, schema: {type: number, minimum: -90, maximum: 90}}
+        - {name: longitude, in: query, schema: {type: number, minimum: -180, maximum: 180}}
+        - {name: radius, in: query, schema: {type: number, exclusiveMinimum: 0, maximum: 500, description: Radius in kilometres}}
       responses:
         '200': {description: Authorized paginated properties}
     post:
