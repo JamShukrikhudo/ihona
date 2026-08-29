@@ -26,6 +26,25 @@ paths:
       responses:
         '200': {description: Explainable property valuation estimate}
         '422': {description: Validation error}
+  /api/v1/real-estate/valuations/calculate-mortgage:
+    post:
+      operationId: real.estate.valuations.calculateMortgage
+      security: [{sanctum: []}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [property_price, loan_amount, interest_rate, loan_term_years]
+              properties:
+                property_price: {type: number, exclusiveMinimum: 0}
+                loan_amount: {type: number, exclusiveMinimum: 0}
+                interest_rate: {type: number, minimum: 0, maximum: 100}
+                loan_term_years: {type: integer, minimum: 1, maximum: 50}
+      responses:
+        '200': {description: Estimate-only mortgage payment and amortization schedule}
+        '422': {description: Validation error}
   /api/v1/real-estate/valuations/{id}:
     parameters: [{name: id, in: path, required: true, schema: {type: string}}]
     get: {operationId: real.estate.valuations.get, responses: {"200": {description: Valuation}}}

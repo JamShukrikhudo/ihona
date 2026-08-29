@@ -14,5 +14,6 @@ final class ValuationsLivewireServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'real-estate-valuations-livewire');
         Livewire::component('module-real-estate-valuations::valuation-list', Components\ValuationList::class);
         Livewire::component('module-real-estate-valuations::property-valuation-estimator', Components\PropertyValuationEstimator::class);
+        Livewire::component('module-real-estate-valuations::mortgage-calculator', Components\MortgageCalculator::class);
     }
 }

@@ -342,3 +342,29 @@ it('keeps property recommendations connected across matching adapters', function
         ->and($filament)->toContain("Action::make('recommend_properties')")
         ->toContain('RankPropertyRecommendations');
 });
+
+it('keeps mortgage estimates connected across valuation adapters', function (): void {
+    $root = dirname(__DIR__, 2);
+    $core = file_get_contents("{$root}/modules/real-estate-valuations/src/Application/CalculateMortgage.php");
+    $definition = file_get_contents("{$root}/modules/real-estate-valuations/src/Domain/ValuationsCapabilityDefinition.php");
+    $api = file_get_contents("{$root}/modules/real-estate-valuations-api/src/Http/Controllers/ValuationController.php");
+    $routes = file_get_contents("{$root}/modules/real-estate-valuations-api/routes/api.php");
+    $openApi = file_get_contents("{$root}/modules/real-estate-valuations-api/openapi/v1/real-estate-valuations.yaml");
+    $livewire = file_get_contents("{$root}/modules/real-estate-valuations-livewire/src/Components/MortgageCalculator.php");
+    $livewireProvider = file_get_contents("{$root}/modules/real-estate-valuations-livewire/src/ValuationsLivewireServiceProvider.php");
+    $filament = file_get_contents("{$root}/modules/real-estate-valuations-filament/src/Resources/ValuationResource.php");
+
+    expect($core)->toContain('class CalculateMortgage')
+        ->toContain('amortization_schedule')
+        ->toContain('Estimate only')
+        ->and($definition)->toContain('Mortgage estimates')
+        ->and($api)->toContain('public function calculateMortgage')
+        ->toContain('CalculateMortgage')
+        ->and($routes)->toContain("'/calculate-mortgage'")
+        ->and($openApi)->toContain('/api/v1/real-estate/valuations/calculate-mortgage')
+        ->toContain('real.estate.valuations.calculateMortgage')
+        ->and($livewire)->toContain('calculateMortgage')
+        ->and($livewireProvider)->toContain("mortgage-calculator', Components\\MortgageCalculator::class")
+        ->and($filament)->toContain("Action::make('mortgage_estimate')")
+        ->toContain('CalculateMortgage');
+});
