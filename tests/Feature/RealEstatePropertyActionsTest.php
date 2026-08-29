@@ -157,6 +157,21 @@ it('supports legacy nearby-property searching in kilometres', function () {
         ->and($results->first()->distance)->toBeLessThan(0.01);
 });
 
+it('supports legacy all-of amenity filtering through the modular JSON feature set', function () {
+    $matching = app(CreateProperty::class)->handle(10, 20, [
+        'address' => '1 High Street',
+        'features' => ['garden', 'parking'],
+    ]);
+    app(CreateProperty::class)->handle(10, 20, [
+        'address' => '2 Low Street',
+        'features' => ['garden'],
+    ]);
+
+    $results = Property::query()->forTeam(10)->hasAmenities(['garden', 'parking'])->get();
+
+    expect($results->pluck('id')->all())->toBe([$matching->getKey()]);
+});
+
 it('validates legacy property tour helpers and walkability freshness', function () {
     $property = app(CreateProperty::class)->handle(10, 20, [
         'address' => '1 High Street',

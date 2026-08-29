@@ -10,6 +10,7 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -87,6 +88,7 @@ final class PropertyResource extends Resource
             Toggle::make('holographic_enabled'),
             TextInput::make('holographic_tour_url')->url()->maxLength(2048),
             TextInput::make('holographic_provider')->maxLength(255),
+            TagsInput::make('features')->separator(','),
             TextInput::make('insurance_policy_id')->numeric()->minValue(1),
             TextInput::make('insurance_coverage_amount')->numeric()->minValue(0),
             TextInput::make('insurance_premium')->numeric()->minValue(0),
