@@ -5,14 +5,24 @@ info:
 security: [{sanctum: []}]
 x-liberu-idempotency-header: Idempotency-Key
 paths:
-  /api/v1/real-estate/sales-progressions:
+  /api/v1/real-estate/sales-progression:
     get: {operationId: real.estate.sales.progression.list, summary: List team sales progressions, responses: {'200': {description: OK}}}
     post: {operationId: real.estate.sales.progression.create, responses: {'201': {description: Created}}}
-  /api/v1/real-estate/sales-progressions/{salesProgression}:
+  /api/v1/real-estate/sales-progression/{salesProgression}:
     parameters: [{name: salesProgression, in: path, required: true, schema: {type: integer}}]
     get: {operationId: real.estate.sales.progression.get, summary: Show a sales progression, responses: {'200': {description: OK}}}
     patch: {operationId: real.estate.sales.progression.update, summary: Update a sales progression, responses: {'200': {description: OK}}}
     delete: {operationId: real.estate.sales.progression.delete, summary: Archive a sales progression, responses: {'204': {description: Archived}}}
+  /api/v1/real-estate/sales-progression/{salesProgression}/transition/{status}:
+    parameters:
+      - {name: salesProgression, in: path, required: true, schema: {type: integer}}
+      - {name: status, in: path, required: true, schema: {type: string, enum: [in_progress, on_hold, exchanged, completed, fallen_through]}}
+    post: {operationId: real.estate.sales.progression.transition, responses: {'200': {description: Transitioned}}}
+  /api/v1/real-estate/sales-progression/{salesProgression}/{section}:
+    parameters:
+      - {name: salesProgression, in: path, required: true, schema: {type: integer}}
+      - {name: section, in: path, required: true, schema: {type: string, enum: [chain, milestones, professionals, completion_controls]}}
+    patch: {operationId: real.estate.sales.progression.updateSection, responses: {'200': {description: Section updated}}}
 components:
   securitySchemes:
     sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}

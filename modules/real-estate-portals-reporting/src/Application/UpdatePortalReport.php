@@ -13,10 +13,13 @@ final class UpdatePortalReport
     {
         if ((string) $report->team_id !== (string) $teamId) {
             throw ValidationException::withMessages(['report' => 'The report does not belong to this team.']);
-        }$data = $attributes;
+        }
+        $data = $attributes;
+        unset($data['status']);
         if (array_key_exists('portal', $data) && trim((string) $data['portal']) === '') {
             throw ValidationException::withMessages(['portal' => 'A portal name is required.']);
-        }$report->fill($data)->save();
+        }
+        $report->fill($data)->save();
 
         return $report->refresh();
     }

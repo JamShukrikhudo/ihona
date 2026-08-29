@@ -5,9 +5,13 @@ use Liberu\Foundation\Organizations\Models\Team;
 use Liberu\RealEstate\Core\Application\CreateAgency;
 use Liberu\RealEstate\Core\Application\CreateBranch;
 use Liberu\RealEstate\Core\Application\CreateTerritory;
+use Liberu\RealEstate\Core\Application\DefineStatus;
 use Liberu\RealEstate\Core\Application\DeleteAgency;
 use Liberu\RealEstate\Core\Application\DeleteBranch;
 use Liberu\RealEstate\Core\Application\DeleteTerritory;
+use Liberu\RealEstate\Core\Application\NextNumber;
+use Liberu\RealEstate\Core\Application\RecordAuditEntry;
+use Liberu\RealEstate\Core\Application\SetTerminology;
 use Liberu\RealEstate\Core\Application\UpdateAgency;
 use Liberu\RealEstate\Core\Application\UpdateBranch;
 use Liberu\RealEstate\Core\Application\UpdateTerritory;
@@ -64,4 +68,23 @@ it('supports team-scoped agency and territory lifecycles', function () {
 
     expect(Agency::withTrashed()->find($agency->getKey()))->not->toBeNull()
         ->and(Territory::withTrashed()->find($territory->getKey()))->not->toBeNull();
+});
+
+it('allocates collision-safe team-scoped numbers with stable formatting', function () {
+    $next = app(NextNumber::class);
+
+    expect($next->handle(10, 'property', 'PROP-', 4))->toBe('PROP-0001')
+        ->and($next->handle(10, 'property'))->toBe('PROP-0002')
+        ->and($next->handle(11, 'property', 'HOME-', 3))->toBe('HOME-001');
+});
+
+it('owns terminology, status definitions, and audit entries per team', function () {
+    $terminology = app(SetTerminology::class)->handle(10, 'property.label', 'Home', 'en-GB');
+    $status = app(DefineStatus::class)->handle(10, 'listing', 'under_offer', 'Under offer');
+    $audit = app(RecordAuditEntry::class)->handle(10, 20, 'listing.published', 'listing', 12, ['source' => 'test']);
+
+    expect($terminology->value)->toBe('Home')
+        ->and($status->active)->toBeTrue()
+        ->and($audit->event)->toBe('listing.published')
+        ->and($audit->metadata['source'])->toBe('test');
 });

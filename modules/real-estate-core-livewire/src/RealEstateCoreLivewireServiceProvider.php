@@ -15,6 +15,7 @@ final class RealEstateCoreLivewireServiceProvider extends ServiceProvider
         Livewire::component('module-real-estate-core::agency-list', Components\AgencyList::class);
         Livewire::component('module-real-estate-core::branch-list', Components\BranchList::class);
         Livewire::component('module-real-estate-core::territory-list', Components\TerritoryList::class);
+        Livewire::component('module-real-estate-core::configuration-list', Components\CoreConfigurationList::class);
         Livewire::component('real-estate-branches-list', Components\BranchList::class);
     }
 }

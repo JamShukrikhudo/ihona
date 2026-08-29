@@ -14,7 +14,12 @@ final class UpdateListing
         abort_unless((string) $listing->team_id === (string) $teamId, 404);
         if (array_key_exists('title', $attributes) && trim((string) $attributes['title']) === '') {
             throw ValidationException::withMessages(['title' => 'A listing title is required.']);
-        }$listing->fill($attributes);
+        }
+        if (array_key_exists('status', $attributes) || array_key_exists('published_at', $attributes)) {
+            throw ValidationException::withMessages(['status' => 'Listing lifecycle changes must use the transition action.']);
+        }
+
+        $listing->fill($attributes);
         $listing->save();
 
         return $listing->fresh();

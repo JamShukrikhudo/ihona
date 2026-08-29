@@ -8,6 +8,7 @@ use Filament\Contracts\Plugin;
 use Filament\Panel;
 use Liberu\RealEstate\CoreFilament\Resources\AgencyResource;
 use Liberu\RealEstate\CoreFilament\Resources\BranchResource;
+use Liberu\RealEstate\CoreFilament\Resources\StatusDefinitionResource;
 use Liberu\RealEstate\CoreFilament\Resources\TerritoryResource;
 
 final class RealEstateCoreFilamentPlugin implements Plugin
@@ -24,7 +25,7 @@ final class RealEstateCoreFilamentPlugin implements Plugin
 
     public function register(Panel $panel): void
     {
-        $panel->resources([AgencyResource::class, BranchResource::class, TerritoryResource::class]);
+        $panel->resources([AgencyResource::class, BranchResource::class, TerritoryResource::class, StatusDefinitionResource::class]);
     }
 
     public function boot(Panel $panel): void {}

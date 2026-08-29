@@ -4,18 +4,26 @@ declare(strict_types=1);
 
 namespace Liberu\RealEstate\PropertiesFilament\Resources;
 
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Resources\Pages\PageRegistration;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Liberu\RealEstate\Core\Models\Branch;
+use Liberu\RealEstate\Properties\Application\RecordPropertyKey;
+use Liberu\RealEstate\Properties\Application\TransitionProperty;
+use Liberu\RealEstate\Properties\Application\UpsertPropertyUnit;
+use Liberu\RealEstate\Properties\Domain\PropertyStatus;
 use Liberu\RealEstate\Properties\Models\Property;
 use Liberu\RealEstate\PropertiesFilament\Resources\PropertyResource\Pages\CreateProperty;
 use Liberu\RealEstate\PropertiesFilament\Resources\PropertyResource\Pages\EditProperty;
@@ -33,20 +41,41 @@ final class PropertyResource extends Resource
     {
         return $schema->components([
             TextInput::make('title')->maxLength(255),
+            Select::make('status')->options(collect(PropertyStatus::cases())->mapWithKeys(fn (PropertyStatus $status): array => [$status->value => str($status->value)->headline()->toString()])->all())->disabled()->dehydrated(false),
             Textarea::make('address')->required()->columnSpanFull(),
+            Select::make('branch_id')
+                ->label('Branch')
+                ->options(fn (): array => Branch::query()
+                    ->forTeam(auth()->user()?->current_team_id ?? 0)
+                    ->orderBy('name')
+                    ->pluck('name', 'id')
+                    ->all())
+                ->searchable()
+                ->nullable(),
             Textarea::make('description')->columnSpanFull(),
             TextInput::make('price')->numeric()->minValue(0),
             TextInput::make('currency')->length(3)->default('GBP'),
             TextInput::make('bedrooms')->numeric()->minValue(0),
             TextInput::make('bathrooms')->numeric()->minValue(0),
+            TextInput::make('reception_rooms')->numeric()->minValue(0),
             TextInput::make('area_sqft')->numeric()->minValue(0),
             TextInput::make('year_built')->numeric()->minValue(1066)->maxValue((int) now()->year + 2),
             TextInput::make('property_type')->maxLength(40),
             TextInput::make('postal_code')->maxLength(20),
             TextInput::make('country')->length(2),
             TextInput::make('tenure')->maxLength(40),
+            TextInput::make('council_tax_band')->maxLength(10),
+            TextInput::make('energy_rating')->maxLength(10),
+            TextInput::make('energy_score')->numeric()->minValue(0)->maxValue(100),
+            TextInput::make('walkability_score')->numeric()->minValue(0)->maxValue(100),
+            TextInput::make('transit_score')->numeric()->minValue(0)->maxValue(100),
+            TextInput::make('bike_score')->numeric()->minValue(0)->maxValue(100),
             TextInput::make('virtual_tour_url')->url()->maxLength(2048),
+            Toggle::make('live_tour_available'),
             TextInput::make('model_3d_url')->url()->maxLength(2048),
+            Toggle::make('is_featured'),
+            Toggle::make('ar_tour_enabled'),
+            Toggle::make('holographic_enabled'),
         ]);
     }
 
@@ -64,7 +93,28 @@ final class PropertyResource extends Resource
                 TextColumn::make('status')->badge(),
                 TextColumn::make('created_at')->dateTime()->sortable(),
             ])
-            ->recordActions([EditAction::make(), DeleteAction::make()])
+            ->recordActions([
+                EditAction::make(),
+                Action::make('unit')->form([TextInput::make('label')->required()->maxLength(80), TextInput::make('bedrooms')->numeric()->minValue(0), TextInput::make('bathrooms')->numeric()->minValue(0), TextInput::make('area_sqft')->numeric()->minValue(0)])->action(fn (Property $record, array $data): mixed => app(UpsertPropertyUnit::class)->handle($record, (int) auth()->user()->current_team_id, $data)),
+                Action::make('key')->form([TextInput::make('key_reference')->required()->maxLength(80), TextInput::make('quantity')->numeric()->required()->minValue(1), Textarea::make('notes')])->action(fn (Property $record, array $data): mixed => app(RecordPropertyKey::class)->handle($record, (int) auth()->user()->current_team_id, $data)),
+                Action::make('available')
+                    ->label('Publish')
+                    ->action(fn (Property $record): Property => app(TransitionProperty::class)->handle($record->team_id, auth()->id(), $record->getKey(), PropertyStatus::Available))
+                    ->visible(fn (Property $record): bool => $record->status === PropertyStatus::Draft),
+                Action::make('under_offer')
+                    ->label('Mark under offer')
+                    ->action(fn (Property $record): Property => app(TransitionProperty::class)->handle($record->team_id, auth()->id(), $record->getKey(), PropertyStatus::UnderOffer))
+                    ->visible(fn (Property $record): bool => $record->status === PropertyStatus::Available),
+                Action::make('sold')
+                    ->label('Mark sold')
+                    ->action(fn (Property $record): Property => app(TransitionProperty::class)->handle($record->team_id, auth()->id(), $record->getKey(), PropertyStatus::Sold))
+                    ->visible(fn (Property $record): bool => in_array($record->status, [PropertyStatus::Available, PropertyStatus::UnderOffer], true)),
+                Action::make('withdraw')
+                    ->label('Withdraw')
+                    ->action(fn (Property $record): Property => app(TransitionProperty::class)->handle($record->team_id, auth()->id(), $record->getKey(), PropertyStatus::Withdrawn))
+                    ->visible(fn (Property $record): bool => in_array($record->status, [PropertyStatus::Draft, PropertyStatus::Available, PropertyStatus::UnderOffer], true)),
+                DeleteAction::make(),
+            ])
             ->toolbarActions([BulkActionGroup::make([DeleteBulkAction::make()])])
             ->defaultSort('created_at', 'desc');
     }

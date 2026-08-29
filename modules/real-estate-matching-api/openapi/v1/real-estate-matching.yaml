@@ -6,11 +6,18 @@ paths:
   /api/v1/real-estate/matching:
     get: {operationId: real.estate.matching.list, responses: {"200": {description: Authorized matching profiles}}}
     post: {operationId: real.estate.matching.create, responses: {"201": {description: Created profile}}}
+  /api/v1/real-estate/matching/calculate-score:
+    post: {operationId: real.estate.matching.calculateScore, responses: {"200": {description: Weighted match score}}}
   /api/v1/real-estate/matching/{id}:
     parameters: [{name: id, in: path, required: true, schema: {type: string}}]
     get: {operationId: real.estate.matching.get, responses: {"200": {description: Profile}}}
     patch: {operationId: real.estate.matching.update, responses: {"200": {description: Updated profile}}}
     delete: {operationId: real.estate.matching.delete, responses: {"204": {description: Deleted profile}}}
+  /api/v1/real-estate/matching/{id}/{section}:
+    parameters:
+      - {name: id, in: path, required: true, schema: {type: string}}
+      - {name: section, in: path, required: true, schema: {type: string, enum: [requirements, affordability, preferences, scoring, alerts, feedback, exclusions]}}
+    patch: {operationId: real.estate.matching.updateSection, responses: {"200": {description: Updated matching section}, "422": {description: Validation error}}}
 components:
   securitySchemes:
     sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}

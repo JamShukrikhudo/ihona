@@ -4,6 +4,19 @@ info:
   version: 1.0.0
 x-liberu-idempotency-header: Idempotency-Key
 paths:
+  /api/v1/real-estate/numbering/{key}/next:
+    post:
+      operationId: real.estate.numbering.next
+      parameters: [{name: key, in: path, required: true, schema: {type: string}}]
+      responses: {'200': {description: Next team-scoped number}}
+  /api/v1/real-estate/core/{kind}:
+    get: {operationId: real.estate.core.configuration.list, responses: {'200': {description: Team-scoped configuration or audit entries}}}
+  /api/v1/real-estate/core/terminology/{key}:
+    put: {operationId: real.estate.core.terminology.set, responses: {'200': {description: Terminology updated}}}
+  /api/v1/real-estate/core/statuses:
+    post: {operationId: real.estate.core.statuses.define, responses: {'200': {description: Status definition updated}}}
+  /api/v1/real-estate/core/audit:
+    post: {operationId: real.estate.core.audit.record, responses: {'201': {description: Audit entry recorded}}}
   /api/v1/real-estate/branches:
     get:
       operationId: real.estate.branches.list

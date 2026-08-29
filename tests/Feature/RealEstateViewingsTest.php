@@ -1,6 +1,8 @@
 <?php
 
 declare(strict_types=1);
+
+use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Validation\ValidationException;
 use Liberu\RealEstate\Viewings\Application\CancelViewing;
@@ -10,6 +12,7 @@ use Liberu\RealEstate\Viewings\Application\CreateViewing;
 use Liberu\RealEstate\Viewings\Application\DeleteViewing;
 use Liberu\RealEstate\Viewings\Application\MarkViewingNoShow;
 use Liberu\RealEstate\Viewings\Models\Viewing;
+use Liberu\RealEstate\Viewings\Queries\AvailableViewingSlots;
 
 uses(RefreshDatabase::class);
 it('creates a requested viewing with access metadata', function (): void {
@@ -56,4 +59,22 @@ it('guards viewing availability and supports confirmation, completion, feedback,
         ->and($noShow->feedback['no_show_note'])->toBe('Party did not attend.');
 
     expect(fn () => app(CancelViewing::class)->handle($viewing, 1))->toThrow(ValidationException::class);
+});
+
+it('returns weekday slots and removes requested or confirmed overlaps', function (): void {
+    $date = CarbonImmutable::now()->addDays(2)->startOfDay();
+    $viewing = app(CreateViewing::class)->handle(1, 5, [
+        'subject' => 'Already booked',
+        'property_id' => 7,
+        'starts_at' => $date->setTime(10, 0),
+    ]);
+
+    $slots = app(AvailableViewingSlots::class)->handle(1, 7, $date);
+
+    expect($slots)->toContain($date->setTime(9, 0)->toIso8601String())
+        ->not->toContain($viewing->starts_at->toIso8601String())
+        ->toContain($date->setTime(11, 0)->toIso8601String());
+
+    expect(app(AvailableViewingSlots::class)->handle(1, 7, $date->next(CarbonImmutable::SATURDAY)->startOfDay()))
+        ->toBe([]);
 });
