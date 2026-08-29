@@ -20,6 +20,31 @@ final class PropertyList extends Component
 {
     use WithPagination;
 
+    protected $queryString = [
+        'search' => ['except' => ''],
+        'minPrice' => ['except' => null],
+        'maxPrice' => ['except' => null],
+        'minBedrooms' => ['except' => null],
+        'maxBedrooms' => ['except' => null],
+        'minBathrooms' => ['except' => null],
+        'maxBathrooms' => ['except' => null],
+        'minArea' => ['except' => null],
+        'maxArea' => ['except' => null],
+        'propertyType' => ['except' => null],
+        'selectedAmenities' => ['except' => []],
+        'status' => ['except' => null],
+        'sortBy' => ['except' => 'created_at'],
+        'sortDirection' => ['except' => 'desc'],
+        'country' => ['except' => null],
+        'energyRating' => ['except' => null],
+        'minEnergyScore' => ['except' => null],
+        'minWalkabilityScore' => ['except' => null],
+        'minTransitScore' => ['except' => null],
+        'minBikeScore' => ['except' => null],
+        'featuredOnly' => ['except' => false],
+        'needsSyncingOnly' => ['except' => false],
+    ];
+
     #[Validate('nullable|string|max:255')]
     public string $search = '';
 

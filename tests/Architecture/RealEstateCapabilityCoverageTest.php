@@ -118,6 +118,18 @@ it('keeps advanced Livewire search ordering bounded', function (): void {
         ->toContain('advanced-sort-direction');
 });
 
+it('preserves Livewire property filters in the URL', function (): void {
+    $propertyList = file_get_contents(base_path('modules/real-estate-properties-livewire/src/Components/PropertyList.php'));
+    $advancedSearch = file_get_contents(base_path('modules/real-estate-properties-livewire/src/Components/AdvancedPropertySearch.php'));
+
+    expect($propertyList)->toContain('protected $queryString = [')
+        ->toContain("'selectedAmenities' => ['except' => []]")
+        ->toContain("'sortDirection' => ['except' => 'desc']")
+        ->and($advancedSearch)->toContain('protected $queryString = [')
+        ->toContain("'sortBy' => ['except' => 'created_at']")
+        ->toContain("'featuredOnly' => ['except' => false]");
+});
+
 it('keeps Filament resources tenant-scoped and lifecycle-delegated', function (): void {
     $root = dirname(__DIR__, 2);
 
