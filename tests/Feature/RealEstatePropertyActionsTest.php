@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\ValidationException;
+use Liberu\RealEstate\Core\Application\CreateBranch;
 use Liberu\RealEstate\Properties\Application\CreateProperty;
 use Liberu\RealEstate\Properties\Application\DeleteProperty;
 use Liberu\RealEstate\Properties\Application\RecordPropertyKey;
@@ -60,6 +61,22 @@ it('preserves legacy property listing attributes in the modular boundary', funct
         ->and($property->is_featured)->toBeTrue()
         ->and($property->energy_score)->toBe(82)
         ->and($property->reception_rooms)->toBe(2);
+});
+
+it('preserves the legacy team-scoped branch association', function () {
+    $branch = app(CreateBranch::class)->handle(10, ['name' => 'Central Office', 'code' => 'CENTRAL']);
+    $property = app(CreateProperty::class)->handle(10, 20, [
+        'address' => '1 High Street',
+        'branch_id' => $branch->getKey(),
+    ]);
+
+    expect($property->branch)->not->toBeNull()
+        ->and($property->branch->getKey())->toBe($branch->getKey());
+
+    expect(fn () => app(CreateProperty::class)->handle(11, 20, [
+        'address' => '2 Low Street',
+        'branch_id' => $branch->getKey(),
+    ]))->toThrow(ValidationException::class);
 });
 
 it('provides reusable bounded listing filters for every presentation adapter', function () {

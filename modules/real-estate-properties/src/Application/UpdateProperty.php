@@ -6,6 +6,7 @@ namespace Liberu\RealEstate\Properties\Application;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use Liberu\RealEstate\Core\Models\Branch;
 use Liberu\RealEstate\Properties\Models\Property;
 
 final class UpdateProperty
@@ -26,10 +27,13 @@ final class UpdateProperty
 
         return DB::transaction(function () use ($teamId, $actorId, $propertyId, $attributes, $address): Property {
             $property = Property::query()->forTeam($teamId)->findOrFail($propertyId);
+            if (array_key_exists('branch_id', $attributes) && $attributes['branch_id'] !== null && ! Branch::query()->forTeam($teamId)->whereKey($attributes['branch_id'])->exists()) {
+                throw ValidationException::withMessages(['branch_id' => 'The branch must belong to the current team.']);
+            }
             $changes = [];
 
             $fields = [
-                'address', 'title', 'description', 'price', 'currency', 'bedrooms', 'bathrooms', 'area_sqft',
+                'address', 'branch_id', 'title', 'description', 'price', 'currency', 'bedrooms', 'bathrooms', 'area_sqft',
                 'year_built', 'reception_rooms', 'parking', 'gardens', 'structured_address', 'latitude', 'longitude', 'postal_code', 'country', 'tenure',
                 'lease_years_remaining', 'service_charge', 'ground_rent', 'energy_rating', 'epc',
                 'council_tax_band', 'energy_score', 'walkability_score', 'walkability_description',

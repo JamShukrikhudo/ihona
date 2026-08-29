@@ -75,6 +75,6 @@ it('returns weekday slots and removes requested or confirmed overlaps', function
         ->not->toContain($viewing->starts_at->toIso8601String())
         ->toContain($date->setTime(11, 0)->toIso8601String());
 
-    expect(app(AvailableViewingSlots::class)->handle(1, 7, $date->addDays(2)->startOfDay()))
+    expect(app(AvailableViewingSlots::class)->handle(1, 7, $date->next(CarbonImmutable::SATURDAY)->startOfDay()))
         ->toBe([]);
 });

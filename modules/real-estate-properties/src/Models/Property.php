@@ -6,8 +6,10 @@ namespace Liberu\RealEstate\Properties\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Liberu\RealEstate\Core\Models\Branch;
 use Liberu\RealEstate\Properties\Domain\PropertyStatus;
 
 final class Property extends Model
@@ -54,6 +56,11 @@ final class Property extends Model
     public function history(): HasMany
     {
         return $this->hasMany(PropertyHistory::class, 'property_id');
+    }
+
+    public function branch(): BelongsTo
+    {
+        return $this->belongsTo(Branch::class);
     }
 
     public function scopeForTeam(Builder $query, int|string $teamId): Builder

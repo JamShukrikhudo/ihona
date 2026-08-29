@@ -6,6 +6,7 @@ namespace Liberu\RealEstate\Properties\Application;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use Liberu\RealEstate\Core\Models\Branch;
 use Liberu\RealEstate\Properties\Domain\PropertyStatus;
 use Liberu\RealEstate\Properties\Models\Property;
 
@@ -19,9 +20,15 @@ final class CreateProperty
             throw ValidationException::withMessages(['address' => 'An address is required.']);
         }
 
+        $branchId = $attributes['branch_id'] ?? null;
+        if ($branchId !== null && ! Branch::query()->forTeam($teamId)->whereKey($branchId)->exists()) {
+            throw ValidationException::withMessages(['branch_id' => 'The branch must belong to the current team.']);
+        }
+
         return DB::transaction(function () use ($teamId, $actorId, $attributes, $address): Property {
             $property = Property::query()->create([
                 'team_id' => $teamId,
+                'branch_id' => $attributes['branch_id'] ?? null,
                 'created_by' => $actorId,
                 'address' => $address,
                 'title' => $attributes['title'] ?? null,

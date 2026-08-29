@@ -19,6 +19,7 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Liberu\RealEstate\Core\Models\Branch;
 use Liberu\RealEstate\Properties\Application\RecordPropertyKey;
 use Liberu\RealEstate\Properties\Application\TransitionProperty;
 use Liberu\RealEstate\Properties\Application\UpsertPropertyUnit;
@@ -42,6 +43,15 @@ final class PropertyResource extends Resource
             TextInput::make('title')->maxLength(255),
             Select::make('status')->options(collect(PropertyStatus::cases())->mapWithKeys(fn (PropertyStatus $status): array => [$status->value => str($status->value)->headline()->toString()])->all())->disabled()->dehydrated(false),
             Textarea::make('address')->required()->columnSpanFull(),
+            Select::make('branch_id')
+                ->label('Branch')
+                ->options(fn (): array => Branch::query()
+                    ->forTeam(auth()->user()?->current_team_id ?? 0)
+                    ->orderBy('name')
+                    ->pluck('name', 'id')
+                    ->all())
+                ->searchable()
+                ->nullable(),
             Textarea::make('description')->columnSpanFull(),
             TextInput::make('price')->numeric()->minValue(0),
             TextInput::make('currency')->length(3)->default('GBP'),

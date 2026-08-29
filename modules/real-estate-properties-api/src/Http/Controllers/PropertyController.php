@@ -7,6 +7,7 @@ namespace Liberu\RealEstate\PropertiesApi\Http\Controllers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Validation\Rule;
 use Liberu\RealEstate\Properties\Application\CreateProperty;
 use Liberu\RealEstate\Properties\Application\DeleteProperty;
 use Liberu\RealEstate\Properties\Application\RecordPropertyKey;
@@ -29,6 +30,7 @@ final class PropertyController
         $pageSize = max(1, min($request->integer('page_size', 25), 100));
         $filters = $request->validate([
             'search' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'branch_id' => ['sometimes', 'nullable', 'integer', Rule::exists('real_estate_branches', 'id')->where('team_id', $teamId)],
             'min_price' => ['sometimes', 'nullable', 'numeric', 'min:0'],
             'max_price' => ['sometimes', 'nullable', 'numeric', 'min:0', 'gte:min_price'],
             'min_bedrooms' => ['sometimes', 'nullable', 'integer', 'min:0'],
@@ -49,6 +51,7 @@ final class PropertyController
 
         $query = Property::query()->forTeam($teamId)
             ->search($filters['search'] ?? null)
+            ->when(array_key_exists('branch_id', $filters), fn ($query) => $query->where('branch_id', $filters['branch_id']))
             ->priceRange($filters['min_price'] ?? null, $filters['max_price'] ?? null)
             ->bedrooms($filters['min_bedrooms'] ?? null, $filters['max_bedrooms'] ?? null)
             ->bathrooms($filters['min_bathrooms'] ?? null, $filters['max_bathrooms'] ?? null)
@@ -69,6 +72,7 @@ final class PropertyController
     {
         $validated = $request->validate([
             'address' => ['required', 'string', 'max:500'],
+            'branch_id' => ['sometimes', 'nullable', 'integer', Rule::exists('real_estate_branches', 'id')->where('team_id', $request->user()?->current_team_id)],
             'title' => ['sometimes', 'nullable', 'string', 'max:255'],
             'description' => ['sometimes', 'nullable', 'string'],
             'price' => ['sometimes', 'nullable', 'numeric', 'min:0'],
@@ -149,6 +153,7 @@ final class PropertyController
 
         $validated = $request->validate([
             'address' => ['sometimes', 'string', 'max:500'],
+            'branch_id' => ['sometimes', 'nullable', 'integer', Rule::exists('real_estate_branches', 'id')->where('team_id', $request->user()?->current_team_id)],
             'title' => ['sometimes', 'nullable', 'string', 'max:255'],
             'description' => ['sometimes', 'nullable', 'string'],
             'price' => ['sometimes', 'nullable', 'numeric', 'min:0'],
