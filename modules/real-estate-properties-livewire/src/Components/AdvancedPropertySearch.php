@@ -47,6 +47,10 @@ final class AdvancedPropertySearch extends Component
 
     public ?string $status = null;
 
+    public string $sortBy = 'created_at';
+
+    public string $sortDirection = 'desc';
+
     public ?int $propertyCategoryId = null;
 
     public ?int $propertyTemplateId = null;
@@ -94,6 +98,8 @@ final class AdvancedPropertySearch extends Component
             'maxYearBuilt' => ['nullable', ...Property::yearBuiltRules(), 'gte:minYearBuilt'],
             'propertyType' => ['nullable', 'string', 'max:40'],
             'status' => ['nullable', 'string', 'in:draft,available,under_offer,sold,let,withdrawn'],
+            'sortBy' => ['required', 'string', 'in:created_at,updated_at,price,year_built,bedrooms,bathrooms,area_sqft,address'],
+            'sortDirection' => ['required', 'string', 'in:asc,desc'],
             'propertyCategoryId' => ['nullable', 'integer', 'exists:real_estate_property_categories,id'],
             'propertyTemplateId' => ['nullable', 'integer', 'exists:real_estate_property_templates,id'],
             'postalCode' => ['nullable', 'string', 'max:20'],
@@ -145,7 +151,7 @@ final class AdvancedPropertySearch extends Component
                 ->hasAmenities($this->selectedAmenities)
                 ->when($this->latitude !== null && $this->longitude !== null && $this->radius !== null, fn ($query) => $query->nearby($this->latitude, $this->longitude, $this->radius))
                 ->when($this->featuredOnly, fn ($query) => $query->featured())
-                ->latest()->paginate(12);
+                ->sorted($this->sortBy, $this->sortDirection)->paginate(12);
 
         return view('real-estate-properties-livewire::advanced-property-search', compact('properties', 'categories', 'templates', 'propertyTypes'));
     }
