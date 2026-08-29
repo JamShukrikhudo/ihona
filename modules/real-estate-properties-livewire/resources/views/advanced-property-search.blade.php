@@ -9,6 +9,10 @@
         <input id="advanced-min-price" type="number" wire:model="minPrice" min="0">
         <label for="advanced-max-price">Maximum price</label>
         <input id="advanced-max-price" type="number" wire:model="maxPrice" min="0">
+        <label for="advanced-min-year-built">Earliest build year</label>
+        <input id="advanced-min-year-built" type="number" wire:model="minYearBuilt" min="{{ \Liberu\RealEstate\Properties\Models\Property::EARLIEST_YEAR_BUILT }}" max="{{ \Liberu\RealEstate\Properties\Models\Property::latestYearBuilt() }}">
+        <label for="advanced-max-year-built">Latest build year</label>
+        <input id="advanced-max-year-built" type="number" wire:model="maxYearBuilt" min="{{ \Liberu\RealEstate\Properties\Models\Property::EARLIEST_YEAR_BUILT }}" max="{{ \Liberu\RealEstate\Properties\Models\Property::latestYearBuilt() }}">
         <label for="advanced-property-type">Property type</label>
         <input id="advanced-property-type" type="text" wire:model="propertyType" maxlength="40">
         <label for="advanced-property-category">Category</label>

@@ -64,7 +64,11 @@ final class PropertyResource extends Resource
             TextInput::make('bathrooms')->numeric()->minValue(0),
             TextInput::make('reception_rooms')->numeric()->minValue(0),
             TextInput::make('area_sqft')->numeric()->minValue(0),
-            TextInput::make('year_built')->numeric()->minValue(1066)->maxValue((int) now()->year + 2),
+            TextInput::make('year_built')
+                ->numeric()
+                ->minValue(Property::EARLIEST_YEAR_BUILT)
+                ->maxValue(Property::latestYearBuilt())
+                ->helperText(Property::yearBuiltMessage()),
             Select::make('property_type')->options([
                 'residential' => 'Residential',
                 'house' => 'House',

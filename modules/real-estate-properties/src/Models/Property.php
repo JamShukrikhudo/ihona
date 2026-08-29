@@ -17,6 +17,8 @@ final class Property extends Model
 {
     use SoftDeletes;
 
+    public const EARLIEST_YEAR_BUILT = 1066;
+
     protected $table = 'real_estate_properties';
 
     protected $guarded = ['id'];
@@ -58,6 +60,25 @@ final class Property extends Model
     public function setYearBuiltAttribute(mixed $value): void
     {
         $this->attributes['year_built'] = is_string($value) ? substr($value, 0, 4) : $value;
+    }
+
+    public static function latestYearBuilt(): int
+    {
+        return (int) now()->year + 2;
+    }
+
+    /** @return list<string> */
+    public static function yearBuiltRules(): array
+    {
+        return ['integer', 'min:'.self::EARLIEST_YEAR_BUILT, 'max:'.self::latestYearBuilt()];
+    }
+
+    public static function yearBuiltMessage(): string
+    {
+        return __('Enter a build year between :from and :to.', [
+            'from' => self::EARLIEST_YEAR_BUILT,
+            'to' => self::latestYearBuilt(),
+        ]);
     }
 
     public function history(): HasMany
@@ -232,6 +253,12 @@ final class Property extends Model
     {
         return $query->when($minimum !== null && $minimum !== '', fn (Builder $query): Builder => $query->where('area_sqft', '>=', $minimum))
             ->when($maximum !== null && $maximum !== '', fn (Builder $query): Builder => $query->where('area_sqft', '<=', $maximum));
+    }
+
+    public function scopeYearBuiltRange(Builder $query, mixed $minimum, mixed $maximum): Builder
+    {
+        return $query->when($minimum !== null && $minimum !== '', fn (Builder $query): Builder => $query->where('year_built', '>=', $minimum))
+            ->when($maximum !== null && $maximum !== '', fn (Builder $query): Builder => $query->where('year_built', '<=', $maximum));
     }
 
     public function scopePropertyType(Builder $query, ?string $type): Builder

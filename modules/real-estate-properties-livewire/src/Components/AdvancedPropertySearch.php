@@ -39,6 +39,10 @@ final class AdvancedPropertySearch extends Component
 
     public ?float $maxArea = null;
 
+    public ?int $minYearBuilt = null;
+
+    public ?int $maxYearBuilt = null;
+
     public ?string $propertyType = null;
 
     public ?int $propertyCategoryId = null;
@@ -76,6 +80,8 @@ final class AdvancedPropertySearch extends Component
             'maxBathrooms' => ['nullable', 'integer', 'min:0', 'gte:minBathrooms'],
             'minArea' => ['nullable', 'numeric', 'min:0'],
             'maxArea' => ['nullable', 'numeric', 'min:0', 'gte:minArea'],
+            'minYearBuilt' => ['nullable', ...Property::yearBuiltRules()],
+            'maxYearBuilt' => ['nullable', ...Property::yearBuiltRules(), 'gte:minYearBuilt'],
             'propertyType' => ['nullable', 'string', 'max:40'],
             'propertyCategoryId' => ['nullable', 'integer', 'exists:real_estate_property_categories,id'],
             'propertyTemplateId' => ['nullable', 'integer', 'exists:real_estate_property_templates,id'],
@@ -109,6 +115,7 @@ final class AdvancedPropertySearch extends Component
                 ->bedrooms($this->minBedrooms, $this->maxBedrooms)
                 ->bathrooms($this->minBathrooms, $this->maxBathrooms)
                 ->areaRange($this->minArea, $this->maxArea)
+                ->yearBuiltRange($this->minYearBuilt, $this->maxYearBuilt)
                 ->propertyType($this->propertyType)
                 ->category($this->propertyCategoryId)
                 ->where('property_template_id', $this->propertyTemplateId)
