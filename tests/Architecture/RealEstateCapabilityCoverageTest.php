@@ -178,6 +178,7 @@ it('keeps the property detail disclosure contract across adapters', function ():
     $filament = file_get_contents(base_path('modules/real-estate-properties-filament/src/Resources/PropertyResource.php'));
 
     expect($model)->toContain('public function daysListed(): ?int')
+        ->toContain('public function model3dUrl(): ?string')
         ->toContain('public function pricePerSquareFoot(): ?float')
         ->toContain('public function disclosureFacts(): array')
         ->and($definition)->toContain('Property detail disclosures')
@@ -188,8 +189,10 @@ it('keeps the property detail disclosure contract across adapters', function ():
         ->and($provider)->toContain("property-detail', Components\\PropertyDetail::class")
         ->and($detail)->toContain('forTeam($teamId)')
         ->toContain("property-viewing-requested")
+        ->toContain('toggle3dModel')
         ->and($view)->toContain('Property facts')
         ->toContain('Book a viewing')
+        ->toContain('loading="lazy"')
         ->and($filament)->toContain("label('Price / sq ft')")
         ->toContain("label('Days listed')")
         ->toContain("label('Floor plan')");

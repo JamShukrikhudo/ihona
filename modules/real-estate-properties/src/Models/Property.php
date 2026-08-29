@@ -217,6 +217,16 @@ final class Property extends Model
         return $this->virtualTourEmbed();
     }
 
+    public function model3dUrl(): ?string
+    {
+        $url = (string) $this->model_3d_url;
+
+        return strtolower((string) parse_url($url, PHP_URL_SCHEME)) === 'https'
+            && filter_var($url, FILTER_VALIDATE_URL)
+            ? $url
+            : null;
+    }
+
     public function hasHolographicTour(): bool
     {
         return (bool) $this->holographic_enabled && filled($this->holographic_tour_url);

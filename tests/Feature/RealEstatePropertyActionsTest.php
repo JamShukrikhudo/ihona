@@ -64,9 +64,30 @@ it('preserves legacy property listing attributes in the modular boundary', funct
         ->and($property->price)->toBe('425000.00')
         ->and($property->bedrooms)->toBe(3)
         ->and($property->virtual_tour_url)->toBe('https://example.test/tour')
+        ->and($property->model3dUrl())->toBe('https://example.test/model.glb')
         ->and($property->is_featured)->toBeTrue()
         ->and($property->energy_score)->toBe(82)
         ->and($property->reception_rooms)->toBe(2);
+});
+
+it('reveals a valid 3D property model only after an explicit Livewire action', function (): void {
+    $user = User::factory()->create(['current_team_id' => 10]);
+    $property = app(CreateProperty::class)->handle(10, $user->getKey(), [
+        'address' => '1 High Street',
+        'model_3d_url' => 'https://example.test/model.glb',
+    ]);
+
+    $this->actingAs($user);
+
+    Livewire::component('test-property-detail-3d', PropertyDetail::class);
+
+    Livewire::test('test-property-detail-3d', ['propertyId' => $property->getKey()])
+        ->assertSee('Show 3D model')
+        ->assertDontSee('src="https://example.test/model.glb"')
+        ->call('toggle3dModel')
+        ->assertSet('show3dModel', true)
+        ->assertSee('src="https://example.test/model.glb"', escape: false)
+        ->assertSee('loading="lazy"', escape: false);
 });
 
 it('provides portable property detail disclosure facts', function (): void {
