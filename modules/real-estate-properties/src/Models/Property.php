@@ -98,6 +98,43 @@ final class Property extends Model
         });
     }
 
+    public function needsWalkabilityUpdate(): bool
+    {
+        return $this->walkability_updated_at === null
+            || $this->walkability_updated_at->lt(now()->subDays(30));
+    }
+
+    public function hasVirtualTour(): bool
+    {
+        return $this->virtualTourEmbed() !== null;
+    }
+
+    public function getVirtualTourEmbed(): ?string
+    {
+        return $this->virtualTourEmbed();
+    }
+
+    public function hasHolographicTour(): bool
+    {
+        return (bool) $this->holographic_enabled && filled($this->holographic_tour_url);
+    }
+
+    private function virtualTourEmbed(): ?string
+    {
+        $url = (string) $this->virtual_tour_url;
+        $scheme = strtolower((string) parse_url($url, PHP_URL_SCHEME));
+        $host = strtolower((string) parse_url($url, PHP_URL_HOST));
+        $allowedHosts = ['matterport.com', 'kuula.co', '3dvista.com', '3dv.st', 'seekbeak.com'];
+
+        if ($scheme !== 'https' || ! filter_var($url, FILTER_VALIDATE_URL) || ! collect($allowedHosts)->contains(
+            fn (string $allowed): bool => $host === $allowed || str_ends_with($host, '.'.$allowed)
+        )) {
+            return null;
+        }
+
+        return '<iframe width="100%" height="480" src="'.htmlspecialchars($url, ENT_QUOTES, 'UTF-8').'" frameborder="0" sandbox="allow-scripts allow-same-origin allow-presentation" referrerpolicy="no-referrer" allow="xr-spatial-tracking" allowfullscreen></iframe>';
+    }
+
     public function scopePriceRange(Builder $query, mixed $minimum, mixed $maximum): Builder
     {
         return $query->when($minimum !== null && $minimum !== '', fn (Builder $query): Builder => $query->where('price', '>=', $minimum))

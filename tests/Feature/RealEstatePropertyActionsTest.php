@@ -139,6 +139,28 @@ it('supports legacy postal-prefix and stale-sync listing filters', function () {
         ->and(Property::query()->forTeam(10)->postalCode('SW1B')->needsSyncing()->count())->toBe(0);
 });
 
+it('validates legacy property tour helpers and walkability freshness', function () {
+    $property = app(CreateProperty::class)->handle(10, 20, [
+        'address' => '1 High Street',
+        'virtual_tour_url' => 'https://my.matterport.com/show/?m=abc',
+        'holographic_tour_url' => 'https://example.test/holographic',
+        'holographic_enabled' => true,
+    ]);
+
+    expect($property->hasVirtualTour())->toBeTrue()
+        ->and($property->getVirtualTourEmbed())->toContain('https://my.matterport.com/show/?m=abc')
+        ->and($property->hasHolographicTour())->toBeTrue()
+        ->and($property->needsWalkabilityUpdate())->toBeTrue();
+
+    $property->update([
+        'virtual_tour_url' => 'http://my.matterport.com/show/?m=unsafe',
+        'walkability_updated_at' => now(),
+    ]);
+
+    expect($property->fresh()->hasVirtualTour())->toBeFalse()
+        ->and($property->fresh()->needsWalkabilityUpdate())->toBeFalse();
+});
+
 it('requires explicit property lifecycle transitions and records status history', function () {
     $property = app(CreateProperty::class)->handle(10, 20, ['address' => '1 High Street']);
     $transition = app(TransitionProperty::class);
