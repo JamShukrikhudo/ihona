@@ -310,3 +310,35 @@ it('keeps property valuation estimates connected across valuation adapters', fun
         ->and($filament)->toContain("Action::make('property_estimate')")
         ->toContain('GeneratePropertyValuation');
 });
+
+it('keeps property recommendations connected across matching adapters', function (): void {
+    $root = dirname(__DIR__, 2);
+    $core = file_get_contents("{$root}/modules/real-estate-matching/src/Application/RankPropertyRecommendations.php");
+    $definition = file_get_contents("{$root}/modules/real-estate-matching/src/Domain/MatchingCapabilityDefinition.php");
+    $provider = file_get_contents("{$root}/modules/real-estate-matching/src/MatchingServiceProvider.php");
+    $api = file_get_contents("{$root}/modules/real-estate-matching-api/src/Http/Controllers/MatchProfileController.php");
+    $routes = file_get_contents("{$root}/modules/real-estate-matching-api/routes/api.php");
+    $openApi = file_get_contents("{$root}/modules/real-estate-matching-api/openapi/v1/real-estate-matching.yaml");
+    $livewire = file_get_contents("{$root}/modules/real-estate-matching-livewire/src/Components/PropertyRecommendations.php");
+    $livewireProvider = file_get_contents("{$root}/modules/real-estate-matching-livewire/src/MatchingLivewireServiceProvider.php");
+    $view = file_get_contents("{$root}/modules/real-estate-matching-livewire/resources/views/property-recommendations.blade.php");
+    $filament = file_get_contents("{$root}/modules/real-estate-matching-filament/src/Resources/MatchProfileResource.php");
+
+    expect($core)->toContain('class RankPropertyRecommendations')
+        ->toContain('recommendation_score')
+        ->toContain('array_slice')
+        ->and($definition)->toContain('Property recommendations')
+        ->and($provider)->toContain('RankPropertyRecommendations')
+        ->and($api)->toContain('public function recommendProperties')
+        ->toContain('RankPropertyRecommendations')
+        ->and($routes)->toContain("'/recommend-properties'")
+        ->and($openApi)->toContain('/api/v1/real-estate/matching/recommend-properties')
+        ->toContain('real.estate.matching.recommendProperties')
+        ->and($livewire)->toContain('updateRecommendations')
+        ->toContain('loadMore')
+        ->and($livewireProvider)->toContain("property-recommendations', Components\\PropertyRecommendations::class")
+        ->and($view)->toContain('Recommended properties')
+        ->toContain('Match score')
+        ->and($filament)->toContain("Action::make('recommend_properties')")
+        ->toContain('RankPropertyRecommendations');
+});
