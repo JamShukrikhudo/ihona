@@ -11,6 +11,13 @@
         <input id="advanced-max-price" type="number" wire:model="maxPrice" min="0">
         <label for="advanced-property-type">Property type</label>
         <input id="advanced-property-type" type="text" wire:model="propertyType" maxlength="40">
+        <label for="advanced-property-category">Category</label>
+        <select id="advanced-property-category" wire:model="propertyCategoryId">
+            <option value="">Any category</option>
+            @foreach ($categories as $category)
+                <option value="{{ $category->getKey() }}">{{ $category->name }}</option>
+            @endforeach
+        </select>
         <label for="advanced-country">Country</label>
         <input id="advanced-country" type="text" wire:model="country" maxlength="2">
         <label for="advanced-latitude">Latitude</label>
