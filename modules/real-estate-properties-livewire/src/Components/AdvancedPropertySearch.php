@@ -157,7 +157,7 @@ final class AdvancedPropertySearch extends Component
                 ->propertyType($this->propertyType)
                 ->status($this->status)
                 ->category($this->propertyCategoryId)
-                ->where('property_template_id', $this->propertyTemplateId)
+                ->when($this->propertyTemplateId !== null, fn ($query) => $query->where('property_template_id', $this->propertyTemplateId))
                 ->country($this->country)
                 ->energyRating($this->energyRating)
                 ->minEnergyScore($this->minEnergyScore)
