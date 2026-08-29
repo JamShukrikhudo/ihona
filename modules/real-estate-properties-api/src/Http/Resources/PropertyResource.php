@@ -41,6 +41,7 @@ final class PropertyResource extends JsonResource
             'days_listed' => $this->resource->daysListed(),
             'price_per_square_foot' => $this->resource->pricePerSquareFoot(),
             'disclosure_facts' => $this->resource->disclosureFacts(),
+            'gallery' => array_map(static fn ($item): array => $item->toArray(), $this->resource->galleryItems()),
             'is_favorited' => $isFavorited,
         ];
     }

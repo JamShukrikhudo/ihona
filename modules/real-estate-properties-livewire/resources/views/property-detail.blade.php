@@ -8,6 +8,20 @@
             @endif
         </header>
 
+        @if ($gallery !== [])
+            <section aria-label="Property gallery">
+                <h2>Gallery</h2>
+                <div class="aspect-3/2 overflow-hidden">
+                    @foreach ($gallery as $item)
+                        <figure wire:key="gallery-item-{{ $loop->index }}">
+                            <img src="{{ $item->url }}" alt="{{ $item->alt() }}" loading="lazy" class="h-full w-full {{ $item->isPlan() ? 'object-contain' : 'object-cover' }}">
+                            <figcaption>{{ $item->caption ?? ucfirst($item->kind) }}@if ($item->staged) — Virtually staged @endif</figcaption>
+                        </figure>
+                    @endforeach
+                </div>
+            </section>
+        @endif
+
         <section aria-label="Property disclosure">
             <h2>Property facts</h2>
             <dl>

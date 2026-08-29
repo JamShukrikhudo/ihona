@@ -112,6 +112,24 @@ it('renders the tenant-scoped Livewire property detail surface', function (): vo
         ->assertDispatched('property-viewing-requested', propertyId: $property->getKey());
 });
 
+it('orders safe property gallery items and supplies a floor-plan fallback', function (): void {
+    $property = app(CreateProperty::class)->handle(10, 20, [
+        'address' => '1 High Street',
+        'floor_plan_image' => 'https://cdn.example.test/plans/ground.png',
+    ]);
+
+    $gallery = $property->galleryItems([
+        ['url' => 'https://cdn.example.test/site.png', 'kind' => 'site plan', 'caption' => 'Site plan'],
+        ['url' => 'https://cdn.example.test/photo.png', 'kind' => 'photograph', 'caption' => 'Kitchen', 'staged' => true],
+        ['url' => null, 'kind' => 'photograph', 'caption' => 'Private image'],
+    ]);
+
+    expect(array_map(fn ($item): string => $item->kind, $gallery))->toBe(['photograph', 'floor plan', 'site plan'])
+        ->and($gallery[0]->caption)->toBe('Kitchen')
+        ->and($gallery[0]->staged)->toBeTrue()
+        ->and($gallery[1]->url)->toBe('https://cdn.example.test/plans/ground.png');
+});
+
 it('preserves the legacy team-scoped branch association', function () {
     $branch = app(CreateBranch::class)->handle(10, ['name' => 'Central Office', 'code' => 'CENTRAL']);
     $property = app(CreateProperty::class)->handle(10, 20, [

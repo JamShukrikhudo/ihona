@@ -41,7 +41,7 @@ final class MediaDocumentController
         $user = $request->user();
         abort_unless($user?->current_team_id !== null, 403);
         $validated = $request->validate([
-            'kind' => ['required', 'string', 'in:photo,floorplan,video,certificate,brochure,document'],
+            'kind' => ['required', 'string', 'in:photo,floorplan,siteplan,video,certificate,brochure,document'],
             'path' => ['required', 'string', 'max:2048'],
             'property_id' => ['nullable', 'integer'],
             'title' => ['nullable', 'string', 'max:255'],
