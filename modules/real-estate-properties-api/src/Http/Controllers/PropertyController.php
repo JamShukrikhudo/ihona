@@ -79,6 +79,7 @@ final class PropertyController
             ->yearBuiltRange($filters['min_year_built'] ?? null, $filters['max_year_built'] ?? null)
             ->propertyType($filters['property_type'] ?? null)
             ->category($filters['property_category_id'] ?? null)
+            ->when($filters['property_template_id'] ?? null, fn ($query) => $query->where('property_template_id', $filters['property_template_id']))
             ->country($filters['country'] ?? null)
             ->energyRating($filters['energy_rating'] ?? null)
             ->status($filters['status'] ?? null)
