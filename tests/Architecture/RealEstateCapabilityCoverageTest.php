@@ -193,6 +193,7 @@ it('keeps the property detail disclosure contract across adapters', function ():
         ->and($view)->toContain('Property facts')
         ->toContain('Book a viewing')
         ->toContain('loading="lazy"')
+        ->toContain('preload="none"')
         ->and($filament)->toContain("label('Price / sq ft')")
         ->toContain("label('Days listed')")
         ->toContain("label('Floor plan')");
@@ -212,6 +213,7 @@ it('keeps the property gallery contract connected to the media boundary', functi
         ->toContain("whereIn('kind', ['photo', 'floorplan', 'siteplan'])")
         ->and($media)->toContain('public const GALLERY_KINDS')
         ->toContain('public function publicUrl(): ?string')
+        ->toContain('public function isVideo(): bool')
         ->and($mediaCreate)->toContain("'siteplan'");
 });
 
