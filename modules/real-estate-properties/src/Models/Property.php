@@ -37,6 +37,7 @@ final class Property extends Model
             'latitude' => 'float',
             'longitude' => 'float',
             'last_synced_at' => 'datetime',
+            'description_generated_at' => 'datetime',
             'published_at' => 'datetime',
             'list_date' => 'date',
             'sold_date' => 'date',
@@ -51,6 +52,11 @@ final class Property extends Model
             'insurance_expiry_date' => 'date',
             'ar_model_scale' => 'float',
         ];
+    }
+
+    public function setYearBuiltAttribute(mixed $value): void
+    {
+        $this->attributes['year_built'] = is_string($value) ? substr($value, 0, 4) : $value;
     }
 
     public function history(): HasMany

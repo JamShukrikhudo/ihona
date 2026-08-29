@@ -56,6 +56,7 @@ final class PropertyResource extends Resource
                 ->searchable()
                 ->nullable(),
             Textarea::make('description')->columnSpanFull(),
+            Textarea::make('internal_notes')->label('Internal notes')->columnSpanFull(),
             TextInput::make('price')->numeric()->minValue(0),
             TextInput::make('currency')->length(3)->default('GBP'),
             TextInput::make('bedrooms')->numeric()->minValue(0),
@@ -95,6 +96,7 @@ final class PropertyResource extends Resource
             TextInput::make('virtual_tour_provider')->maxLength(40),
             Toggle::make('live_tour_available'),
             TextInput::make('model_3d_url')->url()->maxLength(2048),
+            TextInput::make('floor_plan_image')->url()->maxLength(2048),
             Toggle::make('is_featured'),
             Toggle::make('ar_tour_enabled'),
             Toggle::make('holographic_enabled'),
