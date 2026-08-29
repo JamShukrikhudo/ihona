@@ -263,6 +263,27 @@ it('keeps property tax estimates available across the modular adapters', functio
         ->toContain('EstimatePropertyTax');
 });
 
+it('keeps the legacy saved-property wishlist connected across property adapters', function (): void {
+    $core = file_get_contents(base_path('modules/real-estate-properties/src/Application/RemovePropertyFavorite.php'));
+    $api = file_get_contents(base_path('modules/real-estate-properties-api/src/Http/Controllers/PropertyController.php'));
+    $routes = file_get_contents(base_path('modules/real-estate-properties-api/routes/api.php'));
+    $openApi = file_get_contents(base_path('modules/real-estate-properties-api/openapi/v1/real-estate-properties.yaml'));
+    $component = file_get_contents(base_path('modules/real-estate-properties-livewire/src/Components/WishlistManager.php'));
+    $view = file_get_contents(base_path('modules/real-estate-properties-livewire/resources/views/wishlist-manager.blade.php'));
+    $provider = file_get_contents(base_path('modules/real-estate-properties-livewire/src/PropertiesLivewireServiceProvider.php'));
+    $filament = file_get_contents(base_path('modules/real-estate-properties-filament/src/Resources/PropertyResource.php'));
+
+    expect($core)->toContain('class RemovePropertyFavorite')->toContain('team_id')->toContain('user_id')
+        ->and($api)->toContain('public function favorites(Request $request)')->toContain('public function removeFavorite')
+        ->and($routes)->toContain("'/favorites'")->toContain("'/favorites/{property}'")
+        ->and($openApi)->toContain('/api/v1/real-estate/properties/favorites')
+        ->toContain('real.estate.properties.favorites')
+        ->and($component)->toContain('class WishlistManager')->toContain('removeFavorite')
+        ->and($view)->toContain('Saved properties')->toContain('No saved properties yet')
+        ->and($provider)->toContain("wishlist-manager', Components\\WishlistManager::class")
+        ->and($filament)->toContain("Filter::make('favorites_only')")->toContain('favoritedBy');
+});
+
 it('keeps Filament resources tenant-scoped and lifecycle-delegated', function (): void {
     $root = dirname(__DIR__, 2);
 

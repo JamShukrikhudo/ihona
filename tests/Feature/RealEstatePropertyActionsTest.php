@@ -1,7 +1,9 @@
 <?php
 
 use App\Models\User;
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\ValidationException;
 use Liberu\RealEstate\Core\Application\CreateBranch;
 use Liberu\RealEstate\Properties\Application\CreateProperty;
@@ -413,6 +415,34 @@ it('supports tenant and user-scoped property favorites', function (): void {
         ->and(app(\Liberu\RealEstate\Properties\Application\TogglePropertyFavorite::class)->handle(10, 20, $property->getKey()))->toBeFalse()
         ->and(Property::query()->forTeam(10)->favoritedBy(10, 20)->exists())->toBeFalse()
         ->and(fn () => app(\Liberu\RealEstate\Properties\Application\TogglePropertyFavorite::class)->handle(11, 20, $otherUserProperty->getKey()))->toThrow(\Illuminate\Database\Eloquent\ModelNotFoundException::class);
+});
+
+it('serves a searchable saved-property wishlist through API and Livewire', function (): void {
+    $user = User::factory()->create(['current_team_id' => 10]);
+    RateLimiter::for('api', static fn (): Limit => Limit::perMinute(1000));
+    $property = app(CreateProperty::class)->handle(10, $user->getAuthIdentifier(), ['address' => '1 Saved Street', 'title' => 'Saved home', 'price' => 250000]);
+    app(\Liberu\RealEstate\Properties\Application\TogglePropertyFavorite::class)->handle(10, $user->getAuthIdentifier(), $property->getKey());
+
+    $this->actingAs($user, 'sanctum')
+        ->getJson('/api/v1/real-estate/properties/favorites?search=Saved')
+        ->assertOk()
+        ->assertJsonPath('data.0.title', 'Saved home')
+        ->assertJsonPath('data.0.is_favorited', true);
+
+    $this->deleteJson('/api/v1/real-estate/properties/favorites/'.$property->getKey())
+        ->assertOk()
+        ->assertJsonPath('removed', true);
+
+    $property = app(CreateProperty::class)->handle(10, $user->getAuthIdentifier(), ['address' => '2 Shortlist Street', 'title' => 'Shortlist home']);
+    app(\Liberu\RealEstate\Properties\Application\TogglePropertyFavorite::class)->handle(10, $user->getAuthIdentifier(), $property->getKey());
+    $this->actingAs($user);
+    Livewire::component('test-wishlist-manager', \Liberu\RealEstate\PropertiesLivewire\Components\WishlistManager::class);
+
+    Livewire::test('test-wishlist-manager')
+        ->assertSee('Shortlist home')
+        ->call('removeFavorite', $property->getKey())
+        ->assertSee('Removed from your shortlist.')
+        ->assertSee('No saved properties yet');
 });
 
 it('preserves legacy similar-property matching within the property boundary', function (): void {

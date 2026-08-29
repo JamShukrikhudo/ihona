@@ -10,5 +10,5 @@
     "presentation": {"filament": {"admin": ["Liberu\\RealEstate\\PropertiesFilament\\PropertiesFilamentPlugin"]}},
     "capabilities": ["real-estate.properties.filament"],
     "default_enabled": true,
-    "features": ["Property resource", "Property category resource", "Property template resource", "Team-scoped property administration", "Property tax estimates"]
+    "features": ["Property resource", "Property category resource", "Property template resource", "Team-scoped property administration", "Property tax estimates", "Favorites filtering"]
 }

@@ -149,6 +149,11 @@ final class PropertyResource extends Resource
                         ->walkabilityScore($data['walkability_score'] ?? null)
                         ->transitScore($data['transit_score'] ?? null)
                         ->bikeScore($data['bike_score'] ?? null)),
+                Filter::make('favorites_only')
+                    ->label('My favorites')
+                    ->query(fn (Builder $query): Builder => auth()->user()?->current_team_id === null
+                        ? $query->whereRaw('1 = 0')
+                        : $query->favoritedBy(auth()->user()->current_team_id, auth()->id())),
             ])
             ->recordActions([
                 EditAction::make(),

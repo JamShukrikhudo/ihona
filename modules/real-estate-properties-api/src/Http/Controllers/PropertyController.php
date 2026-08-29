@@ -14,6 +14,7 @@ use Liberu\RealEstate\Properties\Application\EstimatePropertyTax;
 use Liberu\RealEstate\Properties\Application\RecordPropertyKey;
 use Liberu\RealEstate\Properties\Application\TransitionProperty;
 use Liberu\RealEstate\Properties\Application\TogglePropertyFavorite;
+use Liberu\RealEstate\Properties\Application\RemovePropertyFavorite;
 use Liberu\RealEstate\Properties\Application\UpdateProperty;
 use Liberu\RealEstate\Properties\Application\UpsertPropertyUnit;
 use Liberu\RealEstate\Properties\Domain\PropertyStatus;
@@ -177,6 +178,31 @@ final class PropertyController
         abort_unless($user?->current_team_id === $property->team_id, 404);
 
         return response()->json(['favorited' => $toggle->handle($property->team_id, $user->getAuthIdentifier(), $property->getKey())]);
+    }
+
+    public function favorites(Request $request): JsonResponse
+    {
+        $user = $request->user();
+        abort_unless($user?->current_team_id !== null, 403);
+        $filters = $request->validate([
+            'search' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'sort_by' => ['sometimes', 'nullable', Rule::in(['created_at', 'updated_at', 'price', 'year_built', 'bedrooms', 'bathrooms', 'area_sqft', 'address'])],
+            'sort_direction' => ['sometimes', 'nullable', Rule::in(['asc', 'desc'])],
+            'page_size' => ['sometimes', 'integer', 'min:1', 'max:100'],
+        ]);
+        $query = Property::query()->forTeam($user->current_team_id)
+            ->favoritedBy($user->current_team_id, $user->getAuthIdentifier())
+            ->search($filters['search'] ?? null);
+
+        return PropertyResource::collection($query->sorted($filters['sort_by'] ?? 'created_at', $filters['sort_direction'] ?? 'desc')->paginate($filters['page_size'] ?? 12)->withQueryString())->response();
+    }
+
+    public function removeFavorite(Request $request, Property $property, RemovePropertyFavorite $remove): JsonResponse
+    {
+        $user = $request->user();
+        abort_unless($user?->current_team_id === $property->team_id, 404);
+
+        return response()->json(['removed' => $remove->handle($property->team_id, $user->getAuthIdentifier(), $property->getKey())]);
     }
 
     public function similar(Request $request, Property $property): JsonResponse
