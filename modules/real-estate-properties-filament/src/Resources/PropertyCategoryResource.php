@@ -44,6 +44,17 @@ final class PropertyCategoryResource extends Resource
         ]);
     }
 
+    public static function getEloquentQuery(): Builder
+    {
+        $teamId = auth()->user()?->current_team_id;
+
+        return parent::getEloquentQuery()->when(
+            $teamId === null,
+            fn (Builder $query): Builder => $query->whereRaw('1 = 0'),
+            fn (Builder $query): Builder => $query->forTeam($teamId),
+        );
+    }
+
     public static function getPages(): array
     {
         return [
