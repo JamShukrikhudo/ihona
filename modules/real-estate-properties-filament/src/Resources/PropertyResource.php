@@ -18,6 +18,7 @@ use Filament\Resources\Pages\PageRegistration;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Notifications\Notification;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Liberu\RealEstate\Core\Models\Branch;
@@ -129,6 +130,14 @@ final class PropertyResource extends Resource
                 Action::make('favorite')
                     ->label('Toggle favorite')
                     ->action(fn (Property $record): bool => app(\Liberu\RealEstate\Properties\Application\TogglePropertyFavorite::class)->handle($record->team_id, auth()->id(), $record->getKey())),
+                Action::make('similar')
+                    ->label('Similar properties')
+                    ->action(function (Property $record): void {
+                        Notification::make()
+                            ->title($record->similarProperties()->count().' similar properties found')
+                            ->success()
+                            ->send();
+                    }),
                 Action::make('unit')->form([TextInput::make('label')->required()->maxLength(80), TextInput::make('bedrooms')->numeric()->minValue(0), TextInput::make('bathrooms')->numeric()->minValue(0), TextInput::make('area_sqft')->numeric()->minValue(0)])->action(fn (Property $record, array $data): mixed => app(UpsertPropertyUnit::class)->handle($record, (int) auth()->user()->current_team_id, $data)),
                 Action::make('key')->form([TextInput::make('key_reference')->required()->maxLength(80), TextInput::make('quantity')->numeric()->required()->minValue(1), Textarea::make('notes')])->action(fn (Property $record, array $data): mixed => app(RecordPropertyKey::class)->handle($record, (int) auth()->user()->current_team_id, $data)),
                 Action::make('available')

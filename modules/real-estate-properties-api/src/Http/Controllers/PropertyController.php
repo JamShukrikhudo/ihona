@@ -170,6 +170,14 @@ final class PropertyController
         return response()->json(['favorited' => $toggle->handle($property->team_id, $user->getAuthIdentifier(), $property->getKey())]);
     }
 
+    public function similar(Request $request, Property $property): JsonResponse
+    {
+        abort_unless($request->user()?->current_team_id === $property->team_id, 404);
+        $limit = max(1, min($request->integer('limit', 3), 20));
+
+        return PropertyResource::collection($property->similarProperties($limit))->response();
+    }
+
     public function show(Request $request, Property $property): JsonResponse
     {
         abort_unless($request->user()?->current_team_id === $property->team_id, 404);

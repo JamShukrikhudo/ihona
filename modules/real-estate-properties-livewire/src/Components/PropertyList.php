@@ -38,6 +38,20 @@ final class PropertyList extends Component
 
     public bool $featuredOnly = false;
 
+    /** @var array<int, array<string, mixed>> */
+    public array $similarProperties = [];
+
+    public function showSimilar(int $propertyId): void
+    {
+        $user = auth()->user();
+        abort_unless($user?->current_team_id !== null, 403);
+        $property = Property::query()->forTeam($user->current_team_id)->findOrFail($propertyId);
+        $this->similarProperties = $property->similarProperties()->map(fn (Property $similar): array => [
+            'id' => $similar->getKey(),
+            'title' => $similar->title ?: $similar->address,
+        ])->all();
+    }
+
     public function toggleFavorite(int $propertyId, TogglePropertyFavorite $toggle): void
     {
         $user = auth()->user();

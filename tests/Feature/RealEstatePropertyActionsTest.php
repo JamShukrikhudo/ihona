@@ -241,6 +241,40 @@ it('supports tenant and user-scoped property favorites', function (): void {
         ->and(fn () => app(\Liberu\RealEstate\Properties\Application\TogglePropertyFavorite::class)->handle(11, 20, $otherUserProperty->getKey()))->toThrow(\Illuminate\Database\Eloquent\ModelNotFoundException::class);
 });
 
+it('preserves legacy similar-property matching within the property boundary', function (): void {
+    $source = app(CreateProperty::class)->handle(10, 20, [
+        'address' => '1 High Street',
+        'property_type' => 'house',
+        'price' => 300000,
+        'bedrooms' => 3,
+        'bathrooms' => 2,
+    ]);
+    $similar = app(CreateProperty::class)->handle(10, 21, [
+        'address' => '2 High Street',
+        'property_type' => 'house',
+        'price' => 330000,
+        'bedrooms' => 4,
+        'bathrooms' => 1,
+    ]);
+    app(CreateProperty::class)->handle(10, 22, [
+        'address' => '3 High Street',
+        'property_type' => 'apartment',
+        'price' => 300000,
+        'bedrooms' => 3,
+        'bathrooms' => 2,
+    ]);
+    app(CreateProperty::class)->handle(11, 23, [
+        'address' => '4 Other Street',
+        'property_type' => 'house',
+        'price' => 300000,
+        'bedrooms' => 3,
+        'bathrooms' => 2,
+    ]);
+
+    expect($source->similarProperties()->pluck('id')->all())->toBe([$similar->getKey()])
+        ->and($source->similarProperties(0))->toHaveCount(1);
+});
+
 it('validates legacy property tour helpers and walkability freshness', function () {
     $property = app(CreateProperty::class)->handle(10, 20, [
         'address' => '1 High Street',
