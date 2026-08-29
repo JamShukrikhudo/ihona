@@ -25,6 +25,9 @@
         @forelse ($properties as $property)
             <li wire:key="property-{{ $property->getKey() }}">
                 {{ $property->address }} ({{ $property->status->value }})
+                @if ($property->hasVirtualTour())
+                    <span aria-label="Virtual tour available">Virtual tour</span>
+                @endif
                 @if ($property->status->value === 'draft')
                     <button type="button" wire:click="publish({{ $property->getKey() }})">Publish</button>
                 @elseif ($property->status->value === 'available')

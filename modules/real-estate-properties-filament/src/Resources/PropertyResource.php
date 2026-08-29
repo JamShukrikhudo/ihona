@@ -71,11 +71,14 @@ final class PropertyResource extends Resource
             TextInput::make('transit_score')->numeric()->minValue(0)->maxValue(100),
             TextInput::make('bike_score')->numeric()->minValue(0)->maxValue(100),
             TextInput::make('virtual_tour_url')->url()->maxLength(2048),
+            TextInput::make('virtual_tour_provider')->maxLength(40),
             Toggle::make('live_tour_available'),
             TextInput::make('model_3d_url')->url()->maxLength(2048),
             Toggle::make('is_featured'),
             Toggle::make('ar_tour_enabled'),
             Toggle::make('holographic_enabled'),
+            TextInput::make('holographic_tour_url')->url()->maxLength(2048),
+            TextInput::make('holographic_provider')->maxLength(255),
         ]);
     }
 
