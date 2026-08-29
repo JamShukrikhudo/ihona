@@ -9,5 +9,5 @@
     "requires": {"php": "^8.5", "laravel": "^13.0", "packages": {"liberusoftware/real-estate-properties": "^1.0", "liberusoftware/real-estate-media-and-documents": "^1.0"}},
     "capabilities": ["real-estate.properties.livewire"],
     "default_enabled": true,
-    "features": ["Property search state", "Category filtering", "Template filtering", "Advanced bounded filters", "Validation and empty states", "Property detail disclosures", "Property gallery"]
+    "features": ["Property search state", "Category filtering", "Template filtering", "Advanced bounded filters", "Validation and empty states", "Property detail disclosures", "Property gallery", "Property comparison"]
 }
