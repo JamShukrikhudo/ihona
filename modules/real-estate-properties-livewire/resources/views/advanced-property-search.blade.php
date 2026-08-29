@@ -14,7 +14,12 @@
         <label for="advanced-max-year-built">Latest build year</label>
         <input id="advanced-max-year-built" type="number" wire:model="maxYearBuilt" min="{{ \Liberu\RealEstate\Properties\Models\Property::EARLIEST_YEAR_BUILT }}" max="{{ \Liberu\RealEstate\Properties\Models\Property::latestYearBuilt() }}">
         <label for="advanced-property-type">Property type</label>
-        <input id="advanced-property-type" type="text" wire:model="propertyType" maxlength="40">
+        <select id="advanced-property-type" wire:model="propertyType">
+            <option value="">Any property type</option>
+            @foreach ($propertyTypes as $type => $label)
+                <option value="{{ $type }}">{{ $label }}</option>
+            @endforeach
+        </select>
         <label for="advanced-property-category">Category</label>
         <select id="advanced-property-category" wire:model="propertyCategoryId">
             <option value="">Any category</option>

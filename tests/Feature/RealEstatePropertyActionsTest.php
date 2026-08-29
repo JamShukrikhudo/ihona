@@ -124,6 +124,21 @@ it('provides reusable bounded listing filters for every presentation adapter', f
         ->and($results->first()->title)->toBe('Featured family home');
 });
 
+it('centralizes property types and matches their stored casing consistently', function (): void {
+    $house = app(CreateProperty::class)->handle(10, 20, [
+        'address' => '1 High Street',
+        'property_type' => 'House',
+    ]);
+    app(CreateProperty::class)->handle(10, 20, [
+        'address' => '2 Low Street',
+        'property_type' => 'apartment',
+    ]);
+
+    expect(Property::TYPES['hmo'])->toBe('HMO')
+        ->and(Property::query()->forTeam(10)->propertyType('house')->pluck('id')->all())->toBe([$house->getKey()])
+        ->and(Property::query()->forTeam(10)->propertyType('HOUSE')->pluck('id')->all())->toBe([$house->getKey()]);
+});
+
 it('supports legacy postal-prefix and stale-sync listing filters', function () {
     $stale = app(CreateProperty::class)->handle(10, 20, [
         'address' => '1 High Street',

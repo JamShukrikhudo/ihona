@@ -103,6 +103,7 @@ final class AdvancedPropertySearch extends Component
     public function render(): View
     {
         $teamId = auth()->user()?->current_team_id;
+        $propertyTypes = Property::TYPES;
         $categories = $teamId === null ? collect() : PropertyCategory::query()->forTeam($teamId)->orderBy('name')->get();
         $templates = $teamId === null ? collect() : PropertyTemplate::query()->forTeam($teamId)->orderBy('name')->get();
         $properties = $teamId === null
@@ -126,6 +127,6 @@ final class AdvancedPropertySearch extends Component
                 ->when($this->featuredOnly, fn ($query) => $query->featured())
                 ->latest()->paginate(12);
 
-        return view('real-estate-properties-livewire::advanced-property-search', compact('properties', 'categories', 'templates'));
+        return view('real-estate-properties-livewire::advanced-property-search', compact('properties', 'categories', 'templates', 'propertyTypes'));
     }
 }

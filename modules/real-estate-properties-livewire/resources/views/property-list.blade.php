@@ -12,7 +12,12 @@
         <p role="alert">{{ $error }}</p>
     @endif
     <label for="property-type">Property type</label>
-    <input id="property-type" type="text" wire:model.live="propertyType" autocomplete="off">
+    <select id="property-type" wire:model.live="propertyType">
+        <option value="">Any property type</option>
+        @foreach ($propertyTypes as $type => $label)
+            <option value="{{ $type }}">{{ $label }}</option>
+        @endforeach
+    </select>
     <label for="min-price">Minimum price</label>
     <input id="min-price" type="number" wire:model.live="minPrice" min="0">
     <label for="max-price">Maximum price</label>
