@@ -8,6 +8,24 @@ paths:
     post: {operationId: real.estate.matching.create, responses: {"201": {description: Created profile}}}
   /api/v1/real-estate/matching/calculate-score:
     post: {operationId: real.estate.matching.calculateScore, responses: {"200": {description: Weighted match score}}}
+  /api/v1/real-estate/matching/recommend-properties:
+    post:
+      operationId: real.estate.matching.recommendProperties
+      security: [{sanctum: []}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [criteria, properties]
+              properties:
+                criteria: {type: object, additionalProperties: true}
+                properties: {type: array, minItems: 1, maxItems: 100, items: {type: object, required: [price], additionalProperties: true}}
+                limit: {type: integer, minimum: 1, maximum: 100, default: 6}
+                excluded_ids: {type: array, maxItems: 100, items: {type: string}}
+      responses:
+        '200': {description: Bounded property recommendations ranked by match score}
   /api/v1/real-estate/matching/{id}:
     parameters: [{name: id, in: path, required: true, schema: {type: string}}]
     get: {operationId: real.estate.matching.get, responses: {"200": {description: Profile}}}
