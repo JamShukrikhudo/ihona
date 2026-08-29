@@ -8,6 +8,7 @@ use Liberu\RealEstate\PropertiesApi\Http\Controllers\PropertyTemplateController;
 Route::prefix('api/v1/real-estate/properties')->middleware(['api', 'auth:sanctum', 'throttle:api', 'api.idempotency'])->group(function (): void {
     Route::get('/', [PropertyController::class, 'index'])->name('real-estate.properties.index');
     Route::post('/', [PropertyController::class, 'store'])->name('real-estate.properties.store');
+    Route::get('/compare', [PropertyController::class, 'compare'])->name('real-estate.properties.compare');
     Route::post('/{property}/transition/{status}', [PropertyController::class, 'transition'])->name('real-estate.properties.transition');
     Route::post('/{property}/favorite', [PropertyController::class, 'favorite'])->name('real-estate.properties.favorite');
     Route::get('/{property}/similar', [PropertyController::class, 'similar'])->name('real-estate.properties.similar');

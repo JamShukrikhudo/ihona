@@ -217,6 +217,23 @@ it('keeps the property gallery contract connected to the media boundary', functi
         ->and($mediaCreate)->toContain("'siteplan'");
 });
 
+it('keeps the property comparison contract tenant-scoped across core, API, and Livewire', function (): void {
+    $model = file_get_contents(base_path('modules/real-estate-properties/src/Models/Property.php'));
+    $api = file_get_contents(base_path('modules/real-estate-properties-api/src/Http/Controllers/PropertyController.php'));
+    $routes = file_get_contents(base_path('modules/real-estate-properties-api/routes/api.php'));
+    $component = file_get_contents(base_path('modules/real-estate-properties-livewire/src/Components/PropertyComparison.php'));
+    $provider = file_get_contents(base_path('modules/real-estate-properties-livewire/src/PropertiesLivewireServiceProvider.php'));
+
+    expect($model)->toContain('public function comparisonData(): array')
+        ->and($api)->toContain('public function compare(Request $request): JsonResponse')
+        ->toContain("forTeam(\$teamId)")
+        ->and($routes)->toContain("'/compare'")
+        ->and($component)->toContain('count($this->propertyIds) >= 4')
+        ->toContain('whereNotIn')
+        ->toContain('teamId()')
+        ->and($provider)->toContain("property-comparison', Components\\PropertyComparison::class");
+});
+
 it('keeps Filament resources tenant-scoped and lifecycle-delegated', function (): void {
     $root = dirname(__DIR__, 2);
 

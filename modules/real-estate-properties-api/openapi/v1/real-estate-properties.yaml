@@ -25,6 +25,14 @@ paths:
       security: [{sanctum: []}]
       responses:
         '201': {description: Property created}
+  /api/v1/real-estate/properties/compare:
+    get:
+      operationId: real.estate.properties.compare
+      security: [{sanctum: []}]
+      parameters:
+        - {name: property_ids[], in: query, required: true, style: form, explode: true, schema: {type: array, minItems: 2, maxItems: 4, uniqueItems: true, items: {type: integer, minimum: 1}}}
+      responses:
+        '200': {description: Authorized properties in requested comparison order}
   /api/v1/real-estate/properties/{id}:
     get:
       operationId: real.estate.properties.get
