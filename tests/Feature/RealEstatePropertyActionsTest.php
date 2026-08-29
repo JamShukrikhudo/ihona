@@ -161,6 +161,20 @@ it('validates legacy property tour helpers and walkability freshness', function 
         ->and($property->fresh()->needsWalkabilityUpdate())->toBeFalse();
 });
 
+it('preserves the legacy HMO property helper across case variants', function () {
+    $hmo = app(CreateProperty::class)->handle(10, 20, [
+        'address' => '1 High Street',
+        'property_type' => 'HMO',
+    ]);
+    $house = app(CreateProperty::class)->handle(10, 20, [
+        'address' => '2 High Street',
+        'property_type' => 'house',
+    ]);
+
+    expect($hmo->isHmo())->toBeTrue()
+        ->and($house->isHmo())->toBeFalse();
+});
+
 it('requires explicit property lifecycle transitions and records status history', function () {
     $property = app(CreateProperty::class)->handle(10, 20, ['address' => '1 High Street']);
     $transition = app(TransitionProperty::class);

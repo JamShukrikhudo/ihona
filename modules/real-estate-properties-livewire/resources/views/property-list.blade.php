@@ -25,6 +25,9 @@
         @forelse ($properties as $property)
             <li wire:key="property-{{ $property->getKey() }}">
                 {{ $property->address }} ({{ $property->status->value }})
+                @if ($property->isHmo())
+                    <span aria-label="House in multiple occupation">HMO</span>
+                @endif
                 @if ($property->hasVirtualTour())
                     <span aria-label="Virtual tour available">Virtual tour</span>
                 @endif
