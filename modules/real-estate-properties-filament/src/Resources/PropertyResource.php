@@ -87,6 +87,10 @@ final class PropertyResource extends Resource
             Toggle::make('holographic_enabled'),
             TextInput::make('holographic_tour_url')->url()->maxLength(2048),
             TextInput::make('holographic_provider')->maxLength(255),
+            TextInput::make('insurance_policy_id')->numeric()->minValue(1),
+            TextInput::make('insurance_coverage_amount')->numeric()->minValue(0),
+            TextInput::make('insurance_premium')->numeric()->minValue(0),
+            TextInput::make('insurance_expiry_date')->date(),
         ]);
     }
 

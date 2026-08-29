@@ -175,6 +175,20 @@ it('preserves the legacy HMO property helper across case variants', function () 
         ->and($house->isHmo())->toBeFalse();
 });
 
+it('preserves the legacy active insurance helper', function () {
+    $property = app(CreateProperty::class)->handle(10, 20, [
+        'address' => '1 High Street',
+        'insurance_policy_id' => 42,
+        'insurance_expiry_date' => now()->addDay(),
+    ]);
+
+    expect($property->hasActiveInsurance())->toBeTrue();
+
+    $property->update(['insurance_expiry_date' => now()->subDay()]);
+
+    expect($property->fresh()->hasActiveInsurance())->toBeFalse();
+});
+
 it('requires explicit property lifecycle transitions and records status history', function () {
     $property = app(CreateProperty::class)->handle(10, 20, ['address' => '1 High Street']);
     $transition = app(TransitionProperty::class);

@@ -124,6 +124,13 @@ final class Property extends Model
         return strtolower((string) $this->property_type) === 'hmo';
     }
 
+    public function hasActiveInsurance(): bool
+    {
+        return filled($this->insurance_policy_id)
+            && $this->insurance_expiry_date !== null
+            && $this->insurance_expiry_date->isFuture();
+    }
+
     private function virtualTourEmbed(): ?string
     {
         $url = (string) $this->virtual_tour_url;
