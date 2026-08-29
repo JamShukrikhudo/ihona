@@ -69,15 +69,7 @@ final class PropertyResource extends Resource
                 ->minValue(Property::EARLIEST_YEAR_BUILT)
                 ->maxValue(Property::latestYearBuilt())
                 ->helperText(Property::yearBuiltMessage()),
-            Select::make('property_type')->options([
-                'residential' => 'Residential',
-                'house' => 'House',
-                'apartment' => 'Apartment',
-                'condo' => 'Condo',
-                'townhouse' => 'Townhouse',
-                'villa' => 'Villa',
-                'hmo' => 'HMO',
-            ])->required(),
+            Select::make('property_type')->options(Property::TYPES)->required(),
             Select::make('property_category_id')
                 ->label('Category')
                 ->options(fn (): array => PropertyCategory::query()->forTeam(auth()->user()?->current_team_id ?? 0)->orderBy('name')->pluck('name', 'id')->all())

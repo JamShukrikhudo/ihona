@@ -102,6 +102,7 @@ final class PropertyList extends Component
     public function render(): View
     {
         $teamId = auth()->user()?->current_team_id;
+        $propertyTypes = Property::TYPES;
         $properties = $teamId === null
             ? collect()
             : Property::query()->forTeam($teamId)
@@ -114,7 +115,7 @@ final class PropertyList extends Component
                 ->when($this->featuredOnly, fn ($query) => $query->featured())
                 ->latest()->paginate(20);
 
-        return view('real-estate-properties-livewire::property-list', ['properties' => $properties]);
+        return view('real-estate-properties-livewire::property-list', ['properties' => $properties, 'propertyTypes' => $propertyTypes]);
     }
 
     private function transition(int $propertyId, PropertyStatus $status, TransitionProperty $transition): void

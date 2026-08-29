@@ -19,6 +19,21 @@ final class Property extends Model
 
     public const EARLIEST_YEAR_BUILT = 1066;
 
+    public const TYPES = [
+        'residential' => 'Residential',
+        'commercial' => 'Commercial',
+        'land' => 'Land',
+        'new_build' => 'New build',
+        'development' => 'Development',
+        'mixed_use' => 'Mixed use',
+        'house' => 'House',
+        'apartment' => 'Apartment',
+        'condo' => 'Condo',
+        'townhouse' => 'Townhouse',
+        'villa' => 'Villa',
+        'hmo' => 'HMO',
+    ];
+
     protected $table = 'real_estate_properties';
 
     protected $guarded = ['id'];
@@ -263,7 +278,14 @@ final class Property extends Model
 
     public function scopePropertyType(Builder $query, ?string $type): Builder
     {
-        return $query->when(filled($type), fn (Builder $query): Builder => $query->where('property_type', $type));
+        $type = trim((string) $type);
+
+        return $query->when($type !== '', fn (Builder $query): Builder => $query->whereIn('property_type', array_unique([
+            $type,
+            strtolower($type),
+            strtoupper($type),
+            ucfirst(strtolower($type)),
+        ])));
     }
 
     public function scopeCategory(Builder $query, int|string|null $category): Builder
