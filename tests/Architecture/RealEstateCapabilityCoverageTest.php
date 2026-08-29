@@ -143,6 +143,12 @@ it('keeps the API property response aligned with legacy listing data', function 
         ->toContain("#/components/schemas/PropertyResponse");
 });
 
+it('does not narrow advanced Livewire search when no template is selected', function (): void {
+    $source = file_get_contents(base_path('modules/real-estate-properties-livewire/src/Components/AdvancedPropertySearch.php'));
+
+    expect($source)->toContain('->when($this->propertyTemplateId !== null, fn ($query) => $query->where(\'property_template_id\', $this->propertyTemplateId))');
+});
+
 it('keeps Filament resources tenant-scoped and lifecycle-delegated', function (): void {
     $root = dirname(__DIR__, 2);
 
