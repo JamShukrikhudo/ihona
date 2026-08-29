@@ -3,6 +3,8 @@
         <div wire:loading class="text-sm text-gray-500" role="status">Loading properties…</div>
         <label for="advanced-property-search">Search</label>
         <input id="advanced-property-search" type="search" wire:model.live="search" autocomplete="off">
+        <label for="advanced-postal-code">Postal code</label>
+        <input id="advanced-postal-code" type="text" wire:model="postalCode" maxlength="20" autocomplete="postal-code">
         <label for="advanced-min-price">Minimum price</label>
         <input id="advanced-min-price" type="number" wire:model="minPrice" min="0">
         <label for="advanced-max-price">Maximum price</label>
@@ -14,6 +16,10 @@
         <label for="advanced-featured">
             <input id="advanced-featured" type="checkbox" wire:model="featuredOnly">
             Featured only
+        </label>
+        <label for="advanced-needs-syncing">
+            <input id="advanced-needs-syncing" type="checkbox" wire:model="needsSyncingOnly">
+            Needs syncing
         </label>
         <button type="submit">Apply filters</button>
     </form>

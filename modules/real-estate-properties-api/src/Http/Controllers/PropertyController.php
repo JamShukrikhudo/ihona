@@ -30,6 +30,8 @@ final class PropertyController
         $pageSize = max(1, min($request->integer('page_size', 25), 100));
         $filters = $request->validate([
             'search' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'postal_code' => ['sometimes', 'nullable', 'string', 'max:20'],
+            'needs_syncing' => ['sometimes', 'boolean'],
             'branch_id' => ['sometimes', 'nullable', 'integer', Rule::exists('real_estate_branches', 'id')->where('team_id', $teamId)],
             'min_price' => ['sometimes', 'nullable', 'numeric', 'min:0'],
             'max_price' => ['sometimes', 'nullable', 'numeric', 'min:0', 'gte:min_price'],
@@ -51,6 +53,8 @@ final class PropertyController
 
         $query = Property::query()->forTeam($teamId)
             ->search($filters['search'] ?? null)
+            ->postalCode($filters['postal_code'] ?? null)
+            ->when($filters['needs_syncing'] ?? false, fn ($query) => $query->needsSyncing())
             ->when(array_key_exists('branch_id', $filters), fn ($query) => $query->where('branch_id', $filters['branch_id']))
             ->priceRange($filters['min_price'] ?? null, $filters['max_price'] ?? null)
             ->bedrooms($filters['min_bedrooms'] ?? null, $filters['max_bedrooms'] ?? null)
@@ -110,6 +114,7 @@ final class PropertyController
             'floor_plan_data' => ['sometimes', 'array'],
             'list_date' => ['sometimes', 'nullable', 'date'],
             'sold_date' => ['sometimes', 'nullable', 'date', 'after_or_equal:list_date'],
+            'last_synced_at' => ['sometimes', 'nullable', 'date'],
             'is_featured' => ['sometimes', 'boolean'],
             'live_tour_available' => ['sometimes', 'boolean'],
             'ar_tour_enabled' => ['sometimes', 'boolean'],
@@ -191,6 +196,7 @@ final class PropertyController
             'floor_plan_data' => ['sometimes', 'array'],
             'list_date' => ['sometimes', 'nullable', 'date'],
             'sold_date' => ['sometimes', 'nullable', 'date', 'after_or_equal:list_date'],
+            'last_synced_at' => ['sometimes', 'nullable', 'date'],
             'is_featured' => ['sometimes', 'boolean'],
             'live_tour_available' => ['sometimes', 'boolean'],
             'ar_tour_enabled' => ['sometimes', 'boolean'],

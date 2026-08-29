@@ -83,6 +83,21 @@ final class Property extends Model
         });
     }
 
+    public function scopePostalCode(Builder $query, ?string $postalCode): Builder
+    {
+        $postalCode = trim((string) $postalCode);
+
+        return $query->when($postalCode !== '', fn (Builder $query): Builder => $query->where('postal_code', 'like', $postalCode.'%'));
+    }
+
+    public function scopeNeedsSyncing(Builder $query): Builder
+    {
+        return $query->where(function (Builder $query): void {
+            $query->whereNull('last_synced_at')
+                ->orWhereColumn('updated_at', '>', 'last_synced_at');
+        });
+    }
+
     public function scopePriceRange(Builder $query, mixed $minimum, mixed $maximum): Builder
     {
         return $query->when($minimum !== null && $minimum !== '', fn (Builder $query): Builder => $query->where('price', '>=', $minimum))

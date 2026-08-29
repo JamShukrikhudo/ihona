@@ -68,6 +68,7 @@ final class CreateProperty
                 'floor_plan_data' => $attributes['floor_plan_data'] ?? null,
                 'list_date' => $attributes['list_date'] ?? null,
                 'sold_date' => $attributes['sold_date'] ?? null,
+                'last_synced_at' => $attributes['last_synced_at'] ?? null,
                 'is_featured' => $attributes['is_featured'] ?? false,
                 'live_tour_available' => $attributes['live_tour_available'] ?? false,
                 'ar_tour_enabled' => $attributes['ar_tour_enabled'] ?? false,
