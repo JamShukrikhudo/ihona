@@ -23,6 +23,6 @@
     "capabilities": ["real-estate.properties"],
     "default_enabled": true,
     "features": [
-        "Address/location", "Categories", "Units", "Characteristics", "Tenure", "Utilities", "Features", "Status", "History", "Keys"
+        "Address/location", "Categories", "Templates", "Units", "Characteristics", "Tenure", "Utilities", "Features", "Status", "History", "Keys"
     ]
 }

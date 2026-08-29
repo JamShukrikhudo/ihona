@@ -18,6 +18,13 @@
                 <option value="{{ $category->getKey() }}">{{ $category->name }}</option>
             @endforeach
         </select>
+        <label for="advanced-property-template">Listing template</label>
+        <select id="advanced-property-template" wire:model="propertyTemplateId">
+            <option value="">Any template</option>
+            @foreach ($templates as $template)
+                <option value="{{ $template->getKey() }}">{{ $template->name }}</option>
+            @endforeach
+        </select>
         <label for="advanced-country">Country</label>
         <input id="advanced-country" type="text" wire:model="country" maxlength="2">
         <label for="advanced-latitude">Latitude</label>

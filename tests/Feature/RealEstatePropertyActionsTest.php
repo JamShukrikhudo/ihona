@@ -12,6 +12,7 @@ use Liberu\RealEstate\Properties\Application\UpsertPropertyUnit;
 use Liberu\RealEstate\Properties\Domain\PropertyStatus;
 use Liberu\RealEstate\Properties\Models\Property;
 use Liberu\RealEstate\Properties\Models\PropertyCategory;
+use Liberu\RealEstate\Properties\Models\PropertyTemplate;
 
 it('updates team properties and retains a change history', function () {
     expect(Schema::hasTable('real_estate_properties'))->toBeTrue();
@@ -190,6 +191,25 @@ it('supports tenant-scoped property categories and category filtering', function
         ->and(fn () => app(CreateProperty::class)->handle(11, 21, [
             'address' => '3 Other Street',
             'property_category_id' => $category->getKey(),
+        ]))->toThrow(ValidationException::class);
+});
+
+it('supports tenant-scoped property templates and template filtering', function (): void {
+    $template = PropertyTemplate::query()->create([
+        'team_id' => 10,
+        'name' => 'Investor Listing',
+        'content' => '{title} — {price}',
+    ]);
+    $matching = app(CreateProperty::class)->handle(10, 20, [
+        'address' => '1 High Street',
+        'property_template_id' => $template->getKey(),
+    ]);
+
+    expect($matching->template->is($template))->toBeTrue()
+        ->and(Property::query()->forTeam(10)->where('property_template_id', $template->getKey())->pluck('id')->all())->toBe([$matching->getKey()])
+        ->and(fn () => app(CreateProperty::class)->handle(11, 21, [
+            'address' => '2 Other Street',
+            'property_template_id' => $template->getKey(),
         ]))->toThrow(ValidationException::class);
 });
 
