@@ -28,6 +28,7 @@
                 <button type="button" wire:click="toggleFavorite({{ $property->getKey() }})">
                     {{ $property->favorites->contains(fn ($favorite) => (string) $favorite->user_id === (string) auth()->id()) ? 'Unfavorite' : 'Favorite' }}
                 </button>
+                <button type="button" wire:click="showSimilar({{ $property->getKey() }})">Similar</button>
                 @if ($property->isHmo())
                     <span aria-label="House in multiple occupation">HMO</span>
                 @endif
@@ -56,4 +57,14 @@
             <li>No properties match this search.</li>
         @endforelse
     </ul>
+    @if ($similarProperties !== [])
+        <section aria-label="Similar properties">
+            <h2>Similar properties</h2>
+            <ul>
+                @foreach ($similarProperties as $similar)
+                    <li wire:key="similar-property-{{ $similar['id'] }}">{{ $similar['title'] }}</li>
+                @endforeach
+            </ul>
+        </section>
+    @endif
 </div>

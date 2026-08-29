@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Liberu\RealEstate\Properties\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -248,6 +249,23 @@ final class Property extends Model
         return $query->whereHas('favorites', fn (Builder $favorites): Builder => $favorites
             ->where('team_id', $teamId)
             ->where('user_id', $userId));
+    }
+
+    public function similarProperties(int $limit = 3): Collection
+    {
+        if ($this->price === null || $this->bedrooms === null || $this->bathrooms === null) {
+            return new Collection();
+        }
+
+        return self::query()
+            ->forTeam($this->team_id)
+            ->where('id', '!=', $this->getKey())
+            ->where('property_type', $this->property_type)
+            ->whereBetween('price', [(float) $this->price * 0.8, (float) $this->price * 1.2])
+            ->whereBetween('bedrooms', [(int) $this->bedrooms - 1, (int) $this->bedrooms + 1])
+            ->whereBetween('bathrooms', [(int) $this->bathrooms - 1, (int) $this->bathrooms + 1])
+            ->limit(max(1, min($limit, 20)))
+            ->get();
     }
 
     public function scopeCountry(Builder $query, ?string $country): Builder
