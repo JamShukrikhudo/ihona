@@ -47,6 +47,8 @@ final class PropertyController
             'max_bathrooms' => ['sometimes', 'nullable', 'integer', 'min:0', 'gte:min_bathrooms'],
             'min_area' => ['sometimes', 'nullable', 'numeric', 'min:0'],
             'max_area' => ['sometimes', 'nullable', 'numeric', 'min:0', 'gte:min_area'],
+            'min_year_built' => ['sometimes', 'nullable', ...Property::yearBuiltRules()],
+            'max_year_built' => ['sometimes', 'nullable', ...Property::yearBuiltRules(), 'gte:min_year_built'],
             'property_type' => ['sometimes', 'nullable', 'string', 'max:40'],
             'property_category_id' => ['sometimes', 'nullable', 'integer', Rule::exists('real_estate_property_categories', 'id')->where('team_id', $teamId)],
             'property_template_id' => ['sometimes', 'nullable', 'integer', Rule::exists('real_estate_property_templates', 'id')->where('team_id', $teamId)],
@@ -71,6 +73,7 @@ final class PropertyController
             ->bedrooms($filters['min_bedrooms'] ?? null, $filters['max_bedrooms'] ?? null)
             ->bathrooms($filters['min_bathrooms'] ?? null, $filters['max_bathrooms'] ?? null)
             ->areaRange($filters['min_area'] ?? null, $filters['max_area'] ?? null)
+            ->yearBuiltRange($filters['min_year_built'] ?? null, $filters['max_year_built'] ?? null)
             ->propertyType($filters['property_type'] ?? null)
             ->category($filters['property_category_id'] ?? null)
             ->country($filters['country'] ?? null)
@@ -102,7 +105,7 @@ final class PropertyController
             'parking' => ['sometimes', 'array'],
             'gardens' => ['sometimes', 'array'],
             'area_sqft' => ['sometimes', 'nullable', 'numeric', 'min:0'],
-            'year_built' => ['sometimes', 'nullable', 'integer', 'min:1066', 'max:'.((int) now()->year + 2)],
+            'year_built' => ['sometimes', 'nullable', ...Property::yearBuiltRules()],
             'structured_address' => ['sometimes', 'array'],
             'latitude' => ['sometimes', 'nullable', 'numeric', 'between:-90,90'],
             'longitude' => ['sometimes', 'nullable', 'numeric', 'between:-180,180'],
@@ -205,7 +208,7 @@ final class PropertyController
             'parking' => ['sometimes', 'array'],
             'gardens' => ['sometimes', 'array'],
             'area_sqft' => ['sometimes', 'nullable', 'numeric', 'min:0'],
-            'year_built' => ['sometimes', 'nullable', 'integer', 'min:1066', 'max:'.((int) now()->year + 2)],
+            'year_built' => ['sometimes', 'nullable', ...Property::yearBuiltRules()],
             'structured_address' => ['sometimes', 'array'],
             'latitude' => ['sometimes', 'nullable', 'numeric', 'between:-90,90'],
             'longitude' => ['sometimes', 'nullable', 'numeric', 'between:-180,180'],

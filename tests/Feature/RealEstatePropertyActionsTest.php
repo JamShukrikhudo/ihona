@@ -229,6 +229,19 @@ it('preserves legacy property metadata and year normalization', function (): voi
         ->and($property->floor_plan_image)->toBe('https://example.test/floor-plan.png');
 });
 
+it('centralizes legacy build-year rules and filters properties by year range', function (): void {
+    $old = app(CreateProperty::class)->handle(10, 20, ['address' => '1 Old Street', 'year_built' => 1900]);
+    $new = app(CreateProperty::class)->handle(10, 20, ['address' => '2 New Street', 'year_built' => 2020]);
+    app(CreateProperty::class)->handle(10, 20, ['address' => '3 Other Street', 'year_built' => 2025]);
+
+    expect(Property::EARLIEST_YEAR_BUILT)->toBe(1066)
+        ->and(Property::latestYearBuilt())->toBe((int) now()->year + 2)
+        ->and(Property::yearBuiltRules())->toBe(['integer', 'min:1066', 'max:'.((int) now()->year + 2)])
+        ->and(Property::yearBuiltMessage())->toContain('1066')
+        ->and(Property::query()->forTeam(10)->yearBuiltRange(1901, 2021)->pluck('id')->all())->toBe([$new->getKey()])
+        ->and($old->year_built)->toBe(1900);
+});
+
 it('supports tenant and user-scoped property favorites', function (): void {
     $property = app(CreateProperty::class)->handle(10, 20, ['address' => '1 High Street']);
     $otherUserProperty = app(CreateProperty::class)->handle(10, 21, ['address' => '2 High Street']);
