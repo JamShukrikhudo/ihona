@@ -38,6 +38,9 @@ final class PropertyResource extends JsonResource
         ]) + [
             'is_hmo' => $this->resource->isHmo(),
             'has_active_insurance' => $this->resource->hasActiveInsurance(),
+            'days_listed' => $this->resource->daysListed(),
+            'price_per_square_foot' => $this->resource->pricePerSquareFoot(),
+            'disclosure_facts' => $this->resource->disclosureFacts(),
             'is_favorited' => $isFavorited,
         ];
     }

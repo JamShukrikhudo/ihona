@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\ValidationException;
 use Liberu\RealEstate\Core\Application\CreateBranch;
@@ -14,6 +15,8 @@ use Liberu\RealEstate\Properties\Models\Property;
 use Liberu\RealEstate\Properties\Models\PropertyCategory;
 use Liberu\RealEstate\Properties\Models\PropertyTemplate;
 use Liberu\RealEstate\Properties\Models\PropertyFavorite;
+use Liberu\RealEstate\PropertiesLivewire\Components\PropertyDetail;
+use Livewire\Livewire;
 
 it('updates team properties and retains a change history', function () {
     expect(Schema::hasTable('real_estate_properties'))->toBeTrue();
@@ -64,6 +67,49 @@ it('preserves legacy property listing attributes in the modular boundary', funct
         ->and($property->is_featured)->toBeTrue()
         ->and($property->energy_score)->toBe(82)
         ->and($property->reception_rooms)->toBe(2);
+});
+
+it('provides portable property detail disclosure facts', function (): void {
+    $property = app(CreateProperty::class)->handle(10, 20, [
+        'address' => '1 High Street',
+        'price' => 565000,
+        'area_sqft' => 1240,
+        'year_built' => 1904,
+        'list_date' => now()->subDays(46)->toDateString(),
+        'energy_rating' => 'B',
+        'energy_score' => 84,
+        'epc' => ['assessment_date' => '2019-03-12'],
+        'council_tax_band' => 'D',
+    ]);
+
+    expect($property->daysListed())->toBe(46)
+        ->and($property->pricePerSquareFoot())->toBe(455.65)
+        ->and($property->disclosureFacts()['energy']['value'])->toBe('B (84)')
+        ->and($property->disclosureFacts()['energy']['source'])->toContain('2019-03-12')
+        ->and($property->disclosureFacts()['council_tax_band']['value'])->toBe('D');
+});
+
+it('renders the tenant-scoped Livewire property detail surface', function (): void {
+    $user = User::factory()->create(['current_team_id' => 10]);
+    $property = app(CreateProperty::class)->handle(10, $user->getKey(), [
+        'address' => '1 High Street',
+        'title' => 'A disclosed property',
+        'price' => 565000,
+        'area_sqft' => 1240,
+        'list_date' => now()->subDays(46)->toDateString(),
+    ]);
+
+    $this->actingAs($user);
+
+    Livewire::component('test-property-detail', PropertyDetail::class);
+
+    Livewire::test('test-property-detail', ['propertyId' => $property->getKey()])
+        ->assertSee('A disclosed property')
+        ->assertSee('Property facts')
+        ->assertSee('46')
+        ->assertSee('Book a viewing')
+        ->call('requestViewing')
+        ->assertDispatched('property-viewing-requested', propertyId: $property->getKey());
 });
 
 it('preserves the legacy team-scoped branch association', function () {
