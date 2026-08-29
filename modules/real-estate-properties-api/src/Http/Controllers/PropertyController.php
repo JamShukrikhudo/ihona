@@ -55,6 +55,8 @@ final class PropertyController
             'country' => ['sometimes', 'nullable', 'string', 'size:2'],
             'energy_rating' => ['sometimes', 'nullable', 'string', 'max:10'],
             'status' => ['sometimes', 'nullable', Rule::enum(PropertyStatus::class)],
+            'sort_by' => ['sometimes', 'nullable', Rule::in(Property::SORTABLE_COLUMNS)],
+            'sort_direction' => ['sometimes', 'nullable', Rule::in(['asc', 'desc'])],
             'featured' => ['sometimes', 'boolean'],
             'favorites_only' => ['sometimes', 'boolean'],
             'min_energy_score' => ['sometimes', 'nullable', 'integer', 'between:0,100'],
@@ -87,7 +89,7 @@ final class PropertyController
             ->transitScore($filters['min_transit_score'] ?? null)
             ->bikeScore($filters['min_bike_score'] ?? null);
 
-        return PropertyResource::collection($query->latest()->paginate($pageSize)->withQueryString())->response();
+        return PropertyResource::collection($query->sorted($filters['sort_by'] ?? null, $filters['sort_direction'] ?? 'desc')->paginate($pageSize)->withQueryString())->response();
     }
 
     public function store(Request $request, CreateProperty $create): JsonResponse

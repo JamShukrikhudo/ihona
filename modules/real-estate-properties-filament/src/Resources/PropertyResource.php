@@ -118,9 +118,14 @@ final class PropertyResource extends Resource
                 return $teamId === null ? $query->whereRaw('1 = 0') : $query->forTeam($teamId);
             })
             ->columns([
-                TextColumn::make('address')->searchable()->wrap(),
-                TextColumn::make('property_type')->label('Type')->searchable(),
+                TextColumn::make('address')->searchable()->sortable()->wrap(),
+                TextColumn::make('property_type')->label('Type')->searchable()->sortable(),
                 TextColumn::make('status')->badge(),
+                TextColumn::make('price')->numeric()->sortable(),
+                TextColumn::make('bedrooms')->sortable(),
+                TextColumn::make('bathrooms')->sortable(),
+                TextColumn::make('area_sqft')->sortable(),
+                TextColumn::make('year_built')->sortable(),
                 TextColumn::make('created_at')->dateTime()->sortable(),
             ])
             ->filters([

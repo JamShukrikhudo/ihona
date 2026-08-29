@@ -289,6 +289,14 @@ it('filters properties by the modular lifecycle status vocabulary', function ():
         ->and(Property::query()->forTeam(10)->status(null)->count())->toBe(2);
 });
 
+it('provides bounded property ordering for every listing surface', function (): void {
+    $expensive = app(CreateProperty::class)->handle(10, 20, ['address' => 'Z Street', 'price' => 500000]);
+    $affordable = app(CreateProperty::class)->handle(10, 20, ['address' => 'A Street', 'price' => 100000]);
+
+    expect(Property::query()->forTeam(10)->sorted('price', 'asc')->pluck('id')->all())->toBe([$affordable->getKey(), $expensive->getKey()])
+        ->and(Property::query()->forTeam(10)->sorted('not_allowed', 'asc')->pluck('id')->all())->toBe([$expensive->getKey(), $affordable->getKey()]);
+});
+
 it('supports tenant and user-scoped property favorites', function (): void {
     $property = app(CreateProperty::class)->handle(10, 20, ['address' => '1 High Street']);
     $otherUserProperty = app(CreateProperty::class)->handle(10, 21, ['address' => '2 High Street']);
