@@ -213,6 +213,21 @@ it('supports tenant-scoped property templates and template filtering', function 
         ]))->toThrow(ValidationException::class);
 });
 
+it('preserves legacy property metadata and year normalization', function (): void {
+    $property = app(CreateProperty::class)->handle(10, 20, [
+        'address' => '1 High Street',
+        'year_built' => '1901-06-01',
+        'description_generated_at' => now(),
+        'internal_notes' => 'Review title documents.',
+        'floor_plan_image' => 'https://example.test/floor-plan.png',
+    ]);
+
+    expect($property->year_built)->toBe(1901)
+        ->and($property->description_generated_at)->not->toBeNull()
+        ->and($property->internal_notes)->toBe('Review title documents.')
+        ->and($property->floor_plan_image)->toBe('https://example.test/floor-plan.png');
+});
+
 it('validates legacy property tour helpers and walkability freshness', function () {
     $property = app(CreateProperty::class)->handle(10, 20, [
         'address' => '1 High Street',

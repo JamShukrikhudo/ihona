@@ -34,6 +34,9 @@
                 @if ($property->hasVirtualTour())
                     <span aria-label="Virtual tour available">Virtual tour</span>
                 @endif
+                @if ($property->floor_plan_image)
+                    <a href="{{ $property->floor_plan_image }}" rel="noopener" target="_blank">Floor plan</a>
+                @endif
                 @if ($property->status->value === 'draft')
                     <button type="button" wire:click="publish({{ $property->getKey() }})">Publish</button>
                 @elseif ($property->status->value === 'available')
