@@ -119,6 +119,11 @@ final class Property extends Model
         return (bool) $this->holographic_enabled && filled($this->holographic_tour_url);
     }
 
+    public function isHmo(): bool
+    {
+        return strtolower((string) $this->property_type) === 'hmo';
+    }
+
     private function virtualTourEmbed(): ?string
     {
         $url = (string) $this->virtual_tour_url;
