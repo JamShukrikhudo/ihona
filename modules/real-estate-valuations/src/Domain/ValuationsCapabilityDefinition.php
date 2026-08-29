@@ -9,7 +9,7 @@ final class ValuationsCapabilityDefinition
     /** @return array<string, array{label: string, required: list<string>, behaviors: list<string>}> */
     public static function all(): array
     {
-        return self::define(['Appraisals', 'Comparables', 'Pricing', 'Fees', 'Recommendations', 'Follow-up', 'Conversion']);
+        return self::define(['Appraisals', 'Comparables', 'Pricing', 'Fees', 'Recommendations', 'Follow-up', 'Conversion', 'Property valuation estimates']);
     }
 
     /** @param list<string> $labels */

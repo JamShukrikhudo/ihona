@@ -13,6 +13,7 @@ use Liberu\RealEstate\Valuations\Application\CompleteValuation;
 use Liberu\RealEstate\Valuations\Application\ConvertValuation;
 use Liberu\RealEstate\Valuations\Application\CreateValuation;
 use Liberu\RealEstate\Valuations\Application\DeleteValuation;
+use Liberu\RealEstate\Valuations\Application\GeneratePropertyValuation;
 use Liberu\RealEstate\Valuations\Application\ScheduleValuation;
 use Liberu\RealEstate\Valuations\Application\UpdateValuation;
 use Liberu\RealEstate\Valuations\Models\Valuation;
@@ -101,5 +102,33 @@ final class ValuationController
         $data = $request->validate(['property_size' => ['required', 'numeric', 'gt:0'], 'bedrooms' => ['required', 'integer', 'min:0'], 'bathrooms' => ['required', 'integer', 'min:0'], 'year_built' => ['required', 'integer', 'min:1000'], 'property_type' => ['required', 'string', 'max:40'], 'condition' => ['required', 'string', 'max:40'], 'location' => ['required', 'string', 'max:40'], 'base_price' => ['sometimes', 'numeric', 'gt:0']]);
 
         return (new ValuationCalculationResource($calculate->handle((float) $data['property_size'], $data['bedrooms'], $data['bathrooms'], $data['year_built'], $data['property_type'], $data['condition'], $data['location'], (float) ($data['base_price'] ?? 3000))))->response();
+    }
+
+    public function calculateProperty(Request $request, GeneratePropertyValuation $calculate): JsonResponse
+    {
+        $data = $request->validate([
+            'property' => ['required', 'array'],
+            'property.area_sqft' => ['required', 'numeric', 'gt:0'],
+            'property.bedrooms' => ['required', 'integer', 'min:0'],
+            'property.bathrooms' => ['required', 'integer', 'min:0'],
+            'property.year_built' => ['required', 'integer', 'min:1000'],
+            'property.property_type' => ['required', 'string', 'max:40'],
+            'property.address' => ['sometimes', 'string', 'max:500'],
+            'property.location' => ['sometimes', 'string', 'max:255'],
+            'property.status' => ['sometimes', 'string', 'max:40'],
+            'property.price' => ['sometimes', 'nullable', 'numeric', 'min:0'],
+            'property.latitude' => ['sometimes', 'nullable', 'numeric', 'between:-90,90'],
+            'property.longitude' => ['sometimes', 'nullable', 'numeric', 'between:-180,180'],
+            'property.is_featured' => ['sometimes', 'boolean'],
+            'property.list_date' => ['sometimes', 'nullable', 'date'],
+            'comparables_count' => ['sometimes', 'integer', 'min:0', 'max:1000'],
+            'training_samples' => ['sometimes', 'integer', 'min:0', 'max:1000000'],
+        ]);
+
+        return (new ValuationCalculationResource($calculate->handle(
+            $data['property'],
+            (int) ($data['comparables_count'] ?? 0),
+            (int) ($data['training_samples'] ?? 0),
+        )))->response();
     }
 }

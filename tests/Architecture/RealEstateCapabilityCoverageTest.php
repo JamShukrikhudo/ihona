@@ -281,3 +281,32 @@ it('keeps Filament resources tenant-scoped and lifecycle-delegated', function ()
         expect(file_get_contents($pageFile))->toContain('handleRecordUpdate');
     }
 });
+
+it('keeps property valuation estimates connected across valuation adapters', function (): void {
+    $root = dirname(__DIR__, 2);
+    $core = file_get_contents("{$root}/modules/real-estate-valuations/src/Application/GeneratePropertyValuation.php");
+    $definition = file_get_contents("{$root}/modules/real-estate-valuations/src/Domain/ValuationsCapabilityDefinition.php");
+    $provider = file_get_contents("{$root}/modules/real-estate-valuations/src/ValuationsServiceProvider.php");
+    $api = file_get_contents("{$root}/modules/real-estate-valuations-api/src/Http/Controllers/ValuationController.php");
+    $routes = file_get_contents("{$root}/modules/real-estate-valuations-api/routes/api.php");
+    $openApi = file_get_contents("{$root}/modules/real-estate-valuations-api/openapi/v1/real-estate-valuations.yaml");
+    $livewire = file_get_contents("{$root}/modules/real-estate-valuations-livewire/src/Components/PropertyValuationEstimator.php");
+    $livewireProvider = file_get_contents("{$root}/modules/real-estate-valuations-livewire/src/ValuationsLivewireServiceProvider.php");
+    $filament = file_get_contents("{$root}/modules/real-estate-valuations-filament/src/Resources/ValuationResource.php");
+
+    expect($core)->toContain('public const MODEL_VERSION')
+        ->toContain("'estimated' => true")
+        ->toContain('featureImportance')
+        ->toContain('predictionFactors')
+        ->and($definition)->toContain('Property valuation estimates')
+        ->and($provider)->toContain('GeneratePropertyValuation')
+        ->and($api)->toContain('public function calculateProperty')
+        ->toContain('GeneratePropertyValuation')
+        ->and($routes)->toContain("'/calculate-property'")
+        ->and($openApi)->toContain('/api/v1/real-estate/valuations/calculate-property')
+        ->toContain('real.estate.valuations.calculateProperty')
+        ->and($livewire)->toContain('generateValuation')
+        ->and($livewireProvider)->toContain("property-valuation-estimator', Components\\PropertyValuationEstimator::class")
+        ->and($filament)->toContain("Action::make('property_estimate')")
+        ->toContain('GeneratePropertyValuation');
+});
