@@ -53,6 +53,14 @@ final class AdvancedPropertySearch extends Component
 
     public ?string $energyRating = null;
 
+    public ?int $minEnergyScore = null;
+
+    public ?int $minWalkabilityScore = null;
+
+    public ?int $minTransitScore = null;
+
+    public ?int $minBikeScore = null;
+
     /** @var array<int, string> */
     public array $selectedAmenities = [];
 
@@ -88,6 +96,10 @@ final class AdvancedPropertySearch extends Component
             'postalCode' => ['nullable', 'string', 'max:20'],
             'country' => ['nullable', 'string', 'size:2'],
             'energyRating' => ['nullable', 'string', 'max:10'],
+            'minEnergyScore' => ['nullable', 'integer', 'between:0,100'],
+            'minWalkabilityScore' => ['nullable', 'integer', 'between:0,100'],
+            'minTransitScore' => ['nullable', 'integer', 'between:0,100'],
+            'minBikeScore' => ['nullable', 'integer', 'between:0,100'],
             'selectedAmenities' => ['array', 'max:20'],
             'selectedAmenities.*' => ['string', 'max:80'],
             'latitude' => ['nullable', 'numeric', 'between:-90,90'],
@@ -122,6 +134,10 @@ final class AdvancedPropertySearch extends Component
                 ->where('property_template_id', $this->propertyTemplateId)
                 ->country($this->country)
                 ->energyRating($this->energyRating)
+                ->minEnergyScore($this->minEnergyScore)
+                ->walkabilityScore($this->minWalkabilityScore)
+                ->transitScore($this->minTransitScore)
+                ->bikeScore($this->minBikeScore)
                 ->hasAmenities($this->selectedAmenities)
                 ->when($this->latitude !== null && $this->longitude !== null && $this->radius !== null, fn ($query) => $query->nearby($this->latitude, $this->longitude, $this->radius))
                 ->when($this->featuredOnly, fn ($query) => $query->featured())

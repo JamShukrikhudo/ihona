@@ -38,6 +38,14 @@ final class PropertyList extends Component
 
     public bool $featuredOnly = false;
 
+    public ?int $minEnergyScore = null;
+
+    public ?int $minWalkabilityScore = null;
+
+    public ?int $minTransitScore = null;
+
+    public ?int $minBikeScore = null;
+
     /** @var array<int, array<string, mixed>> */
     public array $similarProperties = [];
 
@@ -112,6 +120,10 @@ final class PropertyList extends Component
                 ->priceRange($this->minPrice, $this->maxPrice)
                 ->bedrooms($this->minBedrooms, $this->maxBedrooms)
                 ->propertyType($this->propertyType)
+                ->minEnergyScore($this->minEnergyScore)
+                ->walkabilityScore($this->minWalkabilityScore)
+                ->transitScore($this->minTransitScore)
+                ->bikeScore($this->minBikeScore)
                 ->when($this->featuredOnly, fn ($query) => $query->featured())
                 ->latest()->paginate(20);
 

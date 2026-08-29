@@ -334,6 +334,26 @@ final class Property extends Model
         return $query->when($minimum !== null && $minimum !== '', fn (Builder $query): Builder => $query->where($column, '>=', $minimum));
     }
 
+    public function scopeMinEnergyScore(Builder $query, mixed $minimum): Builder
+    {
+        return $query->minimumScore('energy_score', $minimum);
+    }
+
+    public function scopeWalkabilityScore(Builder $query, mixed $minimum): Builder
+    {
+        return $query->minimumScore('walkability_score', $minimum);
+    }
+
+    public function scopeTransitScore(Builder $query, mixed $minimum): Builder
+    {
+        return $query->minimumScore('transit_score', $minimum);
+    }
+
+    public function scopeBikeScore(Builder $query, mixed $minimum): Builder
+    {
+        return $query->minimumScore('bike_score', $minimum);
+    }
+
     public function scopeFeatured(Builder $query): Builder
     {
         return $query->where('is_featured', true);
