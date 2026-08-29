@@ -22,6 +22,26 @@
     <input id="min-price" type="number" wire:model.live="minPrice" min="0">
     <label for="max-price">Maximum price</label>
     <input id="max-price" type="number" wire:model.live="maxPrice" min="0">
+    <label for="min-bedrooms">Minimum bedrooms</label>
+    <input id="min-bedrooms" type="number" wire:model.live="minBedrooms" min="0">
+    <label for="max-bedrooms">Maximum bedrooms</label>
+    <input id="max-bedrooms" type="number" wire:model.live="maxBedrooms" min="0">
+    <label for="min-bathrooms">Minimum bathrooms</label>
+    <input id="min-bathrooms" type="number" wire:model.live="minBathrooms" min="0">
+    <label for="max-bathrooms">Maximum bathrooms</label>
+    <input id="max-bathrooms" type="number" wire:model.live="maxBathrooms" min="0">
+    <label for="min-area">Minimum area</label>
+    <input id="min-area" type="number" wire:model.live="minArea" min="0">
+    <label for="max-area">Maximum area</label>
+    <input id="max-area" type="number" wire:model.live="maxArea" min="0">
+    <label for="min-year-built">Minimum year built</label>
+    <input id="min-year-built" type="number" wire:model.live="minYearBuilt" min="1066">
+    <label for="max-year-built">Maximum year built</label>
+    <input id="max-year-built" type="number" wire:model.live="maxYearBuilt" min="1066">
+    <label for="property-country">Country</label>
+    <input id="property-country" type="text" wire:model.live="country" maxlength="2">
+    <label for="energy-rating">Energy rating</label>
+    <input id="energy-rating" type="text" wire:model.live="energyRating" maxlength="10">
     <label for="min-energy-score">Minimum energy score</label>
     <input id="min-energy-score" type="number" wire:model.live="minEnergyScore" min="0" max="100">
     <label for="min-walkability-score">Minimum walkability score</label>
