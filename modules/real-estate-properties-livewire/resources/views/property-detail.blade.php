@@ -48,6 +48,24 @@
             @endif
         @endif
 
+        @if ($property->model3dUrl())
+            <section aria-label="3D property model">
+                <button type="button" wire:click="toggle3dModel">
+                    {{ $show3dModel ? 'Hide 3D model' : 'Show 3D model' }}
+                </button>
+                @if ($show3dModel)
+                    <model-viewer
+                        src="{{ $property->model3dUrl() }}"
+                        alt="3D model of {{ $property->title ?: $property->address }}"
+                        loading="lazy"
+                        camera-controls
+                        reveal="interaction"
+                        class="h-96 w-full"
+                    ></model-viewer>
+                @endif
+            </section>
+        @endif
+
         <button type="button" wire:click="toggleFavorite">{{ $isFavorited ? 'Unfavorite' : 'Favorite' }}</button>
         <button type="button" wire:click="requestViewing">Book a viewing</button>
     </article>

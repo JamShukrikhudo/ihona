@@ -19,6 +19,8 @@ final class PropertyDetail extends Component
 
     public bool $showVirtualTour = false;
 
+    public bool $show3dModel = false;
+
     public function mount(int|string $propertyId): void
     {
         $this->propertyId = $propertyId;
@@ -47,6 +49,11 @@ final class PropertyDetail extends Component
     public function toggleVirtualTour(): void
     {
         $this->showVirtualTour = ! $this->showVirtualTour;
+    }
+
+    public function toggle3dModel(): void
+    {
+        $this->show3dModel = ! $this->show3dModel;
     }
 
     public function render(): View
