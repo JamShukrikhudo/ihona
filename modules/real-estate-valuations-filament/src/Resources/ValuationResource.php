@@ -14,10 +14,12 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use Liberu\RealEstate\Valuations\Application\CompleteValuation;
 use Liberu\RealEstate\Valuations\Application\ConvertValuation;
 use Liberu\RealEstate\Valuations\Application\ScheduleValuation;
+use Liberu\RealEstate\Valuations\Application\GeneratePropertyValuation;
 use Liberu\RealEstate\Valuations\Domain\ValuationStatus;
 use Liberu\RealEstate\Valuations\Models\Valuation;
 use Liberu\RealEstate\ValuationsFilament\Resources\ValuationResource\Pages\CreateValuation;
@@ -60,6 +62,24 @@ final class ValuationResource extends Resource
                         app(ConvertValuation::class)->handle($record, auth()->user()->current_team_id, $data);
                     })
                     ->visible(fn (Valuation $record): bool => $record->status === ValuationStatus::Completed),
+                Action::make('property_estimate')
+                    ->label('Estimate property value')
+                    ->form([
+                        TextInput::make('area_sqft')->required()->numeric()->minValue(0.01),
+                        TextInput::make('bedrooms')->required()->numeric()->minValue(0),
+                        TextInput::make('bathrooms')->required()->numeric()->minValue(0),
+                        TextInput::make('year_built')->required()->numeric()->minValue(1000),
+                        TextInput::make('property_type')->required()->maxLength(40),
+                        TextInput::make('address')->maxLength(500),
+                        TextInput::make('comparables_count')->numeric()->minValue(0)->default(0),
+                    ])
+                    ->action(function (Valuation $record, array $data): void {
+                        $estimate = app(GeneratePropertyValuation::class)->handle($data, (int) ($data['comparables_count'] ?? 0));
+                        Notification::make()
+                            ->title('Estimated value: '.number_format((float) $estimate['estimated_value'], 2))
+                            ->warning()
+                            ->send();
+                    }),
                 DeleteAction::make(),
             ])->defaultSort('created_at', 'desc');
     }
