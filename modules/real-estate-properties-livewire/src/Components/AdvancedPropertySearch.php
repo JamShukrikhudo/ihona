@@ -16,6 +16,22 @@ final class AdvancedPropertySearch extends Component
 {
     use WithPagination;
 
+    protected $queryString = [
+        'search' => ['except' => ''],
+        'minPrice' => ['except' => null],
+        'maxPrice' => ['except' => null],
+        'minBedrooms' => ['except' => null],
+        'propertyType' => ['except' => null],
+        'sortBy' => ['except' => 'created_at'],
+        'energyRating' => ['except' => null],
+        'minEnergyScore' => ['except' => null],
+        'minWalkabilityScore' => ['except' => null],
+        'minTransitScore' => ['except' => null],
+        'minBikeScore' => ['except' => null],
+        'featuredOnly' => ['except' => false],
+        'country' => ['except' => null],
+    ];
+
     #[Validate('nullable|string|max:255')]
     public string $search = '';
 
