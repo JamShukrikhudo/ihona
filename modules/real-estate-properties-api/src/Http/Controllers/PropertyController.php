@@ -80,10 +80,10 @@ final class PropertyController
             ->energyRating($filters['energy_rating'] ?? null)
             ->when($filters['featured'] ?? false, fn ($query) => $query->featured())
             ->when($filters['favorites_only'] ?? false, fn ($query) => $query->favoritedBy($teamId, $request->user()->getAuthIdentifier()))
-            ->minimumScore('energy_score', $filters['min_energy_score'] ?? null)
-            ->minimumScore('walkability_score', $filters['min_walkability_score'] ?? null)
-            ->minimumScore('transit_score', $filters['min_transit_score'] ?? null)
-            ->minimumScore('bike_score', $filters['min_bike_score'] ?? null);
+            ->minEnergyScore($filters['min_energy_score'] ?? null)
+            ->walkabilityScore($filters['min_walkability_score'] ?? null)
+            ->transitScore($filters['min_transit_score'] ?? null)
+            ->bikeScore($filters['min_bike_score'] ?? null);
 
         return PropertyResource::collection($query->latest()->paginate($pageSize)->withQueryString())->response();
     }

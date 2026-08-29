@@ -139,6 +139,28 @@ it('centralizes property types and matches their stored casing consistently', fu
         ->and(Property::query()->forTeam(10)->propertyType('HOUSE')->pluck('id')->all())->toBe([$house->getKey()]);
 });
 
+it('preserves the legacy named property score scopes', function (): void {
+    $matching = app(CreateProperty::class)->handle(10, 20, [
+        'address' => '1 High Street',
+        'energy_score' => 90,
+        'walkability_score' => 80,
+        'transit_score' => 70,
+        'bike_score' => 60,
+    ]);
+    app(CreateProperty::class)->handle(10, 20, [
+        'address' => '2 Low Street',
+        'energy_score' => 50,
+        'walkability_score' => 50,
+        'transit_score' => 50,
+        'bike_score' => 50,
+    ]);
+
+    expect(Property::query()->forTeam(10)->minEnergyScore(90)->pluck('id')->all())->toBe([$matching->getKey()])
+        ->and(Property::query()->forTeam(10)->walkabilityScore(80)->pluck('id')->all())->toBe([$matching->getKey()])
+        ->and(Property::query()->forTeam(10)->transitScore(70)->pluck('id')->all())->toBe([$matching->getKey()])
+        ->and(Property::query()->forTeam(10)->bikeScore(60)->pluck('id')->all())->toBe([$matching->getKey()]);
+});
+
 it('supports legacy postal-prefix and stale-sync listing filters', function () {
     $stale = app(CreateProperty::class)->handle(10, 20, [
         'address' => '1 High Street',

@@ -13,6 +13,14 @@
         <input id="advanced-min-year-built" type="number" wire:model="minYearBuilt" min="{{ \Liberu\RealEstate\Properties\Models\Property::EARLIEST_YEAR_BUILT }}" max="{{ \Liberu\RealEstate\Properties\Models\Property::latestYearBuilt() }}">
         <label for="advanced-max-year-built">Latest build year</label>
         <input id="advanced-max-year-built" type="number" wire:model="maxYearBuilt" min="{{ \Liberu\RealEstate\Properties\Models\Property::EARLIEST_YEAR_BUILT }}" max="{{ \Liberu\RealEstate\Properties\Models\Property::latestYearBuilt() }}">
+        <label for="advanced-min-energy-score">Minimum energy score</label>
+        <input id="advanced-min-energy-score" type="number" wire:model="minEnergyScore" min="0" max="100">
+        <label for="advanced-min-walkability-score">Minimum walkability score</label>
+        <input id="advanced-min-walkability-score" type="number" wire:model="minWalkabilityScore" min="0" max="100">
+        <label for="advanced-min-transit-score">Minimum transit score</label>
+        <input id="advanced-min-transit-score" type="number" wire:model="minTransitScore" min="0" max="100">
+        <label for="advanced-min-bike-score">Minimum bike score</label>
+        <input id="advanced-min-bike-score" type="number" wire:model="minBikeScore" min="0" max="100">
         <label for="advanced-property-type">Property type</label>
         <select id="advanced-property-type" wire:model="propertyType">
             <option value="">Any property type</option>

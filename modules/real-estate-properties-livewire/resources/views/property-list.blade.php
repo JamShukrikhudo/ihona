@@ -22,6 +22,14 @@
     <input id="min-price" type="number" wire:model.live="minPrice" min="0">
     <label for="max-price">Maximum price</label>
     <input id="max-price" type="number" wire:model.live="maxPrice" min="0">
+    <label for="min-energy-score">Minimum energy score</label>
+    <input id="min-energy-score" type="number" wire:model.live="minEnergyScore" min="0" max="100">
+    <label for="min-walkability-score">Minimum walkability score</label>
+    <input id="min-walkability-score" type="number" wire:model.live="minWalkabilityScore" min="0" max="100">
+    <label for="min-transit-score">Minimum transit score</label>
+    <input id="min-transit-score" type="number" wire:model.live="minTransitScore" min="0" max="100">
+    <label for="min-bike-score">Minimum bike score</label>
+    <input id="min-bike-score" type="number" wire:model.live="minBikeScore" min="0" max="100">
     <label for="featured-only">
         <input id="featured-only" type="checkbox" wire:model.live="featuredOnly">
         Featured only

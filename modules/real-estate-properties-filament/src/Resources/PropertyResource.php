@@ -19,6 +19,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Notifications\Notification;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Liberu\RealEstate\Core\Models\Branch;
@@ -120,6 +121,20 @@ final class PropertyResource extends Resource
                 TextColumn::make('property_type')->label('Type')->searchable(),
                 TextColumn::make('status')->badge(),
                 TextColumn::make('created_at')->dateTime()->sortable(),
+            ])
+            ->filters([
+                Filter::make('minimum_scores')
+                    ->form([
+                        TextInput::make('energy_score')->numeric()->minValue(0)->maxValue(100),
+                        TextInput::make('walkability_score')->numeric()->minValue(0)->maxValue(100),
+                        TextInput::make('transit_score')->numeric()->minValue(0)->maxValue(100),
+                        TextInput::make('bike_score')->numeric()->minValue(0)->maxValue(100),
+                    ])
+                    ->query(fn (Builder $query, array $data): Builder => $query
+                        ->minEnergyScore($data['energy_score'] ?? null)
+                        ->walkabilityScore($data['walkability_score'] ?? null)
+                        ->transitScore($data['transit_score'] ?? null)
+                        ->bikeScore($data['bike_score'] ?? null)),
             ])
             ->recordActions([
                 EditAction::make(),
