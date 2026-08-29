@@ -130,6 +130,19 @@ it('preserves Livewire property filters in the URL', function (): void {
         ->toContain("'featuredOnly' => ['except' => false]");
 });
 
+it('keeps the API property response aligned with legacy listing data', function (): void {
+    $resource = file_get_contents(base_path('modules/real-estate-properties-api/src/Http/Resources/PropertyResource.php'));
+    $openApi = file_get_contents(base_path('modules/real-estate-properties-api/openapi/v1/real-estate-properties.yaml'));
+
+    foreach (['title', 'description', 'currency', 'reception_rooms', 'year_built', 'postal_code', 'energy_score', 'list_date', 'is_featured', 'ar_tour_enabled', 'insurance_expiry_date', 'rightmove_id', 'zoopla_id', 'onthemarket_id'] as $field) {
+        expect($resource)->toContain("'{$field}'");
+        expect($openApi)->toContain($field);
+    }
+
+    expect($openApi)->toContain("#/components/schemas/PropertyPage")
+        ->toContain("#/components/schemas/PropertyResponse");
+});
+
 it('keeps Filament resources tenant-scoped and lifecycle-delegated', function (): void {
     $root = dirname(__DIR__, 2);
 
