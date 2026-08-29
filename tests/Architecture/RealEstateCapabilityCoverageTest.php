@@ -234,6 +234,35 @@ it('keeps the property comparison contract tenant-scoped across core, API, and L
         ->and($provider)->toContain("property-comparison', Components\\PropertyComparison::class");
 });
 
+it('keeps property tax estimates available across the modular adapters', function (): void {
+    $core = file_get_contents(base_path('modules/real-estate-properties/src/Application/EstimatePropertyTax.php'));
+    $definition = file_get_contents(base_path('modules/real-estate-properties/src/Domain/PropertiesCapabilityDefinition.php'));
+    $api = file_get_contents(base_path('modules/real-estate-properties-api/src/Http/Controllers/PropertyController.php'));
+    $routes = file_get_contents(base_path('modules/real-estate-properties-api/routes/api.php'));
+    $openApi = file_get_contents(base_path('modules/real-estate-properties-api/openapi/v1/real-estate-properties.yaml'));
+    $component = file_get_contents(base_path('modules/real-estate-properties-livewire/src/Components/PropertyTaxEstimator.php'));
+    $view = file_get_contents(base_path('modules/real-estate-properties-livewire/resources/views/property-tax-estimator.blade.php'));
+    $provider = file_get_contents(base_path('modules/real-estate-properties-livewire/src/PropertiesLivewireServiceProvider.php'));
+    $filament = file_get_contents(base_path('modules/real-estate-properties-filament/src/Resources/PropertyResource.php'));
+
+    expect($core)->toContain('public const BUYER_TYPES')
+        ->toContain("'estimated' => true")
+        ->toContain('United Kingdom')
+        ->and($definition)->toContain('Property tax estimates')
+        ->and($api)->toContain('public function taxEstimate(Request $request, EstimatePropertyTax $estimate)')
+        ->toContain('purchase_price')
+        ->and($routes)->toContain("'/tax-estimate'")
+        ->and($openApi)->toContain('/api/v1/real-estate/properties/tax-estimate')
+        ->toContain('real.estate.properties.taxEstimate')
+        ->and($component)->toContain('forTeam($this->teamId())')
+        ->toContain('calculateTax')
+        ->and($view)->toContain('qualified adviser')
+        ->toContain('wire:click="calculateTax"')
+        ->and($provider)->toContain("property-tax-estimator', Components\\PropertyTaxEstimator::class")
+        ->and($filament)->toContain("Action::make('tax_estimate')")
+        ->toContain('EstimatePropertyTax');
+});
+
 it('keeps Filament resources tenant-scoped and lifecycle-delegated', function (): void {
     $root = dirname(__DIR__, 2);
 
