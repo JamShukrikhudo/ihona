@@ -12,6 +12,7 @@ use Liberu\RealEstate\Properties\Application\CreateProperty;
 use Liberu\RealEstate\Properties\Application\DeleteProperty;
 use Liberu\RealEstate\Properties\Application\RecordPropertyKey;
 use Liberu\RealEstate\Properties\Application\TransitionProperty;
+use Liberu\RealEstate\Properties\Application\TogglePropertyFavorite;
 use Liberu\RealEstate\Properties\Application\UpdateProperty;
 use Liberu\RealEstate\Properties\Application\UpsertPropertyUnit;
 use Liberu\RealEstate\Properties\Domain\PropertyStatus;
@@ -52,6 +53,7 @@ final class PropertyController
             'country' => ['sometimes', 'nullable', 'string', 'size:2'],
             'energy_rating' => ['sometimes', 'nullable', 'string', 'max:10'],
             'featured' => ['sometimes', 'boolean'],
+            'favorites_only' => ['sometimes', 'boolean'],
             'min_energy_score' => ['sometimes', 'nullable', 'integer', 'between:0,100'],
             'min_walkability_score' => ['sometimes', 'nullable', 'integer', 'between:0,100'],
             'min_transit_score' => ['sometimes', 'nullable', 'integer', 'between:0,100'],
@@ -74,6 +76,7 @@ final class PropertyController
             ->country($filters['country'] ?? null)
             ->energyRating($filters['energy_rating'] ?? null)
             ->when($filters['featured'] ?? false, fn ($query) => $query->featured())
+            ->when($filters['favorites_only'] ?? false, fn ($query) => $query->favoritedBy($teamId, $request->user()->getAuthIdentifier()))
             ->minimumScore('energy_score', $filters['min_energy_score'] ?? null)
             ->minimumScore('walkability_score', $filters['min_walkability_score'] ?? null)
             ->minimumScore('transit_score', $filters['min_transit_score'] ?? null)
@@ -157,6 +160,14 @@ final class PropertyController
         $property = $create->handle($user->current_team_id, $user->getAuthIdentifier(), $validated);
 
         return (new PropertyResource($property))->response()->setStatusCode(201);
+    }
+
+    public function favorite(Request $request, Property $property, TogglePropertyFavorite $toggle): JsonResponse
+    {
+        $user = $request->user();
+        abort_unless($user?->current_team_id === $property->team_id, 404);
+
+        return response()->json(['favorited' => $toggle->handle($property->team_id, $user->getAuthIdentifier(), $property->getKey())]);
     }
 
     public function show(Request $request, Property $property): JsonResponse

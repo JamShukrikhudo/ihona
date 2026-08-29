@@ -25,6 +25,9 @@
         @forelse ($properties as $property)
             <li wire:key="property-{{ $property->getKey() }}">
                 {{ $property->address }} ({{ $property->status->value }})
+                <button type="button" wire:click="toggleFavorite({{ $property->getKey() }})">
+                    {{ $property->favorites->contains(fn ($favorite) => (string) $favorite->user_id === (string) auth()->id()) ? 'Unfavorite' : 'Favorite' }}
+                </button>
                 @if ($property->isHmo())
                     <span aria-label="House in multiple occupation">HMO</span>
                 @endif

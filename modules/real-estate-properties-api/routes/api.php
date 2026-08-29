@@ -9,6 +9,7 @@ Route::prefix('api/v1/real-estate/properties')->middleware(['api', 'auth:sanctum
     Route::get('/', [PropertyController::class, 'index'])->name('real-estate.properties.index');
     Route::post('/', [PropertyController::class, 'store'])->name('real-estate.properties.store');
     Route::post('/{property}/transition/{status}', [PropertyController::class, 'transition'])->name('real-estate.properties.transition');
+    Route::post('/{property}/favorite', [PropertyController::class, 'favorite'])->name('real-estate.properties.favorite');
     Route::put('/{property}/units', [PropertyController::class, 'unit'])->name('real-estate.properties.units');
     Route::post('/{property}/keys', [PropertyController::class, 'key'])->name('real-estate.properties.keys');
     Route::get('/{property}', [PropertyController::class, 'show'])->name('real-estate.properties.show');

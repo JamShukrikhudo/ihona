@@ -64,6 +64,11 @@ final class Property extends Model
         return $this->hasMany(PropertyHistory::class, 'property_id');
     }
 
+    public function favorites(): HasMany
+    {
+        return $this->hasMany(PropertyFavorite::class);
+    }
+
     public function branch(): BelongsTo
     {
         return $this->belongsTo(Branch::class);
@@ -236,6 +241,13 @@ final class Property extends Model
     public function scopeCategory(Builder $query, int|string|null $category): Builder
     {
         return $query->when($category !== null && $category !== '', fn (Builder $query): Builder => $query->where('property_category_id', $category));
+    }
+
+    public function scopeFavoritedBy(Builder $query, int|string $teamId, int|string $userId): Builder
+    {
+        return $query->whereHas('favorites', fn (Builder $favorites): Builder => $favorites
+            ->where('team_id', $teamId)
+            ->where('user_id', $userId));
     }
 
     public function scopeCountry(Builder $query, ?string $country): Builder
