@@ -8,6 +8,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Liberu\RealEstate\Valuations\Application\CalculateComparables;
+use Liberu\RealEstate\Valuations\Application\CalculateMortgage;
 use Liberu\RealEstate\Valuations\Application\CalculateHomeValuation;
 use Liberu\RealEstate\Valuations\Application\CompleteValuation;
 use Liberu\RealEstate\Valuations\Application\ConvertValuation;
@@ -129,6 +130,23 @@ final class ValuationController
             $data['property'],
             (int) ($data['comparables_count'] ?? 0),
             (int) ($data['training_samples'] ?? 0),
+        )))->response();
+    }
+
+    public function calculateMortgage(Request $request, CalculateMortgage $calculate): JsonResponse
+    {
+        $data = $request->validate([
+            'property_price' => ['required', 'numeric', 'gt:0'],
+            'loan_amount' => ['required', 'numeric', 'gt:0', 'lte:property_price'],
+            'interest_rate' => ['required', 'numeric', 'between:0,100'],
+            'loan_term_years' => ['required', 'integer', 'between:1,50'],
+        ]);
+
+        return (new ValuationCalculationResource($calculate->handle(
+            (float) $data['property_price'],
+            (float) $data['loan_amount'],
+            (float) $data['interest_rate'],
+            (int) $data['loan_term_years'],
         )))->response();
     }
 }

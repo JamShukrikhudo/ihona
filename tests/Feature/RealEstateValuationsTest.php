@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Validation\ValidationException;
 use Liberu\RealEstate\Valuations\Application\CalculateComparables;
 use Liberu\RealEstate\Valuations\Application\CalculateHomeValuation;
+use Liberu\RealEstate\Valuations\Application\CalculateMortgage;
 use Liberu\RealEstate\Valuations\Application\GeneratePropertyValuation;
 use Liberu\RealEstate\Valuations\Application\CompleteValuation;
 use Liberu\RealEstate\Valuations\Application\ConvertValuation;
@@ -109,4 +110,45 @@ it('serves property valuation reports through the API and Livewire adapters', fu
         ->assertSet('valuation.method', 'explainable_heuristic')
         ->call('resetValuation')
         ->assertSet('valuation', null);
+});
+
+it('calculates amortization safely, including zero-interest loans', function (): void {
+    $calculate = app(CalculateMortgage::class);
+    $interestFree = $calculate->handle(240000, 120000, 0, 10);
+
+    expect($interestFree['estimated'])->toBeTrue()
+        ->and($interestFree['monthly_payment'])->toBe(1000.0)
+        ->and($interestFree['total_interest'])->toBe(0.0)
+        ->and($interestFree['loan_to_value'])->toBe(50.0)
+        ->and($interestFree['amortization_schedule'])->toHaveCount(120)
+        ->and($interestFree['amortization_schedule'][119]['balance'])->toBe(0.0)
+        ->and($interestFree['disclaimer'])->toContain('actual offers');
+
+    expect(fn () => $calculate->handle(240000, 250000, 5, 25))->toThrow(ValidationException::class);
+});
+
+it('serves mortgage estimates through the authenticated API and Livewire adapters', function (): void {
+    $user = User::factory()->create(['current_team_id' => 10]);
+    RateLimiter::for('api', static fn (): Limit => Limit::perMinute(1000));
+
+    $this->actingAs($user, 'sanctum')
+        ->postJson('/api/v1/real-estate/valuations/calculate-mortgage', [
+            'property_price' => 240000,
+            'loan_amount' => 120000,
+            'interest_rate' => 0,
+            'loan_term_years' => 10,
+        ])
+        ->assertOk()
+        ->assertJsonPath('data.estimated', true)
+        ->assertJsonPath('data.monthly_payment', 1000);
+
+    $this->actingAs($user);
+    Livewire::component('test-mortgage-calculator', \Liberu\RealEstate\ValuationsLivewire\Components\MortgageCalculator::class);
+
+    Livewire::test('test-mortgage-calculator', ['propertyPrice' => 240000, 'loanAmount' => 120000, 'interestRate' => 0, 'loanTermYears' => 10])
+        ->call('calculateMortgage')
+        ->assertSee('Mortgage estimate')
+        ->assertSet('result.monthly_payment', 1000)
+        ->call('resetCalculation')
+        ->assertSet('result', null);
 });
