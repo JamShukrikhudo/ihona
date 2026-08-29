@@ -32,6 +32,9 @@ final class PropertyController
             'search' => ['sometimes', 'nullable', 'string', 'max:255'],
             'postal_code' => ['sometimes', 'nullable', 'string', 'max:20'],
             'needs_syncing' => ['sometimes', 'boolean'],
+            'latitude' => ['sometimes', 'nullable', 'numeric', 'between:-90,90'],
+            'longitude' => ['sometimes', 'nullable', 'numeric', 'between:-180,180'],
+            'radius' => ['sometimes', 'nullable', 'numeric', 'gt:0', 'max:500'],
             'branch_id' => ['sometimes', 'nullable', 'integer', Rule::exists('real_estate_branches', 'id')->where('team_id', $teamId)],
             'min_price' => ['sometimes', 'nullable', 'numeric', 'min:0'],
             'max_price' => ['sometimes', 'nullable', 'numeric', 'min:0', 'gte:min_price'],
@@ -55,6 +58,7 @@ final class PropertyController
             ->search($filters['search'] ?? null)
             ->postalCode($filters['postal_code'] ?? null)
             ->when($filters['needs_syncing'] ?? false, fn ($query) => $query->needsSyncing())
+            ->when($filters['latitude'] !== null && $filters['longitude'] !== null && $filters['radius'] !== null, fn ($query) => $query->nearby($filters['latitude'], $filters['longitude'], $filters['radius']))
             ->when(array_key_exists('branch_id', $filters), fn ($query) => $query->where('branch_id', $filters['branch_id']))
             ->priceRange($filters['min_price'] ?? null, $filters['max_price'] ?? null)
             ->bedrooms($filters['min_bedrooms'] ?? null, $filters['max_bedrooms'] ?? null)

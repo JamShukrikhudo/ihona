@@ -90,6 +90,32 @@ final class Property extends Model
         return $query->when($postalCode !== '', fn (Builder $query): Builder => $query->where('postal_code', 'like', $postalCode.'%'));
     }
 
+    public function scopeNearby(Builder $query, float|int|string $latitude, float|int|string $longitude, float|int|string $radius): Builder
+    {
+        $latitude = (float) $latitude;
+        $longitude = (float) $longitude;
+        $radius = (float) $radius;
+
+        if ($latitude < -90 || $latitude > 90 || $longitude < -180 || $longitude > 180 || $radius <= 0) {
+            throw new \InvalidArgumentException('Nearby search coordinates and radius are invalid.');
+        }
+
+        $table = $query->getModel()->getTable();
+        $earthRadiusKilometers = 6371;
+        $latitudeLiteral = sprintf('%.8F', $latitude);
+        $longitudeLiteral = sprintf('%.8F', $longitude);
+        $radiusLiteral = sprintf('%.8F', $radius);
+        $distance = "($earthRadiusKilometers * acos(cos(radians($latitudeLiteral)) * cos(radians($table.latitude)) * cos(radians($table.longitude) - radians($longitudeLiteral)) + sin(radians($latitudeLiteral)) * sin(radians($table.latitude))))";
+
+        return $query
+            ->whereNotNull('latitude')
+            ->whereNotNull('longitude')
+            ->select($table.'.*')
+            ->selectRaw($distance.' as distance')
+            ->whereRaw($distance.' <= '.$radiusLiteral)
+            ->orderBy('distance');
+    }
+
     public function scopeNeedsSyncing(Builder $query): Builder
     {
         return $query->where(function (Builder $query): void {

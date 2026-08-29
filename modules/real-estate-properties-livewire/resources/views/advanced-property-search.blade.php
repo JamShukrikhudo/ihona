@@ -13,6 +13,12 @@
         <input id="advanced-property-type" type="text" wire:model="propertyType" maxlength="40">
         <label for="advanced-country">Country</label>
         <input id="advanced-country" type="text" wire:model="country" maxlength="2">
+        <label for="advanced-latitude">Latitude</label>
+        <input id="advanced-latitude" type="number" wire:model="latitude" min="-90" max="90" step="any">
+        <label for="advanced-longitude">Longitude</label>
+        <input id="advanced-longitude" type="number" wire:model="longitude" min="-180" max="180" step="any">
+        <label for="advanced-radius">Radius (km)</label>
+        <input id="advanced-radius" type="number" wire:model="radius" min="0.1" max="500" step="any">
         <label for="advanced-featured">
             <input id="advanced-featured" type="checkbox" wire:model="featuredOnly">
             Featured only

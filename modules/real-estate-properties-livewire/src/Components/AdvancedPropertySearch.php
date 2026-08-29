@@ -43,6 +43,12 @@ final class AdvancedPropertySearch extends Component
 
     public ?string $energyRating = null;
 
+    public ?float $latitude = null;
+
+    public ?float $longitude = null;
+
+    public ?float $radius = null;
+
     public bool $featuredOnly = false;
 
     public function updatedSearch(): void
@@ -65,6 +71,9 @@ final class AdvancedPropertySearch extends Component
             'postalCode' => ['nullable', 'string', 'max:20'],
             'country' => ['nullable', 'string', 'size:2'],
             'energyRating' => ['nullable', 'string', 'max:10'],
+            'latitude' => ['nullable', 'numeric', 'between:-90,90'],
+            'longitude' => ['nullable', 'numeric', 'between:-180,180'],
+            'radius' => ['nullable', 'numeric', 'gt:0', 'max:500'],
             'featuredOnly' => ['boolean'],
             'needsSyncingOnly' => ['boolean'],
         ]);
@@ -88,6 +97,7 @@ final class AdvancedPropertySearch extends Component
                 ->propertyType($this->propertyType)
                 ->country($this->country)
                 ->energyRating($this->energyRating)
+                ->when($this->latitude !== null && $this->longitude !== null && $this->radius !== null, fn ($query) => $query->nearby($this->latitude, $this->longitude, $this->radius))
                 ->when($this->featuredOnly, fn ($query) => $query->featured())
                 ->latest()->paginate(12);
 
