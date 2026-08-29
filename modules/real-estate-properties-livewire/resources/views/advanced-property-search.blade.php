@@ -28,6 +28,13 @@
                 <option value="{{ $type }}">{{ $label }}</option>
             @endforeach
         </select>
+        <label for="advanced-status">Status</label>
+        <select id="advanced-status" wire:model="status">
+            <option value="">Any status</option>
+            @foreach (['draft' => 'Draft', 'available' => 'Available', 'under_offer' => 'Under offer', 'sold' => 'Sold', 'let' => 'Let', 'withdrawn' => 'Withdrawn'] as $value => $label)
+                <option value="{{ $value }}">{{ $label }}</option>
+            @endforeach
+        </select>
         <label for="advanced-property-category">Category</label>
         <select id="advanced-property-category" wire:model="propertyCategoryId">
             <option value="">Any category</option>

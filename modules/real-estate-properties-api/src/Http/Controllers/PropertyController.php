@@ -54,6 +54,7 @@ final class PropertyController
             'property_template_id' => ['sometimes', 'nullable', 'integer', Rule::exists('real_estate_property_templates', 'id')->where('team_id', $teamId)],
             'country' => ['sometimes', 'nullable', 'string', 'size:2'],
             'energy_rating' => ['sometimes', 'nullable', 'string', 'max:10'],
+            'status' => ['sometimes', 'nullable', Rule::enum(PropertyStatus::class)],
             'featured' => ['sometimes', 'boolean'],
             'favorites_only' => ['sometimes', 'boolean'],
             'min_energy_score' => ['sometimes', 'nullable', 'integer', 'between:0,100'],
@@ -78,6 +79,7 @@ final class PropertyController
             ->category($filters['property_category_id'] ?? null)
             ->country($filters['country'] ?? null)
             ->energyRating($filters['energy_rating'] ?? null)
+            ->status($filters['status'] ?? null)
             ->when($filters['featured'] ?? false, fn ($query) => $query->featured())
             ->when($filters['favorites_only'] ?? false, fn ($query) => $query->favoritedBy($teamId, $request->user()->getAuthIdentifier()))
             ->minEnergyScore($filters['min_energy_score'] ?? null)

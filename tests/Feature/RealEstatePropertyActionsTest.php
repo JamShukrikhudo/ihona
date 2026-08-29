@@ -279,6 +279,16 @@ it('centralizes legacy build-year rules and filters properties by year range', f
         ->and($old->year_built)->toBe(1900);
 });
 
+it('filters properties by the modular lifecycle status vocabulary', function (): void {
+    $draft = app(CreateProperty::class)->handle(10, 20, ['address' => '1 Draft Street']);
+    $available = app(CreateProperty::class)->handle(10, 20, ['address' => '2 Available Street']);
+    app(TransitionProperty::class)->handle(10, 20, $available->getKey(), PropertyStatus::Available);
+
+    expect(Property::query()->forTeam(10)->status(PropertyStatus::Draft)->pluck('id')->all())->toBe([$draft->getKey()])
+        ->and(Property::query()->forTeam(10)->status('available')->pluck('id')->all())->toBe([$available->getKey()])
+        ->and(Property::query()->forTeam(10)->status(null)->count())->toBe(2);
+});
+
 it('supports tenant and user-scoped property favorites', function (): void {
     $property = app(CreateProperty::class)->handle(10, 20, ['address' => '1 High Street']);
     $otherUserProperty = app(CreateProperty::class)->handle(10, 21, ['address' => '2 High Street']);

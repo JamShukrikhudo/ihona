@@ -28,6 +28,8 @@ final class PropertyList extends Component
 
     public ?string $propertyType = null;
 
+    public ?string $status = null;
+
     public ?float $minPrice = null;
 
     public ?float $maxPrice = null;
@@ -142,6 +144,7 @@ final class PropertyList extends Component
                 ->areaRange($this->minArea, $this->maxArea)
                 ->yearBuiltRange($this->minYearBuilt, $this->maxYearBuilt)
                 ->propertyType($this->propertyType)
+                ->status($this->status)
                 ->hasAmenities($this->selectedAmenities)
                 ->country($this->country)
                 ->energyRating($this->energyRating)
