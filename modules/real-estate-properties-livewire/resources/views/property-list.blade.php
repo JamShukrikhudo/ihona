@@ -28,6 +28,9 @@
                 @if ($property->isHmo())
                     <span aria-label="House in multiple occupation">HMO</span>
                 @endif
+                @if ($property->hasActiveInsurance())
+                    <span aria-label="Active insurance">Insured</span>
+                @endif
                 @if ($property->hasVirtualTour())
                     <span aria-label="Virtual tour available">Virtual tour</span>
                 @endif
