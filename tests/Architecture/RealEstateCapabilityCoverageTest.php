@@ -107,6 +107,17 @@ it('keeps Livewire list surfaces validated and stateful', function (): void {
     }
 });
 
+it('keeps advanced Livewire search ordering bounded', function (): void {
+    $source = file_get_contents(base_path('modules/real-estate-properties-livewire/src/Components/AdvancedPropertySearch.php'));
+    $view = file_get_contents(base_path('modules/real-estate-properties-livewire/resources/views/advanced-property-search.blade.php'));
+
+    expect($source)->toContain('public string $sortBy = \'created_at\';')
+        ->toContain("'sortBy' => ['required', 'string', 'in:created_at,updated_at,price,year_built,bedrooms,bathrooms,area_sqft,address']")
+        ->toContain('->sorted($this->sortBy, $this->sortDirection)')
+        ->and($view)->toContain('advanced-sort-by')
+        ->toContain('advanced-sort-direction');
+});
+
 it('keeps Filament resources tenant-scoped and lifecycle-delegated', function (): void {
     $root = dirname(__DIR__, 2);
 

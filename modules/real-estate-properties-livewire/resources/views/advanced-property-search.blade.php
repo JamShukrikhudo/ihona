@@ -35,6 +35,17 @@
                 <option value="{{ $value }}">{{ $label }}</option>
             @endforeach
         </select>
+        <label for="advanced-sort-by">Sort by</label>
+        <select id="advanced-sort-by" wire:model.live="sortBy">
+            @foreach (['created_at' => 'Newest', 'updated_at' => 'Recently updated', 'price' => 'Price', 'year_built' => 'Year built', 'bedrooms' => 'Bedrooms', 'bathrooms' => 'Bathrooms', 'area_sqft' => 'Area', 'address' => 'Address'] as $value => $label)
+                <option value="{{ $value }}">{{ $label }}</option>
+            @endforeach
+        </select>
+        <label for="advanced-sort-direction">Sort direction</label>
+        <select id="advanced-sort-direction" wire:model.live="sortDirection">
+            <option value="desc">Descending</option>
+            <option value="asc">Ascending</option>
+        </select>
         <label for="advanced-property-category">Category</label>
         <select id="advanced-property-category" wire:model="propertyCategoryId">
             <option value="">Any category</option>
