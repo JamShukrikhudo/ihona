@@ -25,6 +25,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Liberu\RealEstate\Core\Models\Branch;
 use Liberu\RealEstate\Properties\Application\RecordPropertyKey;
+use Liberu\RealEstate\Properties\Application\EstimatePropertyTax;
 use Liberu\RealEstate\Properties\Application\TransitionProperty;
 use Liberu\RealEstate\Properties\Application\UpsertPropertyUnit;
 use Liberu\RealEstate\Properties\Domain\PropertyStatus;
@@ -162,6 +163,24 @@ final class PropertyResource extends Resource
                             ->success()
                             ->send();
                     }),
+                Action::make('tax_estimate')
+                    ->label('Estimate tax')
+                    ->form([
+                        Select::make('buyer_type')->options([
+                            'first_time_buyer' => 'First-time buyer',
+                            'home_mover' => 'Home mover',
+                            'additional_property' => 'Additional property',
+                        ])->required()->default('home_mover'),
+                        TextInput::make('country')->required()->maxLength(80)->default('GB'),
+                    ])
+                    ->action(function (Property $record, array $data): void {
+                        $estimate = app(EstimatePropertyTax::class)->handle((float) $record->price, (string) $data['country'], $data);
+                        Notification::make()
+                            ->title('Estimated tax: '.number_format((float) $estimate['total_tax'], 2))
+                            ->warning()
+                            ->send();
+                    })
+                    ->visible(fn (Property $record): bool => $record->price !== null),
                 Action::make('unit')->form([TextInput::make('label')->required()->maxLength(80), TextInput::make('bedrooms')->numeric()->minValue(0), TextInput::make('bathrooms')->numeric()->minValue(0), TextInput::make('area_sqft')->numeric()->minValue(0)])->action(fn (Property $record, array $data): mixed => app(UpsertPropertyUnit::class)->handle($record, (int) auth()->user()->current_team_id, $data)),
                 Action::make('key')->form([TextInput::make('key_reference')->required()->maxLength(80), TextInput::make('quantity')->numeric()->required()->minValue(1), Textarea::make('notes')])->action(fn (Property $record, array $data): mixed => app(RecordPropertyKey::class)->handle($record, (int) auth()->user()->current_team_id, $data)),
                 Action::make('available')

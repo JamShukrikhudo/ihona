@@ -10,6 +10,7 @@ use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
 use Liberu\RealEstate\Properties\Application\CreateProperty;
 use Liberu\RealEstate\Properties\Application\DeleteProperty;
+use Liberu\RealEstate\Properties\Application\EstimatePropertyTax;
 use Liberu\RealEstate\Properties\Application\RecordPropertyKey;
 use Liberu\RealEstate\Properties\Application\TransitionProperty;
 use Liberu\RealEstate\Properties\Application\TogglePropertyFavorite;
@@ -208,6 +209,25 @@ final class PropertyController
             ->map(fn (int $id): Property => $properties->get((string) $id));
 
         return PropertyResource::collection($ordered)->response();
+    }
+
+    public function taxEstimate(Request $request, EstimatePropertyTax $estimate): JsonResponse
+    {
+        $validated = $request->validate([
+            'purchase_price' => ['required', 'numeric', 'min:0'],
+            'country' => ['sometimes', 'string', 'max:80'],
+            'buyer_type' => ['sometimes', Rule::in(EstimatePropertyTax::BUYER_TYPES)],
+            'annual_tax_rate' => ['sometimes', 'numeric', 'min:0', 'max:1'],
+            'transfer_tax_rate' => ['sometimes', 'numeric', 'min:0', 'max:1'],
+            'tax_rate' => ['sometimes', 'numeric', 'min:0', 'max:1'],
+            'country_name' => ['sometimes', 'string', 'max:80'],
+        ]);
+
+        return response()->json($estimate->handle(
+            (float) $validated['purchase_price'],
+            (string) ($validated['country'] ?? 'UK'),
+            $validated,
+        ));
     }
 
     public function show(Request $request, Property $property): JsonResponse
