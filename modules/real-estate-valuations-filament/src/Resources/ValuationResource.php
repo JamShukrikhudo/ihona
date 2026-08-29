@@ -18,6 +18,7 @@ use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use Liberu\RealEstate\Valuations\Application\CompleteValuation;
 use Liberu\RealEstate\Valuations\Application\CalculateMortgage;
+use Liberu\RealEstate\Valuations\Application\CalculateRentalYield;
 use Liberu\RealEstate\Valuations\Application\ConvertValuation;
 use Liberu\RealEstate\Valuations\Application\ScheduleValuation;
 use Liberu\RealEstate\Valuations\Application\GeneratePropertyValuation;
@@ -93,6 +94,20 @@ final class ValuationResource extends Resource
                         $result = app(CalculateMortgage::class)->handle((float) $data['property_price'], (float) $data['loan_amount'], (float) $data['interest_rate'], (int) $data['loan_term_years']);
                         Notification::make()
                             ->title('Estimated payment: '.number_format((float) $result['monthly_payment'], 2).' per month')
+                            ->warning()
+                            ->send();
+                    }),
+                Action::make('rental_yield_estimate')
+                    ->label('Estimate rental yield')
+                    ->form([
+                        TextInput::make('property_value')->required()->numeric()->minValue(0.01),
+                        TextInput::make('annual_rental_income')->required()->numeric()->minValue(0),
+                        TextInput::make('annual_expenses')->numeric()->minValue(0)->default(0),
+                    ])
+                    ->action(function (array $data): void {
+                        $result = app(CalculateRentalYield::class)->handle((float) $data['property_value'], (float) $data['annual_rental_income'], (float) ($data['annual_expenses'] ?? 0));
+                        Notification::make()
+                            ->title('Estimated net yield: '.number_format((float) $result['net_yield'], 2).'%')
                             ->warning()
                             ->send();
                     }),
