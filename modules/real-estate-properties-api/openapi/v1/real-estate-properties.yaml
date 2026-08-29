@@ -50,6 +50,20 @@ paths:
                 buyer_type: {type: string, enum: [first_time_buyer, home_mover, additional_property]}
       responses:
         '200': {description: Estimated transaction costs; all figures are estimates}
+  /api/v1/real-estate/properties/favorites:
+    get:
+      operationId: real.estate.properties.favorites
+      security: [{sanctum: []}]
+      parameters:
+        - {name: search, in: query, schema: {type: string}}
+        - {name: sort_by, in: query, schema: {type: string, enum: [created_at, updated_at, price, year_built, bedrooms, bathrooms, area_sqft, address]}}
+        - {name: sort_direction, in: query, schema: {type: string, enum: [asc, desc]}}
+      responses: {'200': {description: Paginated saved properties}}
+  /api/v1/real-estate/properties/favorites/{id}:
+    delete:
+      operationId: real.estate.properties.favoriteRemove
+      security: [{sanctum: []}]
+      responses: {'200': {description: Favorite removed}}
   /api/v1/real-estate/properties/{id}:
     get:
       operationId: real.estate.properties.get

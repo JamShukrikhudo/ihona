@@ -13,6 +13,8 @@ final class PropertiesServiceProvider extends ServiceProvider
         $this->app->singleton(Application\CreateProperty::class);
         $this->app->singleton(Application\UpsertPropertyUnit::class);
         $this->app->singleton(Application\RecordPropertyKey::class);
+        $this->app->singleton(Application\TogglePropertyFavorite::class);
+        $this->app->singleton(Application\RemovePropertyFavorite::class);
     }
 
     public function boot(): void

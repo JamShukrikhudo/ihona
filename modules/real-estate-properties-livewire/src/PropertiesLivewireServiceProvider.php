@@ -17,6 +17,7 @@ final class PropertiesLivewireServiceProvider extends ServiceProvider
         Livewire::component('module-real-estate-properties::property-detail', Components\PropertyDetail::class);
         Livewire::component('module-real-estate-properties::property-comparison', Components\PropertyComparison::class);
         Livewire::component('module-real-estate-properties::property-tax-estimator', Components\PropertyTaxEstimator::class);
+        Livewire::component('module-real-estate-properties::wishlist-manager', Components\WishlistManager::class);
         Livewire::component('real-estate-properties-list', Components\PropertyList::class);
     }
 }
