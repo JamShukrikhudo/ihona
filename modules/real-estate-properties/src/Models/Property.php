@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Liberu\RealEstate\Core\Models\Branch;
 use Liberu\RealEstate\Properties\Domain\PropertyStatus;
+use Liberu\RealEstate\Properties\Domain\PropertyGalleryItem;
 
 final class Property extends Model
 {
@@ -294,6 +295,29 @@ final class Property extends Model
                 'source' => 'Property record',
             ],
         ];
+    }
+
+    /** @param array<int, array{url?: string|null, kind?: string|null, caption?: string|null, staged?: bool}> $mediaItems */
+    public function galleryItems(array $mediaItems = []): array
+    {
+        $kindOrder = ['photograph' => 0, 'floor plan' => 1, 'site plan' => 2];
+        $items = collect($mediaItems)
+            ->filter(fn (array $item): bool => filled($item['url'] ?? null) && isset($kindOrder[$item['kind'] ?? '']))
+            ->map(fn (array $item): PropertyGalleryItem => new PropertyGalleryItem(
+                url: (string) $item['url'],
+                kind: (string) $item['kind'],
+                caption: filled($item['caption'] ?? null) ? (string) $item['caption'] : null,
+                staged: (bool) ($item['staged'] ?? false),
+            ));
+
+        if ($items->doesntContain(fn (PropertyGalleryItem $item): bool => $item->kind === 'floor plan')) {
+            $fallback = $this->floor_plan_image ?: data_get($this->floor_plan_data, 'image');
+            if (is_string($fallback) && filter_var($fallback, FILTER_VALIDATE_URL)) {
+                $items->push(new PropertyGalleryItem(url: $fallback, kind: 'floor plan'));
+            }
+        }
+
+        return $items->sortBy(fn (PropertyGalleryItem $item): int => $kindOrder[$item->kind])->values()->all();
     }
 
     private function virtualTourEmbed(): ?string

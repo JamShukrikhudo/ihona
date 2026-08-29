@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Liberu\RealEstate\PropertiesLivewire\Components;
 
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Schema;
+use Liberu\RealEstate\MediaAndDocuments\Models\MediaDocument;
 use Liberu\RealEstate\Properties\Application\TogglePropertyFavorite;
 use Liberu\RealEstate\Properties\Models\Property;
 use Livewire\Component;
@@ -54,7 +56,30 @@ final class PropertyDetail extends Component
         return view('real-estate-properties-livewire::property-detail', [
             'property' => $property,
             'facts' => $property->disclosureFacts(),
+            'gallery' => $property->galleryItems($this->mediaItems($property)),
         ]);
+    }
+
+    /** @return array<int, array{url?: string|null, kind?: string|null, caption?: string|null, staged?: bool}> */
+    private function mediaItems(Property $property): array
+    {
+        if (! Schema::hasTable('real_estate_media_documents')) {
+            return [];
+        }
+
+        return MediaDocument::query()
+            ->forTeam($property->team_id)
+            ->where('property_id', $property->getKey())
+            ->whereIn('kind', ['photo', 'floorplan', 'siteplan'])
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->get()
+            ->map(fn (MediaDocument $document): array => [
+                'url' => $document->publicUrl(),
+                'kind' => $document->galleryKind(),
+                'caption' => $document->title,
+                'staged' => (bool) data_get($document->metadata, 'staged', false),
+            ])->all();
     }
 
     private function property(): Property

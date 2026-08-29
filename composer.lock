@@ -8712,9 +8712,10 @@
             "dist": {
                 "type": "path",
                 "url": "modules/real-estate-properties-livewire",
-                "reference": "88d79835ecd9e7ea83e6b5717749c72a98a64e17"
+                "reference": "9083a989c12e57dab98d84d6cb2792185a528a48"
             },
             "require": {
+                "liberusoftware/real-estate-media-and-documents": "^1.0",
                 "liberusoftware/real-estate-properties": "^1.0",
                 "livewire/livewire": "^4.0",
                 "php": "^8.5"

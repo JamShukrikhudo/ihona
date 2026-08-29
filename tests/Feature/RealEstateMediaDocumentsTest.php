@@ -58,3 +58,18 @@ it('generates escaped brochure data and HTML from trusted property fields', func
         ->and($brochure['html'])->toContain('&lt;Home&gt;')
         ->and($brochure['html'])->not->toContain('<h1><Home>');
 });
+
+it('supports site-plan gallery media and only accepts explicit public URLs', function (): void {
+    $document = app(CreateMediaDocument::class)->handle(1, 5, [
+        'kind' => 'SITEPLAN',
+        'path' => 'properties/1/site-plan.png',
+        'metadata' => ['public_url' => 'https://cdn.example.test/site-plan.png'],
+    ]);
+
+    expect($document->galleryKind())->toBe('site plan')
+        ->and($document->publicUrl())->toBe('https://cdn.example.test/site-plan.png');
+
+    $document->update(['metadata' => ['public_url' => 'not-a-url']]);
+
+    expect($document->publicUrl())->toBeNull();
+});

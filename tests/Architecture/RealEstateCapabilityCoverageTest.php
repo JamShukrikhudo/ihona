@@ -191,7 +191,25 @@ it('keeps the property detail disclosure contract across adapters', function ():
         ->and($view)->toContain('Property facts')
         ->toContain('Book a viewing')
         ->and($filament)->toContain("label('Price / sq ft')")
-        ->toContain("label('Days listed')");
+        ->toContain("label('Days listed')")
+        ->toContain("label('Floor plan')");
+});
+
+it('keeps the property gallery contract connected to the media boundary', function (): void {
+    $property = file_get_contents(base_path('modules/real-estate-properties/src/Models/Property.php'));
+    $galleryItem = file_get_contents(base_path('modules/real-estate-properties/src/Domain/PropertyGalleryItem.php'));
+    $detail = file_get_contents(base_path('modules/real-estate-properties-livewire/src/Components/PropertyDetail.php'));
+    $media = file_get_contents(base_path('modules/real-estate-media-and-documents/src/Models/MediaDocument.php'));
+    $mediaCreate = file_get_contents(base_path('modules/real-estate-media-and-documents/src/Application/CreateMediaDocument.php'));
+
+    expect($property)->toContain('public function galleryItems(array $mediaItems = []): array')
+        ->and($galleryItem)->toContain('public function alt(): string')
+        ->toContain('public function isPlan(): bool')
+        ->and($detail)->toContain('MediaDocument::query()')
+        ->toContain("whereIn('kind', ['photo', 'floorplan', 'siteplan'])")
+        ->and($media)->toContain('public const GALLERY_KINDS')
+        ->toContain('public function publicUrl(): ?string')
+        ->and($mediaCreate)->toContain("'siteplan'");
 });
 
 it('keeps Filament resources tenant-scoped and lifecycle-delegated', function (): void {
