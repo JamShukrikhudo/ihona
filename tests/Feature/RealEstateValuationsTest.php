@@ -9,6 +9,7 @@ use Illuminate\Validation\ValidationException;
 use Liberu\RealEstate\Valuations\Application\CalculateComparables;
 use Liberu\RealEstate\Valuations\Application\CalculateHomeValuation;
 use Liberu\RealEstate\Valuations\Application\CalculateMortgage;
+use Liberu\RealEstate\Valuations\Application\CalculateRentalYield;
 use Liberu\RealEstate\Valuations\Application\GeneratePropertyValuation;
 use Liberu\RealEstate\Valuations\Application\CompleteValuation;
 use Liberu\RealEstate\Valuations\Application\ConvertValuation;
@@ -149,6 +150,44 @@ it('serves mortgage estimates through the authenticated API and Livewire adapter
         ->call('calculateMortgage')
         ->assertSee('Mortgage estimate')
         ->assertSet('result.monthly_payment', 1000)
+        ->call('resetCalculation')
+        ->assertSet('result', null);
+});
+
+it('calculates estimate-only rental yields', function (): void {
+    $result = app(CalculateRentalYield::class)->handle(200000, 24000, 6000);
+
+    expect($result['estimated'])->toBeTrue()
+        ->and($result['gross_yield'])->toBe(12.0)
+        ->and($result['net_yield'])->toBe(9.0)
+        ->and($result['expense_ratio'])->toBe(3.0)
+        ->and($result['net_annual_income'])->toBe(18000.0)
+        ->and($result['disclaimer'])->toContain('not fully modelled');
+
+    expect(fn () => app(CalculateRentalYield::class)->handle(0, 24000))->toThrow(ValidationException::class);
+});
+
+it('serves rental yield estimates through the authenticated API and Livewire adapters', function (): void {
+    $user = User::factory()->create(['current_team_id' => 10]);
+    RateLimiter::for('api', static fn (): Limit => Limit::perMinute(1000));
+
+    $this->actingAs($user, 'sanctum')
+        ->postJson('/api/v1/real-estate/valuations/calculate-rental-yield', [
+            'property_value' => 200000,
+            'annual_rental_income' => 24000,
+            'annual_expenses' => 6000,
+        ])
+        ->assertOk()
+        ->assertJsonPath('data.estimated', true)
+        ->assertJsonPath('data.net_yield', 9);
+
+    $this->actingAs($user);
+    Livewire::component('test-rental-yield-calculator', \Liberu\RealEstate\ValuationsLivewire\Components\RentalYieldCalculator::class);
+
+    Livewire::test('test-rental-yield-calculator', ['propertyValue' => 200000, 'annualRentalIncome' => 24000, 'annualExpenses' => 6000])
+        ->call('calculateRentalYield')
+        ->assertSee('Rental yield estimate')
+        ->assertSet('result.net_yield', 9)
         ->call('resetCalculation')
         ->assertSet('result', null);
 });

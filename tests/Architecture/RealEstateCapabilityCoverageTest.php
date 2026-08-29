@@ -368,3 +368,27 @@ it('keeps mortgage estimates connected across valuation adapters', function (): 
         ->and($filament)->toContain("Action::make('mortgage_estimate')")
         ->toContain('CalculateMortgage');
 });
+
+it('keeps rental yield estimates connected across valuation adapters', function (): void {
+    $root = dirname(__DIR__, 2);
+    $core = file_get_contents("{$root}/modules/real-estate-valuations/src/Application/CalculateRentalYield.php");
+    $definition = file_get_contents("{$root}/modules/real-estate-valuations/src/Domain/ValuationsCapabilityDefinition.php");
+    $api = file_get_contents("{$root}/modules/real-estate-valuations-api/src/Http/Controllers/ValuationController.php");
+    $routes = file_get_contents("{$root}/modules/real-estate-valuations-api/routes/api.php");
+    $openApi = file_get_contents("{$root}/modules/real-estate-valuations-api/openapi/v1/real-estate-valuations.yaml");
+    $livewire = file_get_contents("{$root}/modules/real-estate-valuations-livewire/src/Components/RentalYieldCalculator.php");
+    $livewireProvider = file_get_contents("{$root}/modules/real-estate-valuations-livewire/src/ValuationsLivewireServiceProvider.php");
+    $filament = file_get_contents("{$root}/modules/real-estate-valuations-filament/src/Resources/ValuationResource.php");
+
+    expect($core)->toContain('class CalculateRentalYield')
+        ->toContain('gross_yield')->toContain('net_yield')->toContain('disclaimer')
+        ->and($definition)->toContain('Rental yield estimates')
+        ->and($api)->toContain('public function calculateRentalYield')->toContain('CalculateRentalYield')
+        ->and($routes)->toContain("'/calculate-rental-yield'")
+        ->and($openApi)->toContain('/api/v1/real-estate/valuations/calculate-rental-yield')
+        ->toContain('real.estate.valuations.calculateRentalYield')
+        ->and($livewire)->toContain('calculateRentalYield')
+        ->and($livewireProvider)->toContain("rental-yield-calculator', Components\\RentalYieldCalculator::class")
+        ->and($filament)->toContain("Action::make('rental_yield_estimate')")
+        ->toContain('CalculateRentalYield');
+});

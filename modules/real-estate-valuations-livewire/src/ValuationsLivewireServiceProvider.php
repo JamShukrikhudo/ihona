@@ -15,5 +15,7 @@ final class ValuationsLivewireServiceProvider extends ServiceProvider
         Livewire::component('module-real-estate-valuations::valuation-list', Components\ValuationList::class);
         Livewire::component('module-real-estate-valuations::property-valuation-estimator', Components\PropertyValuationEstimator::class);
         Livewire::component('module-real-estate-valuations::mortgage-calculator', Components\MortgageCalculator::class);
+        Livewire::component('module-real-estate-valuations::rental-yield-calculator', Components\RentalYieldCalculator::class);
+        Livewire::component('module-real-estate-valuations::rental-yield-calculator', Components\RentalYieldCalculator::class);
     }
 }

@@ -25,5 +25,6 @@ final class ValuationsServiceProvider extends ServiceProvider
         $this->app->singleton(Application\CalculateHomeValuation::class);
         $this->app->singleton(Application\GeneratePropertyValuation::class);
         $this->app->singleton(Application\CalculateMortgage::class);
+        $this->app->singleton(Application\CalculateRentalYield::class);
     }
 }
