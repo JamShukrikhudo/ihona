@@ -186,6 +186,30 @@ final class PropertyController
         return PropertyResource::collection($property->similarProperties($limit))->response();
     }
 
+    public function compare(Request $request): JsonResponse
+    {
+        $teamId = $request->user()?->current_team_id;
+        abort_unless($teamId !== null, 403);
+
+        $validated = $request->validate([
+            'property_ids' => ['required', 'array', 'min:2', 'max:4'],
+            'property_ids.*' => ['integer', 'distinct'],
+        ]);
+
+        $properties = Property::query()
+            ->forTeam($teamId)
+            ->whereIn('id', $validated['property_ids'])
+            ->get()
+            ->keyBy(fn (Property $property): string => (string) $property->getKey());
+
+        abort_unless($properties->count() === count($validated['property_ids']), 404);
+
+        $ordered = collect($validated['property_ids'])
+            ->map(fn (int $id): Property => $properties->get((string) $id));
+
+        return PropertyResource::collection($ordered)->response();
+    }
+
     public function show(Request $request, Property $property): JsonResponse
     {
         abort_unless($request->user()?->current_team_id === $property->team_id, 404);

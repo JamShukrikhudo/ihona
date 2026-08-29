@@ -262,6 +262,24 @@ final class Property extends Model
         return round((float) $this->price / (float) $this->area_sqft, 2);
     }
 
+    /** @return array<string, mixed> */
+    public function comparisonData(): array
+    {
+        return [
+            'id' => $this->getKey(),
+            'title' => $this->title ?: $this->address,
+            'address' => $this->address,
+            'price' => $this->price,
+            'currency' => $this->currency,
+            'bedrooms' => $this->bedrooms,
+            'bathrooms' => $this->bathrooms,
+            'area_sqft' => $this->area_sqft,
+            'year_built' => $this->year_built,
+            'property_type' => $this->property_type,
+            'status' => $this->status?->value,
+        ];
+    }
+
     /** @return array<string, array{label: string, value: int|float|string|null, source: string}> */
     public function disclosureFacts(): array
     {
