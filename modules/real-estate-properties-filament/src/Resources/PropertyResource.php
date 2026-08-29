@@ -26,6 +26,7 @@ use Liberu\RealEstate\Properties\Application\TransitionProperty;
 use Liberu\RealEstate\Properties\Application\UpsertPropertyUnit;
 use Liberu\RealEstate\Properties\Domain\PropertyStatus;
 use Liberu\RealEstate\Properties\Models\Property;
+use Liberu\RealEstate\Properties\Models\PropertyCategory;
 use Liberu\RealEstate\PropertiesFilament\Resources\PropertyResource\Pages\CreateProperty;
 use Liberu\RealEstate\PropertiesFilament\Resources\PropertyResource\Pages\EditProperty;
 use Liberu\RealEstate\PropertiesFilament\Resources\PropertyResource\Pages\ListProperties;
@@ -70,6 +71,11 @@ final class PropertyResource extends Resource
                 'villa' => 'Villa',
                 'hmo' => 'HMO',
             ])->required(),
+            Select::make('property_category_id')
+                ->label('Category')
+                ->options(fn (): array => PropertyCategory::query()->forTeam(auth()->user()?->current_team_id ?? 0)->orderBy('name')->pluck('name', 'id')->all())
+                ->searchable()
+                ->nullable(),
             TextInput::make('postal_code')->maxLength(20),
             TextInput::make('country')->length(2),
             TextInput::make('tenure')->maxLength(40),

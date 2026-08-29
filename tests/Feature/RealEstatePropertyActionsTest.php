@@ -11,6 +11,7 @@ use Liberu\RealEstate\Properties\Application\UpdateProperty;
 use Liberu\RealEstate\Properties\Application\UpsertPropertyUnit;
 use Liberu\RealEstate\Properties\Domain\PropertyStatus;
 use Liberu\RealEstate\Properties\Models\Property;
+use Liberu\RealEstate\Properties\Models\PropertyCategory;
 
 it('updates team properties and retains a change history', function () {
     expect(Schema::hasTable('real_estate_properties'))->toBeTrue();
@@ -170,6 +171,26 @@ it('supports legacy all-of amenity filtering through the modular JSON feature se
     $results = Property::query()->forTeam(10)->hasAmenities(['garden', 'parking'])->get();
 
     expect($results->pluck('id')->all())->toBe([$matching->getKey()]);
+});
+
+it('supports tenant-scoped property categories and category filtering', function (): void {
+    $category = PropertyCategory::query()->create([
+        'team_id' => 10,
+        'name' => 'Investment Homes',
+        'slug' => 'investment-homes',
+    ]);
+    $matching = app(CreateProperty::class)->handle(10, 20, [
+        'address' => '1 High Street',
+        'property_category_id' => $category->getKey(),
+    ]);
+    app(CreateProperty::class)->handle(11, 21, ['address' => '2 Low Street']);
+
+    expect($matching->category->is($category))->toBeTrue()
+        ->and(Property::query()->forTeam(10)->category($category->getKey())->pluck('id')->all())->toBe([$matching->getKey()])
+        ->and(fn () => app(CreateProperty::class)->handle(11, 21, [
+            'address' => '3 Other Street',
+            'property_category_id' => $category->getKey(),
+        ]))->toThrow(ValidationException::class);
 });
 
 it('validates legacy property tour helpers and walkability freshness', function () {

@@ -63,6 +63,11 @@ final class Property extends Model
         return $this->belongsTo(Branch::class);
     }
 
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(PropertyCategory::class, 'property_category_id');
+    }
+
     public function scopeForTeam(Builder $query, int|string $teamId): Builder
     {
         return $query->where('team_id', $teamId);
@@ -215,6 +220,11 @@ final class Property extends Model
     public function scopePropertyType(Builder $query, ?string $type): Builder
     {
         return $query->when(filled($type), fn (Builder $query): Builder => $query->where('property_type', $type));
+    }
+
+    public function scopeCategory(Builder $query, int|string|null $category): Builder
+    {
+        return $query->when($category !== null && $category !== '', fn (Builder $query): Builder => $query->where('property_category_id', $category));
     }
 
     public function scopeCountry(Builder $query, ?string $country): Builder

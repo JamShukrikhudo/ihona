@@ -47,6 +47,7 @@ final class PropertyController
             'min_area' => ['sometimes', 'nullable', 'numeric', 'min:0'],
             'max_area' => ['sometimes', 'nullable', 'numeric', 'min:0', 'gte:min_area'],
             'property_type' => ['sometimes', 'nullable', 'string', 'max:40'],
+            'property_category_id' => ['sometimes', 'nullable', 'integer', Rule::exists('real_estate_property_categories', 'id')->where('team_id', $teamId)],
             'country' => ['sometimes', 'nullable', 'string', 'size:2'],
             'energy_rating' => ['sometimes', 'nullable', 'string', 'max:10'],
             'featured' => ['sometimes', 'boolean'],
@@ -68,6 +69,7 @@ final class PropertyController
             ->bathrooms($filters['min_bathrooms'] ?? null, $filters['max_bathrooms'] ?? null)
             ->areaRange($filters['min_area'] ?? null, $filters['max_area'] ?? null)
             ->propertyType($filters['property_type'] ?? null)
+            ->category($filters['property_category_id'] ?? null)
             ->country($filters['country'] ?? null)
             ->energyRating($filters['energy_rating'] ?? null)
             ->when($filters['featured'] ?? false, fn ($query) => $query->featured())
@@ -139,6 +141,7 @@ final class PropertyController
             'insurance_expiry_date' => ['sometimes', 'nullable', 'date'],
             'jupix_id' => ['sometimes', 'nullable', 'string', 'max:255'],
             'property_type' => ['sometimes', 'string', 'max:40'],
+            'property_category_id' => ['sometimes', 'nullable', 'integer', Rule::exists('real_estate_property_categories', 'id')->where('team_id', $request->user()?->current_team_id)],
             'characteristics' => ['sometimes', 'array'],
             'utilities' => ['sometimes', 'array'],
             'features' => ['sometimes', 'array'],
@@ -221,6 +224,7 @@ final class PropertyController
             'insurance_expiry_date' => ['sometimes', 'nullable', 'date'],
             'jupix_id' => ['sometimes', 'nullable', 'string', 'max:255'],
             'property_type' => ['sometimes', 'string', 'max:40'],
+            'property_category_id' => ['sometimes', 'nullable', 'integer', Rule::exists('real_estate_property_categories', 'id')->where('team_id', $request->user()?->current_team_id)],
             'characteristics' => ['sometimes', 'array'],
             'utilities' => ['sometimes', 'array'],
             'features' => ['sometimes', 'array'],

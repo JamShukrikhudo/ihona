@@ -2,7 +2,7 @@
     "$schema": "https://schemas.liberu.dev/module/v1.json",
     "name": "real-estate-properties",
     "display_name": "Real Estate Properties",
-    "description": "Address, units, characteristics, tenure, utilities, features, status, history, and keys.",
+    "description": "Address, categories, units, characteristics, tenure, utilities, features, status, history, and keys.",
     "version": "1.0.1",
     "category": "product",
     "provider": "Liberu\\RealEstate\\Properties\\PropertiesServiceProvider",
@@ -23,6 +23,6 @@
     "capabilities": ["real-estate.properties"],
     "default_enabled": true,
     "features": [
-        "Address/location", "Units", "Characteristics", "Tenure", "Utilities", "Features", "Status", "History", "Keys"
+        "Address/location", "Categories", "Units", "Characteristics", "Tenure", "Utilities", "Features", "Status", "History", "Keys"
     ]
 }

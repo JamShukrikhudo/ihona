@@ -6,6 +6,7 @@ namespace Liberu\RealEstate\PropertiesLivewire\Components;
 
 use Illuminate\Contracts\View\View;
 use Liberu\RealEstate\Properties\Models\Property;
+use Liberu\RealEstate\Properties\Models\PropertyCategory;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -39,6 +40,8 @@ final class AdvancedPropertySearch extends Component
 
     public ?string $propertyType = null;
 
+    public ?int $propertyCategoryId = null;
+
     public ?string $country = null;
 
     public ?string $energyRating = null;
@@ -71,6 +74,7 @@ final class AdvancedPropertySearch extends Component
             'minArea' => ['nullable', 'numeric', 'min:0'],
             'maxArea' => ['nullable', 'numeric', 'min:0', 'gte:minArea'],
             'propertyType' => ['nullable', 'string', 'max:40'],
+            'propertyCategoryId' => ['nullable', 'integer', 'exists:real_estate_property_categories,id'],
             'postalCode' => ['nullable', 'string', 'max:20'],
             'country' => ['nullable', 'string', 'size:2'],
             'energyRating' => ['nullable', 'string', 'max:10'],
@@ -89,6 +93,7 @@ final class AdvancedPropertySearch extends Component
     public function render(): View
     {
         $teamId = auth()->user()?->current_team_id;
+        $categories = $teamId === null ? collect() : PropertyCategory::query()->forTeam($teamId)->orderBy('name')->get();
         $properties = $teamId === null
             ? Property::query()->whereRaw('1 = 0')->paginate(12)
             : Property::query()->forTeam($teamId)
@@ -100,6 +105,7 @@ final class AdvancedPropertySearch extends Component
                 ->bathrooms($this->minBathrooms, $this->maxBathrooms)
                 ->areaRange($this->minArea, $this->maxArea)
                 ->propertyType($this->propertyType)
+                ->category($this->propertyCategoryId)
                 ->country($this->country)
                 ->energyRating($this->energyRating)
                 ->hasAmenities($this->selectedAmenities)
@@ -107,6 +113,6 @@ final class AdvancedPropertySearch extends Component
                 ->when($this->featuredOnly, fn ($query) => $query->featured())
                 ->latest()->paginate(12);
 
-        return view('real-estate-properties-livewire::advanced-property-search', compact('properties'));
+        return view('real-estate-properties-livewire::advanced-property-search', compact('properties', 'categories'));
     }
 }

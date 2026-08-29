@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Liberu\RealEstate\PropertiesApi\Http\Controllers\PropertyController;
+use Liberu\RealEstate\PropertiesApi\Http\Controllers\PropertyCategoryController;
 
 Route::prefix('api/v1/real-estate/properties')->middleware(['api', 'auth:sanctum', 'throttle:api', 'api.idempotency'])->group(function (): void {
     Route::get('/', [PropertyController::class, 'index'])->name('real-estate.properties.index');
@@ -12,4 +13,11 @@ Route::prefix('api/v1/real-estate/properties')->middleware(['api', 'auth:sanctum
     Route::get('/{property}', [PropertyController::class, 'show'])->name('real-estate.properties.show');
     Route::match(['put', 'patch'], '/{property}', [PropertyController::class, 'update'])->name('real-estate.properties.update');
     Route::delete('/{property}', [PropertyController::class, 'destroy'])->name('real-estate.properties.destroy');
+});
+
+Route::prefix('api/v1/real-estate/property-categories')->middleware(['api', 'auth:sanctum', 'throttle:api', 'api.idempotency'])->group(function (): void {
+    Route::get('/', [PropertyCategoryController::class, 'index'])->name('real-estate.property-categories.index');
+    Route::post('/', [PropertyCategoryController::class, 'store'])->name('real-estate.property-categories.store');
+    Route::match(['put', 'patch'], '/{category}', [PropertyCategoryController::class, 'update'])->name('real-estate.property-categories.update');
+    Route::delete('/{category}', [PropertyCategoryController::class, 'destroy'])->name('real-estate.property-categories.destroy');
 });
