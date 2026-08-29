@@ -36,6 +36,25 @@ final class PropertyList extends Component
 
     public ?int $maxBedrooms = null;
 
+    public ?int $minBathrooms = null;
+
+    public ?int $maxBathrooms = null;
+
+    public ?float $minArea = null;
+
+    public ?float $maxArea = null;
+
+    public ?int $minYearBuilt = null;
+
+    public ?int $maxYearBuilt = null;
+
+    /** @var array<int, string> */
+    public array $selectedAmenities = [];
+
+    public ?string $country = null;
+
+    public ?string $energyRating = null;
+
     public bool $featuredOnly = false;
 
     public ?int $minEnergyScore = null;
@@ -119,7 +138,13 @@ final class PropertyList extends Component
                 ->when($this->needsSyncingOnly, fn ($query) => $query->needsSyncing())
                 ->priceRange($this->minPrice, $this->maxPrice)
                 ->bedrooms($this->minBedrooms, $this->maxBedrooms)
+                ->bathrooms($this->minBathrooms, $this->maxBathrooms)
+                ->areaRange($this->minArea, $this->maxArea)
+                ->yearBuiltRange($this->minYearBuilt, $this->maxYearBuilt)
                 ->propertyType($this->propertyType)
+                ->hasAmenities($this->selectedAmenities)
+                ->country($this->country)
+                ->energyRating($this->energyRating)
                 ->minEnergyScore($this->minEnergyScore)
                 ->walkabilityScore($this->minWalkabilityScore)
                 ->transitScore($this->minTransitScore)
