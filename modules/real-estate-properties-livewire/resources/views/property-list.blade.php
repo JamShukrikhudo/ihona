@@ -2,6 +2,12 @@
     <div wire:loading class="text-sm text-gray-500" role="status">Loading properties…</div>
     <label for="property-search">Search properties</label>
     <input id="property-search" type="search" wire:model.live="search" autocomplete="off">
+    <label for="property-postal-code">Postal code</label>
+    <input id="property-postal-code" type="text" wire:model.live="postalCode" maxlength="20" autocomplete="postal-code">
+    <label for="needs-syncing-only">
+        <input id="needs-syncing-only" type="checkbox" wire:model.live="needsSyncingOnly">
+        Needs syncing
+    </label>
     @if ($error)
         <p role="alert">{{ $error }}</p>
     @endif

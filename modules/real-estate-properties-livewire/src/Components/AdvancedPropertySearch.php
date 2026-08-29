@@ -17,6 +17,10 @@ final class AdvancedPropertySearch extends Component
     #[Validate('nullable|string|max:255')]
     public string $search = '';
 
+    public ?string $postalCode = null;
+
+    public bool $needsSyncingOnly = false;
+
     public ?float $minPrice = null;
 
     public ?float $maxPrice = null;
@@ -58,9 +62,11 @@ final class AdvancedPropertySearch extends Component
             'minArea' => ['nullable', 'numeric', 'min:0'],
             'maxArea' => ['nullable', 'numeric', 'min:0', 'gte:minArea'],
             'propertyType' => ['nullable', 'string', 'max:40'],
+            'postalCode' => ['nullable', 'string', 'max:20'],
             'country' => ['nullable', 'string', 'size:2'],
             'energyRating' => ['nullable', 'string', 'max:10'],
             'featuredOnly' => ['boolean'],
+            'needsSyncingOnly' => ['boolean'],
         ]);
 
         $this->resetPage();
@@ -73,6 +79,8 @@ final class AdvancedPropertySearch extends Component
             ? Property::query()->whereRaw('1 = 0')->paginate(12)
             : Property::query()->forTeam($teamId)
                 ->search($this->search)
+                ->postalCode($this->postalCode)
+                ->when($this->needsSyncingOnly, fn ($query) => $query->needsSyncing())
                 ->priceRange($this->minPrice, $this->maxPrice)
                 ->bedrooms($this->minBedrooms, $this->maxBedrooms)
                 ->bathrooms($this->minBathrooms, $this->maxBathrooms)

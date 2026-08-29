@@ -21,6 +21,10 @@ final class PropertyList extends Component
     #[Validate('nullable|string|max:255')]
     public string $search = '';
 
+    public ?string $postalCode = null;
+
+    public bool $needsSyncingOnly = false;
+
     public ?string $propertyType = null;
 
     public ?float $minPrice = null;
@@ -80,6 +84,8 @@ final class PropertyList extends Component
             ? collect()
             : Property::query()->forTeam($teamId)
                 ->search($this->search)
+                ->postalCode($this->postalCode)
+                ->when($this->needsSyncingOnly, fn ($query) => $query->needsSyncing())
                 ->priceRange($this->minPrice, $this->maxPrice)
                 ->bedrooms($this->minBedrooms, $this->maxBedrooms)
                 ->propertyType($this->propertyType)

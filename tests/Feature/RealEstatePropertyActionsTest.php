@@ -121,6 +121,24 @@ it('provides reusable bounded listing filters for every presentation adapter', f
         ->and($results->first()->title)->toBe('Featured family home');
 });
 
+it('supports legacy postal-prefix and stale-sync listing filters', function () {
+    $stale = app(CreateProperty::class)->handle(10, 20, [
+        'address' => '1 High Street',
+        'postal_code' => 'SW1A 1AA',
+        'last_synced_at' => now()->subDay(),
+    ]);
+    $current = app(CreateProperty::class)->handle(10, 20, [
+        'address' => '2 High Street',
+        'postal_code' => 'SW1B 2BB',
+        'last_synced_at' => now()->addMinute(),
+    ]);
+
+    $results = Property::query()->forTeam(10)->postalCode('SW1A')->needsSyncing()->get();
+
+    expect($results->pluck('id')->all())->toBe([$stale->getKey()])
+        ->and(Property::query()->forTeam(10)->postalCode('SW1B')->needsSyncing()->count())->toBe(0);
+});
+
 it('requires explicit property lifecycle transitions and records status history', function () {
     $property = app(CreateProperty::class)->handle(10, 20, ['address' => '1 High Street']);
     $transition = app(TransitionProperty::class);
