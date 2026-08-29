@@ -11,6 +11,20 @@
     @if ($error)
         <p role="alert">{{ $error }}</p>
     @endif
+    <p aria-live="polite">{{ method_exists($properties, 'total') ? $properties->total() : 0 }} properties found.</p>
+    @if ($this->appliedFilters() !== [])
+        <section aria-label="Applied property filters">
+            <ul>
+                @foreach ($this->appliedFilters() as $filter => $label)
+                    <li wire:key="applied-filter-{{ $filter }}">
+                        {{ $label }}
+                        <button type="button" wire:click="clearFilter('{{ $filter }}')">Clear</button>
+                    </li>
+                @endforeach
+            </ul>
+            <button type="button" wire:click="clearFilters">Clear all filters</button>
+        </section>
+    @endif
     <label for="property-type">Property type</label>
     <select id="property-type" wire:model.live="propertyType">
         <option value="">Any property type</option>

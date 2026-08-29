@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Liberu\RealEstate\PropertiesLivewire\Components;
 
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Builder;
 use Liberu\RealEstate\Properties\Application\RecordPropertyKey;
 use Liberu\RealEstate\Properties\Application\TransitionProperty;
 use Liberu\RealEstate\Properties\Application\TogglePropertyFavorite;
@@ -134,7 +135,89 @@ final class PropertyList extends Component
         $propertyTypes = Property::TYPES;
         $properties = $teamId === null
             ? collect()
-            : Property::query()->forTeam($teamId)
+            : $this->buildQuery()->latest()->paginate(20);
+
+        return view('real-estate-properties-livewire::property-list', ['properties' => $properties, 'propertyTypes' => $propertyTypes]);
+    }
+
+    public function resultCount(): int
+    {
+        return $this->buildQuery()->count();
+    }
+
+    /** @return array<string, string> */
+    public function appliedFilters(): array
+    {
+        $applied = [];
+
+        if (filled($this->search)) {
+            $applied['search'] = '“'.$this->search.'”';
+        }
+
+        foreach ([
+            'propertyType' => 'Property type', 'status' => 'Status',
+            'country' => 'Country', 'energyRating' => 'Energy rating',
+        ] as $property => $label) {
+            if (filled($this->{$property})) {
+                $applied[$property] = $label.': '.$this->{$property};
+            }
+        }
+
+        foreach ([
+            'minPrice' => 'Minimum price', 'maxPrice' => 'Maximum price',
+            'minBedrooms' => 'Minimum bedrooms', 'maxBedrooms' => 'Maximum bedrooms',
+            'minBathrooms' => 'Minimum bathrooms', 'maxBathrooms' => 'Maximum bathrooms',
+            'minArea' => 'Minimum area', 'maxArea' => 'Maximum area',
+            'minYearBuilt' => 'Minimum year built', 'maxYearBuilt' => 'Maximum year built',
+            'minEnergyScore' => 'Minimum energy score', 'minWalkabilityScore' => 'Minimum walkability score',
+            'minTransitScore' => 'Minimum transit score', 'minBikeScore' => 'Minimum bike score',
+        ] as $property => $label) {
+            if ($this->{$property} !== null && $this->{$property} !== '') {
+                $applied[$property] = $label.': '.$this->{$property};
+            }
+        }
+
+        if ($this->selectedAmenities !== []) {
+            $applied['selectedAmenities'] = 'Amenities: '.count($this->selectedAmenities);
+        }
+
+        if ($this->needsSyncingOnly) {
+            $applied['needsSyncingOnly'] = 'Needs syncing';
+        }
+
+        if ($this->featuredOnly) {
+            $applied['featuredOnly'] = 'Featured only';
+        }
+
+        return $applied;
+    }
+
+    public function clearFilter(string $filter): void
+    {
+        if (! array_key_exists($filter, $this->appliedFilters())) {
+            return;
+        }
+
+        $this->{$filter} = match ($filter) {
+            'selectedAmenities' => [],
+            'needsSyncingOnly', 'featuredOnly' => false,
+            default => null,
+        };
+        $this->resetPage();
+    }
+
+    public function clearFilters(): void
+    {
+        foreach (array_keys($this->appliedFilters()) as $filter) {
+            $this->clearFilter($filter);
+        }
+    }
+
+    private function buildQuery(): Builder
+    {
+        $teamId = auth()->user()?->current_team_id;
+
+        return Property::query()->forTeam($teamId ?? 0)
                 ->search($this->search)
                 ->postalCode($this->postalCode)
                 ->when($this->needsSyncingOnly, fn ($query) => $query->needsSyncing())
@@ -152,10 +235,7 @@ final class PropertyList extends Component
                 ->walkabilityScore($this->minWalkabilityScore)
                 ->transitScore($this->minTransitScore)
                 ->bikeScore($this->minBikeScore)
-                ->when($this->featuredOnly, fn ($query) => $query->featured())
-                ->latest()->paginate(20);
-
-        return view('real-estate-properties-livewire::property-list', ['properties' => $properties, 'propertyTypes' => $propertyTypes]);
+                ->when($this->featuredOnly, fn (Builder $query): Builder => $query->featured());
     }
 
     private function transition(int $propertyId, PropertyStatus $status, TransitionProperty $transition): void
