@@ -327,6 +327,13 @@ final class Property extends Model
         return $query->when(filled($rating), fn (Builder $query): Builder => $query->where('energy_rating', strtoupper((string) $rating)));
     }
 
+    public function scopeStatus(Builder $query, PropertyStatus|string|null $status): Builder
+    {
+        $value = $status instanceof PropertyStatus ? $status->value : $status;
+
+        return $query->when(filled($value), fn (Builder $query): Builder => $query->where('status', $value));
+    }
+
     public function scopeMinimumScore(Builder $query, string $column, mixed $minimum): Builder
     {
         abort_unless(in_array($column, ['energy_score', 'walkability_score', 'transit_score', 'bike_score'], true), 400);

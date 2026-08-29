@@ -45,6 +45,8 @@ final class AdvancedPropertySearch extends Component
 
     public ?string $propertyType = null;
 
+    public ?string $status = null;
+
     public ?int $propertyCategoryId = null;
 
     public ?int $propertyTemplateId = null;
@@ -91,6 +93,7 @@ final class AdvancedPropertySearch extends Component
             'minYearBuilt' => ['nullable', ...Property::yearBuiltRules()],
             'maxYearBuilt' => ['nullable', ...Property::yearBuiltRules(), 'gte:minYearBuilt'],
             'propertyType' => ['nullable', 'string', 'max:40'],
+            'status' => ['nullable', 'string', 'in:draft,available,under_offer,sold,let,withdrawn'],
             'propertyCategoryId' => ['nullable', 'integer', 'exists:real_estate_property_categories,id'],
             'propertyTemplateId' => ['nullable', 'integer', 'exists:real_estate_property_templates,id'],
             'postalCode' => ['nullable', 'string', 'max:20'],
@@ -130,6 +133,7 @@ final class AdvancedPropertySearch extends Component
                 ->areaRange($this->minArea, $this->maxArea)
                 ->yearBuiltRange($this->minYearBuilt, $this->maxYearBuilt)
                 ->propertyType($this->propertyType)
+                ->status($this->status)
                 ->category($this->propertyCategoryId)
                 ->where('property_template_id', $this->propertyTemplateId)
                 ->country($this->country)

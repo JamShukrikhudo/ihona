@@ -18,6 +18,13 @@
             <option value="{{ $type }}">{{ $label }}</option>
         @endforeach
     </select>
+    <label for="property-status">Status</label>
+    <select id="property-status" wire:model.live="status">
+        <option value="">Any status</option>
+        @foreach (['draft' => 'Draft', 'available' => 'Available', 'under_offer' => 'Under offer', 'sold' => 'Sold', 'let' => 'Let', 'withdrawn' => 'Withdrawn'] as $value => $label)
+            <option value="{{ $value }}">{{ $label }}</option>
+        @endforeach
+    </select>
     <label for="min-price">Minimum price</label>
     <input id="min-price" type="number" wire:model.live="minPrice" min="0">
     <label for="max-price">Maximum price</label>
