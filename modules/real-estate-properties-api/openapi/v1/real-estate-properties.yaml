@@ -9,13 +9,61 @@ paths:
     get:
       operationId: real.estate.properties.list
       security: [{sanctum: []}]
+      parameters:
+        - {name: latitude, in: query, schema: {type: number, minimum: -90, maximum: 90}}
+        - {name: longitude, in: query, schema: {type: number, minimum: -180, maximum: 180}}
+        - {name: radius, in: query, schema: {type: number, exclusiveMinimum: 0, maximum: 500, description: Radius in kilometres}}
+        - {name: status, in: query, schema: {type: string, enum: [draft, available, under_offer, sold, let, withdrawn]}}
+        - {name: property_template_id, in: query, schema: {type: integer, minimum: 1, nullable: true}}
+        - {name: sort_by, in: query, schema: {type: string, enum: [created_at, updated_at, price, year_built, bedrooms, bathrooms, area_sqft, address]}}
+        - {name: sort_direction, in: query, schema: {type: string, enum: [asc, desc], default: desc}}
+        - {name: amenities[], in: query, style: form, explode: true, schema: {type: array, maxItems: 20, items: {type: string, maxLength: 80}}}
       responses:
-        '200': {description: Authorized paginated properties}
+        '200': {description: Authorized paginated properties, content: {application/json: {schema: {$ref: '#/components/schemas/PropertyPage'}}}}
     post:
       operationId: real.estate.properties.create
       security: [{sanctum: []}]
       responses:
         '201': {description: Property created}
+  /api/v1/real-estate/properties/compare:
+    get:
+      operationId: real.estate.properties.compare
+      security: [{sanctum: []}]
+      parameters:
+        - {name: property_ids[], in: query, required: true, style: form, explode: true, schema: {type: array, minItems: 2, maxItems: 4, uniqueItems: true, items: {type: integer, minimum: 1}}}
+      responses:
+        '200': {description: Authorized properties in requested comparison order}
+  /api/v1/real-estate/properties/tax-estimate:
+    post:
+      operationId: real.estate.properties.taxEstimate
+      security: [{sanctum: []}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [purchase_price]
+              properties:
+                purchase_price: {type: number, minimum: 0}
+                country: {type: string, default: UK}
+                buyer_type: {type: string, enum: [first_time_buyer, home_mover, additional_property]}
+      responses:
+        '200': {description: Estimated transaction costs; all figures are estimates}
+  /api/v1/real-estate/properties/favorites:
+    get:
+      operationId: real.estate.properties.favorites
+      security: [{sanctum: []}]
+      parameters:
+        - {name: search, in: query, schema: {type: string}}
+        - {name: sort_by, in: query, schema: {type: string, enum: [created_at, updated_at, price, year_built, bedrooms, bathrooms, area_sqft, address]}}
+        - {name: sort_direction, in: query, schema: {type: string, enum: [asc, desc]}}
+      responses: {'200': {description: Paginated saved properties}}
+  /api/v1/real-estate/properties/favorites/{id}:
+    delete:
+      operationId: real.estate.properties.favoriteRemove
+      security: [{sanctum: []}]
+      responses: {'200': {description: Favorite removed}}
   /api/v1/real-estate/properties/{id}:
     get:
       operationId: real.estate.properties.get
@@ -23,10 +71,23 @@ paths:
       parameters:
         - {name: id, in: path, required: true, schema: {type: string}}
       responses:
-        '200': {description: Authorized property}
+        '200': {description: Authorized property, content: {application/json: {schema: {$ref: '#/components/schemas/PropertyResponse'}}}}
+    patch: {operationId: real.estate.properties.update, responses: {'200': {description: Updated property}}}
+    delete: {operationId: real.estate.properties.delete, responses: {'204': {description: Archived property}}}
+  /api/v1/real-estate/properties/{id}/transition/{status}:
+    post: {operationId: real.estate.properties.transition, responses: {'200': {description: Transitioned property}}}
+  /api/v1/real-estate/properties/{id}/units:
+    put: {operationId: real.estate.properties.units.upsert, responses: {'200': {description: Upserted property unit}}}
+  /api/v1/real-estate/properties/{id}/keys:
+    post: {operationId: real.estate.properties.keys.create, responses: {'201': {description: Recorded property key}}}
 components:
   securitySchemes:
     sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}
   schemas:
     Error: {type: object, required: [message], properties: {message: {type: string}, code: {type: string}, errors: {type: object, additionalProperties: true}}}
     PaginationMeta: {type: object, required: [current_page, per_page, total, last_page], properties: {current_page: {type: integer}, per_page: {type: integer}, total: {type: integer}, last_page: {type: integer}}}
+    LegacyPropertyMetadata: {type: object, properties: {created_by: {type: integer}, energy_rating_date: {type: string, format: date, nullable: true}, walkability_description: {type: string, nullable: true}, transit_description: {type: string, nullable: true}, bike_description: {type: string, nullable: true}, walkability_updated_at: {type: string, format: date-time, nullable: true}, live_tour_available: {type: boolean}, ar_tour_enabled: {type: boolean}, ar_tour_settings: {type: object, nullable: true}, ar_placement_guide: {type: string, nullable: true}, ar_model_scale: {type: number, nullable: true}, holographic_metadata: {type: object, nullable: true}, rightmove_id: {type: string, nullable: true}, zoopla_id: {type: string, nullable: true}, onthemarket_id: {type: string, nullable: true}, jupix_id: {type: string, nullable: true}, internal_notes: {type: string, nullable: true}, council_tax_band: {type: string, nullable: true}}}
+    Property: {type: object, properties: {id: {type: integer}, team_id: {type: integer}, branch_id: {type: integer, nullable: true}, address: {type: string}, title: {type: string, nullable: true}, description: {type: string, nullable: true}, status: {type: string}, property_type: {type: string}, price: {type: number, nullable: true}, currency: {type: string, nullable: true}, bedrooms: {type: integer, nullable: true}, bathrooms: {type: integer, nullable: true}, reception_rooms: {type: integer, nullable: true}, area_sqft: {type: number, nullable: true}, year_built: {type: integer, nullable: true}, structured_address: {type: object, nullable: true}, parking: {type: object, nullable: true}, gardens: {type: object, nullable: true}, postal_code: {type: string, nullable: true}, country: {type: string, nullable: true}, tenure: {type: string, nullable: true}, lease_years_remaining: {type: integer, nullable: true}, service_charge: {type: number, nullable: true}, ground_rent: {type: number, nullable: true}, energy_rating: {type: string, nullable: true}, energy_score: {type: integer, nullable: true}, epc: {type: object, nullable: true}, walkability_score: {type: integer, nullable: true}, transit_score: {type: integer, nullable: true}, bike_score: {type: integer, nullable: true}, features: {type: array, items: {}}, characteristics: {type: object, nullable: true}, utilities: {type: object, nullable: true}, is_featured: {type: boolean}, virtual_tour_url: {type: string, nullable: true}, virtual_tour_provider: {type: string, nullable: true}, model_3d_url: {type: string, nullable: true}, holographic_tour_url: {type: string, nullable: true}, holographic_provider: {type: string, nullable: true}, holographic_enabled: {type: boolean}, floor_plan_data: {type: object, nullable: true}, floor_plan_image: {type: string, nullable: true}, latitude: {type: number, nullable: true}, longitude: {type: number, nullable: true}, list_date: {type: string, format: date, nullable: true}, sold_date: {type: string, format: date, nullable: true}, published_at: {type: string, format: date-time, nullable: true}, last_synced_at: {type: string, format: date-time, nullable: true}, description_generated_at: {type: string, format: date-time, nullable: true}, insurance_policy_id: {type: integer, nullable: true}, insurance_coverage_amount: {type: number, nullable: true}, insurance_premium: {type: number, nullable: true}, insurance_expiry_date: {type: string, format: date, nullable: true}, is_hmo: {type: boolean}, has_active_insurance: {type: boolean}, days_listed: {type: integer, minimum: 0, nullable: true}, price_per_square_foot: {type: number, minimum: 0, nullable: true}, disclosure_facts: {type: object, additionalProperties: true}, gallery: {type: array, items: {type: object, properties: {url: {type: string, format: uri}, kind: {type: string, enum: [photograph, floor plan, site plan]}, caption: {type: string, nullable: true}, staged: {type: boolean}}}}, is_favorited: {type: boolean}, created_at: {type: string, format: date-time}, updated_at: {type: string, format: date-time}}}
+    PropertyResponse: {type: object, properties: {data: {$ref: '#/components/schemas/Property'}}}
+    PropertyWithLegacyMetadata: {allOf: [{$ref: '#/components/schemas/Property'}, {$ref: '#/components/schemas/LegacyPropertyMetadata'}]}
+    PropertyPage: {type: object, properties: {data: {type: array, items: {$ref: '#/components/schemas/PropertyWithLegacyMetadata'}}, meta: {$ref: '#/components/schemas/PaginationMeta'}}}

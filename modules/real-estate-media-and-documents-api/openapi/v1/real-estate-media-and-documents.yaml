@@ -12,11 +12,19 @@ paths:
     post:
       operationId: real.estate.media.and.documents.create
       responses: {"201": {description: Created media or document}}
+  /api/v1/real-estate/media-and-documents/brochure:
+    post: {operationId: real.estate.media.and.documents.brochure, responses: {"200": {description: Generated brochure data and HTML}}}
   /api/v1/real-estate/media-and-documents/{id}:
     parameters: [{name: id, in: path, required: true, schema: {type: string}}]
     get: {operationId: real.estate.media.and.documents.get, responses: {"200": {description: Resource}}}
     patch: {operationId: real.estate.media.and.documents.update, responses: {"200": {description: Updated resource}}}
     delete: {operationId: real.estate.media.and.documents.delete, responses: {"204": {description: Deleted resource}}}
+  /api/v1/real-estate/media-and-documents/{id}/rights:
+    patch: {operationId: real.estate.media.and.documents.updateRights, responses: {"200": {description: Updated rights}}}
+  /api/v1/real-estate/media-and-documents/{id}/reorder:
+    patch: {operationId: real.estate.media.and.documents.reorder, responses: {"200": {description: Updated ordering}}}
+  /api/v1/real-estate/media-and-documents/{id}/retention:
+    patch: {operationId: real.estate.media.and.documents.retention, responses: {"200": {description: Updated retention}}}
 components:
   securitySchemes:
     sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}

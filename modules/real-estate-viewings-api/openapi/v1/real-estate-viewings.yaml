@@ -6,6 +6,15 @@ paths:
   /api/v1/real-estate/viewings:
     get: {operationId: real.estate.viewings.list, responses: {"200": {description: Authorized viewings}}}
     post: {operationId: real.estate.viewings.create, responses: {"201": {description: Created viewing}}}
+  /api/v1/real-estate/viewings/availability:
+    get:
+      operationId: real.estate.viewings.availability
+      security: [{sanctum: []}]
+      parameters:
+        - {name: property_id, in: query, required: false, schema: {type: integer}}
+        - {name: date, in: query, required: true, schema: {type: string, format: date}}
+        - {name: duration_minutes, in: query, required: false, schema: {type: integer, minimum: 15, maximum: 240, default: 60}}
+      responses: {'200': {description: Available ISO-8601 viewing start timestamps}}
   /api/v1/real-estate/viewings/{id}:
     parameters: [{name: id, in: path, required: true, schema: {type: string}}]
     get: {operationId: real.estate.viewings.get, responses: {"200": {description: Viewing}}}

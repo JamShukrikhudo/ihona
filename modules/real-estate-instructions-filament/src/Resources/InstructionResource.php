@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Liberu\RealEstate\InstructionsFilament\Resources;
 
+use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
@@ -13,6 +14,8 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Liberu\RealEstate\Instructions\Application\TransitionInstruction;
+use Liberu\RealEstate\Instructions\Domain\InstructionStatus;
 use Liberu\RealEstate\Instructions\Models\Instruction;
 use Liberu\RealEstate\InstructionsFilament\Resources\InstructionResource\Pages\CreateInstruction;
 use Liberu\RealEstate\InstructionsFilament\Resources\InstructionResource\Pages\EditInstruction;
@@ -28,12 +31,32 @@ final class InstructionResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return $schema->components([TextInput::make('subject')->required()->maxLength(255), Select::make('status')->options(['draft' => 'Draft', 'pending_approval' => 'Pending approval', 'approved' => 'Approved', 'withdrawn' => 'Withdrawn', 'rejected' => 'Rejected'])->required(), TextInput::make('approved_at')->datetime(), TextInput::make('withdrawn_at')->datetime()]);
+        return $schema->components([TextInput::make('subject')->required()->maxLength(255), Select::make('status')->options(['draft' => 'Draft', 'pending_approval' => 'Pending approval', 'approved' => 'Approved', 'withdrawn' => 'Withdrawn', 'rejected' => 'Rejected'])->disabled()->dehydrated(false), TextInput::make('approved_at')->datetime()->disabled()->dehydrated(false), TextInput::make('withdrawn_at')->datetime()->disabled()->dehydrated(false)]);
     }
 
     public static function table(Table $table): Table
     {
-        return $table->columns([TextColumn::make('subject')->searchable(), TextColumn::make('status')->badge(), TextColumn::make('created_at')->dateTime()->sortable()])->recordActions([EditAction::make(), DeleteAction::make()])->defaultSort('created_at', 'desc');
+        return $table->columns([TextColumn::make('subject')->searchable(), TextColumn::make('status')->badge(), TextColumn::make('created_at')->dateTime()->sortable()])
+            ->recordActions([
+                EditAction::make(),
+                Action::make('submit')
+                    ->label('Submit for approval')
+                    ->action(fn (Instruction $record): Instruction => app(TransitionInstruction::class)->handle($record, auth()->user()->current_team_id, auth()->id(), InstructionStatus::PendingApproval))
+                    ->visible(fn (Instruction $record): bool => $record->status === InstructionStatus::Draft),
+                Action::make('approve')
+                    ->label('Approve')
+                    ->action(fn (Instruction $record): Instruction => app(TransitionInstruction::class)->handle($record, auth()->user()->current_team_id, auth()->id(), InstructionStatus::Approved))
+                    ->visible(fn (Instruction $record): bool => $record->status === InstructionStatus::PendingApproval),
+                Action::make('reject')
+                    ->label('Reject')
+                    ->action(fn (Instruction $record): Instruction => app(TransitionInstruction::class)->handle($record, auth()->user()->current_team_id, auth()->id(), InstructionStatus::Rejected))
+                    ->visible(fn (Instruction $record): bool => $record->status === InstructionStatus::PendingApproval),
+                Action::make('withdraw')
+                    ->label('Withdraw')
+                    ->action(fn (Instruction $record): Instruction => app(TransitionInstruction::class)->handle($record, auth()->user()->current_team_id, auth()->id(), InstructionStatus::Withdrawn))
+                    ->visible(fn (Instruction $record): bool => $record->status === InstructionStatus::Approved),
+                DeleteAction::make(),
+            ])->defaultSort('created_at', 'desc');
     }
 
     public static function getEloquentQuery(): Builder

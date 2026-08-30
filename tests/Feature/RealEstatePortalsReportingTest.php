@@ -6,6 +6,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Validation\ValidationException;
 use Liberu\RealEstate\PortalsReporting\Application\CreatePortalReport;
 use Liberu\RealEstate\PortalsReporting\Application\DeletePortalReport;
+use Liberu\RealEstate\PortalsReporting\Application\RecordPortalMetric;
+use Liberu\RealEstate\PortalsReporting\Domain\PortalMetric;
 use Liberu\RealEstate\PortalsReporting\Models\PortalReport;
 
 uses(RefreshDatabase::class);
@@ -38,4 +40,12 @@ it('requires portal identity and archives only inside its team', function (): vo
     app(DeletePortalReport::class)->handle($report, 31);
 
     expect($report->fresh()->trashed())->toBeTrue();
+});
+
+it('records typed reporting metrics without replacing existing metrics', function (): void {
+    $report = app(CreatePortalReport::class)->handle(31, 7, ['portal' => 'rightmove', 'report_type' => 'pipeline', 'metrics' => ['views' => 42]]);
+
+    app(RecordPortalMetric::class)->handle($report, 31, PortalMetric::Conversion, 18.5);
+
+    expect($report->refresh()->metrics)->toMatchArray(['views' => 42, 'conversion' => 18.5]);
 });

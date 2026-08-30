@@ -7,11 +7,16 @@ namespace Liberu\RealEstate\MatchingApi\Http\Controllers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Liberu\RealEstate\Matching\Application\CalculateMatchScore;
 use Liberu\RealEstate\Matching\Application\CreateMatchProfile;
 use Liberu\RealEstate\Matching\Application\DeleteMatchProfile;
 use Liberu\RealEstate\Matching\Application\UpdateMatchProfile;
+use Liberu\RealEstate\Matching\Application\UpdateMatchProfileSection;
+use Liberu\RealEstate\Matching\Application\RankPropertyRecommendations;
+use Liberu\RealEstate\Matching\Domain\MatchProfileSection;
 use Liberu\RealEstate\Matching\Models\MatchProfile;
 use Liberu\RealEstate\MatchingApi\Http\Resources\MatchProfileResource;
+use Liberu\RealEstate\MatchingApi\Http\Resources\MatchScoreResource;
 
 final class MatchProfileController
 {
@@ -47,6 +52,57 @@ final class MatchProfileController
         $data = $request->validate(['subject' => ['sometimes', 'string', 'max:255'], 'score' => ['sometimes', 'integer', 'min:0', 'max:100'], 'requirements' => ['sometimes', 'array'], 'affordability' => ['sometimes', 'array'], 'preferences' => ['sometimes', 'array'], 'alerts' => ['sometimes', 'array'], 'feedback' => ['sometimes', 'array'], 'exclusions' => ['sometimes', 'array']]);
 
         return (new MatchProfileResource($update->handle($matchProfile, $teamId, $data)))->response();
+    }
+
+    public function updateSection(Request $request, MatchProfile $matchProfile, string $section, UpdateMatchProfileSection $update): JsonResponse
+    {
+        $teamId = $request->user()?->current_team_id;
+        abort_unless((string) $teamId === (string) $matchProfile->team_id, 404);
+        $sectionEnum = MatchProfileSection::from($section);
+        $data = $request->validate($sectionEnum === MatchProfileSection::Scoring
+            ? ['score' => ['required', 'integer', 'between:0,100']]
+            : ['value' => ['required', 'array']]);
+
+        return (new MatchProfileResource($update->handle($matchProfile, $teamId, $sectionEnum, $sectionEnum === MatchProfileSection::Scoring ? ['score' => $data['score']] : $data['value'])))->response();
+    }
+
+    public function calculateScore(Request $request, CalculateMatchScore $calculate): JsonResponse
+    {
+        $data = $request->validate(['criteria' => ['required', 'array'], 'property' => ['required', 'array'], 'property.price' => ['required', 'numeric', 'min:0']]);
+
+        return (new MatchScoreResource($calculate->handle($data['criteria'], $data['property'])))->response();
+    }
+
+    public function recommendProperties(Request $request, RankPropertyRecommendations $rank): JsonResponse
+    {
+        $data = $request->validate([
+            'criteria' => ['required', 'array'],
+            'properties' => ['required', 'array', 'min:1', 'max:100'],
+            'properties.*' => ['array'],
+            'properties.*.id' => ['sometimes', 'integer', 'min:1'],
+            'properties.*.title' => ['sometimes', 'string', 'max:255'],
+            'properties.*.address' => ['sometimes', 'string', 'max:500'],
+            'properties.*.location' => ['sometimes', 'string', 'max:255'],
+            'properties.*.postal_code' => ['sometimes', 'string', 'max:20'],
+            'properties.*.price' => ['required', 'numeric', 'min:0'],
+            'properties.*.bedrooms' => ['sometimes', 'integer', 'min:0'],
+            'properties.*.bathrooms' => ['sometimes', 'integer', 'min:0'],
+            'properties.*.area_sqft' => ['sometimes', 'numeric', 'min:0'],
+            'properties.*.property_type' => ['sometimes', 'string', 'max:40'],
+            'properties.*.features' => ['sometimes', 'array'],
+            'properties.*.schools' => ['sometimes', 'array'],
+            'properties.*.transit_score' => ['sometimes', 'numeric', 'min:0', 'max:100'],
+            'limit' => ['sometimes', 'integer', 'between:1,100'],
+            'excluded_ids' => ['sometimes', 'array', 'max:100'],
+            'excluded_ids.*' => ['string', 'max:80'],
+        ]);
+
+        return (new MatchScoreResource(['recommendations' => $rank->handle(
+            $data['criteria'],
+            $data['properties'],
+            (int) ($data['limit'] ?? 6),
+            $data['excluded_ids'] ?? [],
+        )]))->response();
     }
 
     public function destroy(Request $request, MatchProfile $matchProfile, DeleteMatchProfile $delete): Response

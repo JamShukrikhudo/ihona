@@ -9,7 +9,9 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Liberu\RealEstate\Instructions\Application\CreateInstruction;
 use Liberu\RealEstate\Instructions\Application\DeleteInstruction;
+use Liberu\RealEstate\Instructions\Application\TransitionInstruction;
 use Liberu\RealEstate\Instructions\Application\UpdateInstruction;
+use Liberu\RealEstate\Instructions\Domain\InstructionStatus;
 use Liberu\RealEstate\Instructions\Models\Instruction;
 use Liberu\RealEstate\InstructionsApi\Http\Resources\InstructionResource;
 
@@ -44,7 +46,7 @@ final class InstructionController
     {
         $teamId = $request->user()?->current_team_id;
         abort_unless((string) $teamId === (string) $instruction->team_id, 404);
-        $data = $request->validate(['subject' => ['sometimes', 'string', 'max:255'], 'ownership_check' => ['sometimes', 'array'], 'terms' => ['sometimes', 'array'], 'disclosures' => ['sometimes', 'array'], 'status' => ['sometimes', 'string', 'in:draft,pending_approval,approved,withdrawn,rejected'], 'approved_at' => ['nullable', 'date'], 'withdrawn_at' => ['nullable', 'date']]);
+        $data = $request->validate(['subject' => ['sometimes', 'string', 'max:255'], 'ownership_check' => ['sometimes', 'array'], 'terms' => ['sometimes', 'array'], 'disclosures' => ['sometimes', 'array']]);
 
         return (new InstructionResource($update->handle($instruction, $teamId, $data)))->response();
     }
@@ -56,5 +58,20 @@ final class InstructionController
         $delete->handle($instruction, $teamId);
 
         return response()->noContent();
+    }
+
+    public function transition(Request $request, Instruction $instruction, string $status, TransitionInstruction $transition): JsonResponse
+    {
+        $user = $request->user();
+        abort_unless($user?->current_team_id !== null && (string) $user->current_team_id === (string) $instruction->team_id, 404);
+        $target = InstructionStatus::tryFrom($status);
+        abort_unless($target !== null, 404);
+        $data = $request->validate([
+            'ownership_check' => ['sometimes', 'array'],
+            'terms' => ['sometimes', 'array'],
+            'disclosures' => ['sometimes', 'array'],
+        ]);
+
+        return (new InstructionResource($transition->handle($instruction, $user->current_team_id, $user->getAuthIdentifier(), $target, $data)))->response();
     }
 }

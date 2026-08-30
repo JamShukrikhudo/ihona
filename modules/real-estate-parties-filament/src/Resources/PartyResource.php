@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Liberu\RealEstate\PartiesFilament\Resources;
 
+use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
@@ -13,6 +14,8 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Liberu\RealEstate\Parties\Application\CreatePartyRelationship;
+use Liberu\RealEstate\Parties\Application\ManagePartyConsent;
 use Liberu\RealEstate\Parties\Domain\PartyType;
 use Liberu\RealEstate\Parties\Models\Party;
 use Liberu\RealEstate\PartiesFilament\Resources\PartyResource\Pages\CreateParty;
@@ -46,7 +49,13 @@ final class PartyResource extends Resource
                 TextColumn::make('email')->searchable(),
                 TextColumn::make('created_at')->dateTime()->sortable(),
             ])
-            ->recordActions([EditAction::make(), DeleteAction::make()])
+            ->recordActions([
+                EditAction::make(),
+                Action::make('grant_consent')->requiresConfirmation()->action(fn (Party $record): Party => app(ManagePartyConsent::class)->handle($record, (int) auth()->user()->current_team_id, true)),
+                Action::make('revoke_consent')->requiresConfirmation()->action(fn (Party $record): Party => app(ManagePartyConsent::class)->handle($record, (int) auth()->user()->current_team_id, false)),
+                Action::make('relationship')->form([TextInput::make('related_party_id')->numeric()->required(), TextInput::make('relationship')->required()->maxLength(60)])->action(fn (Party $record, array $data): mixed => app(CreatePartyRelationship::class)->handle($record, (int) auth()->user()->current_team_id, $data)),
+                DeleteAction::make(),
+            ])
             ->defaultSort('created_at', 'desc');
     }
 

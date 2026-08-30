@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Liberu\RealEstate\MarketingFilament\Resources;
 
+use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
@@ -15,6 +17,10 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Liberu\RealEstate\Marketing\Application\DeleteMarketingCampaign;
+use Liberu\RealEstate\Marketing\Application\TransitionMarketingCampaign;
+use Liberu\RealEstate\Marketing\Application\UpdateMarketingCampaignSection;
+use Liberu\RealEstate\Marketing\Domain\MarketingCampaignSection;
+use Liberu\RealEstate\Marketing\Domain\MarketingCampaignStatus;
 use Liberu\RealEstate\Marketing\Models\MarketingCampaign;
 use Liberu\RealEstate\MarketingFilament\Resources\MarketingCampaignResource\Pages\CreateMarketingCampaign;
 use Liberu\RealEstate\MarketingFilament\Resources\MarketingCampaignResource\Pages\EditMarketingCampaign;
@@ -33,6 +39,18 @@ final class MarketingCampaignResource extends Resource
     {
         return $table->columns([TextColumn::make('name')->searchable(), TextColumn::make('channel')->badge(), TextColumn::make('status')->badge(), TextColumn::make('created_at')->dateTime()])->recordActions([
             EditAction::make(),
+            Action::make('schedule')->requiresConfirmation()->action(fn (Model $record): MarketingCampaign => app(TransitionMarketingCampaign::class)->handle($record, (int) auth()->user()->current_team_id, MarketingCampaignStatus::Scheduled)),
+            Action::make('activate')->requiresConfirmation()->action(fn (Model $record): MarketingCampaign => app(TransitionMarketingCampaign::class)->handle($record, (int) auth()->user()->current_team_id, MarketingCampaignStatus::Active)),
+            Action::make('update_section')
+                ->form([
+                    Select::make('section')->options(collect(MarketingCampaignSection::cases())->mapWithKeys(fn (MarketingCampaignSection $section): array => [$section->value => str($section->value)->replace('_', ' ')->title()])->all())->required(),
+                    Textarea::make('value')->json()->required()->helperText('JSON object for audience, content, schedule, or metrics.'),
+                ])
+                ->action(function (Model $record, array $data): void {
+                    $teamId = auth()->user()?->current_team_id;
+                    abort_unless($teamId !== null, 403);
+                    app(UpdateMarketingCampaignSection::class)->handle($record, $teamId, MarketingCampaignSection::from($data['section']), $data['value']);
+                }),
             DeleteAction::make()->action(function (Model $record): void {
                 $teamId = auth()->user()?->current_team_id;
                 abort_unless($teamId !== null, 403);

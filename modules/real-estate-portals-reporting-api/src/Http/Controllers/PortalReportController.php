@@ -9,7 +9,11 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Liberu\RealEstate\PortalsReporting\Application\CreatePortalReport;
 use Liberu\RealEstate\PortalsReporting\Application\DeletePortalReport;
+use Liberu\RealEstate\PortalsReporting\Application\RecordPortalMetric;
+use Liberu\RealEstate\PortalsReporting\Application\TransitionPortalReport;
 use Liberu\RealEstate\PortalsReporting\Application\UpdatePortalReport;
+use Liberu\RealEstate\PortalsReporting\Domain\PortalMetric;
+use Liberu\RealEstate\PortalsReporting\Domain\PortalReportStatus;
 use Liberu\RealEstate\PortalsReporting\Models\PortalReport;
 use Liberu\RealEstate\PortalsReportingApi\Http\Resources\PortalReportResource;
 
@@ -44,9 +48,26 @@ final class PortalReportController
     {
         $teamId = $request->user()?->current_team_id;
         abort_unless((string) $teamId === (string) $portalReport->team_id, 404);
-        $data = $request->validate(['portal' => ['sometimes', 'string', 'max:120'], 'report_type' => ['sometimes', 'string', 'max:120'], 'status' => ['sometimes', 'string', 'in:draft,queued,published,failed,expired,archived'], 'payload' => ['sometimes', 'array'], 'metrics' => ['sometimes', 'array'], 'published_at' => ['nullable', 'date'], 'generated_at' => ['nullable', 'date'], 'expires_at' => ['nullable', 'date'], 'error' => ['nullable', 'string']]);
+        $data = $request->validate(['portal' => ['sometimes', 'string', 'max:120'], 'report_type' => ['sometimes', 'string', 'max:120'], 'payload' => ['sometimes', 'array'], 'metrics' => ['sometimes', 'array'], 'published_at' => ['nullable', 'date'], 'generated_at' => ['nullable', 'date'], 'expires_at' => ['nullable', 'date'], 'error' => ['nullable', 'string']]);
 
         return (new PortalReportResource($update->handle($portalReport, $teamId, $data)))->response();
+    }
+
+    public function transition(Request $request, PortalReport $portalReport, string $status, TransitionPortalReport $transition): JsonResponse
+    {
+        $teamId = $request->user()?->current_team_id;
+        abort_unless((string) $teamId === (string) $portalReport->team_id, 404);
+
+        return (new PortalReportResource($transition->handle($portalReport, $teamId, PortalReportStatus::from($status))))->response();
+    }
+
+    public function metric(Request $request, PortalReport $portalReport, string $metric, RecordPortalMetric $record): JsonResponse
+    {
+        $teamId = $request->user()?->current_team_id;
+        abort_unless((string) $teamId === (string) $portalReport->team_id, 404);
+        $value = $request->validate(['value' => ['required', 'numeric']])['value'];
+
+        return (new PortalReportResource($record->handle($portalReport, $teamId, PortalMetric::from($metric), $value)))->response();
     }
 
     public function destroy(Request $request, PortalReport $portalReport, DeletePortalReport $delete): Response

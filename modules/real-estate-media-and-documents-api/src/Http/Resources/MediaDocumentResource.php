@@ -12,6 +12,9 @@ final class MediaDocumentResource extends JsonResource
     /** @return array<string, mixed> */
     public function toArray(Request $request): array
     {
-        return $this->resource->only(['id', 'team_id', 'property_id', 'title', 'kind', 'path', 'rights', 'metadata', 'retention_until', 'sort_order', 'created_at', 'updated_at']);
+        return $this->resource->only(['id', 'team_id', 'property_id', 'title', 'kind', 'path', 'rights', 'metadata', 'retention_until', 'sort_order', 'created_at', 'updated_at']) + [
+            'public_url' => $this->resource->publicUrl(),
+            'is_video' => $this->resource->isVideo(),
+        ];
     }
 }

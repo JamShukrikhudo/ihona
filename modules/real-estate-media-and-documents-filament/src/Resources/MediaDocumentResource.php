@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Liberu\RealEstate\MediaAndDocumentsFilament\Resources;
 
+use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
@@ -13,6 +14,9 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Liberu\RealEstate\MediaAndDocuments\Application\GeneratePropertyBrochure;
+use Liberu\RealEstate\MediaAndDocuments\Application\ReorderMediaDocument;
+use Liberu\RealEstate\MediaAndDocuments\Application\SetMediaDocumentRetention;
 use Liberu\RealEstate\MediaAndDocuments\Models\MediaDocument;
 use Liberu\RealEstate\MediaAndDocumentsFilament\Resources\MediaDocumentResource\Pages\CreateMediaDocument;
 use Liberu\RealEstate\MediaAndDocumentsFilament\Resources\MediaDocumentResource\Pages\EditMediaDocument;
@@ -28,12 +32,19 @@ final class MediaDocumentResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return $schema->components([Select::make('kind')->options(['photo' => 'Photo', 'floorplan' => 'Floorplan', 'video' => 'Video', 'certificate' => 'Certificate', 'brochure' => 'Brochure', 'document' => 'Document'])->required(), TextInput::make('path')->required()->maxLength(2048), TextInput::make('title')->maxLength(255), TextInput::make('sort_order')->numeric()->minValue(0)]);
+        return $schema->components([Select::make('kind')->options(['photo' => 'Photo', 'floorplan' => 'Floorplan', 'siteplan' => 'Site plan', 'video' => 'Video', 'certificate' => 'Certificate', 'brochure' => 'Brochure', 'document' => 'Document'])->required(), TextInput::make('path')->required()->maxLength(2048), TextInput::make('title')->maxLength(255), TextInput::make('sort_order')->numeric()->minValue(0)]);
     }
 
     public static function table(Table $table): Table
     {
-        return $table->columns([TextColumn::make('kind')->badge(), TextColumn::make('title')->searchable(), TextColumn::make('path')->limit(50), TextColumn::make('created_at')->dateTime()->sortable()])->recordActions([EditAction::make(), DeleteAction::make()])->defaultSort('created_at', 'desc');
+        return $table->columns([TextColumn::make('kind')->badge(), TextColumn::make('title')->searchable(), TextColumn::make('path')->limit(50), TextColumn::make('sort_order')->sortable(), TextColumn::make('retention_until')->date(), TextColumn::make('created_at')->dateTime()->sortable()])->recordActions([
+            EditAction::make(),
+            Action::make('preview')->url(fn (MediaDocument $record): ?string => $record->publicUrl())->openUrlInNewTab()->visible(fn (MediaDocument $record): bool => $record->publicUrl() !== null),
+            Action::make('brochure')->form([TextInput::make('title')->required(), TextInput::make('price')->numeric()->required(), TextInput::make('address')])->action(fn (MediaDocument $record, array $data): array => app(GeneratePropertyBrochure::class)->handle(['id' => $record->getKey(), 'title' => $data['title'], 'price' => $data['price'], 'address' => $data['address'] ?? '', 'images' => [$record->path]])),
+            Action::make('reorder')->form([TextInput::make('sort_order')->numeric()->required()->minValue(0)])->action(fn (MediaDocument $record, array $data): MediaDocument => app(ReorderMediaDocument::class)->handle($record, (int) auth()->user()->current_team_id, (int) $data['sort_order'])),
+            Action::make('retention')->form([TextInput::make('retention_until')->type('date')])->action(fn (MediaDocument $record, array $data): MediaDocument => app(SetMediaDocumentRetention::class)->handle($record, (int) auth()->user()->current_team_id, $data['retention_until'] ?? null)),
+            DeleteAction::make(),
+        ])->defaultSort('created_at', 'desc');
     }
 
     public static function getEloquentQuery(): Builder

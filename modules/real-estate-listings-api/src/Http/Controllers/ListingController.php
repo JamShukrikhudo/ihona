@@ -9,7 +9,11 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Liberu\RealEstate\Listings\Application\CreateListing;
 use Liberu\RealEstate\Listings\Application\DeleteListing;
+use Liberu\RealEstate\Listings\Application\TransitionListing;
 use Liberu\RealEstate\Listings\Application\UpdateListing;
+use Liberu\RealEstate\Listings\Application\UpdateListingSection;
+use Liberu\RealEstate\Listings\Domain\ListingSection;
+use Liberu\RealEstate\Listings\Domain\ListingStatus;
 use Liberu\RealEstate\Listings\Models\Listing;
 use Liberu\RealEstate\ListingsApi\Http\Resources\ListingResource;
 
@@ -44,7 +48,7 @@ final class ListingController
     {
         $teamId = $request->user()?->current_team_id;
         abort_unless((string) $teamId === (string) $listing->team_id, 404);
-        $data = $request->validate(['title' => ['sometimes', 'string', 'max:255'], 'price' => ['nullable', 'numeric', 'min:0'], 'available_from' => ['nullable', 'date'], 'channel_content' => ['sometimes', 'array'], 'publication_rules' => ['sometimes', 'array'], 'portal_feeds' => ['sometimes', 'array'], 'reconciliation' => ['sometimes', 'array'], 'status' => ['sometimes', 'string', 'in:draft,ready,published,suspended,withdrawn']]);
+        $data = $request->validate(['title' => ['sometimes', 'string', 'max:255'], 'price' => ['nullable', 'numeric', 'min:0'], 'available_from' => ['nullable', 'date'], 'channel_content' => ['sometimes', 'array'], 'publication_rules' => ['sometimes', 'array'], 'portal_feeds' => ['sometimes', 'array'], 'reconciliation' => ['sometimes', 'array']]);
 
         return (new ListingResource($update->handle($listing, $teamId, $data)))->response();
     }
@@ -56,5 +60,30 @@ final class ListingController
         $delete->handle($listing, $teamId);
 
         return response()->noContent();
+    }
+
+    public function transition(Request $request, Listing $listing, string $status, TransitionListing $transition): JsonResponse
+    {
+        $user = $request->user();
+        abort_unless($user?->current_team_id !== null && (string) $user->current_team_id === (string) $listing->team_id, 404);
+        $target = ListingStatus::tryFrom($status);
+        abort_unless($target !== null, 404);
+        $data = $request->validate([
+            'channel_content' => ['sometimes', 'array'],
+            'publication_rules' => ['sometimes', 'array'],
+            'portal_feeds' => ['sometimes', 'array'],
+            'reconciliation' => ['sometimes', 'array'],
+        ]);
+
+        return (new ListingResource($transition->handle($listing, $user->current_team_id, $target, $data)))->response();
+    }
+
+    public function updateSection(Request $request, Listing $listing, string $section, UpdateListingSection $update): JsonResponse
+    {
+        $teamId = $request->user()?->current_team_id;
+        abort_unless((string) $teamId === (string) $listing->team_id, 404);
+        $data = $request->validate(['value' => ['required', 'array']]);
+
+        return (new ListingResource($update->handle($listing, $teamId, ListingSection::from($section), $data['value'])))->response();
     }
 }
