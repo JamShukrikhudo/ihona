@@ -22,4 +22,8 @@ final class PropertyHistory extends Model
     {
         return $this->belongsTo(Property::class);
     }
+    public function team()
+    {
+    return $this->belongsTo(\Liberu\Foundation\Organizations\Models\Team::class);
+}
 }

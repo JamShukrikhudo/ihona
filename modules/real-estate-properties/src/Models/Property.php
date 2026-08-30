@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Liberu\RealEstate\Properties\Domain\PropertyStatus;
+use Liberu\RealEstate\Core\Models\Territory;
 
 final class Property extends Model
 {
@@ -52,4 +53,12 @@ final class Property extends Model
     {
         return filled($this->address) && $this->status === PropertyStatus::Draft;
     }
+   public function team()
+    {
+        return $this->belongsTo(\Liberu\Foundation\Organizations\Models\Team::class);
+    }
+   public function territory()
+   {
+        return $this->belongsTo(Territory::class);
+   }
 }

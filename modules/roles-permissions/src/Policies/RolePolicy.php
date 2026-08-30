@@ -4,71 +4,72 @@ declare(strict_types=1);
 
 namespace Liberu\Foundation\RolesPermissions\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
-use Spatie\Permission\Models\Role;
+use Liberu\Foundation\RolesPermissions\Models\Role;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class RolePolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser): bool
     {
-        return $authUser->can('roles-permissions.roles.view-any');
+        return $authUser->can('ViewAny:Role');
     }
 
     public function view(AuthUser $authUser, Role $role): bool
     {
-        return $authUser->can('roles-permissions.roles.view');
+        return $authUser->can('View:Role');
     }
 
     public function create(AuthUser $authUser): bool
     {
-        return $authUser->can('roles-permissions.roles.create');
+        return $authUser->can('Create:Role');
     }
 
     public function update(AuthUser $authUser, Role $role): bool
     {
-        return $authUser->can('roles-permissions.roles.update');
+        return $authUser->can('Update:Role');
     }
 
     public function delete(AuthUser $authUser, Role $role): bool
     {
-        return $authUser->can('roles-permissions.roles.delete');
+        return $authUser->can('Delete:Role');
     }
 
     public function deleteAny(AuthUser $authUser): bool
     {
-        return $authUser->can('roles-permissions.roles.delete-any');
+        return $authUser->can('DeleteAny:Role');
     }
 
     public function restore(AuthUser $authUser, Role $role): bool
     {
-        return $authUser->can('roles-permissions.roles.restore');
+        return $authUser->can('Restore:Role');
     }
 
     public function forceDelete(AuthUser $authUser, Role $role): bool
     {
-        return $authUser->can('roles-permissions.roles.force-delete');
+        return $authUser->can('ForceDelete:Role');
     }
 
     public function forceDeleteAny(AuthUser $authUser): bool
     {
-        return $authUser->can('roles-permissions.roles.force-delete-any');
+        return $authUser->can('ForceDeleteAny:Role');
     }
 
     public function restoreAny(AuthUser $authUser): bool
     {
-        return $authUser->can('roles-permissions.roles.restore-any');
+        return $authUser->can('RestoreAny:Role');
     }
 
     public function replicate(AuthUser $authUser, Role $role): bool
     {
-        return $authUser->can('roles-permissions.roles.replicate');
+        return $authUser->can('Replicate:Role');
     }
 
     public function reorder(AuthUser $authUser): bool
     {
-        return $authUser->can('roles-permissions.roles.reorder');
+        return $authUser->can('Reorder:Role');
     }
+
 }
