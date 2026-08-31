@@ -10,7 +10,8 @@
         "php": "^8.5",
         "laravel": "^13.0",
         "packages": {
-            "liberusoftware/identity-core": "^1.0"
+            "liberusoftware/identity-core": "^1.0",
+            "liberusoftware/organizations-teams": "^1.0"
         }
     },
     "suggests": {},
@@ -18,6 +19,7 @@
     "default_enabled": true,
     "features": [
         "POST /api/v1/auth/token — issue a Sanctum Bearer token",
-        "DELETE /api/v1/auth/token — revoke the current token"
+        "DELETE /api/v1/auth/token — revoke the current token",
+        "POST /api/v1/auth/register — self-register and issue a Bearer token"
     ]
 }

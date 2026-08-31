@@ -7622,13 +7622,15 @@
             "dist": {
                 "type": "path",
                 "url": "modules/identity-core-api",
-                "reference": "d3f2266c14026824c149b613e429b5f616fe566a"
+                "reference": "4953669fc2e81e86692488d097b414090a15cca7"
             },
             "require": {
                 "illuminate/http": "^13.0",
                 "illuminate/routing": "^13.0",
+                "laravel/fortify": "^1.0",
                 "laravel/sanctum": "^4.0",
                 "liberusoftware/identity-core": "^1.0",
+                "liberusoftware/organizations-teams": "^1.0",
                 "php": "^8.5"
             },
             "require-dev": {
