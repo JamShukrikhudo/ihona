@@ -34,7 +34,15 @@ final class PublicPropertyController
             'deal_type' => ['sometimes', 'nullable', Rule::in(['sale', 'rent'])],
             'min_price' => ['sometimes', 'nullable', 'numeric', 'min:0'],
             'max_price' => ['sometimes', 'nullable', 'numeric', 'min:0'],
+            // Comma-separated room counts, cian-style chips (1,2,3,4,5 — 5
+            // meaning "5+"). Not validated further: an unparseable entry is
+            // just silently dropped by the int-cast + filter below.
+            'rooms' => ['sometimes', 'nullable', 'string', 'max:20'],
         ]);
+
+        $roomCounts = $filters['rooms'] ?? null
+            ? array_values(array_filter(array_map('intval', explode(',', $filters['rooms']))))
+            : [];
 
         $properties = Property::query()
             ->with('territory')
@@ -45,6 +53,14 @@ final class PublicPropertyController
             ->when($filters['deal_type'] ?? null, fn ($q, $dealType) => $q->where('deal_type', $dealType))
             ->when($filters['min_price'] ?? null, fn ($q, $min) => $q->where('price', '>=', $min))
             ->when($filters['max_price'] ?? null, fn ($q, $max) => $q->where('price', '<=', $max))
+            ->when($roomCounts !== [], function ($q) use ($roomCounts): void {
+                $q->where(function ($q) use ($roomCounts): void {
+                    foreach ($roomCounts as $count) {
+                        // "5" in the chips means "5+".
+                        $count >= 5 ? $q->orWhere('bedrooms', '>=', 5) : $q->orWhere('bedrooms', $count);
+                    }
+                });
+            })
             ->latest()
             ->paginate(max(1, min($request->integer('page_size', 24), 60)));
 
