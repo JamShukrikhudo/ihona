@@ -21,9 +21,13 @@ final class AgencyResource extends Resource
 {
     protected static ?string $model = Agency::class;
 
+    protected static ?string $modelLabel = 'Агентство';
+
+    protected static ?string $pluralModelLabel = 'Агентства';
+
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-building-office';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Real Estate';
+    protected static string|\UnitEnum|null $navigationGroup = 'Недвижимость';
 
     public static function form(Schema $schema): Schema
     {

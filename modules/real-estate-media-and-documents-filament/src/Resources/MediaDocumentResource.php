@@ -26,9 +26,13 @@ final class MediaDocumentResource extends Resource
 {
     protected static ?string $model = MediaDocument::class;
 
+    protected static ?string $modelLabel = 'Медиафайл';
+
+    protected static ?string $pluralModelLabel = 'Медиафайлы';
+
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Real Estate';
+    protected static string|\UnitEnum|null $navigationGroup = 'Недвижимость';
 
     public static function form(Schema $schema): Schema
     {

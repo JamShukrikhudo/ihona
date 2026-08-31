@@ -22,6 +22,12 @@ final class StatusDefinitionResource extends Resource
 {
     protected static ?string $model = StatusDefinition::class;
 
+    protected static ?string $modelLabel = 'Статус';
+
+    protected static ?string $pluralModelLabel = 'Статусы';
+
+    protected static string|\UnitEnum|null $navigationGroup = 'Недвижимость';
+
     public static function form(Schema $schema): Schema
     {
         return $schema->components([TextInput::make('entity')->required()->maxLength(80), TextInput::make('key')->required()->maxLength(80), TextInput::make('label')->required()->maxLength(255), Toggle::make('active')->default(true)]);

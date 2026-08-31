@@ -28,11 +28,15 @@ class UserResource extends Resource
         return config('auth.providers.users.model');
     }
 
+    protected static ?string $modelLabel = 'Пользователь';
+
+    protected static ?string $pluralModelLabel = 'Пользователи';
+
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-user-group';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Administration';
+    protected static string|\UnitEnum|null $navigationGroup = 'Администрирование';
 
-    protected static ?string $navigationLabel = 'Users';
+    protected static ?string $navigationLabel = 'Пользователи';
 
     protected static ?string $recordTitleAttribute = 'name';
 

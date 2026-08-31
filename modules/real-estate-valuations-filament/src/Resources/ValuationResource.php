@@ -28,9 +28,13 @@ final class ValuationResource extends Resource
 {
     protected static ?string $model = Valuation::class;
 
+    protected static ?string $modelLabel = 'Оценка';
+
+    protected static ?string $pluralModelLabel = 'Оценки';
+
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-calculator';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Real Estate';
+    protected static string|\UnitEnum|null $navigationGroup = 'Недвижимость';
 
     public static function form(Schema $schema): Schema
     {

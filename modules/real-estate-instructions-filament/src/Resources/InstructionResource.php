@@ -25,9 +25,13 @@ final class InstructionResource extends Resource
 {
     protected static ?string $model = Instruction::class;
 
+    protected static ?string $modelLabel = 'Инструкция';
+
+    protected static ?string $pluralModelLabel = 'Инструкции';
+
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-clipboard-document-check';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Real Estate';
+    protected static string|\UnitEnum|null $navigationGroup = 'Недвижимость';
 
     public static function form(Schema $schema): Schema
     {

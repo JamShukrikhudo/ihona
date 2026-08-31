@@ -27,9 +27,13 @@ final class ListingResource extends Resource
 {
     protected static ?string $model = Listing::class;
 
+    protected static ?string $modelLabel = 'Объявление';
+
+    protected static ?string $pluralModelLabel = 'Объявления';
+
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-megaphone';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Real Estate';
+    protected static string|\UnitEnum|null $navigationGroup = 'Недвижимость';
 
     public static function form(Schema $schema): Schema
     {

@@ -9,24 +9,26 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\PageRegistration;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Notifications\Notification;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Liberu\RealEstate\Core\Models\Branch;
-use Liberu\RealEstate\Properties\Application\RecordPropertyKey;
 use Liberu\RealEstate\Properties\Application\EstimatePropertyTax;
+use Liberu\RealEstate\Properties\Application\RecordPropertyKey;
+use Liberu\RealEstate\Properties\Application\TogglePropertyFavorite;
 use Liberu\RealEstate\Properties\Application\TransitionProperty;
 use Liberu\RealEstate\Properties\Application\UpsertPropertyUnit;
 use Liberu\RealEstate\Properties\Domain\PropertyStatus;
@@ -40,6 +42,10 @@ use Liberu\RealEstate\PropertiesFilament\Resources\PropertyResource\Pages\ListPr
 final class PropertyResource extends Resource
 {
     protected static ?string $model = Property::class;
+
+    protected static ?string $modelLabel = 'Объект недвижимости';
+
+    protected static ?string $pluralModelLabel = 'Объекты недвижимости';
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-building-office-2';
 
@@ -118,7 +124,7 @@ final class PropertyResource extends Resource
             TextInput::make('insurance_policy_id')->numeric()->minValue(1),
             TextInput::make('insurance_coverage_amount')->numeric()->minValue(0),
             TextInput::make('insurance_premium')->numeric()->minValue(0),
-            TextInput::make('insurance_expiry_date')->date(),
+            DatePicker::make('insurance_expiry_date'),
             Section::make('🏔️ Региональные особенности')
                 ->schema([
                     Toggle::make('has_generator')
@@ -210,7 +216,7 @@ final class PropertyResource extends Resource
                 EditAction::make(),
                 Action::make('favorite')
                     ->label('Toggle favorite')
-                    ->action(fn (Property $record): bool => app(\Liberu\RealEstate\Properties\Application\TogglePropertyFavorite::class)->handle($record->team_id, auth()->id(), $record->getKey())),
+                    ->action(fn (Property $record): bool => app(TogglePropertyFavorite::class)->handle($record->team_id, auth()->id(), $record->getKey())),
                 Action::make('similar')
                     ->label('Similar properties')
                     ->action(function (Property $record): void {

@@ -20,9 +20,13 @@ final class TerritoryResource extends Resource
 {
     protected static ?string $model = Territory::class;
 
+    protected static ?string $modelLabel = 'Территория';
+
+    protected static ?string $pluralModelLabel = 'Территории';
+
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-map';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Real Estate';
+    protected static string|\UnitEnum|null $navigationGroup = 'Недвижимость';
 
     public static function form(Schema $schema): Schema
     {
