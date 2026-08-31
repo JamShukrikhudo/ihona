@@ -38,7 +38,17 @@ final class PublicPropertyController
             // meaning "5+"). Not validated further: an unparseable entry is
             // just silently dropped by the int-cast + filter below.
             'rooms' => ['sometimes', 'nullable', 'string', 'max:20'],
+            // cian-style sort dropdown: default (newest), cheapest first,
+            // priciest first, largest area first.
+            'sort' => ['sometimes', 'nullable', Rule::in(['newest', 'price_asc', 'price_desc', 'area_desc'])],
         ]);
+
+        [$sortColumn, $sortDirection] = match ($filters['sort'] ?? 'newest') {
+            'price_asc' => ['price', 'asc'],
+            'price_desc' => ['price', 'desc'],
+            'area_desc' => ['area_sqft', 'desc'],
+            default => ['created_at', 'desc'],
+        };
 
         $roomCounts = $filters['rooms'] ?? null
             ? array_values(array_filter(array_map('intval', explode(',', $filters['rooms']))))
@@ -61,7 +71,7 @@ final class PublicPropertyController
                     }
                 });
             })
-            ->latest()
+            ->sorted($sortColumn, $sortDirection)
             ->paginate(max(1, min($request->integer('page_size', 24), 60)));
 
         return PublicPropertyResource::collection($properties)->response();
