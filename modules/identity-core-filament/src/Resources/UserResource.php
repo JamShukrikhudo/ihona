@@ -74,7 +74,17 @@ class UserResource extends Resource
                     ->relationship('roles', 'name')
                     ->multiple()
                     ->preload()
-                    ->searchable(),
+                    ->searchable()
+                    // Filament's default relationship sync is a plain
+                    // BelongsToMany::sync() call, which doesn't know to fill
+                    // model_has_roles.team_id — Spatie only injects that
+                    // pivot value inside its own assignRole()/syncRoles()
+                    // helpers (see HasRoles::assignRole()). Route the save
+                    // through those instead, or every save 500s with
+                    // "Field 'team_id' doesn't have a default value".
+                    ->saveRelationshipsUsing(function (Select $component, Model $record): void {
+                        $record->syncRoles($component->getState() ?? []);
+                    }),
             ]);
     }
 
