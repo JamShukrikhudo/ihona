@@ -22,29 +22,24 @@ final class TerritoryResource extends Resource
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-map';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Недвижимость';
+    protected static string|\UnitEnum|null $navigationGroup = 'Real Estate';
 
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
             TextInput::make('name')->required()->maxLength(255),
-            TextInput::make('code')->required()->maxLength(20),
+            TextInput::make('code')->required()->uppercase()->maxLength(20),
             Textarea::make('boundary')->helperText('Optional JSON boundary metadata.')->columnSpanFull(),
         ]);
     }
 
     public static function table(Table $table): Table
     {
-        return $table
-            ->headerActions([
-                \Filament\Actions\CreateAction::make(),
-            ])
-            ->columns([
-                TextColumn::make('name')->searchable(),
-                TextColumn::make('code')->badge(),
-                TextColumn::make('created_at')->dateTime()->sortable(),
-            ])
-            ->defaultSort('created_at', 'desc');
+        return $table->columns([
+            TextColumn::make('name')->searchable(),
+            TextColumn::make('code')->badge(),
+            TextColumn::make('created_at')->dateTime()->sortable(),
+        ])->defaultSort('created_at', 'desc');
     }
 
     public static function getEloquentQuery(): Builder

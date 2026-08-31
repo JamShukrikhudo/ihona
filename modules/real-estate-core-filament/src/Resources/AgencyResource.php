@@ -23,7 +23,7 @@ final class AgencyResource extends Resource
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-building-office';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Недвижимость';
+    protected static string|\UnitEnum|null $navigationGroup = 'Real Estate';
 
     public static function form(Schema $schema): Schema
     {

@@ -15,7 +15,7 @@ final class CreateMediaDocument
     {
         $kind = strtolower(trim((string) ($attributes['kind'] ?? '')));
         $path = trim((string) ($attributes['path'] ?? ''));
-        if (! in_array($kind, ['photo', 'floorplan', 'siteplan', 'video', 'certificate', 'brochure', 'document'], true)) {
+        if (! in_array($kind, ['photo', 'floorplan', 'video', 'certificate', 'brochure', 'document'], true)) {
             throw ValidationException::withMessages(['kind' => 'A supported media or document kind is required.']);
         }
         if ($path === '') {
