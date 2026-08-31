@@ -28,10 +28,17 @@ class RolesSeeder extends Seeder
             setPermissionsTeamId($team->id);
         }
 
-        $adminRole = Role::firstOrCreate($roleData);
+        $superAdminRole = Role::firstOrCreate($roleData);
 
         // Grant every generated web permission (none until shield:generate runs — harmless).
         $permissions = Permission::where('guard_name', 'web')->pluck('id')->toArray();
+        $superAdminRole->syncPermissions($permissions);
+
+        // 'admin' is the second role User::hasAdminAccess() checks (alongside
+        // super_admin) for /admin panel access — for staff who need the admin
+        // panel without the full super_admin bypass Gate::before grants.
+        $adminRoleData = ['name' => 'admin', 'guard_name' => 'web'] + array_intersect_key($roleData, ['team_id' => true]);
+        $adminRole = Role::firstOrCreate($adminRoleData);
         $adminRole->syncPermissions($permissions);
     }
 }
