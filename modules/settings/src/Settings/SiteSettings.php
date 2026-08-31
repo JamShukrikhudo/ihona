@@ -30,6 +30,14 @@ class SiteSettings extends Settings
 
     public string $footer_copyright;
 
+    public ?string $company_registration_number;
+
+    public ?string $ico_registration_number;
+
+    public ?string $vat_number;
+
+    public ?string $redress_scheme;
+
     public string $active_theme;
 
     public static function group(): string
