@@ -8,6 +8,7 @@ Route::prefix('api/v1/real-estate/valuations')->middleware(['api', 'auth:sanctum
     Route::post('/', [ValuationController::class, 'store'])->name('real-estate.valuations.store');
     Route::post('/calculate-home', [ValuationController::class, 'calculateHome'])->name('real-estate.valuations.calculate-home');
     Route::post('/calculate-property', [ValuationController::class, 'calculateProperty'])->name('real-estate.valuations.calculate-property');
+    Route::post('/calculate-neural-property', [ValuationController::class, 'calculateNeuralProperty'])->name('real-estate.valuations.calculate-neural-property');
     Route::post('/calculate-mortgage', [ValuationController::class, 'calculateMortgage'])->name('real-estate.valuations.calculate-mortgage');
     Route::post('/calculate-rental-yield', [ValuationController::class, 'calculateRentalYield'])->name('real-estate.valuations.calculate-rental-yield');
     Route::get('/{valuation}', [ValuationController::class, 'show'])->name('real-estate.valuations.show');

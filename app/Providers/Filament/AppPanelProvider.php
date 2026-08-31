@@ -3,11 +3,13 @@
 namespace App\Providers\Filament;
 
 use App\Filament\ModulePlugins;
+use App\Http\Middleware\ApplyTeamIntegrationSettings;
 use App\Support\ThemeColors;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\NavigationItem;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -35,6 +37,32 @@ class AppPanelProvider extends PanelProvider
             ->pages([
                 Dashboard::class,
             ])
+            ->navigationGroups([
+                'Explore',
+                'Account',
+            ])
+            ->navigationItems([
+                NavigationItem::make('News')
+                    ->url(fn (): string => route('news.list'))
+                    ->icon('heroicon-o-newspaper')
+                    ->group('Explore'),
+                NavigationItem::make('Saved properties')
+                    ->url(fn (): string => route('wishlist'))
+                    ->icon('heroicon-o-heart')
+                    ->group('Explore'),
+                NavigationItem::make('Calculators')
+                    ->url(fn (): string => route('calculators'))
+                    ->icon('heroicon-o-calculator')
+                    ->group('Explore'),
+                NavigationItem::make('Contact support')
+                    ->url(fn (): string => route('contact.show'))
+                    ->icon('heroicon-o-chat-bubble-left-right')
+                    ->group('Explore'),
+                NavigationItem::make('Profile')
+                    ->url(fn (): string => route('profile.show'))
+                    ->icon('heroicon-o-user-circle')
+                    ->group('Account'),
+            ])
             ->discoverWidgets(in: app_path('Filament/App/Widgets'), for: 'App\Filament\App\Widgets')
             ->widgets([
                 AccountWidget::class,
@@ -44,6 +72,7 @@ class AppPanelProvider extends PanelProvider
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
                 StartSession::class,
+                ApplyTeamIntegrationSettings::class,
                 AuthenticateSession::class,
                 ShareErrorsFromSession::class,
                 PreventRequestForgery::class,
@@ -54,6 +83,7 @@ class AppPanelProvider extends PanelProvider
                 SecurityHeaders::class,
             ])
             ->plugins(app(ModulePlugins::class)->forPanel('app'))
+            ->bootUsing(fn (Panel $panel): null => NavigationGroups::configure($panel))
             ->authMiddleware([
                 Authenticate::class,
             ]);

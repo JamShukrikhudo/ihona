@@ -40,4 +40,7 @@ final class Viewing extends Model
             ViewingStatus::Completed, ViewingStatus::Cancelled, ViewingStatus::NoShow => false,
         };
     }
+
+    public function canBeCancelled(): bool { return $this->canTransitionTo(ViewingStatus::Cancelled) && $this->starts_at?->gt(now()->addDay()); }
+    public function canBeRescheduled(): bool { return false; }
 }

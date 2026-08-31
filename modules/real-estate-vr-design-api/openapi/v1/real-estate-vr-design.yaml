@@ -1,0 +1,40 @@
+openapi: 3.1.0
+info:
+  title: Real Estate VR Design API
+  version: 1.0.0
+security: [{sanctum: []}]
+x-liberu-idempotency-header: Idempotency-Key
+paths:
+  /api/v1/real-estate/vr-design/styles:
+    get: {operationId: real.estate.vrDesign.styles, security: [{sanctum: []}], responses: {'200': {description: Available design styles}}}
+  /api/v1/real-estate/vr-design/furniture-categories:
+    get: {operationId: real.estate.vrDesign.furnitureCategories, security: [{sanctum: []}], responses: {'200': {description: Available furniture categories}}}
+  /api/v1/real-estate/vr-design/room-types:
+    get: {operationId: real.estate.vrDesign.roomTypes, security: [{sanctum: []}], responses: {'200': {description: Available room types}}}
+  /api/v1/real-estate/vr-design/devices:
+    get: {operationId: real.estate.vrDesign.devices, security: [{sanctum: []}], responses: {'200': {description: Supported VR devices}}}
+  /api/v1/real-estate/vr-design/templates:
+    get: {operationId: real.estate.vrDesign.templates, security: [{sanctum: []}], responses: {'200': {description: Public team templates}}}
+  /api/v1/real-estate/vr-design/properties/{propertyId}/designs:
+    get: {operationId: real.estate.vrDesign.property.index, security: [{sanctum: []}], responses: {'200': {description: Designs for a property}}}
+    post: {operationId: real.estate.vrDesign.property.store, security: [{sanctum: []}], responses: {'201': {description: Created design}, '422': {description: Validation error}}}
+  /api/v1/real-estate/vr-design/designs/{designId}:
+    get: {operationId: real.estate.vrDesign.show, security: [{sanctum: []}], responses: {'200': {description: Design}}}
+    patch: {operationId: real.estate.vrDesign.update, security: [{sanctum: []}], responses: {'200': {description: Updated design}}}
+    delete: {operationId: real.estate.vrDesign.destroy, security: [{sanctum: []}], responses: {'200': {description: Deleted design}}}
+  /api/v1/real-estate/vr-design/designs/{designId}/furniture:
+    post: {operationId: real.estate.vrDesign.furniture.add, security: [{sanctum: []}], responses: {'200': {description: Furniture added}}}
+  /api/v1/real-estate/vr-design/designs/{designId}/furniture/{furnitureId}:
+    delete: {operationId: real.estate.vrDesign.furniture.remove, security: [{sanctum: []}], responses: {'200': {description: Furniture removed}}}
+  /api/v1/real-estate/vr-design/designs/{designId}/clone:
+    post: {operationId: real.estate.vrDesign.clone, security: [{sanctum: []}], responses: {'201': {description: Cloned design}}}
+  /api/v1/real-estate/vr-design/designs/{designId}/thumbnail:
+    post: {operationId: real.estate.vrDesign.thumbnail, security: [{sanctum: []}], responses: {'200': {description: Uploaded thumbnail}}}
+  /api/v1/real-estate/vr-design/designs/{designId}/export:
+    get: {operationId: real.estate.vrDesign.export, security: [{sanctum: []}], responses: {'200': {description: Exported design}}}
+components:
+  securitySchemes:
+    sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}
+  schemas:
+    Error: {type: object, required: [message], properties: {message: {type: string}, errors: {type: object, additionalProperties: true}}}
+    PaginationMeta: {type: object, properties: {current_page: {type: integer}, per_page: {type: integer}, total: {type: integer}, last_page: {type: integer}}}

@@ -16,6 +16,8 @@ use Liberu\RealEstate\Valuations\Application\ConvertValuation;
 use Liberu\RealEstate\Valuations\Application\CreateValuation;
 use Liberu\RealEstate\Valuations\Application\DeleteValuation;
 use Liberu\RealEstate\Valuations\Application\GeneratePropertyValuation;
+use Liberu\RealEstate\Valuations\Application\GenerateNeuralPropertyValuation;
+use Liberu\RealEstate\Properties\Models\Property;
 use Liberu\RealEstate\Valuations\Application\ScheduleValuation;
 use Liberu\RealEstate\Valuations\Application\UpdateValuation;
 use Liberu\RealEstate\Valuations\Models\Valuation;
@@ -40,6 +42,15 @@ final class ValuationController
         $data = $request->validate(['subject' => ['required', 'string', 'max:255'], 'property_id' => ['nullable', 'integer'], 'party_id' => ['nullable', 'integer'], 'valued_amount' => ['nullable', 'numeric', 'min:0'], 'fee_amount' => ['nullable', 'numeric', 'min:0'], 'currency' => ['nullable', 'string', 'size:3'], 'comparable_data' => ['sometimes', 'array'], 'recommendation' => ['sometimes', 'array'], 'scheduled_at' => ['nullable', 'date'], 'follow_up_at' => ['nullable', 'date']]);
 
         return (new ValuationResource($create->handle($user->current_team_id, $user->getAuthIdentifier(), $data)))->response()->setStatusCode(201);
+    }
+
+    public function calculateNeuralProperty(Request $request, GenerateNeuralPropertyValuation $generate): JsonResponse
+    {
+        $teamId = $request->user()?->current_team_id;
+        abort_unless($teamId !== null, 403);
+        $data = $request->validate(['property_id' => ['required', 'integer'], 'comparables_count' => ['sometimes', 'integer', 'min:0'], 'training_samples' => ['sometimes', 'integer', 'min:0']]);
+        $property = Property::query()->forTeam($teamId)->findOrFail($data['property_id']);
+        return response()->json(['data' => $generate->handle($property, $data['comparables_count'] ?? 0, $data['training_samples'] ?? 0)]);
     }
 
     public function show(Request $request, Valuation $valuation): JsonResponse

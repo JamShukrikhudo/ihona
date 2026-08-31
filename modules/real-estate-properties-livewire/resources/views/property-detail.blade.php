@@ -59,7 +59,7 @@
                         alt="3D model of {{ $property->title ?: $property->address }}"
                         loading="lazy"
                         camera-controls
-                        reveal="interaction"
+                        reveal="manual"
                         class="h-96 w-full"
                     ></model-viewer>
                 @endif
@@ -78,5 +78,26 @@
 
         <button type="button" wire:click="toggleFavorite">{{ $isFavorited ? 'Unfavorite' : 'Favorite' }}</button>
         <button type="button" wire:click="requestViewing">Book a viewing</button>
+        @if ($property->live_tour_available)
+            <button type="button" wire:click="openScheduleLiveTourModal">Book a live virtual tour</button>
+        @endif
+
+        @if ($showScheduleLiveTourModal)
+            <section aria-label="Schedule live virtual tour">
+                <h2>Schedule a live virtual tour</h2>
+                <form wire:submit="scheduleLiveTour">
+                    <label for="tour-date">Date</label>
+                    <input id="tour-date" type="date" wire:model="tourDate" required>
+                    <label for="tour-time">Time</label>
+                    <input id="tour-time" type="time" wire:model="tourTime" required>
+                    <label for="tour-notes">Notes</label>
+                    <textarea id="tour-notes" wire:model="tourNotes" maxlength="500"></textarea>
+                    @error('tourDate') <p role="alert">{{ $message }}</p> @enderror
+                    @error('tourTime') <p role="alert">{{ $message }}</p> @enderror
+                    <button type="submit">Schedule tour</button>
+                    <button type="button" wire:click="closeScheduleLiveTourModal">Cancel</button>
+                </form>
+            </section>
+        @endif
     </article>
 </div>

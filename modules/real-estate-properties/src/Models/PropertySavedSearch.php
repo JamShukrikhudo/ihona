@@ -1,0 +1,25 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Liberu\RealEstate\Properties\Models;
+
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+
+final class PropertySavedSearch extends Model
+{
+    protected $table = 'real_estate_property_saved_searches';
+
+    protected $guarded = ['id'];
+
+    protected function casts(): array
+    {
+        return ['criteria' => 'array'];
+    }
+
+    public function scopeForUser(Builder $query, int|string $teamId, int|string $userId): Builder
+    {
+        return $query->where('team_id', $teamId)->where('user_id', $userId);
+    }
+}

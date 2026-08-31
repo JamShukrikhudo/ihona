@@ -9,7 +9,7 @@ final class CoreCapabilityDefinition
     /** @return array<string, array{label: string, required: list<string>, behaviors: list<string>}> */
     public static function all(): array
     {
-        return self::define(['Agencies', 'Branches', 'Teams', 'Territories', 'Terminology', 'Statuses', 'Numbering', 'Audit']);
+        return self::define(['Agencies', 'Branches', 'Teams', 'Territories', 'Terminology', 'Statuses', 'Numbering', 'Audit', 'Communications', 'Calendar']);
     }
 
     /** @param list<string> $labels */

@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Liberu\RealEstate\PropertiesLivewire\Components;
 
+use Carbon\CarbonImmutable;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Schema;
 use Liberu\RealEstate\MediaAndDocuments\Models\MediaDocument;
 use Liberu\RealEstate\Properties\Application\TogglePropertyFavorite;
 use Liberu\RealEstate\Properties\Models\Property;
+use Liberu\RealEstate\Viewings\Application\CreateViewing;
 use Livewire\Component;
 
 final class PropertyDetail extends Component
@@ -20,6 +22,14 @@ final class PropertyDetail extends Component
     public bool $showVirtualTour = false;
 
     public bool $show3dModel = false;
+
+    public bool $showScheduleLiveTourModal = false;
+
+    public ?string $tourDate = null;
+
+    public ?string $tourTime = null;
+
+    public ?string $tourNotes = null;
 
     public function mount(int|string $propertyId): void
     {
@@ -44,6 +54,49 @@ final class PropertyDetail extends Component
     public function requestViewing(): void
     {
         $this->dispatch('property-viewing-requested', propertyId: $this->property()->getKey());
+    }
+
+    public function openScheduleLiveTourModal()
+    {
+        if (auth()->guest()) {
+            return redirect('/login');
+        }
+
+        abort_unless((bool) $this->property()->live_tour_available, 404);
+        $this->showScheduleLiveTourModal = true;
+    }
+
+    public function closeScheduleLiveTourModal(): void
+    {
+        $this->showScheduleLiveTourModal = false;
+        $this->reset(['tourDate', 'tourTime', 'tourNotes']);
+    }
+
+    public function scheduleLiveTour(CreateViewing $create): void
+    {
+        $this->validate([
+            'tourDate' => ['required', 'date', 'after:today'],
+            'tourTime' => ['required', 'date_format:H:i'],
+            'tourNotes' => ['nullable', 'string', 'max:500'],
+        ]);
+
+        $user = auth()->user();
+        abort_unless($user?->current_team_id !== null, 403);
+        $property = $this->property();
+        abort_unless((bool) $property->live_tour_available, 404);
+        $startsAt = CarbonImmutable::parse($this->tourDate.' '.$this->tourTime);
+
+        $create->handle($user->current_team_id, $user->getAuthIdentifier(), [
+            'property_id' => $property->getKey(),
+            'subject' => 'Live virtual tour',
+            'starts_at' => $startsAt,
+            'ends_at' => $startsAt->addHour(),
+            'access' => ['mode' => 'virtual'],
+            'accompaniment' => ['notes' => $this->tourNotes],
+        ]);
+
+        $this->closeScheduleLiveTourModal();
+        $this->dispatch('tourScheduled');
     }
 
     public function toggleVirtualTour(): void

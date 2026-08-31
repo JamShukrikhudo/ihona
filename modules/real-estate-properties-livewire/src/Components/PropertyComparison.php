@@ -11,7 +11,7 @@ use Livewire\Component;
 final class PropertyComparison extends Component
 {
     /** @var list<int|string> */
-    public array $propertyIds = [];
+    public string|array $propertyIds = [];
 
     /** @var list<array<string, mixed>> */
     public array $properties = [];

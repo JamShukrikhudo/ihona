@@ -90,6 +90,9 @@
         @forelse ($properties as $property)
             <li wire:key="property-{{ $property->getKey() }}">
                 {{ $property->address }} ({{ $property->status->value }})
+                @if ($property->hasShortLease())
+                    <span>{{ $property->lease_years_remaining }}-year lease</span>
+                @endif
                 <button type="button" wire:click="toggleFavorite({{ $property->getKey() }})">
                     {{ $property->favorites->contains(fn ($favorite) => (string) $favorite->user_id === (string) auth()->id()) ? 'Unfavorite' : 'Favorite' }}
                 </button>

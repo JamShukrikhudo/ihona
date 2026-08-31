@@ -1,0 +1,61 @@
+openapi: 3.1.0
+info:
+  title: Real Estate Property Management API
+  version: 1.0.0
+x-liberu-idempotency-header: Idempotency-Key
+paths:
+  /api/v1/real-estate/property-management:
+    get: {operationId: real.estate.property.management.list, security: [{sanctum: []}], responses: {'200': {$ref: '#/components/responses/Collection'}}}
+    post: {operationId: real.estate.property.management.create, security: [{sanctum: []}], requestBody: {$ref: '#/components/requestBodies/Json'}, responses: {'201': {$ref: '#/components/responses/Resource'}}}
+  /api/v1/real-estate/property-management/{id}:
+    parameters: [{name: id, in: path, required: true, schema: {type: string}}]
+    get: {operationId: real.estate.property.management.get, security: [{sanctum: []}], responses: {'200': {$ref: '#/components/responses/Resource'}}}
+    patch: {operationId: real.estate.property.management.update, security: [{sanctum: []}], requestBody: {$ref: '#/components/requestBodies/Json'}, responses: {'200': {$ref: '#/components/responses/Resource'}}}
+  /api/v1/real-estate/property-management/{id}/details: {parameters: [{name: id, in: path, required: true, schema: {type: string}}], patch: {operationId: real.estate.property.management.details, security: [{sanctum: []}], requestBody: {$ref: '#/components/requestBodies/Json'}, responses: {'200': {$ref: '#/components/responses/Resource'}}}}
+  /api/v1/real-estate/property-management/{id}/failure: {parameters: [{name: id, in: path, required: true, schema: {type: string}}], post: {operationId: real.estate.property.management.failure, security: [{sanctum: []}], requestBody: {$ref: '#/components/requestBodies/Json'}, responses: {'200': {$ref: '#/components/responses/Resource'}}}}
+  /api/v1/real-estate/work-orders:
+    get: {operationId: real.estate.work.orders.list, security: [{sanctum: []}], responses: {'200': {$ref: '#/components/responses/Collection'}}}
+    post: {operationId: real.estate.work.orders.create, security: [{sanctum: []}], requestBody: {$ref: '#/components/requestBodies/Json'}, responses: {'201': {$ref: '#/components/responses/Resource'}}}
+  /api/v1/real-estate/work-orders/{id}:
+    parameters: [{name: id, in: path, required: true, schema: {type: string}}]
+    get: {operationId: real.estate.work.orders.get, security: [{sanctum: []}], responses: {'200': {$ref: '#/components/responses/Resource'}}}
+    patch: {operationId: real.estate.work.orders.update, security: [{sanctum: []}], requestBody: {$ref: '#/components/requestBodies/Json'}, responses: {'200': {$ref: '#/components/responses/Resource'}}}
+  /api/v1/real-estate/work-orders/{id}/updates:
+    parameters: [{name: id, in: path, required: true, schema: {type: string}}]
+    get: {operationId: real.estate.work.orders.updates.list, security: [{sanctum: []}], responses: {'200': {$ref: '#/components/responses/Collection'}}}
+    post: {operationId: real.estate.work.orders.updates.create, security: [{sanctum: []}], requestBody: {$ref: '#/components/requestBodies/Json'}, responses: {'201': {$ref: '#/components/responses/Resource'}}}
+  /api/v1/real-estate/contractor-quotes:
+    get: {operationId: real.estate.contractor.quotes.list, security: [{sanctum: []}], responses: {'200': {$ref: '#/components/responses/Collection'}}}
+    post: {operationId: real.estate.contractor.quotes.create, security: [{sanctum: []}], requestBody: {$ref: '#/components/requestBodies/Json'}, responses: {'201': {$ref: '#/components/responses/Resource'}}}
+  /api/v1/real-estate/contractor-quotes/{id}:
+    parameters: [{name: id, in: path, required: true, schema: {type: string}}]
+    get: {operationId: real.estate.contractor.quotes.get, security: [{sanctum: []}], responses: {'200': {$ref: '#/components/responses/Resource'}}}
+    patch: {operationId: real.estate.contractor.quotes.update, security: [{sanctum: []}], requestBody: {$ref: '#/components/requestBodies/Json'}, responses: {'200': {$ref: '#/components/responses/Resource'}}}
+  /api/v1/real-estate/contractor-quotes/{id}/decision: {parameters: [{name: id, in: path, required: true, schema: {type: string}}], post: {operationId: real.estate.contractor.quotes.decision, security: [{sanctum: []}], requestBody: {$ref: '#/components/requestBodies/Json'}, responses: {'200': {$ref: '#/components/responses/Resource'}}}}
+  /api/v1/real-estate/maintenance:
+    get: {operationId: real.estate.maintenance.list, security: [{sanctum: []}], responses: {'200': {$ref: '#/components/responses/Collection'}}}
+    post: {operationId: real.estate.maintenance.create, security: [{sanctum: []}], requestBody: {$ref: '#/components/requestBodies/Json'}, responses: {'201': {$ref: '#/components/responses/Resource'}}}
+  /api/v1/real-estate/maintenance/{id}:
+    parameters: [{name: id, in: path, required: true, schema: {type: string}}]
+    get: {operationId: real.estate.maintenance.get, security: [{sanctum: []}], responses: {'200': {$ref: '#/components/responses/Resource'}}}
+    patch: {operationId: real.estate.maintenance.update, security: [{sanctum: []}], requestBody: {$ref: '#/components/requestBodies/Json'}, responses: {'200': {$ref: '#/components/responses/Resource'}}}
+  /api/v1/real-estate/inspections:
+    get: {operationId: real.estate.inspections.list, security: [{sanctum: []}], responses: {'200': {$ref: '#/components/responses/Collection'}}}
+    post: {operationId: real.estate.inspections.create, security: [{sanctum: []}], requestBody: {$ref: '#/components/requestBodies/Json'}, responses: {'201': {$ref: '#/components/responses/Resource'}}}
+  /api/v1/real-estate/inspections/{id}:
+    parameters: [{name: id, in: path, required: true, schema: {type: string}}]
+    get: {operationId: real.estate.inspections.get, security: [{sanctum: []}], responses: {'200': {$ref: '#/components/responses/Resource'}}}
+    patch: {operationId: real.estate.inspections.update, security: [{sanctum: []}], requestBody: {$ref: '#/components/requestBodies/Json'}, responses: {'200': {$ref: '#/components/responses/Resource'}}}
+components:
+  securitySchemes:
+    sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}
+  requestBodies:
+    Json: {required: true, content: {application/json: {schema: {type: object, additionalProperties: true}}}}
+  responses:
+    Resource: {description: Authorized resource, content: {application/json: {schema: {$ref: '#/components/schemas/Envelope'}}}}
+    Collection: {description: Authorized paginated collection, content: {application/json: {schema: {$ref: '#/components/schemas/CollectionEnvelope'}}}}
+  schemas:
+    PaginationMeta: {type: object, required: [current_page, per_page, total, last_page], properties: {current_page: {type: integer}, per_page: {type: integer}, total: {type: integer}, last_page: {type: integer}}}
+    Envelope: {type: object, required: [data], properties: {data: {type: object, additionalProperties: true}}}
+    CollectionEnvelope: {type: object, required: [data], properties: {data: {type: array, items: {type: object, additionalProperties: true}}, meta: {type: object, additionalProperties: true}, links: {type: object, additionalProperties: true}}}
+    Error: {type: object, required: [title, status], properties: {title: {type: string}, status: {type: integer}, detail: {type: string}, errors: {type: object, additionalProperties: true}}}

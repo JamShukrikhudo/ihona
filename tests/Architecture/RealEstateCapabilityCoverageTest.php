@@ -145,8 +145,8 @@ it('keeps the API property response aligned with legacy listing data', function 
         expect($openApi)->toContain($field);
     }
 
-    expect($openApi)->toContain("#/components/schemas/PropertyPage")
-        ->toContain("#/components/schemas/PropertyResponse");
+    expect($openApi)->toContain('#/components/schemas/PropertyPage')
+        ->toContain('#/components/schemas/PropertyResponse');
 });
 
 it('does not narrow advanced Livewire search when no template is selected', function (): void {
@@ -188,7 +188,7 @@ it('keeps the property detail disclosure contract across adapters', function ():
         ->toContain('disclosure_facts:')
         ->and($provider)->toContain("property-detail', Components\\PropertyDetail::class")
         ->and($detail)->toContain('forTeam($teamId)')
-        ->toContain("property-viewing-requested")
+        ->toContain('property-viewing-requested')
         ->toContain('toggle3dModel')
         ->and($view)->toContain('Property facts')
         ->toContain('Book a viewing')
@@ -226,7 +226,7 @@ it('keeps the property comparison contract tenant-scoped across core, API, and L
 
     expect($model)->toContain('public function comparisonData(): array')
         ->and($api)->toContain('public function compare(Request $request): JsonResponse')
-        ->toContain("forTeam(\$teamId)")
+        ->toContain('forTeam($teamId)')
         ->and($routes)->toContain("'/compare'")
         ->and($component)->toContain('count($this->propertyIds) >= 4')
         ->toContain('whereNotIn')
@@ -282,6 +282,164 @@ it('keeps the legacy saved-property wishlist connected across property adapters'
         ->and($view)->toContain('Saved properties')->toContain('No saved properties yet')
         ->and($provider)->toContain("wishlist-manager', Components\\WishlistManager::class")
         ->and($filament)->toContain("Filter::make('favorites_only')")->toContain('favoritedBy');
+});
+
+it('keeps saved-search persistence connected across property adapters', function (): void {
+    $core = file_get_contents(base_path('modules/real-estate-properties/src/Models/PropertySavedSearch.php'));
+    $save = file_get_contents(base_path('modules/real-estate-properties/src/Application/SavePropertySearch.php'));
+    $api = file_get_contents(base_path('modules/real-estate-properties-api/src/Http/Controllers/PropertySavedSearchController.php'));
+    $routes = file_get_contents(base_path('modules/real-estate-properties-api/routes/api.php'));
+    $openApi = file_get_contents(base_path('modules/real-estate-properties-api/openapi/v1/real-estate-properties.yaml'));
+    $component = file_get_contents(base_path('modules/real-estate-properties-livewire/src/Components/AdvancedPropertySearch.php'));
+    $view = file_get_contents(base_path('modules/real-estate-properties-livewire/resources/views/advanced-property-search.blade.php'));
+    $filament = file_get_contents(base_path('modules/real-estate-properties-filament/src/Resources/PropertySavedSearchResource.php'));
+    $plugin = file_get_contents(base_path('modules/real-estate-properties-filament/src/PropertiesFilamentPlugin.php'));
+
+    expect($core)->toContain('class PropertySavedSearch')->toContain('ForUser')
+        ->and($save)->toContain('class SavePropertySearch')->toContain('criteria')
+        ->and($api)->toContain('class PropertySavedSearchController')->toContain('public function store')
+        ->and($routes)->toContain('property-saved-searches')
+        ->and($openApi)->toContain('/api/v1/real-estate/property-saved-searches')
+        ->toContain('real.estate.properties.saveSearch')
+        ->and($component)->toContain('public function saveSearch')->toContain('loadSearch')->toContain('deleteSearch')
+        ->and($view)->toContain('Saved searches')->toContain('wire:click="saveSearch"')
+        ->and($filament)->toContain('class PropertySavedSearchResource')->toContain('getEloquentQuery')
+        ->and($plugin)->toContain('PropertySavedSearchResource::class');
+});
+
+it('keeps community event proximity behavior connected to the property API boundary', function (): void {
+    $model = file_get_contents(base_path('modules/real-estate-properties/src/Models/CommunityEvent.php'));
+    $property = file_get_contents(base_path('modules/real-estate-properties/src/Models/Property.php'));
+    $api = file_get_contents(base_path('modules/real-estate-properties-api/src/Http/Controllers/CommunityEventController.php'));
+    $routes = file_get_contents(base_path('modules/real-estate-properties-api/routes/api.php'));
+    $resource = file_get_contents(base_path('modules/real-estate-properties-api/src/Http/Resources/CommunityEventResource.php'));
+
+    expect($model)->toContain('class CommunityEvent')->toContain('scopeUpcoming')->toContain('scopeNearby')
+        ->and($property)->toContain('getNearbyCommunityEvents')
+        ->and($api)->toContain('class CommunityEventController')->toContain('property_id')
+        ->and($routes)->toContain('real-estate/community-events')
+        ->and($resource)->toContain('class CommunityEventResource');
+});
+
+it('keeps property reviews connected to the modular Livewire boundary', function (): void {
+    $model = file_get_contents(base_path('modules/real-estate-properties/src/Models/PropertyReview.php'));
+    $action = file_get_contents(base_path('modules/real-estate-properties/src/Application/SubmitPropertyReview.php'));
+    $component = file_get_contents(base_path('modules/real-estate-properties-livewire/src/Components/PropertyReviewForm.php'));
+    $view = file_get_contents(base_path('modules/real-estate-properties-livewire/resources/views/property-review-form.blade.php'));
+    $provider = file_get_contents(base_path('modules/real-estate-properties-livewire/src/PropertiesLivewireServiceProvider.php'));
+
+    expect($model)->toContain('class PropertyReview')->toContain('scopeApproved')
+        ->and($action)->toContain('class SubmitPropertyReview')->toContain('hasPropertyInteraction')
+        ->and($component)->toContain('class PropertyReviewForm')->toContain('submitReview')
+        ->and($view)->toContain('aria-label=')->toContain('Submit review')
+        ->and($provider)->toContain("property-review-form', Components\\PropertyReviewForm::class");
+});
+
+it('keeps role and neighborhood reviews inside their modular boundaries', function (): void {
+    $party = file_get_contents(base_path('modules/real-estate-parties/src/Models/Party.php'));
+    $partyReview = file_get_contents(base_path('modules/real-estate-parties/src/Models/PartyReview.php'));
+    $partyAction = file_get_contents(base_path('modules/real-estate-parties/src/Application/SubmitPartyReview.php'));
+    $partyComponent = file_get_contents(base_path('modules/real-estate-parties-livewire/src/Components/PartyReviewForm.php'));
+    $partyProvider = file_get_contents(base_path('modules/real-estate-parties-livewire/src/PartiesLivewireServiceProvider.php'));
+    $neighborhood = file_get_contents(base_path('modules/real-estate-properties/src/Models/Neighborhood.php'));
+    $neighborhoodReview = file_get_contents(base_path('modules/real-estate-properties/src/Models/NeighborhoodReview.php'));
+    $neighborhoodAction = file_get_contents(base_path('modules/real-estate-properties/src/Application/SubmitNeighborhoodReview.php'));
+    $neighborhoodComponent = file_get_contents(base_path('modules/real-estate-properties-livewire/src/Components/NeighborhoodReviewForm.php'));
+
+    expect($party)->toContain('function reviews')->toContain('averageReviewRating')
+        ->and($partyReview)->toContain('class PartyReview')->toContain('scopeApproved')
+        ->and($partyAction)->toContain('class SubmitPartyReview')->toContain('PartyType::Landlord')->toContain('PartyType::Tenant')
+        ->and($partyComponent)->toContain('class PartyReviewForm')->toContain('submitReview')
+        ->and($partyProvider)->toContain('landlord-review-form')->toContain('tenant-review-form')
+        ->and($neighborhood)->toContain('class Neighborhood')->toContain('scopeForTeam')
+        ->and($neighborhoodReview)->toContain('class NeighborhoodReview')->toContain('scopeApproved')
+        ->and($neighborhoodAction)->toContain('class SubmitNeighborhoodReview')
+        ->and($neighborhoodComponent)->toContain('class NeighborhoodReviewForm')->toContain('submitReview');
+});
+
+it('keeps property price alerts connected across modular boundaries', function (): void {
+    $model = file_get_contents(base_path('modules/real-estate-properties/src/Models/PropertyPriceAlert.php'));
+    $action = file_get_contents(base_path('modules/real-estate-properties/src/Application/CheckPriceAlerts.php'));
+    $component = file_get_contents(base_path('modules/real-estate-properties-livewire/src/Components/PriceAlertManager.php'));
+    $api = file_get_contents(base_path('modules/real-estate-properties-api/src/Http/Controllers/PropertyPriceAlertController.php'));
+    $routes = file_get_contents(base_path('modules/real-estate-properties-api/routes/api.php'));
+    $openApi = file_get_contents(base_path('modules/real-estate-properties-api/openapi/v1/real-estate-properties.yaml'));
+
+    expect($model)->toContain('class PropertyPriceAlert')->toContain('scopeActive')
+        ->and($action)->toContain('class CheckPriceAlerts')->toContain('PriceAlertTriggered')
+        ->and($component)->toContain('class PriceAlertManager')->toContain('createAlert')
+        ->and($api)->toContain('class PropertyPriceAlertController')->toContain('PropertyPriceAlertResource')
+        ->and($routes)->toContain('price-alerts')
+        ->and($openApi)->toContain('createPriceAlert')->toContain('PriceAlertInput');
+});
+
+it('keeps property submission connected to the modular property and media actions', function (): void {
+    $component = file_get_contents(base_path('modules/real-estate-properties-livewire/src/Components/PropertySubmissionForm.php'));
+    $view = file_get_contents(base_path('modules/real-estate-properties-livewire/resources/views/property-submission-form.blade.php'));
+    $provider = file_get_contents(base_path('modules/real-estate-properties-livewire/src/PropertiesLivewireServiceProvider.php'));
+
+    expect($component)->toContain('class PropertySubmissionForm')
+        ->toContain('CreateProperty')
+        ->toContain('CreateMediaDocument')
+        ->toContain('generateAIDescription')
+        ->toContain('preview')
+        ->and($view)->toContain('enctype="multipart/form-data"')->toContain('Submit property')
+        ->and($provider)->toContain("property-submission-form', Components\\PropertySubmissionForm::class");
+});
+
+it('keeps property preview connected to the submission event', function (): void {
+    $component = file_get_contents(base_path('modules/real-estate-properties-livewire/src/Components/PropertyPreview.php'));
+    $view = file_get_contents(base_path('modules/real-estate-properties-livewire/resources/views/property-preview.blade.php'));
+    $provider = file_get_contents(base_path('modules/real-estate-properties-livewire/src/PropertiesLivewireServiceProvider.php'));
+
+    expect($component)->toContain('class PropertyPreview')->toContain("On('previewProperty')")
+        ->and($view)->toContain('No property selected for preview.')
+        ->and($provider)->toContain("property-preview', Components\\PropertyPreview::class");
+});
+
+it('keeps VR property design modularized across core, API, and Livewire adapters', function (): void {
+    $root = dirname(__DIR__, 2);
+    $core = file_get_contents("{$root}/modules/real-estate-vr-design/src/Application/VrDesignService.php");
+    $model = file_get_contents("{$root}/modules/real-estate-vr-design/src/Models/VrDesign.php");
+    $api = file_get_contents("{$root}/modules/real-estate-vr-design-api/src/Http/Controllers/VrDesignController.php");
+    $routes = file_get_contents("{$root}/modules/real-estate-vr-design-api/routes/api.php");
+    $openApi = file_get_contents("{$root}/modules/real-estate-vr-design-api/openapi/v1/real-estate-vr-design.yaml");
+    $livewire = file_get_contents("{$root}/modules/real-estate-vr-design-livewire/src/Components/DesignStudio.php");
+    $definition = file_get_contents("{$root}/modules/real-estate-vr-design/src/Domain/VrDesignCapabilityDefinition.php");
+
+    expect($core)->toContain('class VrDesignService')->toContain('addFurniture')->toContain('uploadThumbnail')->toContain('cloneDesign')
+        ->and($model)->toContain('scopeForTeam')->toContain('scopeTemplates')
+        ->and($definition)->toContain('Design styles')->toContain('VR exports')
+        ->and($api)->toContain('class VrDesignController')->toContain('VrDesignResource')
+        ->and($routes)->toContain("'auth:sanctum'")->toContain('vr-design')
+        ->and($openApi)->toContain('openapi: 3.1.0')->toContain('operationId:')
+        ->and($livewire)->toContain('class DesignStudio')->toContain('saveDesign');
+});
+
+it('keeps published news connected to the marketing API boundary', function (): void {
+    $model = file_get_contents(base_path('modules/real-estate-marketing/src/Models/NewsArticle.php'));
+    $api = file_get_contents(base_path('modules/real-estate-marketing-api/src/Http/Controllers/NewsArticleController.php'));
+    $routes = file_get_contents(base_path('modules/real-estate-marketing-api/routes/api.php'));
+    $resource = file_get_contents(base_path('modules/real-estate-marketing-api/src/Http/Resources/NewsArticleResource.php'));
+    $openApi = file_get_contents(base_path('modules/real-estate-marketing-api/openapi/v1/real-estate-marketing.yaml'));
+
+    expect($model)->toContain('class NewsArticle')->toContain('scopePublished')->toContain('scopeFeatured')
+        ->and($api)->toContain('class NewsArticleController')->toContain('public function latest')->toContain('public function featured')
+        ->and($routes)->toContain('real-estate/news')
+        ->and($resource)->toContain('class NewsArticleResource')
+        ->and($openApi)->toContain('real.estate.marketing.news.list');
+});
+
+it('keeps published news available through presentation adapters', function (): void {
+    $filament = file_get_contents(base_path('modules/real-estate-marketing-filament/src/Resources/NewsArticleResource.php'));
+    $plugin = file_get_contents(base_path('modules/real-estate-marketing-filament/src/MarketingFilamentPlugin.php'));
+    $livewire = file_get_contents(base_path('modules/real-estate-marketing-livewire/src/Components/NewsArticleList.php'));
+    $view = file_get_contents(base_path('modules/real-estate-marketing-livewire/resources/views/news-article-list.blade.php'));
+
+    expect($filament)->toContain('class NewsArticleResource')->toContain('getEloquentQuery')->toContain('published')
+        ->and($plugin)->toContain('NewsArticleResource::class')
+        ->and($livewire)->toContain('class NewsArticleList')->toContain('published')
+        ->and($view)->toContain('wire:model.live')->toContain('@empty');
 });
 
 it('keeps Filament resources tenant-scoped and lifecycle-delegated', function (): void {

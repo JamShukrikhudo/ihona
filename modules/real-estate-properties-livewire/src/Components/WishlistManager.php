@@ -15,7 +15,9 @@ final class WishlistManager extends Component
     use WithPagination;
 
     public string $search = '';
+
     public string $sortBy = 'created_at';
+
     public ?string $removed = null;
 
     protected $queryString = [

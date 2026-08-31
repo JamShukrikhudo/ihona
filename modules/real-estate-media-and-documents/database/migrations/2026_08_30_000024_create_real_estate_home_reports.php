@@ -1,0 +1,4 @@
+<?php
+declare(strict_types=1);
+use Illuminate\Database\Migrations\Migration; use Illuminate\Database\Schema\Blueprint; use Illuminate\Support\Facades\Schema;
+return new class() extends Migration { public function up():void{Schema::create('real_estate_home_reports',fn(Blueprint $t)=>[$t->id(),$t->string('team_id'),$t->string('created_by')->nullable(),$t->string('property_id'),$t->date('survey_date')->nullable(),$t->date('expiry_date')->nullable(),$t->string('energy_band')->nullable(),$t->unsignedTinyInteger('energy_current_score')->nullable(),$t->unsignedTinyInteger('energy_potential_score')->nullable(),$t->string('property_condition')->default('1'),$t->json('condition_categories')->nullable(),$t->string('file_path')->nullable(),$t->string('file_url')->nullable(),$t->timestamps(),$t->softDeletes()]);} public function down():void{Schema::dropIfExists('real_estate_home_reports');} };

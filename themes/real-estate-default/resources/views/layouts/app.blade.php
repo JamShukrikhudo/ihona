@@ -7,6 +7,8 @@
     <title>{{ $title ?? __('theme-real-estate-default::messages.brand') }}</title>
     @themeCss
     @themeJs
+    @vite('resources/js/app.js')
+    @livewireStyles
 </head>
 <body class="re-shell">
     <a class="re-skip-link" href="#main-content">{{ __('theme-real-estate-default::messages.navigation.skip') }}</a>
@@ -46,5 +48,7 @@
             <p>{{ __('theme-real-estate-default::messages.footer') }}</p>
         </div>
     </footer>
+    @livewireScripts
+    @stack('scripts')
 </body>
 </html>

@@ -7,8 +7,8 @@ namespace Liberu\RealEstate\PropertiesLivewire\Components;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Liberu\RealEstate\Properties\Application\RecordPropertyKey;
-use Liberu\RealEstate\Properties\Application\TransitionProperty;
 use Liberu\RealEstate\Properties\Application\TogglePropertyFavorite;
+use Liberu\RealEstate\Properties\Application\TransitionProperty;
 use Liberu\RealEstate\Properties\Application\UpsertPropertyUnit;
 use Liberu\RealEstate\Properties\Domain\PropertyStatus;
 use Liberu\RealEstate\Properties\Models\Property;
@@ -140,22 +140,22 @@ final class PropertyList extends Component
 
     public function publish(int $propertyId, TransitionProperty $transition): void
     {
-        $this->transition($propertyId, PropertyStatus::Available, $transition);
+        $this->transitionProperty($propertyId, PropertyStatus::Available, $transition);
     }
 
     public function markUnderOffer(int $propertyId, TransitionProperty $transition): void
     {
-        $this->transition($propertyId, PropertyStatus::UnderOffer, $transition);
+        $this->transitionProperty($propertyId, PropertyStatus::UnderOffer, $transition);
     }
 
     public function markSold(int $propertyId, TransitionProperty $transition): void
     {
-        $this->transition($propertyId, PropertyStatus::Sold, $transition);
+        $this->transitionProperty($propertyId, PropertyStatus::Sold, $transition);
     }
 
     public function withdraw(int $propertyId, TransitionProperty $transition): void
     {
-        $this->transition($propertyId, PropertyStatus::Withdrawn, $transition);
+        $this->transitionProperty($propertyId, PropertyStatus::Withdrawn, $transition);
     }
 
     public function render(): View
@@ -247,27 +247,27 @@ final class PropertyList extends Component
         $teamId = auth()->user()?->current_team_id;
 
         return Property::query()->forTeam($teamId ?? 0)
-                ->search($this->search)
-                ->postalCode($this->postalCode)
-                ->when($this->needsSyncingOnly, fn ($query) => $query->needsSyncing())
-                ->priceRange($this->minPrice, $this->maxPrice)
-                ->bedrooms($this->minBedrooms, $this->maxBedrooms)
-                ->bathrooms($this->minBathrooms, $this->maxBathrooms)
-                ->areaRange($this->minArea, $this->maxArea)
-                ->yearBuiltRange($this->minYearBuilt, $this->maxYearBuilt)
-                ->propertyType($this->propertyType)
-                ->status($this->status)
-                ->hasAmenities($this->selectedAmenities)
-                ->country($this->country)
-                ->energyRating($this->energyRating)
-                ->minEnergyScore($this->minEnergyScore)
-                ->walkabilityScore($this->minWalkabilityScore)
-                ->transitScore($this->minTransitScore)
-                ->bikeScore($this->minBikeScore)
-                ->when($this->featuredOnly, fn (Builder $query): Builder => $query->featured());
+            ->search($this->search)
+            ->postalCode($this->postalCode)
+            ->when($this->needsSyncingOnly, fn ($query) => $query->needsSyncing())
+            ->priceRange($this->minPrice, $this->maxPrice)
+            ->bedrooms($this->minBedrooms, $this->maxBedrooms)
+            ->bathrooms($this->minBathrooms, $this->maxBathrooms)
+            ->areaRange($this->minArea, $this->maxArea)
+            ->yearBuiltRange($this->minYearBuilt, $this->maxYearBuilt)
+            ->propertyType($this->propertyType)
+            ->status($this->status)
+            ->hasAmenities($this->selectedAmenities)
+            ->country($this->country)
+            ->energyRating($this->energyRating)
+            ->minEnergyScore($this->minEnergyScore)
+            ->walkabilityScore($this->minWalkabilityScore)
+            ->transitScore($this->minTransitScore)
+            ->bikeScore($this->minBikeScore)
+            ->when($this->featuredOnly, fn (Builder $query): Builder => $query->featured());
     }
 
-    private function transition(int $propertyId, PropertyStatus $status, TransitionProperty $transition): void
+    private function transitionProperty(int $propertyId, PropertyStatus $status, TransitionProperty $transition): void
     {
         $user = auth()->user();
         abort_unless($user?->current_team_id !== null, 403);

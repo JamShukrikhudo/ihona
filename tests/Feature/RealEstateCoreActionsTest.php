@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Support\Facades\Schema;
 use Liberu\Foundation\Organizations\Models\Team;
 use Liberu\RealEstate\Core\Application\CreateAgency;
@@ -18,6 +19,8 @@ use Liberu\RealEstate\Core\Application\UpdateTerritory;
 use Liberu\RealEstate\Core\Models\Agency;
 use Liberu\RealEstate\Core\Models\Branch;
 use Liberu\RealEstate\Core\Models\Territory;
+use Liberu\RealEstate\CoreLivewire\Components\NumberingPreview;
+use Livewire\Livewire;
 
 it('creates and updates a team branch with a normalized code', function () {
     expect(Schema::hasTable('real_estate_branches'))->toBeTrue();
@@ -87,4 +90,18 @@ it('owns terminology, status definitions, and audit entries per team', function 
         ->and($status->active)->toBeTrue()
         ->and($audit->event)->toBe('listing.published')
         ->and($audit->metadata['source'])->toBe('test');
+});
+
+it('generates team-scoped numbers from the core Livewire surface', function (): void {
+    $user = User::factory()->create(['current_team_id' => 10]);
+    $this->actingAs($user);
+
+    Livewire::test(NumberingPreview::class)
+        ->set('key', 'property')
+        ->set('prefix', 'PROP-')
+        ->set('padding', 4)
+        ->call('generate')
+        ->assertSet('number', 'PROP-0001')
+        ->assertSet('error', null)
+        ->assertSee('PROP-0001');
 });

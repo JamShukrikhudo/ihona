@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Filament\ModulePlugins;
+use App\Http\Middleware\ApplyTeamIntegrationSettings;
 use App\Support\ThemeColors;
 use BezhanSalleh\FilamentShield\Middleware\SyncShieldTenant;
 use Filament\Http\Middleware\Authenticate;
@@ -39,6 +40,19 @@ class AdminPanelProvider extends PanelProvider
             ->pages([
                 Dashboard::class,
             ])
+            ->navigationGroups([
+                'Real Estate',
+                'People & Relationships',
+                'Property Management',
+                'Marketing & Portals',
+                'Insights & Tools',
+                'Content',
+                'Organisation',
+                'Configuration',
+                'Platform',
+                'Integrations',
+                'Operations',
+            ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
                 AccountWidget::class,
@@ -52,6 +66,7 @@ class AdminPanelProvider extends PanelProvider
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
                 StartSession::class,
+                ApplyTeamIntegrationSettings::class,
                 AuthenticateSession::class,
                 ShareErrorsFromSession::class,
                 PreventRequestForgery::class,
@@ -62,6 +77,7 @@ class AdminPanelProvider extends PanelProvider
                 SecurityHeaders::class,
             ])
             ->plugins(app(ModulePlugins::class)->forPanel('admin'))
+            ->bootUsing(fn (Panel $panel): null => NavigationGroups::configure($panel))
             ->authMiddleware([
                 Authenticate::class,
             ]);

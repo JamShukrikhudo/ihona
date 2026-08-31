@@ -1,0 +1,4 @@
+<?php
+declare(strict_types=1);
+use Illuminate\Database\Migrations\Migration; use Illuminate\Database\Schema\Blueprint; use Illuminate\Support\Facades\Schema;
+return new class() extends Migration { public function up():void { Schema::create('real_estate_viewing_feedback',fn(Blueprint $t)=>[$t->id(),$t->foreignId('viewing_id'),$t->string('team_id'),$t->string('property_id'),$t->string('viewer_name'),$t->string('viewer_email'),$t->string('token')->unique(),$t->unsignedTinyInteger('overall_rating')->nullable(),$t->unsignedTinyInteger('price_rating')->nullable(),$t->unsignedTinyInteger('condition_rating')->nullable(),$t->string('interest_level')->nullable(),$t->boolean('would_make_offer')->nullable(),$t->timestamp('feedback_submitted_at')->nullable(),$t->timestamps()]); } public function down():void{Schema::dropIfExists('real_estate_viewing_feedback');} };
