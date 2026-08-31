@@ -264,7 +264,7 @@ A fresh install must run `npm run build`.
 
 ### Multi-language
 
-`config('app.supported_locales')` (en/es/fr/de).
+`config('app.supported_locales')` (en/ru/tg/uz).
 `Liberu\Foundation\Localization\Http\Middleware\SetLocale` resolves request param → session →
 `users.locale` → `Accept-Language` → default, and runs on the `web` group (`bootstrap/app.php`)
 **and** both panels. Precedence is request > session > user, so a stale session locale can shadow
