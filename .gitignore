@@ -12,6 +12,9 @@
 node_modules/
 npm-debug.log
 yarn-error.log
+/resources/js/wayfinder/
+/resources/js/actions/
+/resources/js/routes/
 
 # Laravel 4 specific
 bootstrap/compiled.php
@@ -32,6 +35,7 @@ Homestead.yaml
 Homestead.json
 /.vagrant
 .phpunit.result.cache
+coverage*.xml
 rr
 # .rr.yaml is tracked in git (needed for RoadRunner configuration)
 

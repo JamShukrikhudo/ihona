@@ -2,6 +2,7 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import { bunny } from 'laravel-vite-plugin/fonts';
+import { wayfinder } from '@laravel/vite-plugin-wayfinder';
 import tailwindcss from '@tailwindcss/vite';
 
 // Each theme package declares its build entry points in theme.json; that manifest is
@@ -16,6 +17,7 @@ const themeInputs = readdirSync('themes', { withFileTypes: true })
 
 export default defineConfig({
     plugins: [
+        wayfinder(),
         laravel({
             input: [
                 'resources/css/app.css',

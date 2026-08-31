@@ -13,6 +13,9 @@ final class PartiesServiceProvider extends ServiceProvider
         $this->app->singleton(Application\CreateParty::class);
         $this->app->singleton(Application\UpdateParty::class);
         $this->app->singleton(Application\DeleteParty::class);
+        $this->app->singleton(Application\SubmitPartyReview::class);
+        $this->app->singleton(Application\CreateContact::class);
+        $this->app->singleton(Application\CreateContactMessage::class);
     }
 
     public function boot(): void

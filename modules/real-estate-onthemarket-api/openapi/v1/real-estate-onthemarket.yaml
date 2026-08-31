@@ -1,11 +1,19 @@
-openapi: 3.0.3
+openapi: 3.1.0
 info: {title: Real Estate OnTheMarket Sync API, version: 1.0.0}
+security: [{sanctum: []}]
+x-liberu-idempotency-header: Idempotency-Key
 paths:
   /api/v1/real-estate/integrations/onthemarket/syncs:
-    get: {summary: List OnTheMarket syncs, responses: {'200': {description: OK}}}
-    post: {summary: Create an OnTheMarket sync, responses: {'201': {description: Created}}}
+    get: {operationId: real.estate.onthemarket.list, summary: List OnTheMarket syncs, responses: {'200': {description: OK}}}
+    post: {operationId: real.estate.onthemarket.create, responses: {'201': {description: Created}}}
   /api/v1/real-estate/integrations/onthemarket/syncs/{onTheMarketSync}:
-    post: {summary: Synchronize an OnTheMarket listing, responses: {'200': {description: Synchronized}}}
-    get: {summary: Show an OnTheMarket sync, responses: {'200': {description: OK}}}
-    patch: {summary: Update an OnTheMarket sync, responses: {'200': {description: OK}}}
-    delete: {summary: Archive an OnTheMarket sync, responses: {'204': {description: Archived}}}
+    post: {operationId: real.estate.onthemarket.sync, summary: Synchronize an OnTheMarket listing, responses: {'200': {description: Synchronized}}}
+    get: {operationId: real.estate.onthemarket.get, summary: Show an OnTheMarket sync, responses: {'200': {description: OK}}}
+    patch: {operationId: real.estate.onthemarket.update, summary: Update an OnTheMarket sync, responses: {'200': {description: OK}}}
+    delete: {operationId: real.estate.onthemarket.delete, summary: Archive an OnTheMarket sync, responses: {'204': {description: Archived}}}
+components:
+  securitySchemes:
+    sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}
+  schemas:
+    Error: {type: object, required: [message], properties: {message: {type: string}, code: {type: string}, errors: {type: object, additionalProperties: true}}}
+    PaginationMeta: {type: object, required: [current_page, per_page, total, last_page], properties: {current_page: {type: integer}, per_page: {type: integer}, total: {type: integer}, last_page: {type: integer}}}

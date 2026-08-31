@@ -2,6 +2,8 @@ openapi: 3.1.0
 info:
   title: Real Estate Parties API
   version: 1.0.0
+security: [{sanctum: []}]
+x-liberu-idempotency-header: Idempotency-Key
 paths:
   /api/v1/real-estate/parties:
     get:
@@ -36,6 +38,31 @@ paths:
         - {name: id, in: path, required: true, schema: {type: string}}
       responses:
         '204': {description: Party archived}
+  /api/v1/real-estate/parties/{id}/consent:
+    post:
+      operationId: real.estate.parties.consent
+      security: [{sanctum: []}]
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string}}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [granted]
+              properties:
+                granted: {type: boolean}
+      responses:
+        '200': {description: Consent updated}
+  /api/v1/real-estate/parties/{id}/relationships:
+    get: {operationId: real.estate.parties.relationships.list, responses: {'200': {description: Party relationships}}}
+    post: {operationId: real.estate.parties.relationships.create, responses: {'201': {description: Relationship created}}}
+  /api/v1/real-estate/parties/{id}/relationships/{relationship}:
+    delete: {operationId: real.estate.parties.relationships.delete, responses: {'204': {description: Relationship removed}}}
 components:
   securitySchemes:
     sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}
+  schemas:
+    Error: {type: object, required: [message], properties: {message: {type: string}, code: {type: string}, errors: {type: object, additionalProperties: true}}}
+    PaginationMeta: {type: object, required: [current_page, per_page, total, last_page], properties: {current_page: {type: integer}, per_page: {type: integer}, total: {type: integer}, last_page: {type: integer}}}

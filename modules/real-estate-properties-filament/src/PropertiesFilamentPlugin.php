@@ -6,7 +6,10 @@ namespace Liberu\RealEstate\PropertiesFilament;
 
 use Filament\Contracts\Plugin;
 use Filament\Panel;
+use Liberu\RealEstate\PropertiesFilament\Resources\PropertyCategoryResource;
 use Liberu\RealEstate\PropertiesFilament\Resources\PropertyResource;
+use Liberu\RealEstate\PropertiesFilament\Resources\PropertySavedSearchResource;
+use Liberu\RealEstate\PropertiesFilament\Resources\PropertyTemplateResource;
 
 final class PropertiesFilamentPlugin implements Plugin
 {
@@ -24,6 +27,9 @@ final class PropertiesFilamentPlugin implements Plugin
     {
         $panel->resources([
             PropertyResource::class,
+            PropertyCategoryResource::class,
+            PropertyTemplateResource::class,
+            PropertySavedSearchResource::class,
         ]);
     }
 

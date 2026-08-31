@@ -1,11 +1,124 @@
 openapi: 3.1.0
-info: {title: Real Estate Instructions API, version: 1.0.0}
+info:
+  title: Real Estate Instructions API
+  version: 1.0.0
+  description: Team-scoped instruction lifecycle API.
+servers: [{url: /}]
+security: [{sanctum: []}]
 paths:
   /api/v1/real-estate/instructions:
-    get: {operationId: real.estate.instructions.list, responses: {"200": {description: Authorized instructions}}}
-    post: {operationId: real.estate.instructions.create, responses: {"201": {description: Created instruction}}}
+    get:
+      operationId: real.estate.instructions.list
+      parameters: [{name: page_size, in: query, schema: {type: integer, minimum: 1, maximum: 100, default: 25}}]
+      responses:
+        '200': {description: Paginated instructions, content: {application/json: {schema: {$ref: '#/components/schemas/InstructionCollection'}}}}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+        '429': {$ref: '#/components/responses/RateLimited'}
+    post:
+      operationId: real.estate.instructions.create
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/InstructionInput'}}}}
+      responses:
+        '201': {description: Created instruction, content: {application/json: {schema: {$ref: '#/components/schemas/InstructionResponse'}}}}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+        '409': {$ref: '#/components/responses/Conflict'}
+        '422': {$ref: '#/components/responses/ValidationError'}
+        '429': {$ref: '#/components/responses/RateLimited'}
   /api/v1/real-estate/instructions/{id}:
-    parameters: [{name: id, in: path, required: true, schema: {type: string}}]
-    get: {operationId: real.estate.instructions.get, responses: {"200": {description: Instruction}}}
-    patch: {operationId: real.estate.instructions.update, responses: {"200": {description: Updated instruction}}}
-    delete: {operationId: real.estate.instructions.delete, responses: {"204": {description: Deleted instruction}}}
+    parameters: [{name: id, in: path, required: true, schema: {type: integer, minimum: 1}}]
+    get:
+      operationId: real.estate.instructions.get
+      responses:
+        '200': {description: Instruction, content: {application/json: {schema: {$ref: '#/components/schemas/InstructionResponse'}}}}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '404': {$ref: '#/components/responses/NotFound'}
+        '429': {$ref: '#/components/responses/RateLimited'}
+    patch:
+      operationId: real.estate.instructions.update
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/InstructionInput'}}}}
+      responses:
+        '200': {description: Updated instruction, content: {application/json: {schema: {$ref: '#/components/schemas/InstructionResponse'}}}}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '404': {$ref: '#/components/responses/NotFound'}
+        '409': {$ref: '#/components/responses/Conflict'}
+        '422': {$ref: '#/components/responses/ValidationError'}
+        '429': {$ref: '#/components/responses/RateLimited'}
+    delete:
+      operationId: real.estate.instructions.delete
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      responses:
+        '204': {description: Instruction archived}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '404': {$ref: '#/components/responses/NotFound'}
+        '429': {$ref: '#/components/responses/RateLimited'}
+components:
+  securitySchemes:
+    sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}
+  parameters:
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: false
+      description: Replays a completed mutation for the same team, key, and request body.
+      schema: {type: string, minLength: 8, maxLength: 255}
+  schemas:
+    Instruction:
+      type: object
+      required: [id, team_id, subject, status]
+      properties:
+        id: {type: integer, example: 42}
+        team_id: {type: integer, example: 7}
+        subject: {type: string, maxLength: 255}
+        property_id: {type: [integer, 'null']}
+        party_id: {type: [integer, 'null']}
+        status: {type: string, enum: [draft, pending_approval, approved, withdrawn, rejected]}
+        ownership_check: {type: object, additionalProperties: true}
+        terms: {type: object, additionalProperties: true}
+        disclosures: {type: object, additionalProperties: true}
+        approved_at: {type: [string, 'null'], format: date-time}
+        withdrawn_at: {type: [string, 'null'], format: date-time}
+        created_at: {type: string, format: date-time}
+        updated_at: {type: string, format: date-time}
+    InstructionInput:
+      type: object
+      required: [subject]
+      properties:
+        subject: {type: string, minLength: 1, maxLength: 255}
+        property_id: {type: [integer, 'null']}
+        party_id: {type: [integer, 'null']}
+        ownership_check: {type: object, additionalProperties: true}
+        terms: {type: object, additionalProperties: true}
+        disclosures: {type: object, additionalProperties: true}
+        status: {type: string, enum: [draft, pending_approval, approved, withdrawn, rejected]}
+    InstructionResponse: {type: object, required: [data], properties: {data: {$ref: '#/components/schemas/Instruction'}}}
+    InstructionCollection:
+      type: object
+      required: [data, meta]
+      properties:
+        data: {type: array, items: {$ref: '#/components/schemas/Instruction'}}
+        meta: {$ref: '#/components/schemas/PaginationMeta'}
+    PaginationMeta:
+      type: object
+      required: [current_page, per_page, total, last_page]
+      properties:
+        current_page: {type: integer, minimum: 1}
+        per_page: {type: integer, minimum: 1, maximum: 100}
+        total: {type: integer, minimum: 0}
+        last_page: {type: integer, minimum: 1}
+    Error:
+      type: object
+      required: [message]
+      properties:
+        message: {type: string}
+        code: {type: string}
+        errors: {type: object, additionalProperties: {type: array, items: {type: string}}}
+  responses:
+    Unauthorized: {description: Authentication required, content: {application/json: {schema: {$ref: '#/components/schemas/Error'}}}}
+    Forbidden: {description: Team access denied, content: {application/json: {schema: {$ref: '#/components/schemas/Error'}}}}
+    NotFound: {description: Resource not found, content: {application/json: {schema: {$ref: '#/components/schemas/Error'}}}}
+    Conflict: {description: State or idempotency conflict, content: {application/json: {schema: {$ref: '#/components/schemas/Error'}}}}
+    ValidationError: {description: Validation failed, content: {application/json: {schema: {$ref: '#/components/schemas/Error'}}}}
+    RateLimited: {description: Rate limit exceeded, headers: {Retry-After: {schema: {type: integer}}}, content: {application/json: {schema: {$ref: '#/components/schemas/Error'}}}}

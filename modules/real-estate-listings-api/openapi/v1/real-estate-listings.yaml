@@ -1,5 +1,7 @@
 openapi: 3.1.0
 info: {title: Real Estate Listings API, version: 1.0.0}
+security: [{sanctum: []}]
+x-liberu-idempotency-header: Idempotency-Key
 paths:
   /api/v1/real-estate/listings:
     get: {operationId: real.estate.listings.list, responses: {"200": {description: Authorized listings}}}
@@ -9,3 +11,15 @@ paths:
     get: {operationId: real.estate.listings.get, responses: {"200": {description: Listing}}}
     patch: {operationId: real.estate.listings.update, responses: {"200": {description: Updated listing}}}
     delete: {operationId: real.estate.listings.delete, responses: {"204": {description: Deleted listing}}}
+  /api/v1/real-estate/listings/{id}/transition/{status}:
+    post: {operationId: real.estate.listings.transition, responses: {"200": {description: Transitioned listing}}}
+  /api/v1/real-estate/listings/{id}/{section}:
+    parameters:
+      - {name: section, in: path, required: true, schema: {type: string, enum: [channel_content, publication_rules, portal_feeds, reconciliation]}}
+    patch: {operationId: real.estate.listings.updateSection, responses: {"200": {description: Section updated}}}
+components:
+  securitySchemes:
+    sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}
+  schemas:
+    Error: {type: object, required: [message], properties: {message: {type: string}, code: {type: string}, errors: {type: object, additionalProperties: true}}}
+    PaginationMeta: {type: object, required: [current_page, per_page, total, last_page], properties: {current_page: {type: integer}, per_page: {type: integer}, total: {type: integer}, last_page: {type: integer}}}

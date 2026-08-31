@@ -1,0 +1,38 @@
+<?php
+
+declare(strict_types=1);
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class() extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('real_estate_property_templates', function (Blueprint $table): void {
+            $table->id();
+            $table->unsignedBigInteger('team_id')->index();
+            $table->string('name', 120);
+            $table->text('content');
+            $table->timestamps();
+        });
+
+        Schema::table('real_estate_properties', function (Blueprint $table): void {
+            $table->foreignId('property_template_id')
+                ->nullable()
+                ->after('property_category_id')
+                ->constrained('real_estate_property_templates')
+                ->nullOnDelete();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table('real_estate_properties', function (Blueprint $table): void {
+            $table->dropConstrainedForeignId('property_template_id');
+        });
+
+        Schema::dropIfExists('real_estate_property_templates');
+    }
+};

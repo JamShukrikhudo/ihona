@@ -4,14 +4,19 @@ declare(strict_types=1);
 
 namespace Liberu\RealEstate\MatchingFilament\Resources;
 
+use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
+use Liberu\RealEstate\Matching\Application\CalculateMatchScore;
+use Liberu\RealEstate\Matching\Application\RankPropertyRecommendations;
 use Liberu\RealEstate\Matching\Models\MatchProfile;
 use Liberu\RealEstate\MatchingFilament\Resources\MatchProfileResource\Pages\CreateMatchProfile;
 use Liberu\RealEstate\MatchingFilament\Resources\MatchProfileResource\Pages\EditMatchProfile;
@@ -27,12 +32,26 @@ final class MatchProfileResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return $schema->components([TextInput::make('subject')->required()->maxLength(255), TextInput::make('score')->numeric()->minValue(0)->maxValue(100), TextInput::make('party_id')->numeric()]);
+        return $schema->components([TextInput::make('subject')->required()->maxLength(255), TextInput::make('score')->numeric()->minValue(0)->maxValue(100), TextInput::make('party_id')->numeric(), Textarea::make('requirements')->json(), Textarea::make('affordability')->json(), Textarea::make('preferences')->json(), Textarea::make('alerts')->json(), Textarea::make('feedback')->json(), Textarea::make('exclusions')->json()]);
     }
 
     public static function table(Table $table): Table
     {
-        return $table->columns([TextColumn::make('subject')->searchable(), TextColumn::make('score')->sortable(), TextColumn::make('created_at')->dateTime()->sortable()])->recordActions([EditAction::make(), DeleteAction::make()])->defaultSort('created_at', 'desc');
+        return $table->columns([TextColumn::make('subject')->searchable(), TextColumn::make('score')->sortable(), TextColumn::make('created_at')->dateTime()->sortable()])->recordActions([
+            EditAction::make(),
+            Action::make('calculate_score')->form([Textarea::make('criteria')->json()->required(), Textarea::make('property')->json()->required()])->action(fn (MatchProfile $record, array $data): MatchProfile => tap($record, function (MatchProfile $record) use ($data): void {
+                $score = app(CalculateMatchScore::class)->handle($data['criteria'], $data['property']);
+                $record->forceFill(['score' => (int) round($score['match_score'])])->save();
+            })),
+            Action::make('recommend_properties')
+                ->label('Recommend properties')
+                ->form([Textarea::make('criteria')->json()->required(), Textarea::make('properties')->json()->required(), TextInput::make('limit')->numeric()->minValue(1)->maxValue(100)->default(6)])
+                ->action(function (array $data): void {
+                    $recommendations = app(RankPropertyRecommendations::class)->handle($data['criteria'], $data['properties'], (int) $data['limit']);
+                    Notification::make()->title(count($recommendations).' properties recommended')->success()->send();
+                }),
+            DeleteAction::make(),
+        ])->defaultSort('created_at', 'desc');
     }
 
     public static function getEloquentQuery(): Builder

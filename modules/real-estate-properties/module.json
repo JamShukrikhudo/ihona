@@ -2,7 +2,7 @@
     "$schema": "https://schemas.liberu.dev/module/v1.json",
     "name": "real-estate-properties",
     "display_name": "Real Estate Properties",
-    "description": "Address, units, characteristics, tenure, utilities, features, status, history, and keys.",
+    "description": "Address, categories, units, characteristics, tenure, utilities, features, status, history, keys, and walkability scores.",
     "version": "1.0.1",
     "category": "product",
     "provider": "Liberu\\RealEstate\\Properties\\PropertiesServiceProvider",
@@ -11,7 +11,8 @@
         "laravel": "^13.0",
         "packages": {
             "liberusoftware/module-manager": "^1.0",
-            "liberusoftware/organizations-teams": "^1.0"
+            "liberusoftware/organizations-teams": "^1.0",
+            "liberusoftware/real-estate-core": "^1.0"
         }
     },
     "suggests": {
@@ -22,9 +23,6 @@
     "capabilities": ["real-estate.properties"],
     "default_enabled": true,
     "features": [
-        "Team-scoped property records",
-        "Property lifecycle and status transitions",
-        "Structured characteristics and utilities",
-        "Property history events"
+        "Address/location", "Categories", "Templates", "Favorites", "Saved searches", "Community events", "Reviews", "Neighborhoods", "Neighborhood reviews", "Price alerts", "Units", "Characteristics", "Tenure", "Utilities", "Features", "Status", "History", "Keys", "Property detail disclosures", "Property comparisons", "Property tax estimates", "AR tours", "Walkability scores", "Property QR codes", "Property sharing"
     ]
 }

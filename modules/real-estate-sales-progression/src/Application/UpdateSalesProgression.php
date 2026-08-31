@@ -16,6 +16,7 @@ final class UpdateSalesProgression
         }
 
         $data = $attributes;
+        unset($data['status']);
         if (array_key_exists('subject', $data) && trim((string) $data['subject']) === '') {
             throw ValidationException::withMessages(['subject' => 'A progression subject is required.']);
         }

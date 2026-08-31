@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace Liberu\RealEstate\RightmoveLivewire\Components;
 
 use Liberu\RealEstate\Rightmove\Models\RightmoveSync;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 final class RightmoveSyncList extends Component
 {
+    #[Validate('nullable|string|max:255')]
     public string $search = '';
 
     public function render(): mixed

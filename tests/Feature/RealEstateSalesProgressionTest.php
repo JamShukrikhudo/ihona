@@ -6,6 +6,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Validation\ValidationException;
 use Liberu\RealEstate\SalesProgression\Application\CreateSalesProgression;
 use Liberu\RealEstate\SalesProgression\Application\DeleteSalesProgression;
+use Liberu\RealEstate\SalesProgression\Application\UpdateSalesProgressionSection;
+use Liberu\RealEstate\SalesProgression\Domain\SalesProgressionSection;
 use Liberu\RealEstate\SalesProgression\Models\SalesProgression;
 
 uses(RefreshDatabase::class);
@@ -38,4 +40,12 @@ it('requires a subject and archives only a progression in its team', function ()
     app(DeleteSalesProgression::class)->handle($progression, 31);
 
     expect($progression->fresh()->trashed())->toBeTrue();
+});
+
+it('updates chain and completion sections independently', function (): void {
+    $progression = app(CreateSalesProgression::class)->handle(31, 7, ['subject' => 'Sale']);
+
+    app(UpdateSalesProgressionSection::class)->handle($progression, 31, SalesProgressionSection::Chain, ['upstream' => ['subject' => 'Upstream sale']]);
+
+    expect($progression->refresh()->chain['upstream']['subject'])->toBe('Upstream sale');
 });

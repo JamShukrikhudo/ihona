@@ -1,13 +1,31 @@
-openapi: 3.0.3
+openapi: 3.1.0
 info:
   title: Real Estate Portals and Reporting API
   version: 1.0.0
+security: [{sanctum: []}]
+x-liberu-idempotency-header: Idempotency-Key
 paths:
-  /api/v1/real-estate/portal-reports:
-    get: {summary: List team portal reports, responses: {'200': {description: OK}}}
-    post: {summary: Create a portal report, responses: {'201': {description: Created}}}
-  /api/v1/real-estate/portal-reports/{portalReport}:
+  /api/v1/real-estate/portals-and-reporting:
+    get: {operationId: real.estate.portal.reports.list, summary: List team portal reports, responses: {'200': {description: OK}}}
+    post: {operationId: real.estate.portal.reports.create, responses: {'201': {description: Created}}}
+  /api/v1/real-estate/portals-and-reporting/{portalReport}:
     parameters: [{name: portalReport, in: path, required: true, schema: {type: integer}}]
-    get: {summary: Show a portal report, responses: {'200': {description: OK}}}
-    patch: {summary: Update a portal report, responses: {'200': {description: OK}}}
-    delete: {summary: Archive a portal report, responses: {'204': {description: Archived}}}
+    get: {operationId: real.estate.portal.reports.get, summary: Show a portal report, responses: {'200': {description: OK}}}
+    patch: {operationId: real.estate.portal.reports.update, summary: Update a portal report, responses: {'200': {description: OK}}}
+    delete: {operationId: real.estate.portal.reports.delete, summary: Archive a portal report, responses: {'204': {description: Archived}}}
+  /api/v1/real-estate/portals-and-reporting/{portalReport}/transition/{status}:
+    parameters:
+      - {name: portalReport, in: path, required: true, schema: {type: integer}}
+      - {name: status, in: path, required: true, schema: {type: string, enum: [draft, queued, published, failed, expired, archived]}}
+    post: {operationId: real.estate.portal.reports.transition, responses: {'200': {description: Transitioned}}}
+  /api/v1/real-estate/portals-and-reporting/{portalReport}/metrics/{metric}:
+    parameters:
+      - {name: portalReport, in: path, required: true, schema: {type: integer}}
+      - {name: metric, in: path, required: true, schema: {type: string, enum: [conversion, source, fee, time_to_complete, occupancy, compliance]}}
+    patch: {operationId: real.estate.portal.reports.metric, responses: {'200': {description: Metric recorded}}}
+components:
+  securitySchemes:
+    sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}
+  schemas:
+    Error: {type: object, required: [message], properties: {message: {type: string}, code: {type: string}, errors: {type: object, additionalProperties: true}}}
+    PaginationMeta: {type: object, required: [current_page, per_page, total, last_page], properties: {current_page: {type: integer}, per_page: {type: integer}, total: {type: integer}, last_page: {type: integer}}}

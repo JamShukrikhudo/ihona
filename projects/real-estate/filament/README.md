@@ -16,5 +16,5 @@
 | Marketing | liberusoftware/real-estate-marketing-filament |
 | Portals and Reporting | liberusoftware/real-estate-portals-reporting-filament |
 
-The remaining panel adapters remain planned until their matching core
-contracts exist.
+All issue-defined panel adapters have matching core contracts. Provider
+integration surfaces remain separate optional packages.

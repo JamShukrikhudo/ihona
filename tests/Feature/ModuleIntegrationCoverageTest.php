@@ -2,10 +2,13 @@
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Laravel\Socialite\Two\InvalidStateException;
+use Liberu\Foundation\ApiAccess\Http\Middleware\Idempotency;
 use Liberu\Foundation\ApiAccess\Support\IdempotencyStore;
 use Liberu\Foundation\ApplicationCore\Health\ReadinessRegistry;
 use Liberu\Foundation\ApplicationCore\Http\Controllers\ReadinessController;
@@ -85,6 +88,23 @@ it('stores and replays idempotent API requests', function () {
     expect(fn () => $store->begin('actor', 'key', 'different'))->toThrow(RuntimeException::class);
     $store->complete('actor', 'key', 201, 'created');
     expect(DB::table('api_idempotency_keys')->value('response_status'))->toBe(201);
+});
+
+it('replays completed mutation responses through the API middleware', function (): void {
+    $user = User::factory()->create(['current_team_id' => 41]);
+    $request = Request::create('/api/v1/real-estate/offers', 'POST', [], [], [], [], '{"subject":"Offer"}');
+    $request->headers->set('Idempotency-Key', 'offer-create-1');
+    $request->setUserResolver(fn (): User => $user);
+    $middleware = app(Idempotency::class);
+    $next = fn (): JsonResponse => response()->json(['data' => ['id' => 7]], 201);
+
+    $first = $middleware->handle($request, $next);
+    $replay = $middleware->handle($request, $next);
+
+    expect($first->getStatusCode())->toBe(201)
+        ->and($replay->getStatusCode())->toBe(201)
+        ->and($replay->headers->get('Idempotency-Replayed'))->toBe('true')
+        ->and($replay->getContent())->toBe($first->getContent());
 });
 
 it('resolves currency preferences from ordered scopes', function () {

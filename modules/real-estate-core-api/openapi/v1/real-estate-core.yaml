@@ -2,7 +2,21 @@ openapi: 3.1.0
 info:
   title: Real Estate Core API
   version: 1.0.0
+x-liberu-idempotency-header: Idempotency-Key
 paths:
+  /api/v1/real-estate/numbering/{key}/next:
+    post:
+      operationId: real.estate.numbering.next
+      parameters: [{name: key, in: path, required: true, schema: {type: string}}]
+      responses: {'200': {description: Next team-scoped number}}
+  /api/v1/real-estate/core/{kind}:
+    get: {operationId: real.estate.core.configuration.list, responses: {'200': {description: Team-scoped configuration or audit entries}}}
+  /api/v1/real-estate/core/terminology/{key}:
+    put: {operationId: real.estate.core.terminology.set, responses: {'200': {description: Terminology updated}}}
+  /api/v1/real-estate/core/statuses:
+    post: {operationId: real.estate.core.statuses.define, responses: {'200': {description: Status definition updated}}}
+  /api/v1/real-estate/core/audit:
+    post: {operationId: real.estate.core.audit.record, responses: {'201': {description: Audit entry recorded}}}
   /api/v1/real-estate/branches:
     get:
       operationId: real.estate.branches.list
@@ -28,6 +42,37 @@ paths:
       security: [{sanctum: []}]
       parameters: [{name: id, in: path, required: true, schema: {type: string}}]
       responses: {'204': {description: Branch archived}}
+  /api/v1/real-estate/agencies:
+    get:
+      operationId: real.estate.agencies.list
+      security: [{sanctum: []}]
+      responses: {'200': {description: Authorized agency collection}}
+    post:
+      operationId: real.estate.agencies.create
+      security: [{sanctum: []}]
+      responses: {'201': {description: Agency created}}
+  /api/v1/real-estate/agencies/{id}:
+    parameters: [{name: id, in: path, required: true, schema: {type: string}}]
+    get: {operationId: real.estate.agencies.get, security: [{sanctum: []}], responses: {'200': {description: Authorized agency}}}
+    patch: {operationId: real.estate.agencies.update, security: [{sanctum: []}], responses: {'200': {description: Agency updated}}}
+    delete: {operationId: real.estate.agencies.delete, security: [{sanctum: []}], responses: {'204': {description: Agency archived}}}
+  /api/v1/real-estate/territories:
+    get:
+      operationId: real.estate.territories.list
+      security: [{sanctum: []}]
+      responses: {'200': {description: Authorized territory collection}}
+    post:
+      operationId: real.estate.territories.create
+      security: [{sanctum: []}]
+      responses: {'201': {description: Territory created}}
+  /api/v1/real-estate/territories/{id}:
+    parameters: [{name: id, in: path, required: true, schema: {type: string}}]
+    get: {operationId: real.estate.territories.get, security: [{sanctum: []}], responses: {'200': {description: Authorized territory}}}
+    patch: {operationId: real.estate.territories.update, security: [{sanctum: []}], responses: {'200': {description: Territory updated}}}
+    delete: {operationId: real.estate.territories.delete, security: [{sanctum: []}], responses: {'204': {description: Territory archived}}}
 components:
   securitySchemes:
     sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}
+  schemas:
+    Error: {type: object, required: [message], properties: {message: {type: string}, code: {type: string}, errors: {type: object, additionalProperties: true}}}
+    PaginationMeta: {type: object, required: [current_page, per_page, total, last_page], properties: {current_page: {type: integer}, per_page: {type: integer}, total: {type: integer}, last_page: {type: integer}}}

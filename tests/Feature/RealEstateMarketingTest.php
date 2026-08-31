@@ -6,6 +6,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Validation\ValidationException;
 use Liberu\RealEstate\Marketing\Application\CreateMarketingCampaign;
 use Liberu\RealEstate\Marketing\Application\DeleteMarketingCampaign;
+use Liberu\RealEstate\Marketing\Application\UpdateMarketingCampaignSection;
+use Liberu\RealEstate\Marketing\Domain\MarketingCampaignSection;
 use Liberu\RealEstate\Marketing\Models\MarketingCampaign;
 
 uses(RefreshDatabase::class);
@@ -38,4 +40,12 @@ it('requires campaign identity and archives only within its team', function (): 
     app(DeleteMarketingCampaign::class)->handle($campaign, 31);
 
     expect($campaign->fresh()->trashed())->toBeTrue();
+});
+
+it('updates campaign content sections independently from lifecycle state', function (): void {
+    $campaign = app(CreateMarketingCampaign::class)->handle(31, 7, ['name' => 'Campaign', 'channel' => 'email']);
+
+    app(UpdateMarketingCampaignSection::class)->handle($campaign, 31, MarketingCampaignSection::Content, ['subject' => 'New homes']);
+
+    expect($campaign->refresh()->content)->toBe(['subject' => 'New homes']);
 });

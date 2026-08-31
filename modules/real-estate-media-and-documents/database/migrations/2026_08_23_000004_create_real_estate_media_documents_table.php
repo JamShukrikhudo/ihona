@@ -18,6 +18,10 @@ return new class() extends Migration
             $table->string('title')->nullable();
             $table->json('rights')->nullable();
             $table->json('metadata')->nullable();
+            $table->string('visibility', 32)->default('team');
+            $table->json('allowed_user_ids')->nullable();
+            $table->json('allowed_roles')->nullable();
+            $table->boolean('is_signable')->default(false);
             $table->unsignedInteger('sort_order')->default(0);
             $table->date('retention_until')->nullable();
             $table->timestamps();

@@ -1,13 +1,33 @@
-openapi: 3.0.3
+openapi: 3.1.0
 info:
   title: Real Estate Marketing API
   version: 1.0.0
+security: [{sanctum: []}]
+x-liberu-idempotency-header: Idempotency-Key
 paths:
-  /api/v1/real-estate/marketing-campaigns:
-    get: {summary: List team marketing campaigns, responses: {'200': {description: OK}}}
-    post: {summary: Create a marketing campaign, responses: {'201': {description: Created}}}
-  /api/v1/real-estate/marketing-campaigns/{marketingCampaign}:
+  /api/v1/real-estate/news:
+    get: {operationId: real.estate.marketing.news.list, summary: List published news, responses: {'200': {description: OK}}}
+  /api/v1/real-estate/marketing:
+    get: {operationId: real.estate.marketing.list, summary: List team marketing campaigns, responses: {'200': {description: OK}}}
+    post: {operationId: real.estate.marketing.create, responses: {'201': {description: Created}}}
+  /api/v1/real-estate/marketing/{marketingCampaign}:
     parameters: [{name: marketingCampaign, in: path, required: true, schema: {type: integer}}]
-    get: {summary: Show a marketing campaign, responses: {'200': {description: OK}}}
-    patch: {summary: Update a marketing campaign, responses: {'200': {description: OK}}}
-    delete: {summary: Archive a marketing campaign, responses: {'204': {description: Archived}}}
+    get: {operationId: real.estate.marketing.get, summary: Show a marketing campaign, responses: {'200': {description: OK}}}
+    patch: {operationId: real.estate.marketing.update, responses: {'200': {description: OK}}}
+    delete: {operationId: real.estate.marketing.delete, responses: {'204': {description: Archived}}}
+  /api/v1/real-estate/marketing/{marketingCampaign}/transition/{status}:
+    parameters:
+      - {name: marketingCampaign, in: path, required: true, schema: {type: integer}}
+      - {name: status, in: path, required: true, schema: {type: string, enum: [draft, scheduled, active, paused, completed, cancelled]}}
+    post: {operationId: real.estate.marketing.transition, responses: {'200': {description: Transitioned}}}
+  /api/v1/real-estate/marketing/{marketingCampaign}/{section}:
+    parameters:
+      - {name: marketingCampaign, in: path, required: true, schema: {type: integer}}
+      - {name: section, in: path, required: true, schema: {type: string, enum: [audience, content, schedule, metrics]}}
+    patch: {operationId: real.estate.marketing.updateSection, responses: {'200': {description: Section updated}, '422': {description: Validation error}}}
+components:
+  securitySchemes:
+    sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}
+  schemas:
+    Error: {type: object, required: [message], properties: {message: {type: string}, code: {type: string}, errors: {type: object, additionalProperties: true}}}
+    PaginationMeta: {type: object, required: [current_page, per_page, total, last_page], properties: {current_page: {type: integer}, per_page: {type: integer}, total: {type: integer}, last_page: {type: integer}}}

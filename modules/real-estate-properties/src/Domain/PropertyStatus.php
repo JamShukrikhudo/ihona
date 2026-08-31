@@ -12,9 +12,19 @@ enum PropertyStatus: string
     case Sold = 'sold';
     case Let = 'let';
     case Withdrawn = 'withdrawn';
+    case ForSale = 'For Sale';
+    case ForRent = 'For Rent';
+    case ToLet = 'to_let';
+    case LetAgreed = 'let_agreed';
+    case SoldStc = 'sold_stc';
+    case Sstc = 'sstc';
+    case Exchanged = 'exchanged';
+    case Archived = 'archived';
+    case ComingSoon = 'coming_soon';
+    case Rented = 'Rented';
 
     public function isPublic(): bool
     {
-        return in_array($this, [self::Available, self::UnderOffer], true);
+        return in_array($this, [self::Available, self::UnderOffer, self::ForSale, self::ForRent, self::ToLet, self::ComingSoon], true);
     }
 }

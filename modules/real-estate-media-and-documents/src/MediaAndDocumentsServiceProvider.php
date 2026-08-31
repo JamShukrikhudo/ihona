@@ -8,6 +8,14 @@ use Illuminate\Support\ServiceProvider;
 
 final class MediaAndDocumentsServiceProvider extends ServiceProvider
 {
+    public function register(): void
+    {
+        $this->app->singleton(Application\GeneratePropertyBrochure::class);
+        $this->app->singleton(Application\CreateHomeReport::class);
+        $this->app->singleton(Application\UpdateHomeReportConditions::class);
+        $this->app->singleton(Application\UploadHomeReportFile::class);
+    }
+
     public function boot(): void
     {
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');

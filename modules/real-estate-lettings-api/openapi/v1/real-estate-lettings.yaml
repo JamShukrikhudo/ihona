@@ -1,0 +1,56 @@
+openapi: 3.1.0
+info:
+  title: Real Estate Lettings API
+  version: 1.0.0
+x-liberu-idempotency-header: Idempotency-Key
+paths:
+  /api/v1/real-estate/lettings:
+    get: {operationId: real.estate.lettings.list, security: [{sanctum: []}], responses: {'200': {$ref: '#/components/responses/Collection'}}}
+    post: {operationId: real.estate.lettings.create, security: [{sanctum: []}], requestBody: {$ref: '#/components/requestBodies/Json'}, responses: {'201': {$ref: '#/components/responses/Resource'}, '422': {$ref: '#/components/responses/ValidationError'}}}
+  /api/v1/real-estate/lettings/{id}:
+    parameters: [{name: id, in: path, required: true, schema: {type: string}}]
+    get: {operationId: real.estate.lettings.get, security: [{sanctum: []}], responses: {'200': {$ref: '#/components/responses/Resource'}, '404': {$ref: '#/components/responses/Error'}}}
+    patch: {operationId: real.estate.lettings.update, security: [{sanctum: []}], requestBody: {$ref: '#/components/requestBodies/Json'}, responses: {'200': {$ref: '#/components/responses/Resource'}, '422': {$ref: '#/components/responses/ValidationError'}}}
+  /api/v1/real-estate/lettings/{id}/details: {parameters: [{name: id, in: path, required: true, schema: {type: string}}], patch: {operationId: real.estate.lettings.details, security: [{sanctum: []}], requestBody: {$ref: '#/components/requestBodies/Json'}, responses: {'200': {$ref: '#/components/responses/Resource'}}}}
+  /api/v1/real-estate/lettings/{id}/failure: {parameters: [{name: id, in: path, required: true, schema: {type: string}}], post: {operationId: real.estate.lettings.failure, security: [{sanctum: []}], requestBody: {$ref: '#/components/requestBodies/Json'}, responses: {'200': {$ref: '#/components/responses/Resource'}}}}
+  /api/v1/real-estate/rental-applications:
+    get: {operationId: real.estate.rental.applications.list, security: [{sanctum: []}], responses: {'200': {$ref: '#/components/responses/Collection'}}}
+    post: {operationId: real.estate.rental.applications.create, security: [{sanctum: []}], requestBody: {$ref: '#/components/requestBodies/Json'}, responses: {'201': {$ref: '#/components/responses/Resource'}, '422': {$ref: '#/components/responses/ValidationError'}}}
+  /api/v1/real-estate/rental-applications/{id}:
+    parameters: [{name: id, in: path, required: true, schema: {type: string}}]
+    get: {operationId: real.estate.rental.applications.get, security: [{sanctum: []}], responses: {'200': {$ref: '#/components/responses/Resource'}}}
+    patch: {operationId: real.estate.rental.applications.update, security: [{sanctum: []}], requestBody: {$ref: '#/components/requestBodies/Json'}, responses: {'200': {$ref: '#/components/responses/Resource'}}}
+  /api/v1/real-estate/rental-applications/{id}/screening: {parameters: [{name: id, in: path, required: true, schema: {type: string}}], patch: {operationId: real.estate.rental.applications.screening, security: [{sanctum: []}], requestBody: {$ref: '#/components/requestBodies/Json'}, responses: {'200': {$ref: '#/components/responses/Resource'}}}}
+  /api/v1/real-estate/rental-applications/{id}/decision: {parameters: [{name: id, in: path, required: true, schema: {type: string}}], post: {operationId: real.estate.rental.applications.decision, security: [{sanctum: []}], requestBody: {$ref: '#/components/requestBodies/Json'}, responses: {'200': {$ref: '#/components/responses/Resource'}}}}
+  /api/v1/real-estate/rental-charges:
+    get: {operationId: real.estate.rental.charges.list, security: [{sanctum: []}], responses: {'200': {$ref: '#/components/responses/Collection'}}}
+    post: {operationId: real.estate.rental.charges.create, security: [{sanctum: []}], requestBody: {$ref: '#/components/requestBodies/Json'}, responses: {'201': {$ref: '#/components/responses/Resource'}}}
+  /api/v1/real-estate/rental-charges/{id}:
+    parameters: [{name: id, in: path, required: true, schema: {type: string}}]
+    get: {operationId: real.estate.rental.charges.get, security: [{sanctum: []}], responses: {'200': {$ref: '#/components/responses/Resource'}}}
+    patch: {operationId: real.estate.rental.charges.update, security: [{sanctum: []}], requestBody: {$ref: '#/components/requestBodies/Json'}, responses: {'200': {$ref: '#/components/responses/Resource'}}}
+    delete: {operationId: real.estate.rental.charges.delete, security: [{sanctum: []}], responses: {'204': {description: Archived}}}
+  /api/v1/real-estate/tenancy-agreements:
+    get: {operationId: real.estate.tenancy.agreements.list, security: [{sanctum: []}], responses: {'200': {$ref: '#/components/responses/Collection'}}}
+    post: {operationId: real.estate.tenancy.agreements.create, security: [{sanctum: []}], requestBody: {$ref: '#/components/requestBodies/Json'}, responses: {'201': {$ref: '#/components/responses/Resource'}}}
+  /api/v1/real-estate/tenancy-agreements/{id}:
+    parameters: [{name: id, in: path, required: true, schema: {type: string}}]
+    get: {operationId: real.estate.tenancy.agreements.get, security: [{sanctum: []}], responses: {'200': {$ref: '#/components/responses/Resource'}}}
+    patch: {operationId: real.estate.tenancy.agreements.update, security: [{sanctum: []}], requestBody: {$ref: '#/components/requestBodies/Json'}, responses: {'200': {$ref: '#/components/responses/Resource'}}}
+  /api/v1/real-estate/tenancy-agreements/{id}/renew: {parameters: [{name: id, in: path, required: true, schema: {type: string}}], post: {operationId: real.estate.tenancy.agreements.renew, security: [{sanctum: []}], requestBody: {$ref: '#/components/requestBodies/Json'}, responses: {'200': {$ref: '#/components/responses/Resource'}}}}
+  /api/v1/real-estate/tenancy-agreements/{id}/notice: {parameters: [{name: id, in: path, required: true, schema: {type: string}}], post: {operationId: real.estate.tenancy.agreements.notice, security: [{sanctum: []}], requestBody: {$ref: '#/components/requestBodies/Json'}, responses: {'200': {$ref: '#/components/responses/Resource'}}}}
+components:
+  securitySchemes:
+    sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}
+  requestBodies:
+    Json: {required: true, content: {application/json: {schema: {type: object, additionalProperties: true}}}}
+  responses:
+    Resource: {description: Authorized resource, content: {application/json: {schema: {$ref: '#/components/schemas/Envelope'}}}}
+    Collection: {description: Authorized paginated collection, content: {application/json: {schema: {$ref: '#/components/schemas/CollectionEnvelope'}}}}
+    Error: {description: RFC 9457 problem, content: {application/problem+json: {schema: {$ref: '#/components/schemas/Error'}}}}
+    ValidationError: {description: Validation problem, content: {application/problem+json: {schema: {$ref: '#/components/schemas/Error'}}}}
+  schemas:
+    PaginationMeta: {type: object, required: [current_page, per_page, total, last_page], properties: {current_page: {type: integer}, per_page: {type: integer}, total: {type: integer}, last_page: {type: integer}}}
+    Envelope: {type: object, required: [data], properties: {data: {type: object, additionalProperties: true}}}
+    CollectionEnvelope: {type: object, required: [data], properties: {data: {type: array, items: {type: object, additionalProperties: true}}, meta: {type: object, additionalProperties: true}, links: {type: object, additionalProperties: true}}}
+    Error: {type: object, required: [title, status], properties: {title: {type: string}, status: {type: integer}, detail: {type: string}, errors: {type: object, additionalProperties: true}}}

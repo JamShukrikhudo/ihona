@@ -12,6 +12,7 @@ use Liberu\RealEstate\Rightmove\Application\DeleteRightmoveSync;
 use Liberu\RealEstate\Rightmove\Application\SyncRightmoveListing;
 use Liberu\RealEstate\Rightmove\Application\UpdateRightmoveSync;
 use Liberu\RealEstate\Rightmove\Models\RightmoveSync;
+use Liberu\RealEstate\RightmoveApi\Http\Resources\RightmoveSyncResource;
 
 final class RightmoveSyncController
 {
@@ -20,7 +21,7 @@ final class RightmoveSyncController
         $teamId = $request->user()?->current_team_id;
         abort_unless($teamId !== null, 403);
 
-        return response()->json(['data' => RightmoveSync::query()->forTeam($teamId)->latest()->paginate(max(1, min($request->integer('page_size', 25), 100)))]);
+        return RightmoveSyncResource::collection(RightmoveSync::query()->forTeam($teamId)->latest()->paginate(max(1, min($request->integer('page_size', 25), 100))))->response();
     }
 
     public function store(Request $request, CreateRightmoveSync $create): JsonResponse
@@ -29,14 +30,14 @@ final class RightmoveSyncController
         abort_unless($user?->current_team_id !== null, 403);
         $data = $request->validate(['listing_id' => ['required', 'integer'], 'property_id' => ['nullable', 'integer'], 'external_id' => ['nullable', 'string', 'max:255'], 'status' => ['sometimes', 'string', 'in:pending,syncing,synced,failed,disabled'], 'payload' => ['sometimes', 'array'], 'last_synced_at' => ['nullable', 'date'], 'error' => ['nullable', 'string']]);
 
-        return response()->json(['data' => $create->handle($user->current_team_id, $user->getAuthIdentifier(), $data)], 201);
+        return (new RightmoveSyncResource($create->handle($user->current_team_id, $user->getAuthIdentifier(), $data)))->response()->setStatusCode(201);
     }
 
     public function show(Request $request, RightmoveSync $rightmoveSync): JsonResponse
     {
         abort_unless((string) $request->user()?->current_team_id === (string) $rightmoveSync->team_id, 404);
 
-        return response()->json(['data' => $rightmoveSync]);
+        return (new RightmoveSyncResource($rightmoveSync))->response();
     }
 
     public function sync(Request $request, RightmoveSync $rightmoveSync, SyncRightmoveListing $sync): JsonResponse
@@ -44,16 +45,16 @@ final class RightmoveSyncController
         abort_unless((string) $request->user()?->current_team_id === (string) $rightmoveSync->team_id, 404);
         $data = $request->validate(['reference' => ['required', 'string', 'max:255'], 'payload' => ['required', 'array']]);
 
-        return response()->json(['data' => $sync->handle($rightmoveSync, $data['reference'], $data['payload'], ['client_id' => config('rightmove.client_id'), 'client_secret' => config('rightmove.client_secret')])]);
+        return (new RightmoveSyncResource($sync->handle($rightmoveSync, $data['reference'], $data['payload'], ['client_id' => config('rightmove.client_id'), 'client_secret' => config('rightmove.client_secret')])))->response();
     }
 
     public function update(Request $request, RightmoveSync $rightmoveSync, UpdateRightmoveSync $update): JsonResponse
     {
         $teamId = $request->user()?->current_team_id;
         abort_unless((string) $teamId === (string) $rightmoveSync->team_id, 404);
-        $data = $request->validate(['external_id' => ['sometimes', 'nullable', 'string', 'max:255'], 'status' => ['sometimes', 'string', 'in:pending,syncing,synced,failed,disabled'], 'payload' => ['sometimes', 'array'], 'last_synced_at' => ['nullable', 'date'], 'error' => ['nullable', 'string']]);
+        $data = $request->validate(['external_id' => ['sometimes', 'nullable', 'string', 'max:255'], 'payload' => ['sometimes', 'array'], 'last_synced_at' => ['nullable', 'date'], 'error' => ['nullable', 'string']]);
 
-        return response()->json(['data' => $update->handle($rightmoveSync, $teamId, $data)]);
+        return (new RightmoveSyncResource($update->handle($rightmoveSync, $teamId, $data)))->response();
     }
 
     public function destroy(Request $request, RightmoveSync $rightmoveSync, DeleteRightmoveSync $delete): Response

@@ -1,0 +1,1 @@
+<div><input wire:model="key"><input wire:model="prefix"><input wire:model="padding" type="number"><button wire:click="generate">Generate number</button>@if ($number)<span>{{ $number }}</span>@endif</div>

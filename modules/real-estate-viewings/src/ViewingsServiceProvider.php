@@ -12,4 +12,18 @@ final class ViewingsServiceProvider extends ServiceProvider
     {
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
     }
+
+    public function register(): void
+    {
+        $this->app->singleton(Application\CreateViewing::class);
+        $this->app->singleton(Application\UpdateViewing::class);
+        $this->app->singleton(Application\DeleteViewing::class);
+        $this->app->singleton(Application\ConfirmViewing::class);
+        $this->app->singleton(Application\CompleteViewing::class);
+        $this->app->singleton(Application\CancelViewing::class);
+        $this->app->singleton(Application\MarkViewingNoShow::class);
+        $this->app->singleton(Application\RequestViewingFeedback::class);
+        $this->app->singleton(Application\SubmitViewingFeedback::class);
+        $this->app->singleton(Application\SummarizeViewingFeedback::class);
+    }
 }
