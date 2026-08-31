@@ -5,6 +5,13 @@ use Liberu\RealEstate\CoreApi\Http\Controllers\AgencyController;
 use Liberu\RealEstate\CoreApi\Http\Controllers\BranchController;
 use Liberu\RealEstate\CoreApi\Http\Controllers\CoreConfigurationController;
 use Liberu\RealEstate\CoreApi\Http\Controllers\NumberingController;
+use Liberu\RealEstate\CoreApi\Http\Controllers\PublicTerritoryController;
+
+// Anonymous, read-only — the storefront's territory picker/filter. Not
+// team-scoped by request user (there isn't one); see PublicTerritoryController.
+Route::get('api/v1/public/territories', [PublicTerritoryController::class, 'index'])
+    ->middleware(['api', 'throttle:api'])
+    ->name('public.territories.index');
 
 Route::middleware(['api', 'auth:sanctum', 'throttle:api', 'api.idempotency'])->group(function (): void {
     Route::get('api/v1/real-estate/core/{kind}', [CoreConfigurationController::class, 'list'])->whereIn('kind', ['terminology', 'statuses', 'audit']);
