@@ -8,15 +8,14 @@ use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use Liberu\RealEstate\Matching\Application\CalculateMatchScore;
-use Liberu\RealEstate\Matching\Application\RankPropertyRecommendations;
 use Liberu\RealEstate\Matching\Models\MatchProfile;
 use Liberu\RealEstate\MatchingFilament\Resources\MatchProfileResource\Pages\CreateMatchProfile;
 use Liberu\RealEstate\MatchingFilament\Resources\MatchProfileResource\Pages\EditMatchProfile;
@@ -28,7 +27,7 @@ final class MatchProfileResource extends Resource
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-adjustments-horizontal';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Недвижимость';
+    protected static string|\UnitEnum|null $navigationGroup = 'Real Estate';
 
     public static function form(Schema $schema): Schema
     {
@@ -43,13 +42,6 @@ final class MatchProfileResource extends Resource
                 $score = app(CalculateMatchScore::class)->handle($data['criteria'], $data['property']);
                 $record->forceFill(['score' => (int) round($score['match_score'])])->save();
             })),
-            Action::make('recommend_properties')
-                ->label('Recommend properties')
-                ->form([Textarea::make('criteria')->json()->required(), Textarea::make('properties')->json()->required(), TextInput::make('limit')->numeric()->minValue(1)->maxValue(100)->default(6)])
-                ->action(function (array $data): void {
-                    $recommendations = app(RankPropertyRecommendations::class)->handle($data['criteria'], $data['properties'], (int) $data['limit']);
-                    Notification::make()->title(count($recommendations).' properties recommended')->success()->send();
-                }),
             DeleteAction::make(),
         ])->defaultSort('created_at', 'desc');
     }

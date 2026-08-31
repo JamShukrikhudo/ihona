@@ -12,10 +12,4 @@ final class MatchingServiceProvider extends ServiceProvider
     {
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
     }
-
-    public function register(): void
-    {
-        $this->app->singleton(Application\CalculateMatchScore::class);
-        $this->app->singleton(Application\RankPropertyRecommendations::class);
-    }
 }

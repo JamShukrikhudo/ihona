@@ -9,7 +9,7 @@ final class MatchingCapabilityDefinition
     /** @return array<string, array{label: string, required: list<string>, behaviors: list<string>}> */
     public static function all(): array
     {
-        $labels = ['Applicant requirements', 'Affordability', 'Preferences', 'Scoring', 'Alerts', 'Feedback', 'Exclusions', 'Property recommendations'];
+        $labels = ['Applicant requirements', 'Affordability', 'Preferences', 'Scoring', 'Alerts', 'Feedback', 'Exclusions'];
         $result = [];
         foreach ($labels as $label) {
             $key = strtolower(str_replace(' ', '_', $label));

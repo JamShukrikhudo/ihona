@@ -13,6 +13,5 @@ final class MatchingLivewireServiceProvider extends ServiceProvider
     {
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'real-estate-matching-livewire');
         Livewire::component('module-real-estate-matching::match-profile-list', Components\MatchProfileList::class);
-        Livewire::component('module-real-estate-matching::property-recommendations', Components\PropertyRecommendations::class);
     }
 }

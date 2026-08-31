@@ -7,7 +7,6 @@ Route::prefix('api/v1/real-estate/matching')->middleware(['api', 'auth:sanctum',
     Route::get('/', [MatchProfileController::class, 'index'])->name('real-estate.matching.index');
     Route::post('/', [MatchProfileController::class, 'store'])->name('real-estate.matching.store');
     Route::post('/calculate-score', [MatchProfileController::class, 'calculateScore'])->name('real-estate.matching.calculate-score');
-    Route::post('/recommend-properties', [MatchProfileController::class, 'recommendProperties'])->name('real-estate.matching.recommend-properties');
     Route::get('/{matchProfile}', [MatchProfileController::class, 'show'])->name('real-estate.matching.show');
     Route::match(['put', 'patch'], '/{matchProfile}', [MatchProfileController::class, 'update'])->name('real-estate.matching.update');
     Route::patch('/{matchProfile}/{section}', [MatchProfileController::class, 'updateSection'])->whereIn('section', ['requirements', 'affordability', 'preferences', 'scoring', 'alerts', 'feedback', 'exclusions'])->name('real-estate.matching.section');
