@@ -1,9 +1,17 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Liberu\RealEstate\PropertiesApi\Http\Controllers\PropertyController;
 use Liberu\RealEstate\PropertiesApi\Http\Controllers\PropertyCategoryController;
+use Liberu\RealEstate\PropertiesApi\Http\Controllers\PropertyController;
 use Liberu\RealEstate\PropertiesApi\Http\Controllers\PropertyTemplateController;
+use Liberu\RealEstate\PropertiesApi\Http\Controllers\PublicPropertyController;
+
+// Anonymous, read-only — the storefront's listing/detail pages. Only
+// PropertyStatus::Available records, narrower field set (PublicPropertyResource).
+Route::prefix('api/v1/public/properties')->middleware(['api', 'throttle:api'])->group(function (): void {
+    Route::get('/', [PublicPropertyController::class, 'index'])->name('public.properties.index');
+    Route::get('/{property}', [PublicPropertyController::class, 'show'])->name('public.properties.show');
+});
 
 Route::prefix('api/v1/real-estate/properties')->middleware(['api', 'auth:sanctum', 'throttle:api', 'api.idempotency'])->group(function (): void {
     Route::get('/', [PropertyController::class, 'index'])->name('real-estate.properties.index');
