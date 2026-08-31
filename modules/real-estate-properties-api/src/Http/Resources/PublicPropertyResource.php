@@ -15,6 +15,11 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * those don't exist as columns on real_estate_properties (a known,
  * out-of-scope schema-drift bug the Filament form still renders fields
  * for — see docs/handoffs). Only real columns/relations here.
+ *
+ * deal_type ('sale'/'rent') drives the storefront's Купить/Снять split —
+ * distinct from `status` (the listing lifecycle) and from `rentPeriod`
+ * (the frontend's display-only cadence for a rental price, not persisted
+ * here — real_estate_properties has no such column).
  */
 final class PublicPropertyResource extends JsonResource
 {
@@ -28,6 +33,7 @@ final class PublicPropertyResource extends JsonResource
             'address' => $this->resource->address,
             'territory_code' => $this->resource->territory?->code,
             'property_type' => $this->resource->property_type,
+            'deal_type' => $this->resource->deal_type?->value,
             'price' => $this->resource->price,
             'currency' => $this->resource->currency,
             'bedrooms' => $this->resource->bedrooms,

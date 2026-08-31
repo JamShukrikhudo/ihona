@@ -10,10 +10,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Liberu\Foundation\Organizations\Models\Team;
 use Liberu\RealEstate\Core\Models\Branch;
-use Liberu\RealEstate\Properties\Domain\PropertyStatus;
 use Liberu\RealEstate\Core\Models\Territory;
+use Liberu\RealEstate\Properties\Domain\DealType;
 use Liberu\RealEstate\Properties\Domain\PropertyGalleryItem;
+use Liberu\RealEstate\Properties\Domain\PropertyStatus;
 
 final class Property extends Model
 {
@@ -47,6 +49,7 @@ final class Property extends Model
     {
         return [
             'status' => PropertyStatus::class,
+            'deal_type' => DealType::class,
             'characteristics' => 'array',
             'utilities' => 'array',
             'features' => 'array',
@@ -497,12 +500,14 @@ final class Property extends Model
     {
         return filled($this->address) && $this->status === PropertyStatus::Draft;
     }
-   public function team()
+
+    public function team()
     {
-        return $this->belongsTo(\Liberu\Foundation\Organizations\Models\Team::class);
+        return $this->belongsTo(Team::class);
     }
-   public function territory()
-   {
+
+    public function territory()
+    {
         return $this->belongsTo(Territory::class);
-   }
+    }
 }

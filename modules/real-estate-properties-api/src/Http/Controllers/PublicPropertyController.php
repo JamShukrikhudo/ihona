@@ -6,6 +6,7 @@ namespace Liberu\RealEstate\PropertiesApi\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Liberu\Foundation\Organizations\Models\Team;
 use Liberu\RealEstate\Properties\Domain\PropertyStatus;
 use Liberu\RealEstate\Properties\Models\Property;
@@ -30,6 +31,7 @@ final class PublicPropertyController
         $filters = $request->validate([
             'territory' => ['sometimes', 'nullable', 'string', 'max:20'],
             'type' => ['sometimes', 'nullable', 'string', 'max:40'],
+            'deal_type' => ['sometimes', 'nullable', Rule::in(['sale', 'rent'])],
             'min_price' => ['sometimes', 'nullable', 'numeric', 'min:0'],
             'max_price' => ['sometimes', 'nullable', 'numeric', 'min:0'],
         ]);
@@ -40,6 +42,7 @@ final class PublicPropertyController
             ->where('status', PropertyStatus::Available->value)
             ->when($filters['territory'] ?? null, fn ($q, $code) => $q->whereHas('territory', fn ($t) => $t->where('code', strtoupper($code))))
             ->when($filters['type'] ?? null, fn ($q, $type) => $q->where('property_type', $type))
+            ->when($filters['deal_type'] ?? null, fn ($q, $dealType) => $q->where('deal_type', $dealType))
             ->when($filters['min_price'] ?? null, fn ($q, $min) => $q->where('price', '>=', $min))
             ->when($filters['max_price'] ?? null, fn ($q, $max) => $q->where('price', '<=', $max))
             ->latest()
