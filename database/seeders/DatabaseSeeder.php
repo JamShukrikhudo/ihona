@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             RolesSeeder::class,
             RealEstateRolesSeeder::class,
             UserSeeder::class,
+            PropertySeeder::class,
         ]);
 
     }
