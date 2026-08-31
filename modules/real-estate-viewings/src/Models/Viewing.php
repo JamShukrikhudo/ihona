@@ -6,7 +6,9 @@ namespace Liberu\RealEstate\Viewings\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Liberu\Foundation\Organizations\Models\Team;
 use Liberu\RealEstate\Viewings\Domain\ViewingStatus;
 
 final class Viewing extends Model
@@ -39,5 +41,10 @@ final class Viewing extends Model
             ViewingStatus::Confirmed => in_array($status, [ViewingStatus::Completed, ViewingStatus::Cancelled, ViewingStatus::NoShow], true),
             ViewingStatus::Completed, ViewingStatus::Cancelled, ViewingStatus::NoShow => false,
         };
+    }
+
+    public function team(): BelongsTo
+    {
+        return $this->belongsTo(Team::class);
     }
 }
