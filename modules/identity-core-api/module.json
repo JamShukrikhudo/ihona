@@ -1,0 +1,23 @@
+{
+    "$schema": "https://schemas.liberu.dev/module/v1.json",
+    "name": "identity-core-api",
+    "display_name": "Identity Core API",
+    "description": "Sanctum Bearer token issuance for API consumers (the Nuxt storefront), realizing identity-core's identity.authenticate capability over HTTP.",
+    "version": "1.0.0",
+    "category": "presentation",
+    "provider": "Liberu\\Foundation\\IdentityCoreApi\\IdentityCoreApiServiceProvider",
+    "requires": {
+        "php": "^8.5",
+        "laravel": "^13.0",
+        "packages": {
+            "liberusoftware/identity-core": "^1.0"
+        }
+    },
+    "suggests": {},
+    "capabilities": ["identity.authenticate.api"],
+    "default_enabled": true,
+    "features": [
+        "POST /api/v1/auth/token — issue a Sanctum Bearer token",
+        "DELETE /api/v1/auth/token — revoke the current token"
+    ]
+}

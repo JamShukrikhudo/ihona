@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "221f1547603b40fd1c9d9098907a22e8",
+    "content-hash": "810adb46fd5dbb21dd97de0338d51f1a",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -7615,6 +7615,49 @@
             ],
             "description": "Provider-neutral identity policy, normalization, and versioned security events.",
             "time": "2026-08-07T14:25:16+00:00"
+        },
+        {
+            "name": "liberusoftware/identity-core-api",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/identity-core-api",
+                "reference": "d3f2266c14026824c149b613e429b5f616fe566a"
+            },
+            "require": {
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "laravel/sanctum": "^4.0",
+                "liberusoftware/identity-core": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "identity-core-api"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Foundation\\IdentityCoreApi\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Sanctum Bearer token issuance HTTP adapter for identity-core.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
         },
         {
             "name": "liberusoftware/identity-core-filament",
