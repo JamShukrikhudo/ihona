@@ -13,4 +13,3 @@ final class AnalyticsCoreFilamentServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'analytics-core-filament');
     }
 }
-

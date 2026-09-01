@@ -10,9 +10,20 @@ use Liberu\Foundation\DeveloperExperienceFilament\Pages\Overview;
 
 final class DeveloperExperienceFilamentPlugin implements Plugin
 {
-    public static function make(): self { return new self(); }
-    public function getId(): string { return 'developer-experience-filament'; }
-    public function register(Panel $panel): void { $panel->pages([Overview::class]); }
+    public static function make(): self
+    {
+        return new self();
+    }
+
+    public function getId(): string
+    {
+        return 'developer-experience-filament';
+    }
+
+    public function register(Panel $panel): void
+    {
+        $panel->pages([Overview::class]);
+    }
+
     public function boot(Panel $panel): void {}
 }
-

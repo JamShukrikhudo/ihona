@@ -13,4 +13,3 @@ final class ApplicationFilamentServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'application-filament');
     }
 }
-

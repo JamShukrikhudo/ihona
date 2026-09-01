@@ -13,4 +13,3 @@ final class AnalyticsGoogleFilamentServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'analytics-google-filament');
     }
 }
-

@@ -1,7 +1,10 @@
 <?php
 
 declare(strict_types=1);
+use App\Models\User;
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\ValidationException;
 use Liberu\RealEstate\Matching\Application\CalculateMatchScore;
 use Liberu\RealEstate\Matching\Application\CreateMatchProfile;
@@ -10,9 +13,6 @@ use Liberu\RealEstate\Matching\Application\RankPropertyRecommendations;
 use Liberu\RealEstate\Matching\Application\UpdateMatchProfileSection;
 use Liberu\RealEstate\Matching\Domain\MatchProfileSection;
 use Liberu\RealEstate\Matching\Models\MatchProfile;
-use App\Models\User;
-use Illuminate\Cache\RateLimiting\Limit;
-use Illuminate\Support\Facades\RateLimiter;
 use Liberu\RealEstate\MatchingLivewire\Components\PropertyRecommendations;
 use Livewire\Livewire;
 

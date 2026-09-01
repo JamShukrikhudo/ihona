@@ -10464,13 +10464,14 @@
             "dist": {
                 "type": "path",
                 "url": "modules/real-estate-media-and-documents",
-                "reference": "d19be4636aeb2a592ace6f7e55e5b529d5bd32f6"
+                "reference": "d5e7d89ef11c52c1ac0f55c3991136fdb6a2e0d1"
             },
             "require": {
                 "illuminate/database": "^13.0",
                 "illuminate/support": "^13.0",
                 "liberusoftware/module-manager": "^1.0",
                 "liberusoftware/organizations-teams": "^1.0",
+                "liberusoftware/real-estate-properties": "^1.0",
                 "php": "^8.5"
             },
             "require-dev": {

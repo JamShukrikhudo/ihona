@@ -13,4 +13,3 @@ final class ActivityCommentsFilamentServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'activity-comments-filament');
     }
 }
-

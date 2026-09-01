@@ -17,6 +17,9 @@ use Liberu\Foundation\Organizations\Models\Team;
 use Liberu\Foundation\Settings\Contracts\SettingDefinition;
 use Liberu\Foundation\Settings\Services\ScopedSettings;
 
+/**
+ * @property-read Schema $form
+ */
 class AccountSetupWizard extends Page
 {
     use InteractsWithForms;
@@ -36,6 +39,9 @@ class AccountSetupWizard extends Page
     /** @var array<string, mixed> */
     public array $data = [];
 
+    /** @var array<string, bool> */
+    public array $configuredIntegrations = [];
+
     public function mount(): void
     {
         $team = $this->team();
@@ -45,13 +51,31 @@ class AccountSetupWizard extends Page
             [],
         );
 
+        $this->configuredIntegrations = collect([
+            'openai_api_key',
+            'walkscore_api_key',
+            'rightmove_client_id',
+            'rightmove_client_secret',
+            'zoopla_certificate',
+            'zoopla_key',
+            'onthemarket_certificate',
+            'onthemarket_key',
+            'google_analytics_id',
+            'meta_pixel_id',
+        ])->mapWithKeys(fn (string $key): array => [$key => filled($settings[$key] ?? null)])->all();
+
         $this->form->fill([
-            'team_name' => $team?->name,
+            'team_name' => $team?->getAttribute('name'),
             'openai_api_key' => '',
             'walkscore_api_key' => '',
-            'rightmove_api_key' => '',
-            'zoopla_api_key' => '',
-            'onthemarket_api_key' => '',
+            'rightmove_client_id' => '',
+            'rightmove_client_secret' => '',
+            'zoopla_certificate' => '',
+            'zoopla_key' => '',
+            'zoopla_key_password' => '',
+            'onthemarket_certificate' => '',
+            'onthemarket_key' => '',
+            'onthemarket_key_password' => '',
             'google_analytics_id' => $settings['google_analytics_id'] ?? '',
             'meta_pixel_id' => $settings['meta_pixel_id'] ?? '',
         ]);
@@ -79,15 +103,20 @@ class AccountSetupWizard extends Page
                                 ->label('OpenAI API key')
                                 ->password()
                                 ->revealable()
-                                ->helperText('Needed for AI-powered property descriptions and summaries.'),
+                                ->helperText('Optional. Leave blank to keep an existing key.'),
                             TextInput::make('walkscore_api_key')
                                 ->label('Walk Score API key')
                                 ->password()
                                 ->revealable()
-                                ->helperText('Needed for walkability scores.'),
-                            TextInput::make('rightmove_api_key')->label('Rightmove API key')->password()->revealable(),
-                            TextInput::make('zoopla_api_key')->label('Zoopla API key')->password()->revealable(),
-                            TextInput::make('onthemarket_api_key')->label('OnTheMarket API key')->password()->revealable(),
+                                ->helperText('Optional. Leave blank to keep an existing key.'),
+                            TextInput::make('rightmove_client_id')->label('Rightmove client ID')->helperText('Leave blank to keep the existing credential.'),
+                            TextInput::make('rightmove_client_secret')->label('Rightmove client secret')->password()->revealable(),
+                            TextInput::make('zoopla_certificate')->label('Zoopla certificate path')->helperText('Use the path available to the application.'),
+                            TextInput::make('zoopla_key')->label('Zoopla private key path')->password()->revealable(),
+                            TextInput::make('zoopla_key_password')->label('Zoopla key password')->password()->revealable(),
+                            TextInput::make('onthemarket_certificate')->label('OnTheMarket certificate path')->helperText('Use the path available to the application.'),
+                            TextInput::make('onthemarket_key')->label('OnTheMarket private key path')->password()->revealable(),
+                            TextInput::make('onthemarket_key_password')->label('OnTheMarket key password')->password()->revealable(),
                         ])
                         ->columns(2),
                     Step::make('Tracking')
@@ -123,7 +152,7 @@ class AccountSetupWizard extends Page
             return;
         }
 
-        if ((int) $team->user_id !== (int) auth()->id()) {
+        if ((int) $team->getAttribute('user_id') !== (int) auth()->id()) {
             Notification::make()->title('Only the team owner can finish workspace setup.')->warning()->send();
 
             return;
@@ -137,9 +166,14 @@ class AccountSetupWizard extends Page
         $credentials = collect([
             'openai_api_key' => $state['openai_api_key'] ?? null,
             'walkscore_api_key' => $state['walkscore_api_key'] ?? null,
-            'rightmove_api_key' => $state['rightmove_api_key'] ?? null,
-            'zoopla_api_key' => $state['zoopla_api_key'] ?? null,
-            'onthemarket_api_key' => $state['onthemarket_api_key'] ?? null,
+            'rightmove_client_id' => $state['rightmove_client_id'] ?? null,
+            'rightmove_client_secret' => $state['rightmove_client_secret'] ?? null,
+            'zoopla_certificate' => $state['zoopla_certificate'] ?? null,
+            'zoopla_key' => $state['zoopla_key'] ?? null,
+            'zoopla_key_password' => $state['zoopla_key_password'] ?? null,
+            'onthemarket_certificate' => $state['onthemarket_certificate'] ?? null,
+            'onthemarket_key' => $state['onthemarket_key'] ?? null,
+            'onthemarket_key_password' => $state['onthemarket_key_password'] ?? null,
             'google_analytics_id' => $state['google_analytics_id'] ?? null,
             'meta_pixel_id' => $state['meta_pixel_id'] ?? null,
         ])->filter(fn (mixed $value): bool => filled($value))->all();

@@ -11,10 +11,14 @@ use Livewire\Component;
 final class RentalYieldCalculator extends Component
 {
     public float $propertyValue = 0;
+
     public float $annualRentalIncome = 0;
+
     public float $annualExpenses = 0;
+
     /** @var array<string, mixed>|null */
     public ?array $result = null;
+
     public ?string $error = null;
 
     public function calculateRentalYield(CalculateRentalYield $calculate): void

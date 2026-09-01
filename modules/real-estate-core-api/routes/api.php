@@ -3,10 +3,10 @@
 use Illuminate\Support\Facades\Route;
 use Liberu\RealEstate\CoreApi\Http\Controllers\AgencyController;
 use Liberu\RealEstate\CoreApi\Http\Controllers\BranchController;
-use Liberu\RealEstate\CoreApi\Http\Controllers\CoreConfigurationController;
-use Liberu\RealEstate\CoreApi\Http\Controllers\NumberingController;
 use Liberu\RealEstate\CoreApi\Http\Controllers\CalendarEntryController;
 use Liberu\RealEstate\CoreApi\Http\Controllers\CommunicationController;
+use Liberu\RealEstate\CoreApi\Http\Controllers\CoreConfigurationController;
+use Liberu\RealEstate\CoreApi\Http\Controllers\NumberingController;
 
 Route::prefix('api/v1/real-estate/calendar-entries')->middleware(['api', 'auth:sanctum', 'throttle:api', 'api.idempotency'])->group(function (): void {
     Route::post('/', [CalendarEntryController::class, 'store']);

@@ -11,5 +11,9 @@ use Liberu\RealEstate\PropertyManagementFilament\Resources\VendorQuoteResource;
 final class ListVendorQuotes extends ListRecords
 {
     protected static string $resource = VendorQuoteResource::class;
-    protected function getHeaderActions(): array { return [CreateAction::make()]; }
+
+    protected function getHeaderActions(): array
+    {
+        return [CreateAction::make()];
+    }
 }

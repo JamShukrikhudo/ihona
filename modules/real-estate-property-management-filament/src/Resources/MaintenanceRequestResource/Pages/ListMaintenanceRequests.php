@@ -11,5 +11,9 @@ use Liberu\RealEstate\PropertyManagementFilament\Resources\MaintenanceRequestRes
 final class ListMaintenanceRequests extends ListRecords
 {
     protected static string $resource = MaintenanceRequestResource::class;
-    protected function getHeaderActions(): array { return [CreateAction::make()]; }
+
+    protected function getHeaderActions(): array
+    {
+        return [CreateAction::make()];
+    }
 }

@@ -11,5 +11,9 @@ use Liberu\RealEstate\PropertyManagementFilament\Resources\InspectionResource;
 final class ListInspections extends ListRecords
 {
     protected static string $resource = InspectionResource::class;
-    protected function getHeaderActions(): array { return [CreateAction::make()]; }
+
+    protected function getHeaderActions(): array
+    {
+        return [CreateAction::make()];
+    }
 }

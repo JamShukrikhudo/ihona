@@ -1,11 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Liberu\RealEstate\MediaAndDocumentsApi\Http\Controllers\HomeReportController;
 use Liberu\RealEstate\MediaAndDocumentsApi\Http\Controllers\MediaDocumentController;
 use Liberu\RealEstate\MediaAndDocumentsApi\Http\Controllers\VirtualStagingController;
-use Liberu\RealEstate\MediaAndDocumentsApi\Http\Controllers\HomeReportController;
 
-Route::prefix('api/v1/real-estate/properties/{property}/home-reports')->middleware(['api','auth:sanctum','throttle:api','api.idempotency'])->group(function (): void {
+Route::prefix('api/v1/real-estate/properties/{property}/home-reports')->middleware(['api', 'auth:sanctum', 'throttle:api', 'api.idempotency'])->group(function (): void {
     Route::get('/', [HomeReportController::class, 'index']);
     Route::post('/', [HomeReportController::class, 'store']);
 });

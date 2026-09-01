@@ -13,4 +13,3 @@ final class CurrencyContextApiServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(__DIR__.'/../routes/api.php');
     }
 }
-

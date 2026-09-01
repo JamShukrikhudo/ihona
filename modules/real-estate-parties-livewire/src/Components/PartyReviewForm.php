@@ -15,6 +15,7 @@ use Livewire\Component;
 class PartyReviewForm extends Component
 {
     public int|string $partyId;
+
     public string $partyRole = '';
 
     #[Validate('required|integer|min:1|max:5')]

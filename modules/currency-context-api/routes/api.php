@@ -8,4 +8,3 @@ use Liberu\Foundation\CurrencyContextApi\Http\Controllers\StatusController;
 Route::prefix('api/v1/currency-context')->middleware('api')->group(function (): void {
     Route::get('/status', StatusController::class)->name('currency-context-api.status');
 });
-

@@ -13,4 +13,3 @@ final class LocalizationCoreFilamentServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'localization-core-filament');
     }
 }
-
