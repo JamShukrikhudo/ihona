@@ -11,7 +11,9 @@ use Livewire\Component;
 final class MaintenanceRequestForm extends Component
 {
     public string $title = '';
+
     public string $description = '';
+
     public int|string|null $property_id = null;
 
     public function submit(CreateMaintenanceRequest $create): void

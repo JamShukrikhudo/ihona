@@ -11,5 +11,9 @@ use Liberu\RealEstate\PropertyManagementFilament\Resources\WorkOrderResource;
 final class ListWorkOrders extends ListRecords
 {
     protected static string $resource = WorkOrderResource::class;
-    protected function getHeaderActions(): array { return [CreateAction::make()]; }
+
+    protected function getHeaderActions(): array
+    {
+        return [CreateAction::make()];
+    }
 }

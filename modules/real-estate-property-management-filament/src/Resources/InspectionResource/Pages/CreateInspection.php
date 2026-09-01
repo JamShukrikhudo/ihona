@@ -12,10 +12,12 @@ use Liberu\RealEstate\PropertyManagementFilament\Resources\InspectionResource;
 final class CreateInspection extends CreateRecord
 {
     protected static string $resource = InspectionResource::class;
+
     protected function handleRecordCreation(array $data): Model
     {
         $user = auth()->user();
         abort_unless($user?->current_team_id !== null, 403);
+
         return app(CreateInspectionAction::class)->handle($user->current_team_id, $user->getAuthIdentifier(), $data);
     }
 }

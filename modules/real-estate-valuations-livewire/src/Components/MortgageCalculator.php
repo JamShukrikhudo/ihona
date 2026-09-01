@@ -11,11 +11,16 @@ use Livewire\Component;
 final class MortgageCalculator extends Component
 {
     public float $propertyPrice = 0;
+
     public float $loanAmount = 0;
+
     public float $interestRate = 0;
+
     public int $loanTermYears = 25;
+
     /** @var array<string, mixed>|null */
     public ?array $result = null;
+
     public ?string $error = null;
 
     public function calculateMortgage(CalculateMortgage $calculate): void

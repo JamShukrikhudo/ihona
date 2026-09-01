@@ -25,6 +25,14 @@ final class ApplyTeamIntegrationSettings
             foreach ([
                 'openai_api_key' => 'services.openai.api_key',
                 'walkscore_api_key' => 'services.walkscore.api_key',
+                'rightmove_client_id' => 'rightmove.client_id',
+                'rightmove_client_secret' => 'rightmove.client_secret',
+                'zoopla_certificate' => 'zoopla.certificate',
+                'zoopla_key' => 'zoopla.key',
+                'zoopla_key_password' => 'zoopla.key_password',
+                'onthemarket_certificate' => 'onthemarket.certificate',
+                'onthemarket_key' => 'onthemarket.key',
+                'onthemarket_key_password' => 'onthemarket.key_password',
             ] as $teamKey => $configKey) {
                 if (filled($settings[$teamKey] ?? null)) {
                     config([$configKey => $settings[$teamKey]]);

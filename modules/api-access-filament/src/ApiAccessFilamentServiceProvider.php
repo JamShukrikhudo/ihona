@@ -13,4 +13,3 @@ final class ApiAccessFilamentServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'api-access-filament');
     }
 }
-

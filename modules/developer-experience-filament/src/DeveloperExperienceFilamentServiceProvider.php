@@ -13,4 +13,3 @@ final class DeveloperExperienceFilamentServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'developer-experience-filament');
     }
 }
-

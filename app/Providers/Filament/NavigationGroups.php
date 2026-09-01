@@ -3,7 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Filament\App\Pages\AccountSetupWizard;
-use BezhanSalleh\FilamentShield\Resources\RoleResource;
+use BezhanSalleh\FilamentShield\Resources\Roles\RoleResource;
 use Filament\Panel;
 use Liberu\Foundation\ApplicationFilament\Pages\Overview;
 use Liberu\Foundation\IdentityFilament\Resources\UserResource;
@@ -51,101 +51,105 @@ final class NavigationGroups
     public static function configure(Panel $panel): void
     {
         foreach (self::groupsFor($panel->getId()) as $group => $classes) {
-            foreach ($classes as $class) {
+            foreach ($classes as $sort => $class) {
                 if (class_exists($class) && method_exists($class, 'navigationGroup')) {
                     $class::navigationGroup($group);
+
+                    if (method_exists($class, 'navigationSort')) {
+                        $class::navigationSort($sort);
+                    }
                 }
             }
         }
     }
 
     /**
-     * @return array<string, list<class-string>>
+     * @return array<string, array<int, class-string>>
      */
     private static function groupsFor(string $panel): array
     {
         if ($panel === 'app') {
             return [
-                'Account' => [
-                    AccountSetupWizard::class,
-                    AccountSecurity::class,
+                'Account & support' => [
+                    10 => AccountSetupWizard::class,
+                    20 => AccountSecurity::class,
                 ],
             ];
         }
 
         return [
-            'Real Estate' => [
-                PropertyResource::class,
-                ListingResource::class,
-                ViewingResource::class,
-                OfferResource::class,
-                LettingResource::class,
-                RentalApplicationResource::class,
-                SalesProgressionResource::class,
+            'Sales & lettings' => [
+                10 => PropertyResource::class,
+                20 => ListingResource::class,
+                30 => ViewingResource::class,
+                40 => OfferResource::class,
+                50 => LettingResource::class,
+                60 => RentalApplicationResource::class,
+                70 => SalesProgressionResource::class,
             ],
-            'People & Relationships' => [
-                PartyResource::class,
+            'People & relationships' => [
+                10 => PartyResource::class,
             ],
-            'Property Management' => [
-                InspectionResource::class,
-                MaintenanceRequestResource::class,
-                ManagementRecordResource::class,
-                VendorQuoteResource::class,
-                WorkOrderResource::class,
+            'Property management' => [
+                10 => InspectionResource::class,
+                20 => MaintenanceRequestResource::class,
+                30 => ManagementRecordResource::class,
+                40 => VendorQuoteResource::class,
+                50 => WorkOrderResource::class,
             ],
-            'Marketing & Portals' => [
-                MarketingCampaignResource::class,
-                NewsArticleResource::class,
-                PortalReportResource::class,
-                RightmoveSyncResource::class,
-                ZooplaSyncResource::class,
-                OnTheMarketSyncResource::class,
+            'Marketing & portals' => [
+                10 => MarketingCampaignResource::class,
+                20 => NewsArticleResource::class,
+                30 => PortalReportResource::class,
+                40 => RightmoveSyncResource::class,
+                50 => ZooplaSyncResource::class,
+                60 => OnTheMarketSyncResource::class,
             ],
-            'Insights & Tools' => [
-                MatchProfileResource::class,
-                ValuationResource::class,
-                PropertySavedSearchResource::class,
+            'Insights & tools' => [
+                10 => MatchProfileResource::class,
+                20 => ValuationResource::class,
+                30 => PropertySavedSearchResource::class,
             ],
-            'Content' => [
-                MediaDocumentResource::class,
-                InstructionResource::class,
+            'Instructions & media' => [
+                10 => InstructionResource::class,
+                20 => MediaDocumentResource::class,
             ],
             'Organisation' => [
-                TeamResource::class,
-                UserResource::class,
-                RoleResource::class,
+                10 => TeamResource::class,
+                20 => UserResource::class,
+                30 => RoleResource::class,
             ],
-            'Configuration' => [
-                AgencyResource::class,
-                BranchResource::class,
-                TerritoryResource::class,
-                StatusDefinitionResource::class,
-                PropertyCategoryResource::class,
-                PropertyTemplateResource::class,
+            'Property configuration' => [
+                10 => AgencyResource::class,
+                20 => BranchResource::class,
+                30 => TerritoryResource::class,
+                40 => StatusDefinitionResource::class,
+                50 => PropertyCategoryResource::class,
+                60 => PropertyTemplateResource::class,
             ],
-            'Platform' => [
-                ManageSiteSettings::class,
-                Overview::class,
-                \Liberu\Foundation\LocalizationCoreFilament\Pages\Overview::class,
-                \Liberu\Foundation\CurrencyContextFilament\Pages\Overview::class,
-                FoundationOperations::class,
+            'Platform settings' => [
+                10 => ManageSiteSettings::class,
+                20 => Overview::class,
+                30 => \Liberu\Foundation\LocalizationCoreFilament\Pages\Overview::class,
+                40 => \Liberu\Foundation\CurrencyContextFilament\Pages\Overview::class,
+                50 => FoundationOperations::class,
             ],
-            'Integrations' => [
-                \Liberu\Foundation\IntegrationsFilament\Pages\Overview::class,
-                \Liberu\Foundation\ApiAccessFilament\Pages\Overview::class,
-                \Liberu\Foundation\WebhooksFilament\Pages\Overview::class,
-                \Liberu\Foundation\AnalyticsCoreFilament\Pages\Overview::class,
-                \Liberu\Foundation\AnalyticsGoogleFilament\Pages\Overview::class,
-                \Liberu\Foundation\AnalyticsMetaFilament\Pages\Overview::class,
+            'Integrations & API' => [
+                10 => \Liberu\Foundation\IntegrationsFilament\Pages\Overview::class,
+                20 => \Liberu\Foundation\ApiAccessFilament\Pages\Overview::class,
+                30 => \Liberu\Foundation\WebhooksFilament\Pages\Overview::class,
+                40 => \Liberu\Foundation\AnalyticsCoreFilament\Pages\Overview::class,
+                50 => \Liberu\Foundation\AnalyticsGoogleFilament\Pages\Overview::class,
+                60 => \Liberu\Foundation\AnalyticsMetaFilament\Pages\Overview::class,
             ],
-            'Operations' => [
-                \Liberu\Foundation\SchedulerQueuesFilament\Pages\Overview::class,
-                \Liberu\Foundation\ObservabilityFilament\Pages\Overview::class,
-                \Liberu\Foundation\NotificationsFilament\Pages\Overview::class,
-                \Liberu\Foundation\FilesMediaFilament\Pages\Overview::class,
-                \Liberu\Foundation\ImportExportFilament\Pages\Overview::class,
-                \Liberu\Foundation\DeveloperExperienceFilament\Pages\Overview::class,
-                \Liberu\Foundation\AuditFilament\Pages\Overview::class,
+            'Operations & diagnostics' => [
+                10 => \Liberu\Foundation\SchedulerQueuesFilament\Pages\Overview::class,
+                20 => \Liberu\Foundation\ObservabilityFilament\Pages\Overview::class,
+                30 => \Liberu\Foundation\NotificationsFilament\Pages\Overview::class,
+                40 => \Liberu\Foundation\FilesMediaFilament\Pages\Overview::class,
+                50 => \Liberu\Foundation\ImportExportFilament\Pages\Overview::class,
+                60 => \Liberu\Foundation\DeveloperExperienceFilament\Pages\Overview::class,
+                70 => \Liberu\Foundation\AuditFilament\Pages\Overview::class,
             ],
         ];
     }

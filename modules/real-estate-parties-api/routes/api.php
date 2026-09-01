@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Liberu\RealEstate\PartiesApi\Http\Controllers\PartyController;
 use Liberu\RealEstate\PartiesApi\Http\Controllers\ContactController;
+use Liberu\RealEstate\PartiesApi\Http\Controllers\PartyController;
 
 Route::prefix('api/v1/real-estate/parties')->middleware(['api', 'auth:sanctum', 'throttle:api', 'api.idempotency'])->group(function (): void {
     Route::get('/', [PartyController::class, 'index'])->name('real-estate.parties.index');

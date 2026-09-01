@@ -13,4 +13,3 @@ final class AuditFilamentServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'audit-filament');
     }
 }
-

@@ -32,36 +32,54 @@ class AppPanelProvider extends PanelProvider
             ->id('app')
             ->path('app')
             ->colors(app(ThemeColors::class)->forSite())
+            ->sidebarCollapsibleOnDesktop()
+            ->maxContentWidth('full')
             ->discoverResources(in: app_path('Filament/App/Resources'), for: 'App\Filament\App\Resources')
             ->discoverPages(in: app_path('Filament/App/Pages'), for: 'App\Filament\App\Pages')
             ->pages([
                 Dashboard::class,
             ])
             ->navigationGroups([
-                'Explore',
-                'Account',
+                'Browse & discover',
+                'My activity',
+                'Account & support',
             ])
             ->navigationItems([
-                NavigationItem::make('News')
+                NavigationItem::make('Browse properties')
+                    ->url(fn (): string => route('property.list'))
+                    ->icon('heroicon-o-home-modern')
+                    ->group('Browse & discover')
+                    ->sort(10),
+                NavigationItem::make('Search properties')
+                    ->url(fn (): string => route('property.search'))
+                    ->icon('heroicon-o-magnifying-glass')
+                    ->group('Browse & discover')
+                    ->sort(20),
+                NavigationItem::make('News & updates')
                     ->url(fn (): string => route('news.list'))
                     ->icon('heroicon-o-newspaper')
-                    ->group('Explore'),
-                NavigationItem::make('Saved properties')
-                    ->url(fn (): string => route('wishlist'))
-                    ->icon('heroicon-o-heart')
-                    ->group('Explore'),
+                    ->group('Browse & discover')
+                    ->sort(30),
                 NavigationItem::make('Calculators')
                     ->url(fn (): string => route('calculators'))
                     ->icon('heroicon-o-calculator')
-                    ->group('Explore'),
+                    ->group('Browse & discover')
+                    ->sort(40),
+                NavigationItem::make('Saved properties')
+                    ->url(fn (): string => route('wishlist'))
+                    ->icon('heroicon-o-heart')
+                    ->group('My activity')
+                    ->sort(10),
                 NavigationItem::make('Contact support')
                     ->url(fn (): string => route('contact.show'))
                     ->icon('heroicon-o-chat-bubble-left-right')
-                    ->group('Explore'),
+                    ->group('Account & support')
+                    ->sort(30),
                 NavigationItem::make('Profile')
                     ->url(fn (): string => route('profile.show'))
                     ->icon('heroicon-o-user-circle')
-                    ->group('Account'),
+                    ->group('Account & support')
+                    ->sort(40),
             ])
             ->discoverWidgets(in: app_path('Filament/App/Widgets'), for: 'App\Filament\App\Widgets')
             ->widgets([

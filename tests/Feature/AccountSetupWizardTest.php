@@ -2,9 +2,11 @@
 
 use App\Filament\App\Pages\AccountSetupWizard;
 use App\Models\User;
+use App\Support\TeamIntegrationSettings;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Liberu\Foundation\Organizations\Models\Team;
+use Liberu\Foundation\Settings\Services\ScopedSettings;
 use Livewire\Livewire;
 
 uses(RefreshDatabase::class);
@@ -48,4 +50,30 @@ it('renders the setup guide in the app panel', function (): void {
         ->assertSuccessful()
         ->assertSee('Set up your account with confidence')
         ->assertSee('OAuth sign-in availability');
+});
+
+it('keeps existing team credentials when optional fields are left blank', function (): void {
+    $user = User::factory()->create();
+    $team = Team::factory()->create(['user_id' => $user->id]);
+    $user->forceFill(['current_team_id' => $team->id])->save();
+
+    app(ScopedSettings::class)->put(
+        new TeamIntegrationSettings(),
+        'team',
+        (string) $team->id,
+        ['openai_api_key' => 'existing-secret', 'google_analytics_id' => 'G-existing'],
+    );
+
+    Livewire::actingAs($user)
+        ->test(AccountSetupWizard::class)
+        ->set('data.team_name', 'Updated Estates')
+        ->call('save')
+        ->assertHasNoErrors();
+
+    $settings = app(ScopedSettings::class)->resolve('team.integrations', ['team' => $team->id], []);
+
+    expect($settings)->toMatchArray([
+        'openai_api_key' => 'existing-secret',
+        'google_analytics_id' => 'G-existing',
+    ]);
 });

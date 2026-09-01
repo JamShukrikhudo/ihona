@@ -20,6 +20,7 @@ use Liberu\RealEstate\LettingsFilament\Resources\RentalApplicationResource\Pages
 final class RentalApplicationResource extends Resource
 {
     protected static ?string $model = RentalApplication::class;
+
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
 
     public static function form(Schema $schema): Schema
@@ -35,6 +36,7 @@ final class RentalApplicationResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         $team = auth()->user()?->current_team_id;
+
         return parent::getEloquentQuery()->when($team === null, fn (Builder $q) => $q->whereRaw('1=0'), fn (Builder $q) => $q->forTeam($team));
     }
 

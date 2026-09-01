@@ -35,23 +35,26 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->colors(app(ThemeColors::class)->forSite())
+            ->sidebarCollapsibleOnDesktop()
+            ->maxContentWidth('full')
+            ->globalSearch()
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
                 Dashboard::class,
             ])
             ->navigationGroups([
-                'Real Estate',
-                'People & Relationships',
-                'Property Management',
-                'Marketing & Portals',
-                'Insights & Tools',
-                'Content',
+                'Sales & lettings',
+                'People & relationships',
+                'Property management',
+                'Marketing & portals',
+                'Insights & tools',
+                'Instructions & media',
                 'Organisation',
-                'Configuration',
-                'Platform',
-                'Integrations',
-                'Operations',
+                'Property configuration',
+                'Platform settings',
+                'Integrations & API',
+                'Operations & diagnostics',
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([

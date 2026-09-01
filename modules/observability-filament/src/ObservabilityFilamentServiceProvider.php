@@ -13,4 +13,3 @@ final class ObservabilityFilamentServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'observability-filament');
     }
 }
-

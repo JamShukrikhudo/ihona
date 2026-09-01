@@ -14,4 +14,3 @@ final class StatusController
         return response()->json(['data' => ['type' => 'feature-flags', 'status' => 'available', 'version' => 'v1'], 'meta' => ['request_id' => (string) $request->header('X-Request-ID', (string) str()->uuid())]]);
     }
 }
-

@@ -7,17 +7,17 @@ namespace Liberu\RealEstate\ValuationsApi\Http\Controllers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Liberu\RealEstate\Properties\Models\Property;
 use Liberu\RealEstate\Valuations\Application\CalculateComparables;
+use Liberu\RealEstate\Valuations\Application\CalculateHomeValuation;
 use Liberu\RealEstate\Valuations\Application\CalculateMortgage;
 use Liberu\RealEstate\Valuations\Application\CalculateRentalYield;
-use Liberu\RealEstate\Valuations\Application\CalculateHomeValuation;
 use Liberu\RealEstate\Valuations\Application\CompleteValuation;
 use Liberu\RealEstate\Valuations\Application\ConvertValuation;
 use Liberu\RealEstate\Valuations\Application\CreateValuation;
 use Liberu\RealEstate\Valuations\Application\DeleteValuation;
-use Liberu\RealEstate\Valuations\Application\GeneratePropertyValuation;
 use Liberu\RealEstate\Valuations\Application\GenerateNeuralPropertyValuation;
-use Liberu\RealEstate\Properties\Models\Property;
+use Liberu\RealEstate\Valuations\Application\GeneratePropertyValuation;
 use Liberu\RealEstate\Valuations\Application\ScheduleValuation;
 use Liberu\RealEstate\Valuations\Application\UpdateValuation;
 use Liberu\RealEstate\Valuations\Models\Valuation;
@@ -50,6 +50,7 @@ final class ValuationController
         abort_unless($teamId !== null, 403);
         $data = $request->validate(['property_id' => ['required', 'integer'], 'comparables_count' => ['sometimes', 'integer', 'min:0'], 'training_samples' => ['sometimes', 'integer', 'min:0']]);
         $property = Property::query()->forTeam($teamId)->findOrFail($data['property_id']);
+
         return response()->json(['data' => $generate->handle($property, $data['comparables_count'] ?? 0, $data['training_samples'] ?? 0)]);
     }
 

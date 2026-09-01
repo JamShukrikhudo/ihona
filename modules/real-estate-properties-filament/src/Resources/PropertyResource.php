@@ -14,18 +14,19 @@ use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\PageRegistration;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Notifications\Notification;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Liberu\RealEstate\Core\Models\Branch;
-use Liberu\RealEstate\Properties\Application\RecordPropertyKey;
 use Liberu\RealEstate\Properties\Application\EstimatePropertyTax;
+use Liberu\RealEstate\Properties\Application\RecordPropertyKey;
+use Liberu\RealEstate\Properties\Application\TogglePropertyFavorite;
 use Liberu\RealEstate\Properties\Application\TransitionProperty;
 use Liberu\RealEstate\Properties\Application\UpsertPropertyUnit;
 use Liberu\RealEstate\Properties\Domain\PropertyStatus;
@@ -159,7 +160,7 @@ final class PropertyResource extends Resource
                 EditAction::make(),
                 Action::make('favorite')
                     ->label('Toggle favorite')
-                    ->action(fn (Property $record): bool => app(\Liberu\RealEstate\Properties\Application\TogglePropertyFavorite::class)->handle($record->team_id, auth()->id(), $record->getKey())),
+                    ->action(fn (Property $record): bool => app(TogglePropertyFavorite::class)->handle($record->team_id, auth()->id(), $record->getKey())),
                 Action::make('similar')
                     ->label('Similar properties')
                     ->action(function (Property $record): void {

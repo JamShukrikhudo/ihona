@@ -1,9 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Liberu\RealEstate\PropertyManagementApi\Http\Controllers\ManagementRecordController;
 use Liberu\RealEstate\PropertyManagementApi\Http\Controllers\InspectionController;
 use Liberu\RealEstate\PropertyManagementApi\Http\Controllers\MaintenanceRequestController;
+use Liberu\RealEstate\PropertyManagementApi\Http\Controllers\ManagementRecordController;
 use Liberu\RealEstate\PropertyManagementApi\Http\Controllers\VendorQuoteController;
 use Liberu\RealEstate\PropertyManagementApi\Http\Controllers\WorkOrderController;
 

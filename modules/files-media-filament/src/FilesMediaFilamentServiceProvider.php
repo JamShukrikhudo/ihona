@@ -13,4 +13,3 @@ final class FilesMediaFilamentServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'files-media-filament');
     }
 }
-
