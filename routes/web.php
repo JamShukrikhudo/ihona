@@ -35,12 +35,12 @@ Route::view('/services', 'services')->name('services');
 Route::view('/terms-and-conditions', 'terms-and-conditions')->name('terms');
 Route::view('/privacy', 'privacy-policy')->name('privacy');
 
-// Authenticated home — super admins land in the "admin" panel, everyone else in
-// the user-facing "app" panel.
+// Authenticated home — operational roles land in the admin panel, while domain
+// roles use the user-facing app panel.
 Route::get('/dashboard', function () {
     $user = auth()->user();
 
-    if ($user instanceof User && $user->isSuperAdmin()) {
+    if ($user instanceof User && $user->hasAdminAccess()) {
         $panel = Filament::getPanel('admin');
         $tenant = $user->getDefaultTenant($panel);
 
