@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\App\Pages\Dashboard;
 use App\Filament\ModulePlugins;
 use App\Http\Middleware\ApplyTeamIntegrationSettings;
 use App\Support\ThemeColors;
@@ -10,7 +11,6 @@ use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\NavigationItem;
-use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Widgets\AccountWidget;

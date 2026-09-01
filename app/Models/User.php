@@ -153,7 +153,23 @@ class User extends Authenticatable implements ConnectedAccountOwner, FilamentUse
      */
     public function hasAdminAccess(): bool
     {
-        return $this->hasRoleInAnyTeam([(string) config('filament-shield.super_admin.name', 'super_admin'), 'admin']);
+        return $this->hasRoleInAnyTeam([(string) config('filament-shield.super_admin.name', 'super_admin'), 'admin', 'staff']);
+    }
+
+    /**
+     * Return the highest-priority workspace persona for the app dashboard.
+     * Users without an assigned role are treated as buyers until an owner
+     * assigns a more specific team role.
+     */
+    public function dashboardRole(): string
+    {
+        foreach (['super_admin', 'admin', 'staff', 'contractor', 'landlord', 'seller', 'tenant', 'buyer'] as $role) {
+            if ($this->hasRoleInAnyTeam($role)) {
+                return $role;
+            }
+        }
+
+        return 'buyer';
     }
 
     /**
