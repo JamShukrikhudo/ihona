@@ -8,6 +8,61 @@ paths:
     post: {operationId: real.estate.valuations.create, responses: {"201": {description: Created valuation}}}
   /api/v1/real-estate/valuations/calculate-home:
     post: {operationId: real.estate.valuations.calculateHome, responses: {"200": {description: Calculated home valuation}, "422": {description: Validation error}}}
+  /api/v1/real-estate/valuations/calculate-property:
+    post:
+      operationId: real.estate.valuations.calculateProperty
+      security: [{sanctum: []}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [property]
+              properties:
+                property: {type: object, required: [area_sqft, bedrooms, bathrooms, year_built, property_type], additionalProperties: true}
+                comparables_count: {type: integer, minimum: 0}
+                training_samples: {type: integer, minimum: 0}
+      responses:
+        '200': {description: Explainable property valuation estimate}
+        '422': {description: Validation error}
+  /api/v1/real-estate/valuations/calculate-mortgage:
+    post:
+      operationId: real.estate.valuations.calculateMortgage
+      security: [{sanctum: []}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [property_price, loan_amount, interest_rate, loan_term_years]
+              properties:
+                property_price: {type: number, exclusiveMinimum: 0}
+                loan_amount: {type: number, exclusiveMinimum: 0}
+                interest_rate: {type: number, minimum: 0, maximum: 100}
+                loan_term_years: {type: integer, minimum: 1, maximum: 50}
+      responses:
+        '200': {description: Estimate-only mortgage payment and amortization schedule}
+        '422': {description: Validation error}
+  /api/v1/real-estate/valuations/calculate-rental-yield:
+    post:
+      operationId: real.estate.valuations.calculateRentalYield
+      security: [{sanctum: []}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [property_value, annual_rental_income]
+              properties:
+                property_value: {type: number, exclusiveMinimum: 0}
+                annual_rental_income: {type: number, minimum: 0}
+                annual_expenses: {type: number, minimum: 0}
+      responses:
+        '200': {description: Estimate-only gross and net rental yields}
+        '422': {description: Validation error}
   /api/v1/real-estate/valuations/{id}:
     parameters: [{name: id, in: path, required: true, schema: {type: string}}]
     get: {operationId: real.estate.valuations.get, responses: {"200": {description: Valuation}}}

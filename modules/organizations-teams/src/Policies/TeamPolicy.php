@@ -1,75 +1,76 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Liberu\Foundation\Organizations\Policies;
 
-use Illuminate\Foundation\Auth\User as AuthUser;
-use Liberu\Foundation\Organizations\Models\Team;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Liberu\Foundation\Organizations\Contracts\OrganizationActor;
+use Liberu\Foundation\Organizations\Models\Team;
 
 class TeamPolicy
 {
     use HandlesAuthorization;
-    
-    public function viewAny(AuthUser $authUser): bool
+
+    /**
+     * Determine whether the user can view any models.
+     */
+    public function viewAny(OrganizationActor $user): bool
     {
-        return $authUser->can('ViewAny:Team');
+        return true;
     }
 
-    public function view(AuthUser $authUser, Team $team): bool
+    /**
+     * Determine whether the user can view the model.
+     */
+    public function view(OrganizationActor $user, Team $team): bool
     {
-        return $authUser->can('View:Team');
+        return $user->belongsToTeam($team);
     }
 
-    public function create(AuthUser $authUser): bool
+    /**
+     * Determine whether the user can create models.
+     */
+    public function create(OrganizationActor $user): bool
     {
-        return $authUser->can('Create:Team');
+        return true;
     }
 
-    public function update(AuthUser $authUser, Team $team): bool
+    /**
+     * Determine whether the user can update the model.
+     */
+    public function update(OrganizationActor $user, Team $team): bool
     {
-        return $authUser->can('Update:Team');
+        return $user->ownsTeam($team);
     }
 
-    public function delete(AuthUser $authUser, Team $team): bool
+    /**
+     * Determine whether the user can add team members.
+     */
+    public function addTeamMember(OrganizationActor $user, Team $team): bool
     {
-        return $authUser->can('Delete:Team');
+        return $user->ownsTeam($team);
     }
 
-    public function deleteAny(AuthUser $authUser): bool
+    /**
+     * Determine whether the user can update team member permissions.
+     */
+    public function updateTeamMember(OrganizationActor $user, Team $team): bool
     {
-        return $authUser->can('DeleteAny:Team');
+        return $user->ownsTeam($team);
     }
 
-    public function restore(AuthUser $authUser, Team $team): bool
+    /**
+     * Determine whether the user can remove team members.
+     */
+    public function removeTeamMember(OrganizationActor $user, Team $team): bool
     {
-        return $authUser->can('Restore:Team');
+        return $user->ownsTeam($team);
     }
 
-    public function forceDelete(AuthUser $authUser, Team $team): bool
+    /**
+     * Determine whether the user can delete the model.
+     */
+    public function delete(OrganizationActor $user, Team $team): bool
     {
-        return $authUser->can('ForceDelete:Team');
+        return $user->ownsTeam($team);
     }
-
-    public function forceDeleteAny(AuthUser $authUser): bool
-    {
-        return $authUser->can('ForceDeleteAny:Team');
-    }
-
-    public function restoreAny(AuthUser $authUser): bool
-    {
-        return $authUser->can('RestoreAny:Team');
-    }
-
-    public function replicate(AuthUser $authUser, Team $team): bool
-    {
-        return $authUser->can('Replicate:Team');
-    }
-
-    public function reorder(AuthUser $authUser): bool
-    {
-        return $authUser->can('Reorder:Team');
-    }
-
 }

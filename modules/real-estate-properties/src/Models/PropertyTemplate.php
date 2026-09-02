@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Liberu\Foundation\Organizations\Models\Team;
 
-class PropertyTemplate extends Model
+final class PropertyTemplate extends Model
 {
     protected $table = 'real_estate_property_templates';
 

@@ -73,6 +73,38 @@ final class MatchProfileController
         return (new MatchScoreResource($calculate->handle($data['criteria'], $data['property'])))->response();
     }
 
+    public function recommendProperties(Request $request, RankPropertyRecommendations $rank): JsonResponse
+    {
+        $data = $request->validate([
+            'criteria' => ['required', 'array'],
+            'properties' => ['required', 'array', 'min:1', 'max:100'],
+            'properties.*' => ['array'],
+            'properties.*.id' => ['sometimes', 'integer', 'min:1'],
+            'properties.*.title' => ['sometimes', 'string', 'max:255'],
+            'properties.*.address' => ['sometimes', 'string', 'max:500'],
+            'properties.*.location' => ['sometimes', 'string', 'max:255'],
+            'properties.*.postal_code' => ['sometimes', 'string', 'max:20'],
+            'properties.*.price' => ['required', 'numeric', 'min:0'],
+            'properties.*.bedrooms' => ['sometimes', 'integer', 'min:0'],
+            'properties.*.bathrooms' => ['sometimes', 'integer', 'min:0'],
+            'properties.*.area_sqft' => ['sometimes', 'numeric', 'min:0'],
+            'properties.*.property_type' => ['sometimes', 'string', 'max:40'],
+            'properties.*.features' => ['sometimes', 'array'],
+            'properties.*.schools' => ['sometimes', 'array'],
+            'properties.*.transit_score' => ['sometimes', 'numeric', 'min:0', 'max:100'],
+            'limit' => ['sometimes', 'integer', 'between:1,100'],
+            'excluded_ids' => ['sometimes', 'array', 'max:100'],
+            'excluded_ids.*' => ['string', 'max:80'],
+        ]);
+
+        return (new MatchScoreResource(['recommendations' => $rank->handle(
+            $data['criteria'],
+            $data['properties'],
+            (int) ($data['limit'] ?? 6),
+            $data['excluded_ids'] ?? [],
+        )]))->response();
+    }
+
     public function destroy(Request $request, MatchProfile $matchProfile, DeleteMatchProfile $delete): Response
     {
         $teamId = $request->user()?->current_team_id;
