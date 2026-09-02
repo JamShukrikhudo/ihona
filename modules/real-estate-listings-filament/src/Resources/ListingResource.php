@@ -7,6 +7,7 @@ namespace Liberu\RealEstate\ListingsFilament\Resources;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
@@ -37,7 +38,7 @@ final class ListingResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return $schema->components([TextInput::make('title')->required()->maxLength(255), Select::make('status')->options(['draft' => 'Draft', 'ready' => 'Ready', 'published' => 'Published', 'suspended' => 'Suspended', 'withdrawn' => 'Withdrawn'])->disabled()->dehydrated(false), TextInput::make('price')->numeric()->minValue(0), TextInput::make('available_from')->date()]);
+        return $schema->components([TextInput::make('title')->required()->maxLength(255), Select::make('status')->options(['draft' => 'Draft', 'ready' => 'Ready', 'published' => 'Published', 'suspended' => 'Suspended', 'withdrawn' => 'Withdrawn'])->disabled()->dehydrated(false), TextInput::make('price')->numeric()->minValue(0), DatePicker::make('available_from')]);
     }
 
     public static function table(Table $table): Table

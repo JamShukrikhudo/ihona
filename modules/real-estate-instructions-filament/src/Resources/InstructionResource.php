@@ -7,6 +7,7 @@ namespace Liberu\RealEstate\InstructionsFilament\Resources;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
@@ -35,7 +36,7 @@ final class InstructionResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return $schema->components([TextInput::make('subject')->required()->maxLength(255), Select::make('status')->options(['draft' => 'Draft', 'pending_approval' => 'Pending approval', 'approved' => 'Approved', 'withdrawn' => 'Withdrawn', 'rejected' => 'Rejected'])->disabled()->dehydrated(false), TextInput::make('approved_at')->datetime()->disabled()->dehydrated(false), TextInput::make('withdrawn_at')->datetime()->disabled()->dehydrated(false)]);
+        return $schema->components([TextInput::make('subject')->required()->maxLength(255), Select::make('status')->options(['draft' => 'Draft', 'pending_approval' => 'Pending approval', 'approved' => 'Approved', 'withdrawn' => 'Withdrawn', 'rejected' => 'Rejected'])->disabled()->dehydrated(false), DateTimePicker::make('approved_at')->disabled()->dehydrated(false), DateTimePicker::make('withdrawn_at')->disabled()->dehydrated(false)]);
     }
 
     public static function table(Table $table): Table

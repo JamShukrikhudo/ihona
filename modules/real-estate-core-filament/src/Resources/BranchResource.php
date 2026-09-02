@@ -31,7 +31,7 @@ final class BranchResource extends Resource
     {
         return $schema->components([
             TextInput::make('name')->required()->maxLength(255),
-            TextInput::make('code')->required()->uppercase()->maxLength(20),
+            TextInput::make('code')->required()->maxLength(20)->dehydrateStateUsing(fn (?string $state): ?string => $state !== null ? mb_strtoupper($state) : null),
             TextInput::make('email')->email(),
             TextInput::make('phone')->maxLength(50),
         ]);
