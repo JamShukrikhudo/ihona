@@ -9249,34 +9249,27 @@
         {
             "name": "liberusoftware/identity-core-api",
             "version": "1.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/liberusoftware/module-identity-core-api.git",
-                "reference": "eb71d7376ddc855ca98a06d987b9f24a95051194"
-            },
             "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-identity-core-api/zipball/eb71d7376ddc855ca98a06d987b9f24a95051194",
-                "reference": "eb71d7376ddc855ca98a06d987b9f24a95051194",
-                "shasum": ""
+                "type": "path",
+                "url": "modules/identity-core-api",
+                "reference": "4953669fc2e81e86692488d097b414090a15cca7"
             },
             "require": {
                 "illuminate/http": "^13.0",
                 "illuminate/routing": "^13.0",
+                "laravel/fortify": "^1.0",
+                "laravel/sanctum": "^4.0",
                 "liberusoftware/identity-core": "^1.0",
+                "liberusoftware/organizations-teams": "^1.0",
                 "php": "^8.5"
             },
             "require-dev": {
-                "liberusoftware/package-testbench": "^1.7",
                 "pestphp/pest": "^5.0"
             },
             "type": "liberu-module",
             "extra": {
                 "liberu": {
                     "name": "identity-core-api"
-                },
-                "support": {
-                    "source": "https://github.com/liberusoftware/module-identity-core-api"
                 }
             },
             "autoload": {
@@ -9284,16 +9277,19 @@
                     "Liberu\\Foundation\\IdentityCoreApi\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
             "license": [
                 "MIT"
             ],
-            "description": "Identity api presentation adapter.",
-            "support": {
-                "issues": "https://github.com/liberusoftware/module-identity-core-api/issues",
-                "source": "https://github.com/liberusoftware/module-identity-core-api/tree/1.0.0"
-            },
-            "time": "2026-08-23T02:00:01+00:00"
+            "description": "Sanctum Bearer token issuance HTTP adapter for identity-core.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
         },
         {
             "name": "liberusoftware/identity-core-filament",
