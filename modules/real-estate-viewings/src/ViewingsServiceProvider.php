@@ -22,5 +22,8 @@ final class ViewingsServiceProvider extends ServiceProvider
         $this->app->singleton(Application\CompleteViewing::class);
         $this->app->singleton(Application\CancelViewing::class);
         $this->app->singleton(Application\MarkViewingNoShow::class);
+        $this->app->singleton(Application\RequestViewingFeedback::class);
+        $this->app->singleton(Application\SubmitViewingFeedback::class);
+        $this->app->singleton(Application\SummarizeViewingFeedback::class);
     }
 }

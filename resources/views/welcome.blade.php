@@ -430,7 +430,14 @@
 
 <footer>
     <div class="wrap foot">
-        <span>© {{ date('Y') }} {{ config('app.name', 'Boilerplate Laravel') }} · MIT licensed</span>
+        @php($siteSettings = \Illuminate\Support\Facades\Schema::hasTable('settings') ? app(\Liberu\Foundation\Settings\Settings\SiteSettings::class) : null)
+        <span>
+            {{ $siteSettings?->footer_copyright ?? '© '.date('Y').' '.config('app.name', 'Boilerplate Laravel').'. All rights reserved.' }} · MIT licensed
+            @if ($siteSettings?->company_registration_number) · Company number {{ $siteSettings->company_registration_number }} @endif
+            @if ($siteSettings?->ico_registration_number) · ICO registration {{ $siteSettings->ico_registration_number }} @endif
+            @if ($siteSettings?->vat_number) · VAT number {{ $siteSettings->vat_number }} @endif
+            @if ($siteSettings?->redress_scheme) · Redress scheme: {{ $siteSettings->redress_scheme }} @endif
+        </span>
         <nav class="foot__links" aria-label="Footer">
             <a href="https://github.com/liberusoftware/boilerplate-laravel" rel="noopener">GitHub</a>
             <a href="#features">Features</a>

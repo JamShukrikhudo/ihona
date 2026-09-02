@@ -5,6 +5,56 @@ info:
 security: [{sanctum: []}]
 x-liberu-idempotency-header: Idempotency-Key
 paths:
+  /api/v1/real-estate/community-events:
+    get:
+      operationId: real.estate.properties.communityEvents
+      security: [{sanctum: []}]
+      parameters:
+        - {name: category, in: query, schema: {type: string, maxLength: 80}}
+        - {name: property_id, in: query, schema: {type: integer}}
+        - {name: latitude, in: query, schema: {type: number, minimum: -90, maximum: 90}}
+        - {name: longitude, in: query, schema: {type: number, minimum: -180, maximum: 180}}
+        - {name: radius, in: query, schema: {type: number, exclusiveMinimum: 0, maximum: 500}}
+      responses: {'200': {description: Paginated upcoming public community events}}
+  /api/v1/real-estate/community-events/{event}:
+    get:
+      operationId: real.estate.properties.communityEvent
+      security: [{sanctum: []}]
+      parameters: [{name: event, in: path, required: true, schema: {type: integer}}]
+      responses: {'200': {description: Community event}, '403': {description: Private event}, '404': {description: Event not found}}
+  /api/v1/real-estate/property-saved-searches:
+    get: {operationId: real.estate.properties.savedSearches, security: [{sanctum: []}], responses: {'200': {description: Paginated saved searches}}}
+    post:
+      operationId: real.estate.properties.saveSearch
+      security: [{sanctum: []}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object, required: [name, criteria], properties: {name: {type: string, maxLength: 120}, criteria: {type: object, additionalProperties: true}}}}}}
+      responses: {'201': {description: Saved search created}, '422': {description: Validation error}}
+  /api/v1/real-estate/property-saved-searches/{savedSearch}:
+    delete: {operationId: real.estate.properties.deleteSavedSearch, security: [{sanctum: []}], responses: {'200': {description: Saved search deleted}}}
+  /api/v1/real-estate/properties/{property}/price-alerts:
+    get:
+      operationId: real.estate.properties.priceAlerts
+      security: [{sanctum: []}]
+      parameters: [{name: property, in: path, required: true, schema: {type: integer, minimum: 1}}]
+      responses: {'200': {description: Paginated property price alerts}}
+    post:
+      operationId: real.estate.properties.createPriceAlert
+      security: [{sanctum: []}]
+      parameters: [{name: property, in: path, required: true, schema: {type: integer, minimum: 1}}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/PriceAlertInput'}}}}
+      responses: {'201': {description: Price alert created}, '422': {description: Validation error}}
+  /api/v1/real-estate/price-alerts/{alert}:
+    patch:
+      operationId: real.estate.properties.updatePriceAlert
+      security: [{sanctum: []}]
+      parameters: [{name: alert, in: path, required: true, schema: {type: integer, minimum: 1}}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/PriceAlertInput'}}}}
+      responses: {'200': {description: Price alert updated}, '422': {description: Validation error}}
+    delete:
+      operationId: real.estate.properties.deletePriceAlert
+      security: [{sanctum: []}]
+      parameters: [{name: alert, in: path, required: true, schema: {type: integer, minimum: 1}}]
+      responses: {'200': {description: Price alert deleted}}
   /api/v1/real-estate/properties:
     get:
       operationId: real.estate.properties.list
@@ -80,6 +130,71 @@ paths:
     put: {operationId: real.estate.properties.units.upsert, responses: {'200': {description: Upserted property unit}}}
   /api/v1/real-estate/properties/{id}/keys:
     post: {operationId: real.estate.properties.keys.create, responses: {'201': {description: Recorded property key}}}
+  /api/v1/real-estate/properties/{property}/ar-tour/config:
+    get:
+      operationId: real.estate.properties.ar-tour.config
+      responses: {'200': {description: Public AR tour configuration}, '404': {description: AR tour unavailable}}
+  /api/v1/real-estate/properties/{property}/walkability:
+    post:
+      operationId: real.estate.properties.walkability
+      security: [{sanctum: []}]
+      parameters: [{name: property, in: path, required: true, schema: {type: integer, minimum: 1}}]
+      responses:
+        '200': {description: 'Property updated with walkability, transit, and bike scores'}
+        '404': {description: Property not found for the current team}
+        '422': {description: Property has no coordinates}
+  /api/v1/real-estate/properties/{property}/qr-code:
+    get:
+      operationId: real.estate.properties.qrCode
+      security: [{sanctum: []}]
+      parameters:
+        - {name: property, in: path, required: true, schema: {type: integer, minimum: 1}}
+        - {name: size, in: query, schema: {type: integer, minimum: 50, maximum: 1000, default: 200}}
+      responses:
+        '200': {description: Property QR-code URL and encoded property URL}
+        '404': {description: Property not found for the current team}
+        '422': {description: Invalid QR-code size}
+  /api/v1/real-estate/properties/{property}/share:
+    post:
+      operationId: real.estate.properties.share
+      security: [{sanctum: []}]
+      parameters: [{name: property, in: path, required: true, schema: {type: integer, minimum: 1}}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [recipient_email, recipient_name, sender_name, sender_email]
+              properties:
+                recipient_email: {type: string, format: email}
+                recipient_name: {type: string, maxLength: 120}
+                sender_name: {type: string, maxLength: 120}
+                sender_email: {type: string, format: email}
+                personal_message: {type: string, nullable: true, maxLength: 2000}
+      responses:
+        '200': {description: Property email sent}
+        '404': {description: Property not found for the current team}
+        '422': {description: Invalid share details}
+  /api/v1/real-estate/properties/{property}/ar-tour/availability:
+    get:
+      operationId: real.estate.properties.ar-tour.availability
+      responses: {'200': {description: AR tour availability and statistics}}
+  /api/v1/real-estate/properties/{property}/ar-tour/enable:
+    post:
+      operationId: real.estate.properties.ar-tour.enable
+      security: [{sanctum: []}]
+      responses: {'200': {description: AR tour enabled}}
+  /api/v1/real-estate/properties/{property}/ar-tour/disable:
+    post:
+      operationId: real.estate.properties.ar-tour.disable
+      security: [{sanctum: []}]
+      responses: {'200': {description: AR tour disabled}}
+  /api/v1/real-estate/properties/{property}/ar-tour/settings:
+    patch:
+      operationId: real.estate.properties.ar-tour.settings
+      security: [{sanctum: []}]
+      responses: {'200': {description: AR tour settings updated}}
 components:
   securitySchemes:
     sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}
@@ -91,3 +206,4 @@ components:
     PropertyResponse: {type: object, properties: {data: {$ref: '#/components/schemas/Property'}}}
     PropertyWithLegacyMetadata: {allOf: [{$ref: '#/components/schemas/Property'}, {$ref: '#/components/schemas/LegacyPropertyMetadata'}]}
     PropertyPage: {type: object, properties: {data: {type: array, items: {$ref: '#/components/schemas/PropertyWithLegacyMetadata'}}, meta: {$ref: '#/components/schemas/PaginationMeta'}}}
+    PriceAlertInput: {type: object, required: [alert_percentage, alert_frequency], properties: {alert_percentage: {type: number, minimum: 0.1, maximum: 100}, alert_frequency: {type: string, enum: [daily, weekly, monthly]}, is_active: {type: boolean}}}

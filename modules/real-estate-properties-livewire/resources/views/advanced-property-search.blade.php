@@ -88,6 +88,29 @@
         <button type="submit">Apply filters</button>
     </form>
 
+    <section aria-label="Property map">
+        <x-property-map :properties="$mapPoints" />
+    </section>
+
+    <section aria-label="Saved searches">
+        <h2>Saved searches</h2>
+        @if ($savedSearchMessage)<p role="status">{{ $savedSearchMessage }}</p>@endif
+        <label for="saved-search-name">Name this search</label>
+        <input id="saved-search-name" type="text" wire:model="savedSearchName" maxlength="120">
+        <button type="button" wire:click="saveSearch">Save search</button>
+        <ul>
+            @forelse ($savedSearches as $savedSearch)
+                <li wire:key="saved-search-{{ $savedSearch->getKey() }}">
+                    <span>{{ $savedSearch->name }}</span>
+                    <button type="button" wire:click="loadSearch({{ $savedSearch->getKey() }})">Load</button>
+                    <button type="button" wire:click="deleteSearch({{ $savedSearch->getKey() }})">Delete</button>
+                </li>
+            @empty
+                <li>No saved searches yet.</li>
+            @endforelse
+        </ul>
+    </section>
+
     <ul aria-live="polite">
         @forelse ($properties as $property)
             <li wire:key="advanced-property-{{ $property->getKey() }}">

@@ -5,6 +5,8 @@ info:
 security: [{sanctum: []}]
 x-liberu-idempotency-header: Idempotency-Key
 paths:
+  /api/v1/real-estate/news:
+    get: {operationId: real.estate.marketing.news.list, summary: List published news, responses: {'200': {description: OK}}}
   /api/v1/real-estate/marketing:
     get: {operationId: real.estate.marketing.list, summary: List team marketing campaigns, responses: {'200': {description: OK}}}
     post: {operationId: real.estate.marketing.create, responses: {'201': {description: Created}}}

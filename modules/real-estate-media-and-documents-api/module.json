@@ -6,7 +6,7 @@
     "version": "1.0.0",
     "category": "adapter",
     "provider": "Liberu\\RealEstate\\MediaAndDocumentsApi\\MediaAndDocumentsApiServiceProvider",
-    "requires": {"php": "^8.5", "laravel": "^13.0", "packages": {"liberusoftware/real-estate-media-and-documents": "^1.0"}},
+    "requires": {"php": "^8.5", "laravel": "^13.0", "packages": {"liberusoftware/real-estate-media-and-documents": "^1.0", "liberusoftware/real-estate-properties": "^1.0"}},
     "suggests": {},
     "capabilities": ["real-estate.media-and-documents.api"],
     "default_enabled": true,

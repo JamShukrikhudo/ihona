@@ -6,7 +6,7 @@
     "version": "1.0.0",
     "category": "product",
     "provider": "Liberu\\RealEstate\\MediaAndDocuments\\MediaAndDocumentsServiceProvider",
-    "requires": {"php": "^8.5", "laravel": "^13.0", "packages": {"liberusoftware/module-manager": "^1.0", "liberusoftware/organizations-teams": "^1.0"}},
+    "requires": {"php": "^8.5", "laravel": "^13.0", "packages": {"liberusoftware/module-manager": "^1.0", "liberusoftware/organizations-teams": "^1.0", "liberusoftware/real-estate-properties": "^1.0"}},
     "suggests": {},
     "capabilities": ["real-estate.media-and-documents"],
     "default_enabled": true,

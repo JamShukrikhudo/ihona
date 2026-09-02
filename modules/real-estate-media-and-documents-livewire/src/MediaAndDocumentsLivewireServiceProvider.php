@@ -12,6 +12,7 @@ final class MediaAndDocumentsLivewireServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'real-estate-media-and-documents-livewire');
+        Livewire::addNamespace('module-real-estate-media-and-documents', classNamespace: __NAMESPACE__.'\\Components');
         Livewire::component('module-real-estate-media-and-documents::media-document-list', Components\MediaDocumentList::class);
     }
 }

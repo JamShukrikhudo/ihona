@@ -7,14 +7,10 @@ namespace Liberu\RealEstate\MarketingFilament;
 use Filament\Contracts\Plugin;
 use Filament\Panel;
 use Liberu\RealEstate\MarketingFilament\Resources\MarketingCampaignResource;
+use Liberu\RealEstate\MarketingFilament\Resources\NewsArticleResource;
 
 final class MarketingFilamentPlugin implements Plugin
 {
-    public static function make(): self
-    {
-        return new self();
-    }
-
     public function getId(): string
     {
         return 'real-estate-marketing';
@@ -22,7 +18,7 @@ final class MarketingFilamentPlugin implements Plugin
 
     public function register(Panel $panel): void
     {
-        $panel->resources([MarketingCampaignResource::class]);
+        $panel->resources([MarketingCampaignResource::class, NewsArticleResource::class]);
     }
 
     public function boot(Panel $panel): void {}

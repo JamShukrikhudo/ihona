@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use Liberu\RealEstate\CoreApi\Http\Controllers\AgencyController;
 use Liberu\RealEstate\CoreApi\Http\Controllers\BranchController;
+use Liberu\RealEstate\CoreApi\Http\Controllers\CalendarEntryController;
+use Liberu\RealEstate\CoreApi\Http\Controllers\CommunicationController;
 use Liberu\RealEstate\CoreApi\Http\Controllers\CoreConfigurationController;
 use Liberu\RealEstate\CoreApi\Http\Controllers\NumberingController;
 use Liberu\RealEstate\CoreApi\Http\Controllers\PublicTerritoryController;
@@ -12,6 +14,17 @@ use Liberu\RealEstate\CoreApi\Http\Controllers\PublicTerritoryController;
 Route::get('api/v1/public/territories', [PublicTerritoryController::class, 'index'])
     ->middleware(['api', 'throttle:api'])
     ->name('public.territories.index');
+
+Route::prefix('api/v1/real-estate/calendar-entries')->middleware(['api', 'auth:sanctum', 'throttle:api', 'api.idempotency'])->group(function (): void {
+    Route::post('/', [CalendarEntryController::class, 'store']);
+    Route::match(['put', 'patch'], '/{calendarEntry}', [CalendarEntryController::class, 'update']);
+    Route::delete('/{calendarEntry}', [CalendarEntryController::class, 'destroy']);
+});
+Route::prefix('api/v1/real-estate/communications')->middleware(['api', 'auth:sanctum', 'throttle:api', 'api.idempotency'])->group(function (): void {
+    Route::post('/', [CommunicationController::class, 'store']);
+    Route::match(['put', 'patch'], '/{communication}', [CommunicationController::class, 'update']);
+    Route::delete('/{communication}', [CommunicationController::class, 'destroy']);
+});
 
 Route::middleware(['api', 'auth:sanctum', 'throttle:api', 'api.idempotency'])->group(function (): void {
     Route::get('api/v1/real-estate/core/{kind}', [CoreConfigurationController::class, 'list'])->whereIn('kind', ['terminology', 'statuses', 'audit']);

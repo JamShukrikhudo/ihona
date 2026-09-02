@@ -53,10 +53,21 @@ return [
         'redirect' => env('FACEBOOK_REDIRECT_URI', '/oauth/facebook/callback'),
     ],
 
+    'openai' => [
+        'api_key' => env('OPENAI_API_KEY'),
+        'endpoint' => env('OPENAI_API_ENDPOINT', 'https://api.openai.com/v1/chat/completions'),
+        'model' => env('OPENAI_MODEL', 'gpt-3.5-turbo'),
+    ],
+
     'twitter-oauth-2' => [
         'client_id' => env('TWITTER_CLIENT_ID'),
         'client_secret' => env('TWITTER_CLIENT_SECRET'),
         'redirect' => env('TWITTER_REDIRECT_URI', '/oauth/twitter-oauth-2/callback'),
+    ],
+
+    'walkscore' => [
+        'api_key' => env('WALKSCORE_API_KEY'),
+        'base_uri' => env('WALKSCORE_BASE_URI', 'https://api.walkscore.com'),
     ],
 
 ];

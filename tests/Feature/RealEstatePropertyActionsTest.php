@@ -2,23 +2,30 @@
 
 use App\Models\User;
 use Illuminate\Cache\RateLimiting\Limit;
-use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\ValidationException;
 use Liberu\RealEstate\Core\Application\CreateBranch;
+use Liberu\RealEstate\MediaAndDocuments\Application\CreateMediaDocument;
 use Liberu\RealEstate\Properties\Application\CreateProperty;
 use Liberu\RealEstate\Properties\Application\DeleteProperty;
+use Liberu\RealEstate\Properties\Application\DeletePropertySearch;
 use Liberu\RealEstate\Properties\Application\RecordPropertyKey;
+use Liberu\RealEstate\Properties\Application\SavePropertySearch;
+use Liberu\RealEstate\Properties\Application\TogglePropertyFavorite;
 use Liberu\RealEstate\Properties\Application\TransitionProperty;
 use Liberu\RealEstate\Properties\Application\UpdateProperty;
 use Liberu\RealEstate\Properties\Application\UpsertPropertyUnit;
 use Liberu\RealEstate\Properties\Domain\PropertyStatus;
 use Liberu\RealEstate\Properties\Models\Property;
 use Liberu\RealEstate\Properties\Models\PropertyCategory;
-use Liberu\RealEstate\Properties\Models\PropertyTemplate;
 use Liberu\RealEstate\Properties\Models\PropertyFavorite;
+use Liberu\RealEstate\Properties\Models\PropertySavedSearch;
+use Liberu\RealEstate\Properties\Models\PropertyTemplate;
+use Liberu\RealEstate\PropertiesLivewire\Components\AdvancedPropertySearch;
 use Liberu\RealEstate\PropertiesLivewire\Components\PropertyDetail;
-use Liberu\RealEstate\MediaAndDocuments\Application\CreateMediaDocument;
+use Liberu\RealEstate\PropertiesLivewire\Components\WishlistManager;
 use Livewire\Livewire;
 
 it('updates team properties and retains a change history', function () {
@@ -90,7 +97,9 @@ it('reveals a valid 3D property model only after an explicit Livewire action', f
         ->call('toggle3dModel')
         ->assertSet('show3dModel', true)
         ->assertSee('src="https://example.test/model.glb"', escape: false)
-        ->assertSee('loading="lazy"', escape: false);
+        ->assertSee('loading="lazy"', escape: false)
+        ->assertSee('reveal="manual"', escape: false)
+        ->assertDontSee('reveal="interaction"', escape: false);
 });
 
 it('renders the first team-scoped public property video without preloading it', function (): void {
@@ -409,19 +418,19 @@ it('supports tenant and user-scoped property favorites', function (): void {
     $property = app(CreateProperty::class)->handle(10, 20, ['address' => '1 High Street']);
     $otherUserProperty = app(CreateProperty::class)->handle(10, 21, ['address' => '2 High Street']);
 
-    expect(app(\Liberu\RealEstate\Properties\Application\TogglePropertyFavorite::class)->handle(10, 20, $property->getKey()))->toBeTrue()
+    expect(app(TogglePropertyFavorite::class)->handle(10, 20, $property->getKey()))->toBeTrue()
         ->and(Property::query()->forTeam(10)->favoritedBy(10, 20)->pluck('id')->all())->toBe([$property->getKey()])
         ->and(PropertyFavorite::query()->where('user_id', 21)->exists())->toBeFalse()
-        ->and(app(\Liberu\RealEstate\Properties\Application\TogglePropertyFavorite::class)->handle(10, 20, $property->getKey()))->toBeFalse()
+        ->and(app(TogglePropertyFavorite::class)->handle(10, 20, $property->getKey()))->toBeFalse()
         ->and(Property::query()->forTeam(10)->favoritedBy(10, 20)->exists())->toBeFalse()
-        ->and(fn () => app(\Liberu\RealEstate\Properties\Application\TogglePropertyFavorite::class)->handle(11, 20, $otherUserProperty->getKey()))->toThrow(\Illuminate\Database\Eloquent\ModelNotFoundException::class);
+        ->and(fn () => app(TogglePropertyFavorite::class)->handle(11, 20, $otherUserProperty->getKey()))->toThrow(ModelNotFoundException::class);
 });
 
 it('serves a searchable saved-property wishlist through API and Livewire', function (): void {
     $user = User::factory()->create(['current_team_id' => 10]);
     RateLimiter::for('api', static fn (): Limit => Limit::perMinute(1000));
     $property = app(CreateProperty::class)->handle(10, $user->getAuthIdentifier(), ['address' => '1 Saved Street', 'title' => 'Saved home', 'price' => 250000]);
-    app(\Liberu\RealEstate\Properties\Application\TogglePropertyFavorite::class)->handle(10, $user->getAuthIdentifier(), $property->getKey());
+    app(TogglePropertyFavorite::class)->handle(10, $user->getAuthIdentifier(), $property->getKey());
 
     $this->actingAs($user, 'sanctum')
         ->getJson('/api/v1/real-estate/properties/favorites?search=Saved')
@@ -434,15 +443,51 @@ it('serves a searchable saved-property wishlist through API and Livewire', funct
         ->assertJsonPath('removed', true);
 
     $property = app(CreateProperty::class)->handle(10, $user->getAuthIdentifier(), ['address' => '2 Shortlist Street', 'title' => 'Shortlist home']);
-    app(\Liberu\RealEstate\Properties\Application\TogglePropertyFavorite::class)->handle(10, $user->getAuthIdentifier(), $property->getKey());
+    app(TogglePropertyFavorite::class)->handle(10, $user->getAuthIdentifier(), $property->getKey());
     $this->actingAs($user);
-    Livewire::component('test-wishlist-manager', \Liberu\RealEstate\PropertiesLivewire\Components\WishlistManager::class);
+    Livewire::component('test-wishlist-manager', WishlistManager::class);
 
     Livewire::test('test-wishlist-manager')
         ->assertSee('Shortlist home')
         ->call('removeFavorite', $property->getKey())
         ->assertSee('Removed from your shortlist.')
         ->assertSee('No saved properties yet');
+});
+
+it('persists team-scoped saved searches through core, API, and Livewire', function (): void {
+    $user = User::factory()->create(['current_team_id' => 10]);
+    $otherUser = User::factory()->create(['current_team_id' => 10]);
+    $saved = app(SavePropertySearch::class)->handle(10, $user->getAuthIdentifier(), 'Family homes', ['search' => 'family', 'minPrice' => 200000]);
+
+    expect($saved)->toBeInstanceOf(PropertySavedSearch::class)
+        ->and($saved->criteria)->toBe(['search' => 'family', 'minPrice' => 200000])
+        ->and(PropertySavedSearch::query()->forUser(10, $otherUser->getAuthIdentifier())->count())->toBe(0)
+        ->and(app(DeletePropertySearch::class)->handle(10, $otherUser->getAuthIdentifier(), $saved->getKey()))->toBeFalse();
+
+    RateLimiter::for('api', static fn (): Limit => Limit::perMinute(1000));
+    $this->actingAs($user, 'sanctum')
+        ->getJson('/api/v1/real-estate/property-saved-searches')
+        ->assertOk()
+        ->assertJsonPath('data.0.name', 'Family homes');
+
+    $created = $this->postJson('/api/v1/real-estate/property-saved-searches', ['name' => 'Apartments', 'criteria' => ['propertyType' => 'apartment']])
+        ->assertCreated()
+        ->assertJsonPath('data.name', 'Apartments');
+
+    $this->deleteJson('/api/v1/real-estate/property-saved-searches/'.$created->json('data.id'))
+        ->assertOk()
+        ->assertJsonPath('deleted', true);
+
+    $this->actingAs($user);
+    Livewire::component('test-advanced-property-search', AdvancedPropertySearch::class);
+    Livewire::test('test-advanced-property-search', ['search' => 'family', 'savedSearchName' => 'Livewire search'])
+        ->call('saveSearch')
+        ->assertSet('savedSearchMessage', 'Search saved successfully.')
+        ->assertSet('savedSearchName', '')
+        ->call('loadSearch', PropertySavedSearch::query()->forUser(10, $user->getAuthIdentifier())->latest()->firstOrFail()->getKey())
+        ->assertSet('search', 'family')
+        ->call('deleteSearch', $saved->getKey())
+        ->assertSet('savedSearchMessage', 'Saved search deleted.');
 });
 
 it('preserves legacy similar-property matching within the property boundary', function (): void {

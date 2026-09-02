@@ -98,6 +98,7 @@ final class EstimatePropertyTax
             if ($price > $threshold) {
                 $tax += ((float) $threshold - $previous) * $rate;
                 $previous = (float) $threshold;
+
                 continue;
             }
             $tax += ($price - $previous) * $rate;

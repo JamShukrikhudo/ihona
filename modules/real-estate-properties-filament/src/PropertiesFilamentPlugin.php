@@ -8,10 +8,8 @@ use Filament\Contracts\Plugin;
 use Filament\Panel;
 use Liberu\RealEstate\PropertiesFilament\Resources\PropertyCategoryResource;
 use Liberu\RealEstate\PropertiesFilament\Resources\PropertyResource;
+use Liberu\RealEstate\PropertiesFilament\Resources\PropertySavedSearchResource;
 use Liberu\RealEstate\PropertiesFilament\Resources\PropertyTemplateResource;
-use Liberu\RealEstate\PropertiesFilament\Widgets\PropertiesByStatusChart;
-use Liberu\RealEstate\PropertiesFilament\Widgets\PropertiesByTerritoryChart;
-use Liberu\RealEstate\PropertiesFilament\Widgets\RealEstateOverview;
 
 final class PropertiesFilamentPlugin implements Plugin
 {
@@ -31,12 +29,7 @@ final class PropertiesFilamentPlugin implements Plugin
             PropertyResource::class,
             PropertyCategoryResource::class,
             PropertyTemplateResource::class,
-        ]);
-
-        $panel->widgets([
-            RealEstateOverview::class,
-            PropertiesByTerritoryChart::class,
-            PropertiesByStatusChart::class,
+            PropertySavedSearchResource::class,
         ]);
     }
 

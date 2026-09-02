@@ -2,8 +2,11 @@
 
 declare(strict_types=1);
 
+use App\Models\User;
 use Carbon\CarbonImmutable;
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\ValidationException;
 use Liberu\RealEstate\Viewings\Application\CancelViewing;
 use Liberu\RealEstate\Viewings\Application\CompleteViewing;
@@ -11,10 +14,17 @@ use Liberu\RealEstate\Viewings\Application\ConfirmViewing;
 use Liberu\RealEstate\Viewings\Application\CreateViewing;
 use Liberu\RealEstate\Viewings\Application\DeleteViewing;
 use Liberu\RealEstate\Viewings\Application\MarkViewingNoShow;
+use Liberu\RealEstate\Viewings\Application\UpdateViewing;
 use Liberu\RealEstate\Viewings\Models\Viewing;
 use Liberu\RealEstate\Viewings\Queries\AvailableViewingSlots;
+use Liberu\RealEstate\Viewings\Queries\ViewingCalendarExport;
 
 uses(RefreshDatabase::class);
+
+beforeEach(function (): void {
+    RateLimiter::for('api', static fn (): Limit => Limit::perMinute(1000));
+});
+
 it('creates a requested viewing with access metadata', function (): void {
     $viewing = app(CreateViewing::class)->handle(1, 5, ['subject' => 'Property viewing', 'starts_at' => '2026-09-01 10:00', 'access' => ['key_holder' => 'agent']]);
     expect($viewing->status->value)->toBe('requested')->and($viewing->access['key_holder'])->toBe('agent');
@@ -77,4 +87,63 @@ it('returns weekday slots and removes requested or confirmed overlaps', function
 
     expect(app(AvailableViewingSlots::class)->handle(1, 7, $date->next(CarbonImmutable::SATURDAY)->startOfDay()))
         ->toBe([]);
+});
+
+it('keeps viewing updates inside the future, valid, non-overlapping schedule', function (): void {
+    $startsAt = now()->addDays(3)->startOfHour();
+    $viewing = app(CreateViewing::class)->handle(1, 5, [
+        'subject' => 'Existing viewing',
+        'property_id' => 12,
+        'starts_at' => $startsAt,
+    ]);
+    $other = app(CreateViewing::class)->handle(1, 6, [
+        'subject' => 'Other property viewing',
+        'property_id' => 13,
+        'starts_at' => $startsAt,
+    ]);
+
+    expect(fn () => app(UpdateViewing::class)->handle($viewing, 1, [
+        'starts_at' => $startsAt->copy()->subMinute(),
+        'property_id' => $other->property_id,
+    ]))->toThrow(ValidationException::class);
+
+    expect(fn () => app(UpdateViewing::class)->handle($viewing, 1, [
+        'starts_at' => now()->subMinute(),
+    ]))->toThrow(ValidationException::class);
+
+    expect(fn () => app(UpdateViewing::class)->handle($viewing, 1, [
+        'starts_at' => $startsAt,
+        'ends_at' => $startsAt,
+    ]))->toThrow(ValidationException::class);
+});
+
+it('preserves the legacy cancellation and rescheduling notice periods', function (): void {
+    $viewing = Viewing::query()->create([
+        'team_id' => 1,
+        'subject' => 'Short notice viewing',
+        'status' => 'requested',
+        'starts_at' => now()->addHours(12),
+    ]);
+
+    expect($viewing->canBeCancelled())->toBeFalse()->and($viewing->canBeRescheduled())->toBeFalse();
+    expect(fn () => app(CancelViewing::class)->handle($viewing, 1))->toThrow(ValidationException::class);
+    expect(fn () => app(UpdateViewing::class)->handle($viewing, 1, ['starts_at' => now()->addDays(3)]))->toThrow(ValidationException::class);
+});
+
+it('exports a team-scoped viewing calendar file', function (): void {
+    $viewing = Viewing::query()->create([
+        'team_id' => 10,
+        'subject' => 'Garden viewing, phase 2',
+        'status' => 'confirmed',
+        'starts_at' => '2026-09-01 10:00:00',
+        'ends_at' => '2026-09-01 11:00:00',
+    ]);
+
+    expect(app(ViewingCalendarExport::class)->handle($viewing))
+        ->toContain('BEGIN:VCALENDAR')
+        ->toContain('SUMMARY:Garden viewing\\, phase 2')
+        ->toContain('DTSTART:20260901T100000Z');
+
+    $user = User::factory()->create(['current_team_id' => 11]);
+    $this->actingAs($user, 'sanctum')->getJson('/api/v1/real-estate/viewings/'.$viewing->getKey().'/calendar')->assertNotFound();
 });

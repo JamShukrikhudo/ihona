@@ -14,7 +14,7 @@ final class CancelViewing
     public function handle(Viewing $viewing, int|string $teamId, ?string $reason = null): Viewing
     {
         abort_unless((string) $viewing->team_id === (string) $teamId, 404);
-        if (! $viewing->canTransitionTo(ViewingStatus::Cancelled)) {
+        if (! $viewing->canBeCancelled()) {
             throw ValidationException::withMessages(['status' => 'This viewing cannot be cancelled.']);
         }
 

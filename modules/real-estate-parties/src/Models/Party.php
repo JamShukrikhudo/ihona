@@ -6,6 +6,7 @@ namespace Liberu\RealEstate\Parties\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Liberu\RealEstate\Parties\Domain\PartyType;
 
@@ -32,6 +33,21 @@ final class Party extends Model
     }
     public function team()
     {
-    return $this->belongsTo(\Liberu\Foundation\Organizations\Models\Team::class);
-}
+        return $this->belongsTo(\Liberu\Foundation\Organizations\Models\Team::class);
+    }
+
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(PartyReview::class);
+    }
+
+    public function averageReviewRating(): float
+    {
+        return round((float) ($this->reviews()->approved()->avg('rating') ?? 0), 2);
+    }
+
+    public function approvedReviewCount(): int
+    {
+        return $this->reviews()->approved()->count();
+    }
 }

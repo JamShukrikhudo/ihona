@@ -7,12 +7,17 @@ namespace Liberu\RealEstate\ValuationsApi\Http\Controllers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Liberu\RealEstate\Properties\Models\Property;
 use Liberu\RealEstate\Valuations\Application\CalculateComparables;
 use Liberu\RealEstate\Valuations\Application\CalculateHomeValuation;
+use Liberu\RealEstate\Valuations\Application\CalculateMortgage;
+use Liberu\RealEstate\Valuations\Application\CalculateRentalYield;
 use Liberu\RealEstate\Valuations\Application\CompleteValuation;
 use Liberu\RealEstate\Valuations\Application\ConvertValuation;
 use Liberu\RealEstate\Valuations\Application\CreateValuation;
 use Liberu\RealEstate\Valuations\Application\DeleteValuation;
+use Liberu\RealEstate\Valuations\Application\GenerateNeuralPropertyValuation;
+use Liberu\RealEstate\Valuations\Application\GeneratePropertyValuation;
 use Liberu\RealEstate\Valuations\Application\ScheduleValuation;
 use Liberu\RealEstate\Valuations\Application\UpdateValuation;
 use Liberu\RealEstate\Valuations\Models\Valuation;
@@ -37,6 +42,16 @@ final class ValuationController
         $data = $request->validate(['subject' => ['required', 'string', 'max:255'], 'property_id' => ['nullable', 'integer'], 'party_id' => ['nullable', 'integer'], 'valued_amount' => ['nullable', 'numeric', 'min:0'], 'fee_amount' => ['nullable', 'numeric', 'min:0'], 'currency' => ['nullable', 'string', 'size:3'], 'comparable_data' => ['sometimes', 'array'], 'recommendation' => ['sometimes', 'array'], 'scheduled_at' => ['nullable', 'date'], 'follow_up_at' => ['nullable', 'date']]);
 
         return (new ValuationResource($create->handle($user->current_team_id, $user->getAuthIdentifier(), $data)))->response()->setStatusCode(201);
+    }
+
+    public function calculateNeuralProperty(Request $request, GenerateNeuralPropertyValuation $generate): JsonResponse
+    {
+        $teamId = $request->user()?->current_team_id;
+        abort_unless($teamId !== null, 403);
+        $data = $request->validate(['property_id' => ['required', 'integer'], 'comparables_count' => ['sometimes', 'integer', 'min:0'], 'training_samples' => ['sometimes', 'integer', 'min:0']]);
+        $property = Property::query()->forTeam($teamId)->findOrFail($data['property_id']);
+
+        return response()->json(['data' => $generate->handle($property, $data['comparables_count'] ?? 0, $data['training_samples'] ?? 0)]);
     }
 
     public function show(Request $request, Valuation $valuation): JsonResponse
@@ -101,5 +116,65 @@ final class ValuationController
         $data = $request->validate(['property_size' => ['required', 'numeric', 'gt:0'], 'bedrooms' => ['required', 'integer', 'min:0'], 'bathrooms' => ['required', 'integer', 'min:0'], 'year_built' => ['required', 'integer', 'min:1000'], 'property_type' => ['required', 'string', 'max:40'], 'condition' => ['required', 'string', 'max:40'], 'location' => ['required', 'string', 'max:40'], 'base_price' => ['sometimes', 'numeric', 'gt:0']]);
 
         return (new ValuationCalculationResource($calculate->handle((float) $data['property_size'], $data['bedrooms'], $data['bathrooms'], $data['year_built'], $data['property_type'], $data['condition'], $data['location'], (float) ($data['base_price'] ?? 3000))))->response();
+    }
+
+    public function calculateProperty(Request $request, GeneratePropertyValuation $calculate): JsonResponse
+    {
+        $data = $request->validate([
+            'property' => ['required', 'array'],
+            'property.area_sqft' => ['required', 'numeric', 'gt:0'],
+            'property.bedrooms' => ['required', 'integer', 'min:0'],
+            'property.bathrooms' => ['required', 'integer', 'min:0'],
+            'property.year_built' => ['required', 'integer', 'min:1000'],
+            'property.property_type' => ['required', 'string', 'max:40'],
+            'property.address' => ['sometimes', 'string', 'max:500'],
+            'property.location' => ['sometimes', 'string', 'max:255'],
+            'property.status' => ['sometimes', 'string', 'max:40'],
+            'property.price' => ['sometimes', 'nullable', 'numeric', 'min:0'],
+            'property.latitude' => ['sometimes', 'nullable', 'numeric', 'between:-90,90'],
+            'property.longitude' => ['sometimes', 'nullable', 'numeric', 'between:-180,180'],
+            'property.is_featured' => ['sometimes', 'boolean'],
+            'property.list_date' => ['sometimes', 'nullable', 'date'],
+            'comparables_count' => ['sometimes', 'integer', 'min:0', 'max:1000'],
+            'training_samples' => ['sometimes', 'integer', 'min:0', 'max:1000000'],
+        ]);
+
+        return (new ValuationCalculationResource($calculate->handle(
+            $data['property'],
+            (int) ($data['comparables_count'] ?? 0),
+            (int) ($data['training_samples'] ?? 0),
+        )))->response();
+    }
+
+    public function calculateMortgage(Request $request, CalculateMortgage $calculate): JsonResponse
+    {
+        $data = $request->validate([
+            'property_price' => ['required', 'numeric', 'gt:0'],
+            'loan_amount' => ['required', 'numeric', 'gt:0', 'lte:property_price'],
+            'interest_rate' => ['required', 'numeric', 'between:0,100'],
+            'loan_term_years' => ['required', 'integer', 'between:1,50'],
+        ]);
+
+        return (new ValuationCalculationResource($calculate->handle(
+            (float) $data['property_price'],
+            (float) $data['loan_amount'],
+            (float) $data['interest_rate'],
+            (int) $data['loan_term_years'],
+        )))->response();
+    }
+
+    public function calculateRentalYield(Request $request, CalculateRentalYield $calculate): JsonResponse
+    {
+        $data = $request->validate([
+            'property_value' => ['required', 'numeric', 'gt:0'],
+            'annual_rental_income' => ['required', 'numeric', 'min:0'],
+            'annual_expenses' => ['sometimes', 'numeric', 'min:0'],
+        ]);
+
+        return (new ValuationCalculationResource($calculate->handle(
+            (float) $data['property_value'],
+            (float) $data['annual_rental_income'],
+            (float) ($data['annual_expenses'] ?? 0),
+        )))->response();
     }
 }

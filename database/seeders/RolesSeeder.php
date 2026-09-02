@@ -5,8 +5,8 @@ namespace Database\Seeders;
 use BezhanSalleh\FilamentShield\Support\Utils;
 use Illuminate\Database\Seeder;
 use Liberu\Foundation\Organizations\Models\Team;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
+use Liberu\Foundation\RolesPermissions\Models\Permission;
+use Liberu\Foundation\RolesPermissions\Models\Role;
 
 class RolesSeeder extends Seeder
 {
@@ -15,30 +15,30 @@ class RolesSeeder extends Seeder
      */
     public function run(): void
     {
-        $roleData = [
-            'name' => 'super_admin',
-            'guard_name' => 'web',
-        ];
-
         // Roles are team-scoped (permission.teams=true). Create + query them
         // inside the default team's context. See CLAUDE.md tenancy rules.
+        $teamId = null;
+
         if (Utils::isTenancyEnabled()) {
             $team = Team::firstOrFail();
-            $roleData['team_id'] = $team->id;
-            setPermissionsTeamId($team->id);
+            $teamId = $team->id;
+            setPermissionsTeamId($teamId);
         }
 
-        $superAdminRole = Role::firstOrCreate($roleData);
+        $permissions = Permission::where('guard_name', 'web')->pluck('id')->all();
 
-        // Grant every generated web permission (none until shield:generate runs — harmless).
-        $permissions = Permission::where('guard_name', 'web')->pluck('id')->toArray();
-        $superAdminRole->syncPermissions($permissions);
+        foreach (['buyer', 'seller', 'landlord', 'tenant', 'contractor', 'staff', 'admin', 'super_admin'] as $name) {
+            $role = Role::firstOrCreate([
+                'name' => $name,
+                'guard_name' => 'web',
+                ...($teamId === null ? [] : ['team_id' => $teamId]),
+            ]);
 
-        // 'admin' is the second role User::hasAdminAccess() checks (alongside
-        // super_admin) for /admin panel access — for staff who need the admin
-        // panel without the full super_admin bypass Gate::before grants.
-        $adminRoleData = ['name' => 'admin', 'guard_name' => 'web'] + array_intersect_key($roleData, ['team_id' => true]);
-        $adminRole = Role::firstOrCreate($adminRoleData);
-        $adminRole->syncPermissions($permissions);
+            // Admin-facing roles need to see generated Filament resources. The
+            // domain roles stay intentionally permission-light and use the app panel.
+            if (in_array($name, ['staff', 'admin', 'super_admin'], true)) {
+                $role->syncPermissions($permissions);
+            }
+        }
     }
 }

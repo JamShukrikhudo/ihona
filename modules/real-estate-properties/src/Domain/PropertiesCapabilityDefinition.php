@@ -9,7 +9,7 @@ final class PropertiesCapabilityDefinition
     /** @return array<string, array{label: string, required: list<string>, behaviors: list<string>}> */
     public static function all(): array
     {
-        $labels = ['Address/location', 'Categories', 'Templates', 'Favorites', 'Units', 'Characteristics', 'Tenure', 'Utilities', 'Features', 'Status', 'History', 'Keys', 'Property detail disclosures', 'Property comparisons', 'Property tax estimates'];
+        $labels = ['Address/location', 'Categories', 'Templates', 'Favorites', 'Saved searches', 'Community events', 'Reviews', 'Neighborhoods', 'Neighborhood reviews', 'Price alerts', 'Units', 'Characteristics', 'Tenure', 'Utilities', 'Features', 'Status', 'History', 'Keys', 'Property detail disclosures', 'Property comparisons', 'Property tax estimates', 'AR tours', 'Walkability scores', 'Property QR codes', 'Property sharing'];
         $result = [];
         foreach ($labels as $label) {
             $key = strtolower(str_replace([' ', '/', '-'], ['_', '_', '_'], $label));

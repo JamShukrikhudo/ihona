@@ -1,23 +1,27 @@
 <?php
 
 declare(strict_types=1);
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Cache\RateLimiting\Limit;
-use Illuminate\Support\Facades\RateLimiter;
 use App\Models\User;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\ValidationException;
+use Liberu\RealEstate\Properties\Application\CreateProperty;
 use Liberu\RealEstate\Valuations\Application\CalculateComparables;
 use Liberu\RealEstate\Valuations\Application\CalculateHomeValuation;
 use Liberu\RealEstate\Valuations\Application\CalculateMortgage;
 use Liberu\RealEstate\Valuations\Application\CalculateRentalYield;
-use Liberu\RealEstate\Valuations\Application\GeneratePropertyValuation;
 use Liberu\RealEstate\Valuations\Application\CompleteValuation;
 use Liberu\RealEstate\Valuations\Application\ConvertValuation;
 use Liberu\RealEstate\Valuations\Application\CreateValuation;
 use Liberu\RealEstate\Valuations\Application\DeleteValuation;
+use Liberu\RealEstate\Valuations\Application\GenerateNeuralPropertyValuation;
+use Liberu\RealEstate\Valuations\Application\GeneratePropertyValuation;
 use Liberu\RealEstate\Valuations\Application\ScheduleValuation;
 use Liberu\RealEstate\Valuations\Models\Valuation;
+use Liberu\RealEstate\ValuationsLivewire\Components\MortgageCalculator;
 use Liberu\RealEstate\ValuationsLivewire\Components\PropertyValuationEstimator;
+use Liberu\RealEstate\ValuationsLivewire\Components\RentalYieldCalculator;
 use Livewire\Livewire;
 
 uses(RefreshDatabase::class);
@@ -84,6 +88,28 @@ it('carries the legacy explainable property valuation report into the valuation 
         ->and($result['disclaimer'])->toContain('not a professional appraisal');
 });
 
+it('provides the legacy neural valuation contract through the modular engine', function (): void {
+    $property = app(CreateProperty::class)->handle(10, 5, [
+        'address' => 'Neural Valuation Street',
+        'area_sqft' => 1500,
+        'bedrooms' => 3,
+        'bathrooms' => 2,
+        'year_built' => 2010,
+        'property_type' => 'detached',
+        'status' => 'available',
+    ]);
+
+    $result = app(GenerateNeuralPropertyValuation::class)->handle($property, 4, 20);
+
+    expect($result['method'])->toBe('neural_network')
+        ->and($result['model_version'])->toBe('1.0.0')
+        ->and($result['estimated_value'])->toBeGreaterThan(0)
+        ->and($result['price_range']['min'])->toBeLessThan($result['estimated_value'])
+        ->and($result['price_range']['max'])->toBeGreaterThan($result['estimated_value'])
+        ->and($result['feature_importance'])->not->toBeEmpty()
+        ->and($result['prediction_factors'])->toBeArray();
+});
+
 it('serves property valuation reports through the API and Livewire adapters', function (): void {
     $user = User::factory()->create(['current_team_id' => 10]);
     RateLimiter::for('api', static fn (): Limit => Limit::perMinute(1000));
@@ -111,6 +137,25 @@ it('serves property valuation reports through the API and Livewire adapters', fu
         ->assertSet('valuation.method', 'explainable_heuristic')
         ->call('resetValuation')
         ->assertSet('valuation', null);
+});
+
+it('serves neural property valuations for properties in the current team', function (): void {
+    $user = User::factory()->create(['current_team_id' => 10]);
+    RateLimiter::for('api', static fn (): Limit => Limit::perMinute(1000));
+    $property = app(CreateProperty::class)->handle(10, $user->getKey(), [
+        'address' => 'Neural API Street',
+        'area_sqft' => 1200,
+        'bedrooms' => 3,
+        'bathrooms' => 2,
+        'year_built' => 2018,
+        'property_type' => 'detached',
+    ]);
+
+    $this->actingAs($user, 'sanctum')
+        ->postJson('/api/v1/real-estate/valuations/calculate-neural-property', ['property_id' => $property->getKey(), 'training_samples' => 20])
+        ->assertOk()
+        ->assertJsonPath('data.method', 'neural_network')
+        ->assertJsonPath('data.model_version', '1.0.0');
 });
 
 it('calculates amortization safely, including zero-interest loans', function (): void {
@@ -144,7 +189,7 @@ it('serves mortgage estimates through the authenticated API and Livewire adapter
         ->assertJsonPath('data.monthly_payment', 1000);
 
     $this->actingAs($user);
-    Livewire::component('test-mortgage-calculator', \Liberu\RealEstate\ValuationsLivewire\Components\MortgageCalculator::class);
+    Livewire::component('test-mortgage-calculator', MortgageCalculator::class);
 
     Livewire::test('test-mortgage-calculator', ['propertyPrice' => 240000, 'loanAmount' => 120000, 'interestRate' => 0, 'loanTermYears' => 10])
         ->call('calculateMortgage')
@@ -182,7 +227,7 @@ it('serves rental yield estimates through the authenticated API and Livewire ada
         ->assertJsonPath('data.net_yield', 9);
 
     $this->actingAs($user);
-    Livewire::component('test-rental-yield-calculator', \Liberu\RealEstate\ValuationsLivewire\Components\RentalYieldCalculator::class);
+    Livewire::component('test-rental-yield-calculator', RentalYieldCalculator::class);
 
     Livewire::test('test-rental-yield-calculator', ['propertyValue' => 200000, 'annualRentalIncome' => 24000, 'annualExpenses' => 6000])
         ->call('calculateRentalYield')

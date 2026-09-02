@@ -3,13 +3,14 @@
 namespace App\Providers\Filament;
 
 use App\Filament\ModulePlugins;
+use App\Filament\Pages\Dashboard;
+use App\Http\Middleware\ApplyTeamIntegrationSettings;
 use App\Support\ThemeColors;
 use BezhanSalleh\FilamentShield\Middleware\SyncShieldTenant;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Widgets\AccountWidget;
@@ -36,10 +37,26 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->colors(app(ThemeColors::class)->forSite())
+            ->sidebarCollapsibleOnDesktop()
+            ->maxContentWidth('full')
+            ->globalSearch()
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
                 Dashboard::class,
+            ])
+            ->navigationGroups([
+                'Sales & lettings',
+                'People & relationships',
+                'Property management',
+                'Marketing & portals',
+                'Insights & tools',
+                'Instructions & media',
+                'Organisation',
+                'Property configuration',
+                'Platform settings',
+                'Integrations & API',
+                'Operations & diagnostics',
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
@@ -54,6 +71,7 @@ class AdminPanelProvider extends PanelProvider
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
                 StartSession::class,
+                ApplyTeamIntegrationSettings::class,
                 AuthenticateSession::class,
                 ShareErrorsFromSession::class,
                 PreventRequestForgery::class,
@@ -64,6 +82,7 @@ class AdminPanelProvider extends PanelProvider
                 SecurityHeaders::class,
             ])
             ->plugins(app(ModulePlugins::class)->forPanel('admin'))
+            ->bootUsing(fn (Panel $panel): null => NavigationGroups::configure($panel))
             ->authMiddleware([
                 Authenticate::class,
             ]);

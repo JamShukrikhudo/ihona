@@ -47,4 +47,14 @@ final class Viewing extends Model
     {
         return $this->belongsTo(Team::class);
     }
+
+    public function canBeCancelled(): bool
+    {
+        return $this->canTransitionTo(ViewingStatus::Cancelled) && $this->starts_at?->gt(now()->addDay());
+    }
+
+    public function canBeRescheduled(): bool
+    {
+        return false;
+    }
 }

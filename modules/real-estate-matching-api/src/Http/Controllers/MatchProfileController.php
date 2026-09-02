@@ -10,6 +10,7 @@ use Illuminate\Http\Response;
 use Liberu\RealEstate\Matching\Application\CalculateMatchScore;
 use Liberu\RealEstate\Matching\Application\CreateMatchProfile;
 use Liberu\RealEstate\Matching\Application\DeleteMatchProfile;
+use Liberu\RealEstate\Matching\Application\RankPropertyRecommendations;
 use Liberu\RealEstate\Matching\Application\UpdateMatchProfile;
 use Liberu\RealEstate\Matching\Application\UpdateMatchProfileSection;
 use Liberu\RealEstate\Matching\Domain\MatchProfileSection;

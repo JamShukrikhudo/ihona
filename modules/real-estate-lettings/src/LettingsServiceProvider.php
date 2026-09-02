@@ -14,6 +14,9 @@ final class LettingsServiceProvider extends ServiceProvider
     public function register(): void
     {
         Gate::policy(Letting::class, LettingPolicy::class);
+        $this->app->bind(Application\CreateRentalApplication::class);
+        $this->app->bind(Application\UpdateRentalApplicationScreening::class);
+        $this->app->bind(Application\DecideRentalApplication::class);
     }
 
     public function boot(): void

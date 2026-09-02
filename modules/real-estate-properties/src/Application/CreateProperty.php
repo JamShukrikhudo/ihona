@@ -8,9 +8,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Liberu\RealEstate\Core\Models\Branch;
 use Liberu\RealEstate\Properties\Domain\PropertyStatus;
+use Liberu\RealEstate\Properties\Models\Property;
 use Liberu\RealEstate\Properties\Models\PropertyCategory;
 use Liberu\RealEstate\Properties\Models\PropertyTemplate;
-use Liberu\RealEstate\Properties\Models\Property;
 
 final class CreateProperty
 {

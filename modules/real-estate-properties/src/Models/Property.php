@@ -114,6 +114,36 @@ final class Property extends Model
         return $this->hasMany(PropertyFavorite::class);
     }
 
+    public function priceAlerts(): HasMany
+    {
+        return $this->hasMany(PropertyPriceAlert::class);
+    }
+
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(PropertyReview::class);
+    }
+
+    public function averageReviewRating(): float
+    {
+        return round((float) ($this->reviews()->approved()->avg('rating') ?? 0), 2);
+    }
+
+    public function approvedReviewCount(): int
+    {
+        return $this->reviews()->approved()->count();
+    }
+
+    /** @return Collection<int, CommunityEvent> */
+    public function getNearbyCommunityEvents(float|int|string $radius = 10): Collection
+    {
+        if ($this->latitude === null || $this->longitude === null) {
+            return new Collection();
+        }
+
+        return CommunityEvent::query()->forTeam($this->team_id)->public()->upcoming()->nearby($this->latitude, $this->longitude, $radius)->get();
+    }
+
     public function branch(): BelongsTo
     {
         return $this->belongsTo(Branch::class);
@@ -251,10 +281,14 @@ final class Property extends Model
     public function daysListed(): ?int
     {
         if ($this->list_date === null || $this->list_date->isFuture()) {
-            return $this->list_date === null ? null : 0;
+            return null;
         }
 
-        return (int) $this->list_date->startOfDay()->diffInDays(now()->startOfDay());
+        $end = $this->sold_date !== null && $this->sold_date->isBefore(now())
+            ? $this->sold_date
+            : now();
+
+        return (int) $this->list_date->startOfDay()->diffInDays($end->startOfDay());
     }
 
     public function pricePerSquareFoot(): ?float
@@ -264,6 +298,94 @@ final class Property extends Model
         }
 
         return round((float) $this->price / (float) $this->area_sqft, 2);
+    }
+
+    public function isRental(): bool
+    {
+        return in_array(strtolower(trim($this->statusValue())), [
+            'to_let', 'let', 'let_agreed', 'for rent', 'for_rent', 'rented', 'rent', 'rental',
+        ], true);
+    }
+
+    public function pricePerSquareFootLabel(): string
+    {
+        return $this->currencySymbol().'/sq ft';
+    }
+
+    public function pricePerSquareFootForHumans(): ?string
+    {
+        $value = $this->pricePerSquareFoot();
+        if ($value === null) {
+            return null;
+        }
+
+        $formatted = rtrim(rtrim(number_format($value, 2, '.', ''), '0'), '.');
+
+        return $this->isRental() ? $formatted.' pcm' : $formatted;
+    }
+
+    public function currencySymbol(): string
+    {
+        return match (strtoupper((string) $this->currency)) {
+            'GBP' => '£', 'EUR' => '€', 'USD' => '$', 'CAD' => 'CA$', 'AUD' => 'A$',
+            default => filled($this->currency) ? (string) $this->currency.' ' : '£',
+        };
+    }
+
+    public function tenureForHumans(): ?string
+    {
+        $tenure = strtolower(trim((string) $this->tenure));
+        if ($tenure === '') {
+            return null;
+        }
+
+        return $tenure === 'leasehold' && $this->lease_years_remaining !== null
+            ? 'Leasehold, '.$this->lease_years_remaining.' years remaining'
+            : ucfirst($tenure);
+    }
+
+    public function hasShortLease(): bool
+    {
+        return strtolower(trim((string) $this->tenure)) === 'leasehold'
+            && $this->lease_years_remaining !== null
+            && (int) $this->lease_years_remaining < 80;
+    }
+
+    public function annualEnergyCost(): ?float
+    {
+        $cost = data_get($this->epc, 'annual_energy_cost');
+        if (is_numeric($cost)) {
+            return (float) $cost;
+        }
+
+        $parts = collect(['heating_cost', 'hot_water_cost', 'lighting_cost'])
+            ->map(fn (string $key): mixed => data_get($this->epc, $key))
+            ->filter(fn (mixed $value): bool => is_numeric($value));
+
+        return $parts->isEmpty() ? null : (float) $parts->sum();
+    }
+
+    public function isComingSoon(): bool
+    {
+        return $this->list_date !== null && $this->list_date->isFuture();
+    }
+
+    public function closedStateLabel(): ?string
+    {
+        return match (strtolower(trim($this->statusValue()))) {
+            'sstc', 'sold_stc', 'sold stc' => 'Sold STC', 'exchanged' => 'Exchanged',
+            'archived', 'withdrawn' => 'Withdrawn', 'under_offer', 'under offer' => 'Under offer',
+            'let_agreed', 'let agreed' => 'Let agreed', 'sold' => 'Sold', default => null,
+        };
+    }
+
+    private function statusValue(): string
+    {
+        $status = $this->getAttribute('status');
+
+        return $status instanceof PropertyStatus
+            ? $status->value
+            : (string) ($status ?? $this->getRawOriginal('status'));
     }
 
     /** @return array<string, mixed> */
@@ -325,6 +447,28 @@ final class Property extends Model
                 'label' => 'Council tax band',
                 'value' => $this->council_tax_band,
                 'source' => 'Property record',
+            ],
+            'tenure' => [
+                'label' => 'Tenure',
+                'value' => $this->tenureForHumans(),
+                'source' => 'Property record',
+            ],
+            'service_charge' => [
+                'label' => 'Service charge',
+                'value' => $this->service_charge === null ? null : $this->currencySymbol().number_format((float) $this->service_charge, 0).' a year',
+                'source' => 'Property record',
+            ],
+            'ground_rent' => [
+                'label' => 'Ground rent',
+                'value' => $this->ground_rent === null
+                    ? null
+                    : ((float) $this->ground_rent === 0.0 ? 'Peppercorn' : $this->currencySymbol().number_format((float) $this->ground_rent, 0).' a year'),
+                'source' => 'Property record',
+            ],
+            'annual_energy_cost' => [
+                'label' => 'Annual energy cost',
+                'value' => $this->annualEnergyCost() === null ? null : $this->currencySymbol().number_format($this->annualEnergyCost(), 0).' a year',
+                'source' => 'Energy certificate',
             ],
         ];
     }

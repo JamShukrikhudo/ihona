@@ -18,6 +18,8 @@ final class LettingCapabilityDefinition
             LettingCapability::Renewals->value => ['label' => 'Renewals', 'required' => ['renewal_date']],
             LettingCapability::RentChanges->value => ['label' => 'Rent changes', 'required' => ['effective_date', 'amount']],
             LettingCapability::Notices->value => ['label' => 'Notices', 'required' => ['notice_type', 'served_at']],
+            'tenancy_agreement_lifecycle' => ['label' => 'Tenancy agreement lifecycle', 'required' => ['start_date', 'end_date']],
+            'recurring_rental_charges' => ['label' => 'Recurring rental charges', 'required' => ['property_id', 'amount']],
         ];
     }
 }
