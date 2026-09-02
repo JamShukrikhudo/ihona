@@ -42,6 +42,7 @@ final class PublicPropertyResource extends JsonResource
             'latitude' => $this->resource->latitude,
             'longitude' => $this->resource->longitude,
             'features' => $this->resource->features,
+            'published_at' => $this->resource->published_at?->toIso8601String(),
             'gallery' => array_map(static fn ($item): array => $item->toArray(), $this->resource->galleryItems()),
         ];
     }
