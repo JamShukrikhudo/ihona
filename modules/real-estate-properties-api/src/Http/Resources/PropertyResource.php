@@ -22,7 +22,7 @@ final class PropertyResource extends JsonResource
 
         return $this->resource->only([
             'id', 'team_id', 'created_by', 'branch_id', 'reference', 'address', 'title', 'description',
-            'status', 'property_type', 'property_category_id', 'property_template_id', 'price', 'currency',
+            'status', 'property_type', 'deal_type', 'property_category_id', 'property_template_id', 'price', 'currency',
             'bedrooms', 'bathrooms', 'reception_rooms', 'area_sqft', 'year_built', 'characteristics',
             'utilities', 'features', 'structured_address', 'parking', 'gardens', 'postal_code', 'country',
             'tenure', 'lease_years_remaining', 'service_charge', 'ground_rent', 'energy_rating', 'energy_rating_date',
