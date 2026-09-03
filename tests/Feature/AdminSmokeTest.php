@@ -52,3 +52,35 @@ it('loads the /app panel without a fatal error', function () {
         expect($response->status())->toBeLessThan(500, "FAILED: {$path} returned {$response->status()}");
     }
 });
+
+it('loads every /app-registered resource for a sales_agent — the developer/agent self-service panel', function () {
+    $agent = User::factory()->create();
+    $team = Team::factory()->create(['user_id' => $agent->id]);
+    $agent->forceFill(['current_team_id' => $team->id])->save();
+
+    setPermissionsTeamId($team->id);
+    $agent->assignRole(Role::create(['name' => 'sales_agent', 'guard_name' => 'web', 'team_id' => $team->id]));
+
+    $this->actingAs($agent);
+
+    $router = app('router');
+    $slugs = [];
+    foreach ($router->getRoutes() as $route) {
+        $uri = $route->uri();
+        if (str_starts_with($uri, 'app/') && in_array('GET', $route->methods(), true) && ! str_contains($uri, '{record}') && substr_count($uri, '/') === 1) {
+            $slugs[] = substr($uri, strlen('app/'));
+        }
+    }
+    $slugs = array_values(array_unique($slugs));
+    expect($slugs)->not->toBeEmpty();
+
+    $failures = [];
+    foreach ($slugs as $slug) {
+        $response = $this->get("/app/{$slug}");
+        if ($response->status() >= 500) {
+            $failures[] = "/app/{$slug} => {$response->status()}";
+        }
+    }
+
+    expect($failures)->toBe([]);
+});
