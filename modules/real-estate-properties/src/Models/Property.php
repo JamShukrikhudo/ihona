@@ -279,6 +279,17 @@ final class Property extends Model
     }
 
     /**
+     * Human-readable listing number — "IH-2026-00015" — for staff/callers
+     * to reference instead of the raw database id. Computed from id +
+     * creation year rather than a stored column: both inputs are already
+     * unique/immutable, so there's nothing to keep in sync or backfill.
+     */
+    public function reference(): string
+    {
+        return sprintf('IH-%d-%05d', $this->created_at?->year ?? now()->year, $this->getKey());
+    }
+
+    /**
      * Increments views_count at most once per visitor per property per day.
      * $visitorKey is typically the request IP — hashed here so nothing
      * identifying is persisted, only used transiently as a cache key.

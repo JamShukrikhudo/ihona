@@ -21,7 +21,7 @@ final class PropertyResource extends JsonResource
             ->exists();
 
         return $this->resource->only([
-            'id', 'team_id', 'created_by', 'branch_id', 'reference', 'address', 'title', 'description',
+            'id', 'team_id', 'created_by', 'branch_id', 'address', 'title', 'description',
             'status', 'property_type', 'deal_type', 'property_category_id', 'property_template_id', 'price', 'currency',
             'bedrooms', 'bathrooms', 'reception_rooms', 'area_sqft', 'year_built', 'characteristics',
             'utilities', 'features', 'has_generator', 'has_wifi', 'has_parking', 'mountain_view', 'altitude',
@@ -37,6 +37,7 @@ final class PropertyResource extends JsonResource
             'insurance_coverage_amount', 'insurance_premium', 'insurance_expiry_date', 'rightmove_id',
             'zoopla_id', 'onthemarket_id', 'jupix_id', 'created_at', 'updated_at',
         ]) + [
+            'reference' => $this->resource->reference(),
             'is_hmo' => $this->resource->isHmo(),
             'has_active_insurance' => $this->resource->hasActiveInsurance(),
             'days_listed' => $this->resource->daysListed(),

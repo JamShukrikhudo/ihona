@@ -177,6 +177,7 @@ final class PropertyResource extends Resource
                 return $teamId === null ? $query->whereRaw('1 = 0') : $query->forTeam($teamId);
             })
             ->columns([
+                TextColumn::make('reference')->label('Номер')->state(fn (Property $record): string => $record->reference())->sortable(query: fn (Builder $query, string $direction): Builder => $query->orderBy('id', $direction)),
                 TextColumn::make('address')->label('Адрес')->searchable()->sortable()->wrap(),
                 TextColumn::make('property_type')->label('Тип')->searchable()->sortable(),
                 TextColumn::make('status')->label('Статус')->badge(),

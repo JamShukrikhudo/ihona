@@ -24,6 +24,7 @@ final class PublicPropertyResource extends JsonResource
     {
         return [
             'id' => $this->resource->id,
+            'reference' => $this->resource->reference(),
             'title' => $this->resource->title,
             'description' => $this->resource->description,
             'address' => $this->resource->address,
