@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Cache;
 use Liberu\Foundation\Organizations\Models\Team;
 use Liberu\RealEstate\Core\Models\Branch;
 use Liberu\RealEstate\Core\Models\Territory;
@@ -73,6 +74,7 @@ final class Property extends Model
             'has_parking' => 'boolean',
             'altitude' => 'integer',
             'max_guests' => 'integer',
+            'views_count' => 'integer',
             'live_tour_available' => 'boolean',
             'ar_tour_enabled' => 'boolean',
             'ar_tour_settings' => 'array',
@@ -274,6 +276,22 @@ final class Property extends Model
     public function isHmo(): bool
     {
         return strtolower((string) $this->property_type) === 'hmo';
+    }
+
+    /**
+     * Increments views_count at most once per visitor per property per day.
+     * $visitorKey is typically the request IP — hashed here so nothing
+     * identifying is persisted, only used transiently as a cache key.
+     * Cache::add() is atomic (SET NX under the redis driver), so concurrent
+     * requests from the same visitor can't double-count.
+     */
+    public function recordView(string $visitorKey): void
+    {
+        $cacheKey = 'property-view:'.$this->getKey().':'.hash('xxh128', $visitorKey);
+
+        if (Cache::add($cacheKey, true, now()->addDay())) {
+            $this->increment('views_count');
+        }
     }
 
     public function hasActiveInsurance(): bool

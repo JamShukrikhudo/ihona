@@ -25,7 +25,7 @@ final class PropertyResource extends JsonResource
             'status', 'property_type', 'deal_type', 'property_category_id', 'property_template_id', 'price', 'currency',
             'bedrooms', 'bathrooms', 'reception_rooms', 'area_sqft', 'year_built', 'characteristics',
             'utilities', 'features', 'has_generator', 'has_wifi', 'has_parking', 'mountain_view', 'altitude',
-            'water_source', 'max_guests', 'structured_address', 'parking', 'gardens', 'postal_code', 'country',
+            'water_source', 'max_guests', 'views_count', 'structured_address', 'parking', 'gardens', 'postal_code', 'country',
             'tenure', 'lease_years_remaining', 'service_charge', 'ground_rent', 'energy_rating', 'energy_rating_date',
             'energy_score', 'council_tax_band', 'epc', 'walkability_score', 'walkability_description',
             'transit_score', 'transit_description', 'bike_score', 'bike_description', 'walkability_updated_at',

@@ -187,6 +187,7 @@ final class PropertyResource extends Resource
                 TextColumn::make('year_built')->sortable(),
                 TextColumn::make('price_per_square_foot')->label('Price / sq ft')->state(fn (Property $record): ?float => $record->pricePerSquareFoot())->numeric(decimalPlaces: 2),
                 TextColumn::make('days_listed')->label('Days listed')->state(fn (Property $record): ?int => $record->daysListed())->numeric(),
+                TextColumn::make('views_count')->label('Просмотры')->numeric()->sortable(),
                 TextColumn::make('floor_plan_image')->label('Floor plan')->formatStateUsing(fn (?string $state): string => filled($state) ? 'Available' : 'Not supplied'),
                 TextColumn::make('created_at')->dateTime()->sortable(),
             ])

@@ -77,9 +77,11 @@ final class PublicPropertyController
         return PublicPropertyResource::collection($properties)->response();
     }
 
-    public function show(Property $property): JsonResponse
+    public function show(Request $request, Property $property): JsonResponse
     {
         abort_unless($property->status === PropertyStatus::Available, 404);
+
+        $property->recordView($request->ip() ?? 'unknown');
 
         return (new PublicPropertyResource($property->load('territory')))->response();
     }
