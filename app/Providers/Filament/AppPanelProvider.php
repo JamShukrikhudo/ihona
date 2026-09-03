@@ -31,6 +31,7 @@ class AppPanelProvider extends PanelProvider
         return $panel
             ->id('app')
             ->path('app')
+            ->favicon(asset('favicon.svg'))
             ->colors(app(ThemeColors::class)->forSite())
             ->sidebarCollapsibleOnDesktop()
             ->maxContentWidth('full')

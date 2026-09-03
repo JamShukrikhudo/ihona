@@ -177,19 +177,23 @@ final class PropertyResource extends Resource
                 return $teamId === null ? $query->whereRaw('1 = 0') : $query->forTeam($teamId);
             })
             ->columns([
-                TextColumn::make('address')->searchable()->sortable()->wrap(),
-                TextColumn::make('property_type')->label('Type')->searchable()->sortable(),
-                TextColumn::make('status')->badge(),
-                TextColumn::make('price')->numeric()->sortable(),
-                TextColumn::make('bedrooms')->sortable(),
-                TextColumn::make('bathrooms')->sortable(),
-                TextColumn::make('area_sqft')->sortable(),
-                TextColumn::make('year_built')->sortable(),
-                TextColumn::make('price_per_square_foot')->label('Price / sq ft')->state(fn (Property $record): ?float => $record->pricePerSquareFoot())->numeric(decimalPlaces: 2),
-                TextColumn::make('days_listed')->label('Days listed')->state(fn (Property $record): ?int => $record->daysListed())->numeric(),
+                TextColumn::make('address')->label('Адрес')->searchable()->sortable()->wrap(),
+                TextColumn::make('property_type')->label('Тип')->searchable()->sortable(),
+                TextColumn::make('status')->label('Статус')->badge(),
+                TextColumn::make('price')->label('Цена')->numeric()->sortable(),
+                TextColumn::make('bedrooms')->label('Спален')->sortable(),
+                TextColumn::make('bathrooms')->label('Санузлов')->sortable(),
+                // Column name says "sqft" (upstream template default), but
+                // every value in this table is actually square metres — the
+                // frontend renders area_sqft as "{value} м²" throughout, and
+                // this label matches that real usage, not the column name.
+                TextColumn::make('area_sqft')->label('Площадь, м²')->sortable(),
+                TextColumn::make('year_built')->label('Год постройки')->sortable(),
+                TextColumn::make('price_per_square_foot')->label('Цена за м²')->state(fn (Property $record): ?float => $record->pricePerSquareFoot())->numeric(decimalPlaces: 2),
+                TextColumn::make('days_listed')->label('Дней в продаже')->state(fn (Property $record): ?int => $record->daysListed())->numeric(),
                 TextColumn::make('views_count')->label('Просмотры')->numeric()->sortable(),
-                TextColumn::make('floor_plan_image')->label('Floor plan')->formatStateUsing(fn (?string $state): string => filled($state) ? 'Available' : 'Not supplied'),
-                TextColumn::make('created_at')->dateTime()->sortable(),
+                TextColumn::make('floor_plan_image')->label('План этажа')->formatStateUsing(fn (?string $state): string => filled($state) ? 'Есть' : 'Не загружен'),
+                TextColumn::make('created_at')->label('Создано')->dateTime()->sortable(),
             ])
             ->filters([
                 SelectFilter::make('status')->options(collect(PropertyStatus::cases())->mapWithKeys(fn (PropertyStatus $status): array => [$status->value => str($status->value)->headline()->toString()])->all()),

@@ -20,6 +20,7 @@ use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\URL;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Liberu\Foundation\ApplicationCore\Http\Middleware\SecurityHeaders;
 use Liberu\Foundation\Localization\Http\Middleware\SetLocale;
@@ -29,13 +30,14 @@ class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
-        \Illuminate\Support\Facades\URL::forceScheme('https');
+        URL::forceScheme('https');
 
         return $panel
             ->default()
             ->id('admin')
             ->path('admin')
             ->login()
+            ->favicon(asset('favicon.svg'))
             ->colors(app(ThemeColors::class)->forSite())
             ->sidebarCollapsibleOnDesktop()
             ->maxContentWidth('full')
