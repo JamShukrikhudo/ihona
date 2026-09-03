@@ -21,7 +21,7 @@ final class Viewing extends Model
 
     protected function casts(): array
     {
-        return ['status' => ViewingStatus::class, 'access' => 'array', 'accompaniment' => 'array', 'reminders' => 'array', 'feedback' => 'array', 'no_show' => 'boolean', 'starts_at' => 'datetime', 'ends_at' => 'datetime'];
+        return ['status' => ViewingStatus::class, 'access' => 'array', 'accompaniment' => 'array', 'reminders' => 'array', 'feedback' => 'array', 'no_show' => 'boolean', 'starts_at' => 'datetime', 'ends_at' => 'datetime', 'guests_count' => 'integer'];
     }
 
     public function scopeForTeam(Builder $query, int|string $teamId): Builder
