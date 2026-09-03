@@ -136,7 +136,7 @@ it('provides portable property detail disclosure facts', function (): void {
     ]);
 
     expect($property->daysListed())->toBe(46)
-        ->and($property->pricePerSquareFoot())->toBe(455.65)
+        ->and($property->pricePerSquareMeter())->toBe(455.65)
         ->and($property->disclosureFacts()['energy']['value'])->toBe('B (84)')
         ->and($property->disclosureFacts()['energy']['source'])->toContain('2019-03-12')
         ->and($property->disclosureFacts()['council_tax_band']['value'])->toBe('D');

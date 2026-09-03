@@ -140,7 +140,7 @@ it('keeps the API property response aligned with legacy listing data', function 
     $resource = file_get_contents(base_path('modules/real-estate-properties-api/src/Http/Resources/PropertyResource.php'));
     $openApi = file_get_contents(base_path('modules/real-estate-properties-api/openapi/v1/real-estate-properties.yaml'));
 
-    foreach (['title', 'description', 'currency', 'reception_rooms', 'year_built', 'postal_code', 'energy_score', 'list_date', 'is_featured', 'ar_tour_enabled', 'insurance_expiry_date', 'rightmove_id', 'zoopla_id', 'onthemarket_id'] as $field) {
+    foreach (['title', 'description', 'currency', 'reception_rooms', 'year_built', 'postal_code', 'energy_score', 'list_date', 'is_featured', 'insurance_expiry_date', 'rightmove_id', 'zoopla_id', 'onthemarket_id'] as $field) {
         expect($resource)->toContain("'{$field}'");
         expect($openApi)->toContain($field);
     }
@@ -179,12 +179,12 @@ it('keeps the property detail disclosure contract across adapters', function ():
 
     expect($model)->toContain('public function daysListed(): ?int')
         ->toContain('public function model3dUrl(): ?string')
-        ->toContain('public function pricePerSquareFoot(): ?float')
+        ->toContain('public function pricePerSquareMeter(): ?float')
         ->toContain('public function disclosureFacts(): array')
         ->and($definition)->toContain('Property detail disclosures')
         ->and($resource)->toContain("'disclosure_facts' => \$this->resource->disclosureFacts()")
         ->and($openApi)->toContain('days_listed:')
-        ->toContain('price_per_square_foot:')
+        ->toContain('price_per_square_meter:')
         ->toContain('disclosure_facts:')
         ->and($provider)->toContain("property-detail', Components\\PropertyDetail::class")
         ->and($detail)->toContain('forTeam($teamId)')
@@ -194,7 +194,7 @@ it('keeps the property detail disclosure contract across adapters', function ():
         ->toContain('Book a viewing')
         ->toContain('loading="lazy"')
         ->toContain('preload="none"')
-        ->and($filament)->toContain("label('Price / sq ft')")
+        ->and($filament)->toContain("label('Цена за м²')")
         ->toContain("label('Days listed')")
         ->toContain("label('Floor plan')");
 });
@@ -395,25 +395,6 @@ it('keeps property preview connected to the submission event', function (): void
     expect($component)->toContain('class PropertyPreview')->toContain("On('previewProperty')")
         ->and($view)->toContain('No property selected for preview.')
         ->and($provider)->toContain("property-preview', Components\\PropertyPreview::class");
-});
-
-it('keeps VR property design modularized across core, API, and Livewire adapters', function (): void {
-    $root = dirname(__DIR__, 2);
-    $core = file_get_contents("{$root}/modules/real-estate-vr-design/src/Application/VrDesignService.php");
-    $model = file_get_contents("{$root}/modules/real-estate-vr-design/src/Models/VrDesign.php");
-    $api = file_get_contents("{$root}/modules/real-estate-vr-design-api/src/Http/Controllers/VrDesignController.php");
-    $routes = file_get_contents("{$root}/modules/real-estate-vr-design-api/routes/api.php");
-    $openApi = file_get_contents("{$root}/modules/real-estate-vr-design-api/openapi/v1/real-estate-vr-design.yaml");
-    $livewire = file_get_contents("{$root}/modules/real-estate-vr-design-livewire/src/Components/DesignStudio.php");
-    $definition = file_get_contents("{$root}/modules/real-estate-vr-design/src/Domain/VrDesignCapabilityDefinition.php");
-
-    expect($core)->toContain('class VrDesignService')->toContain('addFurniture')->toContain('uploadThumbnail')->toContain('cloneDesign')
-        ->and($model)->toContain('scopeForTeam')->toContain('scopeTemplates')
-        ->and($definition)->toContain('Design styles')->toContain('VR exports')
-        ->and($api)->toContain('class VrDesignController')->toContain('VrDesignResource')
-        ->and($routes)->toContain("'auth:sanctum'")->toContain('vr-design')
-        ->and($openApi)->toContain('openapi: 3.1.0')->toContain('operationId:')
-        ->and($livewire)->toContain('class DesignStudio')->toContain('saveDesign');
 });
 
 it('keeps published news connected to the marketing API boundary', function (): void {

@@ -4,7 +4,7 @@
             <h1>{{ $property->title ?: $property->address }}</h1>
             <p>{{ $property->address }}</p>
             @if ($property->price !== null)
-                <p>{{ $property->currency ?: 'GBP' }} {{ number_format((float) $property->price, 2) }}</p>
+                <p>{{ $property->currency ?: 'TJS' }} {{ number_format((float) $property->price, 2) }}</p>
             @endif
         </header>
 

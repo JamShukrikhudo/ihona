@@ -6,6 +6,7 @@ namespace Liberu\RealEstate\PropertiesApi\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Liberu\Foundation\Currency\Services\CurrencyConverter;
 use Liberu\RealEstate\Properties\Models\PropertyFavorite;
 
 final class PropertyResource extends JsonResource
@@ -31,8 +32,7 @@ final class PropertyResource extends JsonResource
             'transit_score', 'transit_description', 'bike_score', 'bike_description', 'walkability_updated_at',
             'floor_plan_data', 'floor_plan_image', 'latitude', 'longitude', 'list_date', 'sold_date',
             'last_synced_at', 'published_at', 'is_featured', 'live_tour_available', 'virtual_tour_url',
-            'virtual_tour_provider', 'model_3d_url', 'ar_tour_enabled', 'ar_tour_settings', 'ar_placement_guide',
-            'ar_model_scale', 'holographic_tour_url', 'holographic_provider', 'holographic_metadata',
+            'virtual_tour_provider', 'model_3d_url', 'holographic_tour_url', 'holographic_provider', 'holographic_metadata',
             'holographic_enabled', 'description_generated_at', 'internal_notes', 'insurance_policy_id',
             'insurance_coverage_amount', 'insurance_premium', 'insurance_expiry_date', 'rightmove_id',
             'zoopla_id', 'onthemarket_id', 'jupix_id', 'created_at', 'updated_at',
@@ -41,10 +41,25 @@ final class PropertyResource extends JsonResource
             'is_hmo' => $this->resource->isHmo(),
             'has_active_insurance' => $this->resource->hasActiveInsurance(),
             'days_listed' => $this->resource->daysListed(),
-            'price_per_square_foot' => $this->resource->pricePerSquareFoot(),
+            'price_per_square_meter' => $this->resource->pricePerSquareMeter(),
+            'price_usd' => $this->priceUsd(),
             'disclosure_facts' => $this->resource->disclosureFacts(),
             'gallery' => array_map(static fn ($item): array => $item->toArray(), $this->resource->galleryItems()),
             'is_favorited' => $isFavorited,
         ];
+    }
+
+    /** @see PublicPropertyResource::priceUsd() */
+    private function priceUsd(): ?float
+    {
+        if ($this->resource->price === null || $this->resource->currency === null) {
+            return null;
+        }
+
+        return app(CurrencyConverter::class)->convertAmount(
+            (float) $this->resource->price,
+            (string) $this->resource->currency,
+            'USD',
+        );
     }
 }

@@ -6,6 +6,7 @@ namespace Liberu\RealEstate\PropertiesApi\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Liberu\Foundation\Currency\Services\CurrencyConverter;
 
 /**
  * Anonymous, storefront-facing property shape. Deliberately narrower than
@@ -33,6 +34,7 @@ final class PublicPropertyResource extends JsonResource
             'deal_type' => $this->resource->deal_type?->value,
             'price' => $this->resource->price,
             'currency' => $this->resource->currency,
+            'price_usd' => $this->priceUsd(),
             'bedrooms' => $this->resource->bedrooms,
             'bathrooms' => $this->resource->bathrooms,
             'area_sqft' => $this->resource->area_sqft,
@@ -50,5 +52,23 @@ final class PublicPropertyResource extends JsonResource
             'published_at' => $this->resource->published_at?->toIso8601String(),
             'gallery' => array_map(static fn ($item): array => $item->toArray(), $this->resource->galleryItems()),
         ];
+    }
+
+    /**
+     * Best-effort TJS/EUR/GBP/… → USD conversion via a cached, daily-refreshed
+     * public rate (see OpenExchangeRateApiProvider) — null (not an error) when
+     * the currency is unset, unsupported, or the upstream rate is unreachable.
+     */
+    private function priceUsd(): ?float
+    {
+        if ($this->resource->price === null || $this->resource->currency === null) {
+            return null;
+        }
+
+        return app(CurrencyConverter::class)->convertAmount(
+            (float) $this->resource->price,
+            (string) $this->resource->currency,
+            'USD',
+        );
     }
 }

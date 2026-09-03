@@ -76,14 +76,11 @@ final class Property extends Model
             'max_guests' => 'integer',
             'views_count' => 'integer',
             'live_tour_available' => 'boolean',
-            'ar_tour_enabled' => 'boolean',
-            'ar_tour_settings' => 'array',
             'holographic_metadata' => 'array',
             'holographic_enabled' => 'boolean',
             'walkability_updated_at' => 'datetime',
             'energy_rating_date' => 'date',
             'insurance_expiry_date' => 'date',
-            'ar_model_scale' => 'float',
         ];
     }
 
@@ -325,7 +322,7 @@ final class Property extends Model
         return (int) $this->list_date->startOfDay()->diffInDays($end->startOfDay());
     }
 
-    public function pricePerSquareFoot(): ?float
+    public function pricePerSquareMeter(): ?float
     {
         if ($this->price === null || $this->area_sqft === null || (float) $this->area_sqft <= 0) {
             return null;
@@ -341,14 +338,14 @@ final class Property extends Model
         ], true);
     }
 
-    public function pricePerSquareFootLabel(): string
+    public function pricePerSquareMeterLabel(): string
     {
-        return $this->currencySymbol().'/sq ft';
+        return $this->currencySymbol().'/m²';
     }
 
-    public function pricePerSquareFootForHumans(): ?string
+    public function pricePerSquareMeterForHumans(): ?string
     {
-        $value = $this->pricePerSquareFoot();
+        $value = $this->pricePerSquareMeter();
         if ($value === null) {
             return null;
         }
@@ -362,7 +359,7 @@ final class Property extends Model
     {
         return match (strtoupper((string) $this->currency)) {
             'GBP' => '£', 'EUR' => '€', 'USD' => '$', 'CAD' => 'CA$', 'AUD' => 'A$',
-            default => filled($this->currency) ? (string) $this->currency.' ' : '£',
+            default => filled($this->currency) ? (string) $this->currency.' ' : 'TJS ',
         };
     }
 
@@ -467,9 +464,9 @@ final class Property extends Model
                 'value' => $this->year_built,
                 'source' => 'Property record',
             ],
-            'price_per_square_foot' => [
-                'label' => 'Price per square foot',
-                'value' => $this->pricePerSquareFoot(),
+            'price_per_square_meter' => [
+                'label' => 'Price per square meter',
+                'value' => $this->pricePerSquareMeter(),
                 'source' => 'Derived from price and floor area',
             ],
             'days_listed' => [

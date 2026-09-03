@@ -117,7 +117,6 @@ final class PropertyResource extends Resource
             TextInput::make('model_3d_url')->url()->maxLength(2048),
             TextInput::make('floor_plan_image')->url()->maxLength(2048),
             Toggle::make('is_featured'),
-            Toggle::make('ar_tour_enabled'),
             Toggle::make('holographic_enabled'),
             TextInput::make('holographic_tour_url')->url()->maxLength(2048),
             TextInput::make('holographic_provider')->maxLength(255),
@@ -190,7 +189,7 @@ final class PropertyResource extends Resource
                 // this label matches that real usage, not the column name.
                 TextColumn::make('area_sqft')->label('Площадь, м²')->sortable(),
                 TextColumn::make('year_built')->label('Год постройки')->sortable(),
-                TextColumn::make('price_per_square_foot')->label('Цена за м²')->state(fn (Property $record): ?float => $record->pricePerSquareFoot())->numeric(decimalPlaces: 2),
+                TextColumn::make('price_per_square_meter')->label('Цена за м²')->state(fn (Property $record): ?float => $record->pricePerSquareMeter())->numeric(decimalPlaces: 2),
                 TextColumn::make('days_listed')->label('Дней в продаже')->state(fn (Property $record): ?int => $record->daysListed())->numeric(),
                 TextColumn::make('views_count')->label('Просмотры')->numeric()->sortable(),
                 TextColumn::make('floor_plan_image')->label('План этажа')->formatStateUsing(fn (?string $state): string => filled($state) ? 'Есть' : 'Не загружен'),

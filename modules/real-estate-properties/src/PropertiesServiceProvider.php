@@ -24,7 +24,6 @@ final class PropertiesServiceProvider extends ServiceProvider
         $this->app->singleton(Application\DeletePriceAlert::class);
         $this->app->singleton(Application\TogglePriceAlert::class);
         $this->app->singleton(Application\CheckPriceAlerts::class);
-        $this->app->singleton(Application\ConfigurePropertyArTour::class);
         $this->app->singleton(Application\FetchWalkabilityScores::class);
         $this->app->singleton(Application\GeneratePropertyQrCode::class);
         $this->app->singleton(Application\SendPropertyToFriend::class);

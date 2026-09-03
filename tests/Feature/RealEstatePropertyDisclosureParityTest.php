@@ -17,10 +17,10 @@ it('preserves rental-aware rates and currency labels', function (): void {
     $euro = disclosureProperty(['currency' => 'EUR', 'price' => 565000, 'area_sqft' => 1240]);
 
     expect($rental->isRental())->toBeTrue()
-        ->and($rental->pricePerSquareFootForHumans())->toBe('1.69 pcm')
-        ->and($rental->pricePerSquareFootLabel())->toBe('£/sq ft')
+        ->and($rental->pricePerSquareMeterForHumans())->toBe('1.69 pcm')
+        ->and($rental->pricePerSquareMeterLabel())->toBe('£/m²')
         ->and($euro->currencySymbol())->toBe('€')
-        ->and($euro->pricePerSquareFootLabel())->toBe('€/sq ft');
+        ->and($euro->pricePerSquareMeterLabel())->toBe('€/m²');
 });
 
 it('formats tenure and flags only genuinely short leaseholds', function (): void {

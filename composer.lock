@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "893639d219f9da178f5e465942bba4a5",
+    "content-hash": "57ade1407d17a566d369409b81dc74de",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -8433,10 +8433,11 @@
             "dist": {
                 "type": "path",
                 "url": "modules/currency-context",
-                "reference": "5aa68d7fab8f5e83681dbd23f5320aa14057d712"
+                "reference": "36d2c9245c829b2fa0495a4bfc3896ef0f12f372"
             },
             "require": {
                 "illuminate/contracts": "^13.0",
+                "illuminate/http": "^13.0",
                 "illuminate/support": "^13.0",
                 "liberusoftware/module-manager": "^1.0",
                 "php": "^8.5"
@@ -13230,11 +13231,13 @@
             "dist": {
                 "type": "path",
                 "url": "modules/real-estate-properties-api",
-                "reference": "c611130170e461a8b4262057aac260de6ff90b8b"
+                "reference": "e62391fa17d7795a242ffcb45aefaf9d942b8f60"
             },
             "require": {
                 "illuminate/http": "^13.0",
                 "illuminate/routing": "^13.0",
+                "liberusoftware/currency-context": "^1.0",
+                "liberusoftware/organizations-teams": "^1.0",
                 "liberusoftware/real-estate-properties": "^1.0",
                 "php": "^8.5"
             },
@@ -14225,151 +14228,6 @@
                 "MIT"
             ],
             "description": "Livewire 4 adapter for real-estate viewings.",
-            "transport-options": {
-                "symlink": false,
-                "relative": true
-            }
-        },
-        {
-            "name": "liberusoftware/real-estate-vr-design",
-            "version": "1.0.0",
-            "dist": {
-                "type": "path",
-                "url": "modules/real-estate-vr-design",
-                "reference": "9d8df6f8d5aa84a21547b9d658c298383823494b"
-            },
-            "require": {
-                "illuminate/cache": "^13.0",
-                "illuminate/database": "^13.0",
-                "illuminate/filesystem": "^13.0",
-                "illuminate/support": "^13.0",
-                "liberusoftware/module-manager": "^1.0",
-                "liberusoftware/organizations-teams": "^1.0",
-                "liberusoftware/real-estate-properties": "^1.0",
-                "php": "^8.5"
-            },
-            "require-dev": {
-                "pestphp/pest": "^5.0"
-            },
-            "type": "liberu-module",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Liberu\\RealEstate\\VrDesign\\VrDesignServiceProvider"
-                    ]
-                },
-                "liberu": {
-                    "name": "real-estate-vr-design"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Liberu\\RealEstate\\VrDesign\\": "src/"
-                }
-            },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
-            "license": [
-                "MIT"
-            ],
-            "description": "Provider-neutral virtual reality property design workflows.",
-            "transport-options": {
-                "symlink": false,
-                "relative": true
-            }
-        },
-        {
-            "name": "liberusoftware/real-estate-vr-design-api",
-            "version": "1.0.0",
-            "dist": {
-                "type": "path",
-                "url": "modules/real-estate-vr-design-api",
-                "reference": "b3fe71fb337314a9ec6b9386420e93422951bc6a"
-            },
-            "require": {
-                "illuminate/http": "^13.0",
-                "illuminate/routing": "^13.0",
-                "liberusoftware/real-estate-vr-design": "^1.0",
-                "php": "^8.5"
-            },
-            "require-dev": {
-                "pestphp/pest": "^5.0"
-            },
-            "type": "liberu-module",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Liberu\\RealEstate\\VrDesignApi\\VrDesignApiServiceProvider"
-                    ]
-                },
-                "liberu": {
-                    "name": "real-estate-vr-design-api"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Liberu\\RealEstate\\VrDesignApi\\": "src/"
-                }
-            },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
-            "license": [
-                "MIT"
-            ],
-            "description": "Versioned API adapter for real-estate VR designs.",
-            "transport-options": {
-                "symlink": false,
-                "relative": true
-            }
-        },
-        {
-            "name": "liberusoftware/real-estate-vr-design-livewire",
-            "version": "1.0.0",
-            "dist": {
-                "type": "path",
-                "url": "modules/real-estate-vr-design-livewire",
-                "reference": "abdddf241544ee02ec929f42a8502e95896fc4bf"
-            },
-            "require": {
-                "liberusoftware/real-estate-properties": "^1.0",
-                "liberusoftware/real-estate-vr-design": "^1.0",
-                "livewire/livewire": "^4.0",
-                "php": "^8.5"
-            },
-            "require-dev": {
-                "pestphp/pest": "^5.0"
-            },
-            "type": "liberu-module",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Liberu\\RealEstate\\VrDesignLivewire\\VrDesignLivewireServiceProvider"
-                    ]
-                },
-                "liberu": {
-                    "name": "real-estate-vr-design-livewire"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Liberu\\RealEstate\\VrDesignLivewire\\": "src/"
-                }
-            },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
-            "license": [
-                "MIT"
-            ],
-            "description": "Livewire VR property design studio.",
             "transport-options": {
                 "symlink": false,
                 "relative": true

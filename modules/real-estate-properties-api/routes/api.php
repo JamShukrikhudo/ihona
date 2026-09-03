@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 use Liberu\RealEstate\PropertiesApi\Http\Controllers\CommunityEventController;
-use Liberu\RealEstate\PropertiesApi\Http\Controllers\PropertyArTourController;
 use Liberu\RealEstate\PropertiesApi\Http\Controllers\PropertyCategoryController;
 use Liberu\RealEstate\PropertiesApi\Http\Controllers\PropertyController;
 use Liberu\RealEstate\PropertiesApi\Http\Controllers\PropertyPriceAlertController;
@@ -15,17 +14,6 @@ use Liberu\RealEstate\PropertiesApi\Http\Controllers\PublicPropertyController;
 Route::prefix('api/v1/public/properties')->middleware(['api', 'throttle:api'])->group(function (): void {
     Route::get('/', [PublicPropertyController::class, 'index'])->name('public.properties.index');
     Route::get('/{property}', [PublicPropertyController::class, 'show'])->name('public.properties.show');
-});
-
-Route::prefix('api/v1/real-estate/properties/{property}/ar-tour')->middleware(['api', 'throttle:api'])->group(function (): void {
-    Route::get('/config', [PropertyArTourController::class, 'config'])->name('real-estate.properties.ar-tour.config');
-    Route::get('/availability', [PropertyArTourController::class, 'availability'])->name('real-estate.properties.ar-tour.availability');
-});
-
-Route::prefix('api/v1/real-estate/properties/{property}/ar-tour')->middleware(['api', 'auth:sanctum', 'throttle:api', 'api.idempotency'])->group(function (): void {
-    Route::post('/enable', [PropertyArTourController::class, 'enable'])->name('real-estate.properties.ar-tour.enable');
-    Route::post('/disable', [PropertyArTourController::class, 'disable'])->name('real-estate.properties.ar-tour.disable');
-    Route::match(['put', 'patch'], '/settings', [PropertyArTourController::class, 'updateSettings'])->name('real-estate.properties.ar-tour.settings');
 });
 
 Route::prefix('api/v1/real-estate/property-saved-searches')->middleware(['api', 'auth:sanctum', 'throttle:api', 'api.idempotency'])->group(function (): void {

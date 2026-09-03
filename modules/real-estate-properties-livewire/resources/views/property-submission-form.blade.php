@@ -25,7 +25,7 @@
         <input id="property-submission-bedrooms" type="number" wire:model="bedrooms" min="0">
         <label for="property-submission-bathrooms">Bathrooms</label>
         <input id="property-submission-bathrooms" type="number" wire:model="bathrooms" min="0">
-        <label for="property-submission-area">Area (sq ft)</label>
+        <label for="property-submission-area">Area (sq m)</label>
         <input id="property-submission-area" type="number" wire:model="area_sqft" min="0">
         <label for="property-submission-year">Year built</label>
         <input id="property-submission-year" type="number" wire:model="year_built" min="1066">
