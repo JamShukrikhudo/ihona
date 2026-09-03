@@ -11,16 +11,14 @@ class PropertySeeder extends Seeder
 {
     /**
      * Seed a representative catalog so the public API / frontend have real
-     * data to verify against, instead of an empty table. Uses only columns
-     * that exist on real_estate_properties — deliberately no has_generator/
-     * altitude/water_source/mountain_view/max_guests, which the Filament
-     * PropertyResource form renders but which were never added as columns
-     * (flagged, out of scope per the ihona.tj plan's explicit decision —
-     * see docs/handoffs).
+     * data to verify against, instead of an empty table.
      *
      * Weighted toward the business priority: buy/rent city housing (flat,
      * house, land, cottage, commercial) first — tourism (guesthouse,
-     * hostel, nightly deal_type=rent) is two entries, not the majority.
+     * hostel, hunting-lodge, nightly deal_type=rent) is a minority.
+     * mountain_view/altitude/max_guests are only set on the mountain-region
+     * tourism listings (guesthouse, hunting-lodge) — Khujand's hostel is a
+     * lowland city property, so it gets none of those.
      */
     public function run(): void
     {
@@ -118,6 +116,9 @@ class PropertySeeder extends Seeder
                 'deal_type' => 'rent',
                 'latitude' => 37.4922,
                 'longitude' => 71.5548,
+                'mountain_view' => 'pamir',
+                'altitude' => 2200,
+                'max_guests' => 10,
             ],
             [
                 'territory' => 'KHUJAND',
@@ -131,6 +132,24 @@ class PropertySeeder extends Seeder
                 'deal_type' => 'rent',
                 'latitude' => 40.2847,
                 'longitude' => 69.6301,
+            ],
+            [
+                'territory' => 'PAMIR',
+                'title' => '[TEST] Домик для охоты и отдыха в горах',
+                'address' => 'Фанские горы, озеро Искандеркуль',
+                'description' => 'Охотничий домик в горной зоне — своя генераторная электростанция, родник рядом. Посуточная аренда.',
+                'price' => 900,
+                'bedrooms' => 3,
+                'area_sqft' => 70,
+                'property_type' => 'hunting-lodge',
+                'deal_type' => 'rent',
+                'latitude' => 39.0778,
+                'longitude' => 68.3667,
+                'has_generator' => true,
+                'mountain_view' => 'fan',
+                'altitude' => 2300,
+                'water_source' => 'spring',
+                'max_guests' => 6,
             ],
         ] as $data) {
             $territory = Territory::query()->forTeam($team->id)->where('code', $data['territory'])->first();
@@ -152,6 +171,11 @@ class PropertySeeder extends Seeder
                     'longitude' => $data['longitude'],
                     'status' => 'available',
                     'published_at' => now(),
+                    'has_generator' => $data['has_generator'] ?? false,
+                    'mountain_view' => $data['mountain_view'] ?? null,
+                    'altitude' => $data['altitude'] ?? null,
+                    'water_source' => $data['water_source'] ?? null,
+                    'max_guests' => $data['max_guests'] ?? null,
                 ],
             );
         }

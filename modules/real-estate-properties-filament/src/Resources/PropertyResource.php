@@ -86,6 +86,7 @@ final class PropertyResource extends Resource
                     'house' => 'Дом',
                     'guesthouse' => 'Гестхаус',
                     'hostel' => 'Хостел',
+                    'hunting-lodge' => 'Охотничий домик',
                     'land' => 'Земельный участок',
                     'commercial' => 'Коммерческая',
                     'cottage' => 'Дача',

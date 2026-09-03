@@ -10,11 +10,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 /**
  * Anonymous, storefront-facing property shape. Deliberately narrower than
  * the authenticated PropertyResource (no internal_notes, insurance,
- * rightmove/zoopla sync ids, ...) and deliberately does NOT expose
- * has_generator/has_wifi/mountain_view/altitude/water_source/max_guests —
- * those don't exist as columns on real_estate_properties (a known,
- * out-of-scope schema-drift bug the Filament form still renders fields
- * for — see docs/handoffs). Only real columns/relations here.
+ * rightmove/zoopla sync ids, ...). Only real columns/relations here.
  *
  * deal_type ('sale'/'rent') drives the storefront's Купить/Снять split —
  * distinct from `status` (the listing lifecycle) and from `rentPeriod`
@@ -42,6 +38,13 @@ final class PublicPropertyResource extends JsonResource
             'latitude' => $this->resource->latitude,
             'longitude' => $this->resource->longitude,
             'features' => $this->resource->features,
+            'has_generator' => $this->resource->has_generator,
+            'has_wifi' => $this->resource->has_wifi,
+            'has_parking' => $this->resource->has_parking,
+            'mountain_view' => $this->resource->mountain_view,
+            'altitude' => $this->resource->altitude,
+            'water_source' => $this->resource->water_source,
+            'max_guests' => $this->resource->max_guests,
             'published_at' => $this->resource->published_at?->toIso8601String(),
             'gallery' => array_map(static fn ($item): array => $item->toArray(), $this->resource->galleryItems()),
         ];
