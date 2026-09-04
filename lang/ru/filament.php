@@ -65,6 +65,22 @@ return [
 
     'stub_page_note' => 'Filament-адаптер установлен. Бизнес-логика по-прежнему находится в соответствующем core-модуле.',
 
+    'listing' => [
+        'fields' => [
+            'title' => 'Заголовок',
+            'status' => 'Статус',
+            'price' => 'Цена',
+            'created_at' => 'Создано',
+        ],
+        'statuses' => [
+            'draft' => 'Черновик',
+            'ready' => 'Готово',
+            'published' => 'Опубликовано',
+            'suspended' => 'Приостановлено',
+            'withdrawn' => 'Снято',
+        ],
+    ],
+
     'pages' => [
         'activity_comments' => 'Активность и комментарии',
         'analytics_core' => 'Аналитика (ядро)',

@@ -49,7 +49,12 @@ final class ListingResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table->columns([TextColumn::make('title')->searchable(), TextColumn::make('status')->badge(), TextColumn::make('price')->money('GBP'), TextColumn::make('created_at')->dateTime()->sortable()])
+        return $table->columns([
+            TextColumn::make('title')->label(__('filament.listing.fields.title'))->searchable(),
+            TextColumn::make('status')->label(__('filament.listing.fields.status'))->badge()->formatStateUsing(fn (ListingStatus $state): string => __('filament.listing.statuses.'.$state->value)),
+            TextColumn::make('price')->label(__('filament.listing.fields.price'))->numeric(),
+            TextColumn::make('created_at')->label(__('filament.listing.fields.created_at'))->dateTime()->sortable(),
+        ])
             ->recordActions([
                 EditAction::make(),
                 Action::make('section')->form([TextInput::make('section')->required(), TextInput::make('value')->required()])->action(fn (Listing $record, array $data): Listing => app(UpdateListingSection::class)->handle($record, (int) auth()->user()->current_team_id, ListingSection::from($data['section']), ['value' => $data['value']])),

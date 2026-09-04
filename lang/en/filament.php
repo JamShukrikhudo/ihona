@@ -65,6 +65,22 @@ return [
 
     'stub_page_note' => 'The Filament adapter is installed. Domain operations remain governed by the matching core module.',
 
+    'listing' => [
+        'fields' => [
+            'title' => 'Title',
+            'status' => 'Status',
+            'price' => 'Price',
+            'created_at' => 'Created at',
+        ],
+        'statuses' => [
+            'draft' => 'Draft',
+            'ready' => 'Ready',
+            'published' => 'Published',
+            'suspended' => 'Suspended',
+            'withdrawn' => 'Withdrawn',
+        ],
+    ],
+
     'pages' => [
         'activity_comments' => 'Activity and Comments',
         'analytics_core' => 'Analytics Core',
