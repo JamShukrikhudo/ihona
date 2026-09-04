@@ -54,7 +54,7 @@ final class ValuationResource extends Resource
             Select::make('status')->label(__('filament.valuation.fields.status'))->options(['draft' => __('filament.valuation.statuses.draft'), 'scheduled' => __('filament.valuation.statuses.scheduled'), 'completed' => __('filament.valuation.statuses.completed'), 'converted' => __('filament.valuation.statuses.converted'), 'cancelled' => __('filament.valuation.statuses.cancelled')])->required(),
             TextInput::make('valued_amount')->label(__('filament.valuation.fields.valued_amount'))->numeric()->minValue(0),
             TextInput::make('fee_amount')->label(__('filament.valuation.fields.fee_amount'))->numeric()->minValue(0),
-            TextInput::make('currency')->label(__('filament.valuation.fields.currency'))->length(3)->default('GBP'),
+            TextInput::make('currency')->label(__('filament.valuation.fields.currency'))->length(3)->default(config('app.currency', 'USD')),
             Textarea::make('comparable_data')->label(__('filament.valuation.fields.comparable_data'))->helperText('JSON comparable evidence.')->columnSpanFull(),
             Textarea::make('recommendation')->label(__('filament.valuation.fields.recommendation'))->helperText('JSON recommendation and follow-up notes.')->columnSpanFull(),
             DateTimePicker::make('scheduled_at')->label(__('filament.valuation.fields.scheduled_at')),
@@ -64,7 +64,7 @@ final class ValuationResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table->columns([TextColumn::make('subject')->searchable(), TextColumn::make('status')->badge(), TextColumn::make('valued_amount')->money('GBP'), TextColumn::make('created_at')->dateTime()->sortable()])
+        return $table->columns([TextColumn::make('subject')->searchable(), TextColumn::make('status')->badge(), TextColumn::make('valued_amount')->money(), TextColumn::make('created_at')->dateTime()->sortable()])
             ->recordActions([
                 EditAction::make(),
                 Action::make('schedule')

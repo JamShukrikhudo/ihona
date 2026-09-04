@@ -42,7 +42,7 @@ final class OfferResource extends Resource
         return $schema->components([
             TextInput::make('subject')->label(__('filament.offer.fields.subject'))->required()->maxLength(255),
             TextInput::make('amount')->label(__('filament.offer.fields.amount'))->numeric()->minValue(0)->required(),
-            TextInput::make('currency')->label(__('filament.offer.fields.currency'))->default('GBP')->length(3),
+            TextInput::make('currency')->label(__('filament.offer.fields.currency'))->default(config('app.currency', 'USD'))->length(3),
             Textarea::make('terms')->label(__('filament.offer.fields.terms'))->json(),
             Textarea::make('qualification')->label(__('filament.offer.fields.qualification'))->json(),
             Textarea::make('negotiation')->label(__('filament.offer.fields.negotiation'))->json(),
@@ -54,7 +54,7 @@ final class OfferResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table->columns([TextColumn::make('subject')->searchable(), TextColumn::make('amount')->money('GBP'), TextColumn::make('status')->badge(), TextColumn::make('created_at')->dateTime()->sortable()])->recordActions([EditAction::make(), DeleteAction::make()])->defaultSort('created_at', 'desc');
+        return $table->columns([TextColumn::make('subject')->searchable(), TextColumn::make('amount')->money(), TextColumn::make('status')->badge(), TextColumn::make('created_at')->dateTime()->sortable()])->recordActions([EditAction::make(), DeleteAction::make()])->defaultSort('created_at', 'desc');
     }
 
     public static function getEloquentQuery(): Builder

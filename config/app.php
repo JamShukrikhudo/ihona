@@ -17,6 +17,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Application Currency
+    |--------------------------------------------------------------------------
+    |
+    | The ISO 4217 currency code Number::currency()/Filament's money() column
+    | fall back to whenever a call site doesn't name one explicitly. Wired up
+    | in ApplicationCoreServiceProvider via Number::useCurrency() so a bare
+    | ->money() anywhere in the codebase renders in this currency instead of
+    | Laravel's own hardcoded 'USD' default.
+    |
+    */
+
+    'currency' => env('APP_CURRENCY', 'USD'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Admin Emails
     |--------------------------------------------------------------------------
     |
