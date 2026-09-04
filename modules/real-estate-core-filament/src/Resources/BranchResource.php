@@ -47,10 +47,10 @@ final class BranchResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name')->searchable(),
-                TextColumn::make('code')->badge(),
-                TextColumn::make('email')->searchable(),
-                TextColumn::make('created_at')->dateTime()->sortable(),
+                TextColumn::make('name')->label(__('filament.branch_form.fields.name'))->searchable(),
+                TextColumn::make('code')->label(__('filament.branch_form.fields.code'))->badge(),
+                TextColumn::make('email')->label(__('filament.branch_form.fields.email'))->searchable(),
+                TextColumn::make('created_at')->label(__('filament.branch_form.fields.created_at'))->dateTime()->sortable(),
             ])
             ->defaultSort('created_at', 'desc');
     }

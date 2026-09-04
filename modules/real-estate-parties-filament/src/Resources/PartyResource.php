@@ -54,10 +54,10 @@ final class PartyResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name')->searchable(),
-                TextColumn::make('type')->badge(),
-                TextColumn::make('email')->searchable(),
-                TextColumn::make('created_at')->dateTime()->sortable(),
+                TextColumn::make('name')->label(__('filament.party.fields.name'))->searchable(),
+                TextColumn::make('type')->label(__('filament.party.fields.type'))->badge(),
+                TextColumn::make('email')->label(__('filament.party.fields.email'))->searchable(),
+                TextColumn::make('created_at')->label(__('filament.party.fields.created_at'))->dateTime()->sortable(),
             ])
             ->recordActions([
                 EditAction::make(),

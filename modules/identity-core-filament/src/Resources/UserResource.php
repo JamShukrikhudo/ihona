@@ -103,19 +103,22 @@ class UserResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')
+                    ->label(__('filament.user_form.fields.name'))
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('email')
+                    ->label(__('filament.user_form.fields.email'))
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('roles.name')
-                    ->label('Roles')
+                    ->label(__('filament.user_form.fields.roles'))
                     ->badge(),
                 IconColumn::make('email_verified_at')
-                    ->label('Verified')
+                    ->label(__('filament.user_form.fields.email_verified_at'))
                     ->boolean()
                     ->getStateUsing(fn (Model $record): bool => $record->email_verified_at !== null),
                 TextColumn::make('created_at')
+                    ->label(__('filament.user_form.fields.created_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

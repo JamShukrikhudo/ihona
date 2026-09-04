@@ -60,7 +60,7 @@ final class ViewingResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table->columns([TextColumn::make('subject')->searchable(), TextColumn::make('status')->badge(), TextColumn::make('starts_at')->dateTime()->sortable(), TextColumn::make('created_at')->dateTime()])
+        return $table->columns([TextColumn::make('subject')->label(__('filament.viewing.fields.subject'))->searchable(), TextColumn::make('status')->label(__('filament.viewing.fields.status'))->badge(), TextColumn::make('starts_at')->label(__('filament.viewing.fields.starts_at'))->dateTime()->sortable(), TextColumn::make('created_at')->label(__('filament.viewing.fields.created_at'))->dateTime()])
             ->recordActions([
                 EditAction::make(),
                 Action::make('confirm')

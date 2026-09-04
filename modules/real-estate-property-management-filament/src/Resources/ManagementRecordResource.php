@@ -48,7 +48,7 @@ final class ManagementRecordResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table->columns([TextColumn::make('subject')->searchable(), TextColumn::make('capability')->badge(), TextColumn::make('status')->badge(), TextColumn::make('created_at')->dateTime()->sortable()])->defaultSort('created_at', 'desc');
+        return $table->columns([TextColumn::make('subject')->label(__('filament.management_record.fields.subject'))->searchable(), TextColumn::make('capability')->label(__('filament.management_record.fields.capability'))->badge(), TextColumn::make('status')->label(__('filament.management_record.fields.status'))->badge(), TextColumn::make('created_at')->label(__('filament.management_record.fields.created_at'))->dateTime()->sortable()])->defaultSort('created_at', 'desc');
     }
 
     public static function getEloquentQuery(): Builder

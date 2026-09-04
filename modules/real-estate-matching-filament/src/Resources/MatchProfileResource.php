@@ -57,7 +57,7 @@ final class MatchProfileResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table->columns([TextColumn::make('subject')->searchable(), TextColumn::make('score')->sortable(), TextColumn::make('created_at')->dateTime()->sortable()])->recordActions([
+        return $table->columns([TextColumn::make('subject')->label(__('filament.match_profile.fields.subject'))->searchable(), TextColumn::make('score')->label(__('filament.match_profile.fields.score'))->sortable(), TextColumn::make('created_at')->label(__('filament.match_profile.fields.created_at'))->dateTime()->sortable()])->recordActions([
             EditAction::make(),
             Action::make('calculate_score')->form([Textarea::make('criteria')->json()->required(), Textarea::make('property')->json()->required()])->action(fn (MatchProfile $record, array $data): MatchProfile => tap($record, function (MatchProfile $record) use ($data): void {
                 $score = app(CalculateMatchScore::class)->handle($data['criteria'], $data['property']);

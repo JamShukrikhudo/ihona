@@ -64,7 +64,7 @@ final class ValuationResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table->columns([TextColumn::make('subject')->searchable(), TextColumn::make('status')->badge(), TextColumn::make('valued_amount')->money(), TextColumn::make('created_at')->dateTime()->sortable()])
+        return $table->columns([TextColumn::make('subject')->label(__('filament.valuation.fields.subject'))->searchable(), TextColumn::make('status')->label(__('filament.valuation.fields.status'))->badge(), TextColumn::make('valued_amount')->label(__('filament.valuation.fields.valued_amount'))->money(), TextColumn::make('created_at')->label(__('filament.valuation.fields.created_at'))->dateTime()->sortable()])
             ->recordActions([
                 EditAction::make(),
                 Action::make('schedule')

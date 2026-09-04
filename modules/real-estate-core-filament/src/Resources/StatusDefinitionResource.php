@@ -46,7 +46,7 @@ final class StatusDefinitionResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table->columns([TextColumn::make('entity')->searchable(), TextColumn::make('key')->searchable(), TextColumn::make('label'), TextColumn::make('active')->badge()->color(fn (bool $state): string => $state ? 'success' : 'danger')->formatStateUsing(fn (bool $state): string => $state ? 'Да' : 'Нет')])->recordActions([EditAction::make(), DeleteAction::make()])->defaultSort('created_at', 'desc');
+        return $table->columns([TextColumn::make('entity')->label(__('filament.status_definition_form.fields.entity'))->searchable(), TextColumn::make('key')->label(__('filament.status_definition_form.fields.key'))->searchable(), TextColumn::make('label')->label(__('filament.status_definition_form.fields.label')), TextColumn::make('active')->label(__('filament.status_definition_form.fields.active'))->badge()->color(fn (bool $state): string => $state ? 'success' : 'danger')->formatStateUsing(fn (bool $state): string => $state ? 'Да' : 'Нет')])->recordActions([EditAction::make(), DeleteAction::make()])->defaultSort('created_at', 'desc');
     }
 
     public static function getEloquentQuery(): Builder

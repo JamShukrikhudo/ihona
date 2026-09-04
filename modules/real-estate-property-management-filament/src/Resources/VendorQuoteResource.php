@@ -49,7 +49,7 @@ final class VendorQuoteResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table->columns([TextColumn::make('vendor_id')->sortable(), TextColumn::make('property_id')->sortable(), TextColumn::make('quote_amount')->money()->sortable(), TextColumn::make('status')->badge(), TextColumn::make('valid_until')->date()->sortable()])->defaultSort('created_at', 'desc');
+        return $table->columns([TextColumn::make('vendor_id')->label(__('filament.vendor_quote.fields.vendor_id'))->sortable(), TextColumn::make('property_id')->label(__('filament.vendor_quote.fields.property_id'))->sortable(), TextColumn::make('quote_amount')->label(__('filament.vendor_quote.fields.quote_amount'))->money()->sortable(), TextColumn::make('status')->label(__('filament.vendor_quote.fields.status'))->badge(), TextColumn::make('valid_until')->label(__('filament.vendor_quote.fields.valid_until'))->date()->sortable()])->defaultSort('created_at', 'desc');
     }
 
     public static function getEloquentQuery(): Builder

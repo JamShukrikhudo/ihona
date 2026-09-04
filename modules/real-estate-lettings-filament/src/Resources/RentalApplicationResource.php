@@ -47,7 +47,7 @@ final class RentalApplicationResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table->columns([TextColumn::make('property_id')->sortable(), TextColumn::make('status')->badge(), TextColumn::make('employment_status'), TextColumn::make('desired_move_in_date')->date()->sortable()])->defaultSort('created_at', 'desc');
+        return $table->columns([TextColumn::make('property_id')->label(__('filament.rental_application.fields.property_id'))->sortable(), TextColumn::make('status')->label(__('filament.rental_application.fields.status'))->badge(), TextColumn::make('employment_status')->label(__('filament.rental_application.fields.employment_status')), TextColumn::make('desired_move_in_date')->label(__('filament.rental_application.fields.desired_move_in_date'))->date()->sortable()])->defaultSort('created_at', 'desc');
     }
 
     public static function getEloquentQuery(): Builder

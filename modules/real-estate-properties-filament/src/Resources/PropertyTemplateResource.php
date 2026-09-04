@@ -49,8 +49,8 @@ final class PropertyTemplateResource extends Resource
 
             return $teamId === null ? $query->whereRaw('1 = 0') : $query->forTeam($teamId);
         })->columns([
-            TextColumn::make('name')->searchable()->sortable(),
-            TextColumn::make('created_at')->dateTime()->sortable(),
+            TextColumn::make('name')->label(__('filament.property_template.fields.name'))->searchable()->sortable(),
+            TextColumn::make('created_at')->label(__('filament.property_template.fields.created_at'))->dateTime()->sortable(),
         ]);
     }
 

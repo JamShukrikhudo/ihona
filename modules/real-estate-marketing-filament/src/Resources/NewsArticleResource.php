@@ -40,7 +40,7 @@ final class NewsArticleResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table->columns([TextColumn::make('title')->searchable(), TextColumn::make('published_at')->dateTime(), TextColumn::make('is_featured')->boolean()]);
+        return $table->columns([TextColumn::make('title')->label(__('filament.news_article.fields.title'))->searchable(), TextColumn::make('published_at')->label(__('filament.news_article.fields.published_at'))->dateTime(), TextColumn::make('is_featured')->label(__('filament.news_article.fields.is_featured'))->boolean()]);
     }
 
     public static function getEloquentQuery(): Builder

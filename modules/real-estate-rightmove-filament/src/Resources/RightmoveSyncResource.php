@@ -47,7 +47,7 @@ final class RightmoveSyncResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table->columns([TextColumn::make('listing_id')->searchable(), TextColumn::make('external_id')->searchable(), TextColumn::make('status')->badge(), TextColumn::make('last_synced_at')->dateTime()])->recordActions([
+        return $table->columns([TextColumn::make('listing_id')->label(__('filament.rightmove_sync.fields.listing_id'))->searchable(), TextColumn::make('external_id')->label(__('filament.rightmove_sync.fields.external_id'))->searchable(), TextColumn::make('status')->label(__('filament.rightmove_sync.fields.status'))->badge(), TextColumn::make('last_synced_at')->label(__('filament.rightmove_sync.fields.last_synced_at'))->dateTime()])->recordActions([
             EditAction::make(),
             DeleteAction::make()->action(function (Model $record): void {
                 $teamId = auth()->user()?->current_team_id;

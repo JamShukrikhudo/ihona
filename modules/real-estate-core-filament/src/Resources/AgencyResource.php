@@ -47,10 +47,10 @@ final class AgencyResource extends Resource
     public static function table(Table $table): Table
     {
         return $table->columns([
-            TextColumn::make('name')->searchable(),
-            TextColumn::make('code')->badge(),
-            IconColumn::make('active')->boolean(),
-            TextColumn::make('created_at')->dateTime()->sortable(),
+            TextColumn::make('name')->label(__('filament.agency_form.fields.name'))->searchable(),
+            TextColumn::make('code')->label(__('filament.agency_form.fields.code'))->badge(),
+            IconColumn::make('active')->label(__('filament.agency_form.fields.active'))->boolean(),
+            TextColumn::make('created_at')->label(__('filament.agency_form.fields.created_at'))->dateTime()->sortable(),
         ])->defaultSort('created_at', 'desc');
     }
 

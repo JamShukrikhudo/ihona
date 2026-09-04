@@ -48,9 +48,9 @@ final class PropertyCategoryResource extends Resource
 
             return $teamId === null ? $query->whereRaw('1 = 0') : $query->forTeam($teamId);
         })->columns([
-            TextColumn::make('name')->searchable()->sortable(),
-            TextColumn::make('slug')->searchable(),
-            TextColumn::make('created_at')->dateTime()->sortable(),
+            TextColumn::make('name')->label(__('filament.property_category.fields.name'))->searchable()->sortable(),
+            TextColumn::make('slug')->label(__('filament.property_category.fields.slug'))->searchable(),
+            TextColumn::make('created_at')->label(__('filament.property_category.fields.created_at'))->dateTime()->sortable(),
         ]);
     }
 

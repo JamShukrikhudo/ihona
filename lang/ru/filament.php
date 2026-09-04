@@ -65,6 +65,16 @@ return [
 
     'stub_page_note' => 'Filament-адаптер установлен. Бизнес-логика по-прежнему находится в соответствующем core-модуле.',
 
+    'admin_overview' => [
+        'heading' => 'Состояние рабочего пространства',
+        'team_members' => 'Участники команды',
+        'properties' => 'Объекты недвижимости',
+        'pending_applications' => 'Заявки на рассмотрении',
+        'open_maintenance' => 'Открытые заявки на обслуживание',
+        'upcoming_viewings' => 'Предстоящие показы',
+        'workspaces' => 'Рабочие пространства',
+    ],
+
     'property' => [
         'fields' => [
             'title' => 'Заголовок',
@@ -154,6 +164,7 @@ return [
             'recommendation' => 'Рекомендация',
             'scheduled_at' => 'Запланировано на',
             'follow_up_at' => 'Дата повторного контакта',
+            'created_at' => 'Создано',
         ],
         'statuses' => [
             'draft' => 'Черновик',
@@ -175,6 +186,7 @@ return [
             'alerts' => 'Оповещения',
             'feedback' => 'Отзыв',
             'exclusions' => 'Исключения',
+            'created_at' => 'Создано',
         ],
     ],
 
@@ -188,6 +200,7 @@ return [
             'negotiation' => 'Переговоры',
             'proof' => 'Подтверждение платёжеспособности',
             'conditions' => 'Условия сделки',
+            'created_at' => 'Создано',
         ],
         'statuses' => [
             'draft' => 'Черновик',
@@ -205,6 +218,8 @@ return [
             'path' => 'Путь к файлу',
             'title' => 'Заголовок',
             'sort_order' => 'Порядок сортировки',
+            'retention_until' => 'Хранить до',
+            'created_at' => 'Создано',
         ],
         'kinds' => [
             'photo' => 'Фото',
@@ -226,6 +241,7 @@ return [
             'accompaniment' => 'Сопровождение',
             'reminders' => 'Напоминания',
             'feedback' => 'Отзыв',
+            'created_at' => 'Создано',
         ],
         'statuses' => [
             'requested' => 'Запрошен',
@@ -244,6 +260,7 @@ return [
             'listing_id' => 'Объявление (ID)',
             'status' => 'Статус',
             'error' => 'Ошибка',
+            'generated_at' => 'Дата формирования',
         ],
     ],
 
@@ -255,6 +272,7 @@ return [
             'listing_id' => 'Объявление (ID)',
             'status' => 'Статус',
             'notes' => 'Заметки',
+            'created_at' => 'Создано',
         ],
     ],
 
@@ -265,6 +283,7 @@ return [
             'offer_id' => 'Предложение (ID)',
             'status' => 'Статус',
             'notes' => 'Заметки',
+            'created_at' => 'Создано',
         ],
     ],
 
@@ -295,6 +314,7 @@ return [
             'description' => 'Описание',
             'work_type' => 'Вид работ',
             'status' => 'Статус',
+            'scheduled_date' => 'Дата планирования',
         ],
         'statuses' => [
             'pending' => 'Ожидание',
@@ -312,6 +332,7 @@ return [
             'name' => 'Имя',
             'email' => 'Email',
             'phone' => 'Телефон',
+            'created_at' => 'Создано',
         ],
         'types' => [
             'applicant' => 'Заявитель',
@@ -351,6 +372,7 @@ return [
             'description' => 'Описание',
             'priority' => 'Приоритет',
             'status' => 'Статус',
+            'requested_date' => 'Дата обращения',
         ],
         'priorities' => [
             'low' => 'Низкий',
@@ -395,6 +417,7 @@ return [
             'password' => 'Пароль',
             'email_verified_at' => 'Email подтверждён',
             'roles' => 'Роли',
+            'created_at' => 'Создано',
         ],
     ],
 
@@ -404,6 +427,7 @@ return [
             'property_id' => 'Объект (ID)',
             'external_id' => 'Внешний ID',
             'status' => 'Статус',
+            'last_synced_at' => 'Последняя синхронизация',
         ],
     ],
 
@@ -413,6 +437,7 @@ return [
             'property_id' => 'Объект (ID)',
             'external_id' => 'Внешний ID',
             'status' => 'Статус',
+            'last_synced_at' => 'Последняя синхронизация',
         ],
     ],
 
@@ -422,6 +447,7 @@ return [
             'property_id' => 'Объект (ID)',
             'external_id' => 'Внешний ID',
             'status' => 'Статус',
+            'last_synced_at' => 'Последняя синхронизация',
         ],
     ],
 
@@ -431,6 +457,7 @@ return [
             'capability' => 'Функция',
             'status' => 'Статус',
             'failure_reason' => 'Причина сбоя',
+            'created_at' => 'Создано',
         ],
         'capabilities' => [
             'rent_schedule' => 'График арендных платежей',
@@ -455,6 +482,7 @@ return [
             'slug' => 'Слаг (URL)',
             'content' => 'Содержание',
             'published_at' => 'Дата публикации',
+            'is_featured' => 'Рекомендуемая',
         ],
     ],
 
@@ -464,6 +492,7 @@ return [
             'capability' => 'Функция',
             'status' => 'Статус',
             'failure_reason' => 'Причина сбоя',
+            'created_at' => 'Создано',
         ],
         'capabilities' => [
             'applications' => 'Заявки',
@@ -489,6 +518,7 @@ return [
             'status' => 'Статус',
             'approved_at' => 'Одобрено',
             'withdrawn_at' => 'Отозвано',
+            'created_at' => 'Создано',
         ],
         'statuses' => [
             'draft' => 'Черновик',
@@ -514,6 +544,7 @@ return [
             'code' => 'Код',
             'email' => 'Email',
             'phone' => 'Телефон',
+            'created_at' => 'Создано',
         ],
     ],
 
@@ -522,6 +553,7 @@ return [
             'name' => 'Название',
             'code' => 'Код',
             'boundary' => 'Граница (JSON)',
+            'created_at' => 'Создано',
         ],
     ],
 
@@ -530,6 +562,7 @@ return [
             'name' => 'Название',
             'user_id' => 'Владелец',
             'personal_team' => 'Личная команда',
+            'created_at' => 'Создано',
         ],
     ],
 
@@ -537,6 +570,7 @@ return [
         'fields' => [
             'name' => 'Название',
             'content' => 'Содержимое шаблона',
+            'created_at' => 'Создано',
         ],
     ],
 
@@ -544,6 +578,8 @@ return [
         'fields' => [
             'name' => 'Название',
             'criteria' => 'Критерии поиска',
+            'user_id' => 'Сохранил(а)',
+            'created_at' => 'Создано',
         ],
     ],
 
@@ -551,6 +587,7 @@ return [
         'fields' => [
             'name' => 'Название',
             'slug' => 'Слаг (URL)',
+            'created_at' => 'Создано',
         ],
     ],
 
@@ -559,6 +596,7 @@ return [
             'name' => 'Название',
             'code' => 'Код',
             'active' => 'Активно',
+            'created_at' => 'Создано',
         ],
     ],
 

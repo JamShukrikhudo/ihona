@@ -55,7 +55,7 @@ final class PortalReportResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table->columns([TextColumn::make('portal')->searchable(), TextColumn::make('report_type')->searchable(), TextColumn::make('status')->badge(), TextColumn::make('generated_at')->dateTime()])->recordActions([
+        return $table->columns([TextColumn::make('portal')->label(__('filament.portal_report.fields.portal'))->searchable(), TextColumn::make('report_type')->label(__('filament.portal_report.fields.report_type'))->searchable(), TextColumn::make('status')->label(__('filament.portal_report.fields.status'))->badge(), TextColumn::make('generated_at')->label(__('filament.portal_report.fields.generated_at'))->dateTime()])->recordActions([
             EditAction::make(),
             Action::make('queue')->requiresConfirmation()->action(fn (Model $record): PortalReport => app(TransitionPortalReport::class)->handle($record, (int) auth()->user()->current_team_id, PortalReportStatus::Queued)),
             Action::make('publish')->requiresConfirmation()->action(fn (Model $record): PortalReport => app(TransitionPortalReport::class)->handle($record, (int) auth()->user()->current_team_id, PortalReportStatus::Published)),

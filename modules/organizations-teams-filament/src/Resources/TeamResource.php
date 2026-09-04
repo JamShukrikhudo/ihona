@@ -74,15 +74,18 @@ class TeamResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')
+                    ->label(__('filament.team_form.fields.name'))
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('owner.name')
-                    ->label('Owner')
+                    ->label(__('filament.team_form.fields.user_id'))
                     ->searchable()
                     ->sortable(),
                 IconColumn::make('personal_team')
+                    ->label(__('filament.team_form.fields.personal_team'))
                     ->boolean(),
                 TextColumn::make('created_at')
+                    ->label(__('filament.team_form.fields.created_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

@@ -65,6 +65,16 @@ return [
 
     'stub_page_note' => 'The Filament adapter is installed. Domain operations remain governed by the matching core module.',
 
+    'admin_overview' => [
+        'heading' => 'Workspace health',
+        'team_members' => 'Team members',
+        'properties' => 'Properties',
+        'pending_applications' => 'Pending applications',
+        'open_maintenance' => 'Open maintenance',
+        'upcoming_viewings' => 'Upcoming viewings',
+        'workspaces' => 'Workspaces',
+    ],
+
     'property' => [
         'fields' => [
             'title' => 'Title',
@@ -154,6 +164,7 @@ return [
             'recommendation' => 'Recommendation',
             'scheduled_at' => 'Scheduled at',
             'follow_up_at' => 'Follow-up date',
+            'created_at' => 'Created at',
         ],
         'statuses' => [
             'draft' => 'Draft',
@@ -175,6 +186,7 @@ return [
             'alerts' => 'Alerts',
             'feedback' => 'Feedback',
             'exclusions' => 'Exclusions',
+            'created_at' => 'Created at',
         ],
     ],
 
@@ -188,6 +200,7 @@ return [
             'negotiation' => 'Negotiation',
             'proof' => 'Proof of funds',
             'conditions' => 'Conditions',
+            'created_at' => 'Created at',
         ],
         'statuses' => [
             'draft' => 'Draft',
@@ -205,6 +218,8 @@ return [
             'path' => 'File path',
             'title' => 'Title',
             'sort_order' => 'Sort order',
+            'retention_until' => 'Retention until',
+            'created_at' => 'Created at',
         ],
         'kinds' => [
             'photo' => 'Photo',
@@ -226,6 +241,7 @@ return [
             'accompaniment' => 'Accompaniment',
             'reminders' => 'Reminders',
             'feedback' => 'Feedback',
+            'created_at' => 'Created at',
         ],
         'statuses' => [
             'requested' => 'Requested',
@@ -244,6 +260,7 @@ return [
             'listing_id' => 'Listing (ID)',
             'status' => 'Status',
             'error' => 'Error',
+            'generated_at' => 'Generated at',
         ],
     ],
 
@@ -255,6 +272,7 @@ return [
             'listing_id' => 'Listing (ID)',
             'status' => 'Status',
             'notes' => 'Notes',
+            'created_at' => 'Created at',
         ],
     ],
 
@@ -265,6 +283,7 @@ return [
             'offer_id' => 'Offer (ID)',
             'status' => 'Status',
             'notes' => 'Notes',
+            'created_at' => 'Created at',
         ],
     ],
 
@@ -295,6 +314,7 @@ return [
             'description' => 'Description',
             'work_type' => 'Work type',
             'status' => 'Status',
+            'scheduled_date' => 'Scheduled date',
         ],
         'statuses' => [
             'pending' => 'Pending',
@@ -312,6 +332,7 @@ return [
             'name' => 'Name',
             'email' => 'Email',
             'phone' => 'Phone',
+            'created_at' => 'Created at',
         ],
         'types' => [
             'applicant' => 'Applicant',
@@ -351,6 +372,7 @@ return [
             'description' => 'Description',
             'priority' => 'Priority',
             'status' => 'Status',
+            'requested_date' => 'Requested date',
         ],
         'priorities' => [
             'low' => 'Low',
@@ -395,6 +417,7 @@ return [
             'password' => 'Password',
             'email_verified_at' => 'Email verified at',
             'roles' => 'Roles',
+            'created_at' => 'Created at',
         ],
     ],
 
@@ -404,6 +427,7 @@ return [
             'property_id' => 'Property (ID)',
             'external_id' => 'External ID',
             'status' => 'Status',
+            'last_synced_at' => 'Last synced at',
         ],
     ],
 
@@ -413,6 +437,7 @@ return [
             'property_id' => 'Property (ID)',
             'external_id' => 'External ID',
             'status' => 'Status',
+            'last_synced_at' => 'Last synced at',
         ],
     ],
 
@@ -422,6 +447,7 @@ return [
             'property_id' => 'Property (ID)',
             'external_id' => 'External ID',
             'status' => 'Status',
+            'last_synced_at' => 'Last synced at',
         ],
     ],
 
@@ -431,6 +457,7 @@ return [
             'capability' => 'Capability',
             'status' => 'Status',
             'failure_reason' => 'Failure reason',
+            'created_at' => 'Created at',
         ],
         'capabilities' => [
             'rent_schedule' => 'Rent schedule',
@@ -455,6 +482,7 @@ return [
             'slug' => 'Slug (URL)',
             'content' => 'Content',
             'published_at' => 'Published at',
+            'is_featured' => 'Featured',
         ],
     ],
 
@@ -464,6 +492,7 @@ return [
             'capability' => 'Capability',
             'status' => 'Status',
             'failure_reason' => 'Failure reason',
+            'created_at' => 'Created at',
         ],
         'capabilities' => [
             'applications' => 'Applications',
@@ -489,6 +518,7 @@ return [
             'status' => 'Status',
             'approved_at' => 'Approved at',
             'withdrawn_at' => 'Withdrawn at',
+            'created_at' => 'Created at',
         ],
         'statuses' => [
             'draft' => 'Draft',
@@ -514,6 +544,7 @@ return [
             'code' => 'Code',
             'email' => 'Email',
             'phone' => 'Phone',
+            'created_at' => 'Created at',
         ],
     ],
 
@@ -522,6 +553,7 @@ return [
             'name' => 'Name',
             'code' => 'Code',
             'boundary' => 'Boundary (JSON)',
+            'created_at' => 'Created at',
         ],
     ],
 
@@ -530,6 +562,7 @@ return [
             'name' => 'Name',
             'user_id' => 'Owner',
             'personal_team' => 'Personal team',
+            'created_at' => 'Created at',
         ],
     ],
 
@@ -537,6 +570,7 @@ return [
         'fields' => [
             'name' => 'Name',
             'content' => 'Template content',
+            'created_at' => 'Created at',
         ],
     ],
 
@@ -544,6 +578,8 @@ return [
         'fields' => [
             'name' => 'Name',
             'criteria' => 'Search criteria',
+            'user_id' => 'Saved by',
+            'created_at' => 'Created at',
         ],
     ],
 
@@ -551,6 +587,7 @@ return [
         'fields' => [
             'name' => 'Name',
             'slug' => 'Slug (URL)',
+            'created_at' => 'Created at',
         ],
     ],
 
@@ -559,6 +596,7 @@ return [
             'name' => 'Name',
             'code' => 'Code',
             'active' => 'Active',
+            'created_at' => 'Created at',
         ],
     ],
 

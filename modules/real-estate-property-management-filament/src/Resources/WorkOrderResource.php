@@ -47,7 +47,7 @@ final class WorkOrderResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table->columns([TextColumn::make('title')->searchable(), TextColumn::make('work_type'), TextColumn::make('status')->badge(), TextColumn::make('scheduled_date')->dateTime()->sortable()])->defaultSort('created_at', 'desc');
+        return $table->columns([TextColumn::make('title')->label(__('filament.work_order.fields.title'))->searchable(), TextColumn::make('work_type')->label(__('filament.work_order.fields.work_type')), TextColumn::make('status')->label(__('filament.work_order.fields.status'))->badge(), TextColumn::make('scheduled_date')->label(__('filament.work_order.fields.scheduled_date'))->dateTime()->sortable()])->defaultSort('created_at', 'desc');
     }
 
     public static function getEloquentQuery(): Builder

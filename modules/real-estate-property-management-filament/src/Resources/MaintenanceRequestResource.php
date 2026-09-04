@@ -46,7 +46,7 @@ final class MaintenanceRequestResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table->columns([TextColumn::make('title')->searchable(), TextColumn::make('priority')->badge(), TextColumn::make('status')->badge(), TextColumn::make('requested_date')->date()->sortable()])->defaultSort('requested_date', 'desc');
+        return $table->columns([TextColumn::make('title')->label(__('filament.maintenance_request.fields.title'))->searchable(), TextColumn::make('priority')->label(__('filament.maintenance_request.fields.priority'))->badge(), TextColumn::make('status')->label(__('filament.maintenance_request.fields.status'))->badge(), TextColumn::make('requested_date')->label(__('filament.maintenance_request.fields.requested_date'))->date()->sortable()])->defaultSort('requested_date', 'desc');
     }
 
     public static function getEloquentQuery(): Builder

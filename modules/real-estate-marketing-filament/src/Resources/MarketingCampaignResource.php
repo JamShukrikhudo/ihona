@@ -56,7 +56,7 @@ final class MarketingCampaignResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table->columns([TextColumn::make('name')->searchable(), TextColumn::make('channel')->badge(), TextColumn::make('status')->badge(), TextColumn::make('created_at')->dateTime()])->recordActions([
+        return $table->columns([TextColumn::make('name')->label(__('filament.marketing_campaign.fields.name'))->searchable(), TextColumn::make('channel')->label(__('filament.marketing_campaign.fields.channel'))->badge(), TextColumn::make('status')->label(__('filament.marketing_campaign.fields.status'))->badge(), TextColumn::make('created_at')->label(__('filament.marketing_campaign.fields.created_at'))->dateTime()])->recordActions([
             EditAction::make(),
             Action::make('schedule')->requiresConfirmation()->action(fn (Model $record): MarketingCampaign => app(TransitionMarketingCampaign::class)->handle($record, (int) auth()->user()->current_team_id, MarketingCampaignStatus::Scheduled)),
             Action::make('activate')->requiresConfirmation()->action(fn (Model $record): MarketingCampaign => app(TransitionMarketingCampaign::class)->handle($record, (int) auth()->user()->current_team_id, MarketingCampaignStatus::Active)),

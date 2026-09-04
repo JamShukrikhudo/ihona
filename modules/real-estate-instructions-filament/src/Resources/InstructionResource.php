@@ -52,7 +52,7 @@ final class InstructionResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table->columns([TextColumn::make('subject')->searchable(), TextColumn::make('status')->badge(), TextColumn::make('created_at')->dateTime()->sortable()])
+        return $table->columns([TextColumn::make('subject')->label(__('filament.instruction.fields.subject'))->searchable(), TextColumn::make('status')->label(__('filament.instruction.fields.status'))->badge(), TextColumn::make('created_at')->label(__('filament.instruction.fields.created_at'))->dateTime()->sortable()])
             ->recordActions([
                 EditAction::make(),
                 Action::make('submit')

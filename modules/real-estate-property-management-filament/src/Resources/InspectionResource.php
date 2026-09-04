@@ -48,7 +48,7 @@ final class InspectionResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table->columns([TextColumn::make('property_id')->sortable(), TextColumn::make('type')->badge(), TextColumn::make('status')->badge(), TextColumn::make('scheduled_at')->dateTime()->sortable()])->defaultSort('scheduled_at');
+        return $table->columns([TextColumn::make('property_id')->label(__('filament.inspection.fields.property_id'))->sortable(), TextColumn::make('type')->label(__('filament.inspection.fields.type'))->badge(), TextColumn::make('status')->label(__('filament.inspection.fields.status'))->badge(), TextColumn::make('scheduled_at')->label(__('filament.inspection.fields.scheduled_at'))->dateTime()->sortable()])->defaultSort('scheduled_at');
     }
 
     public static function getEloquentQuery(): Builder

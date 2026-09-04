@@ -46,9 +46,9 @@ final class TerritoryResource extends Resource
     public static function table(Table $table): Table
     {
         return $table->columns([
-            TextColumn::make('name')->searchable(),
-            TextColumn::make('code')->badge(),
-            TextColumn::make('created_at')->dateTime()->sortable(),
+            TextColumn::make('name')->label(__('filament.territory.fields.name'))->searchable(),
+            TextColumn::make('code')->label(__('filament.territory.fields.code'))->badge(),
+            TextColumn::make('created_at')->label(__('filament.territory.fields.created_at'))->dateTime()->sortable(),
         ])->defaultSort('created_at', 'desc');
     }
 

@@ -54,7 +54,7 @@ final class OfferResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table->columns([TextColumn::make('subject')->searchable(), TextColumn::make('amount')->money(), TextColumn::make('status')->badge(), TextColumn::make('created_at')->dateTime()->sortable()])->recordActions([EditAction::make(), DeleteAction::make()])->defaultSort('created_at', 'desc');
+        return $table->columns([TextColumn::make('subject')->label(__('filament.offer.fields.subject'))->searchable(), TextColumn::make('amount')->label(__('filament.offer.fields.amount'))->money(), TextColumn::make('status')->label(__('filament.offer.fields.status'))->badge(), TextColumn::make('created_at')->label(__('filament.offer.fields.created_at'))->dateTime()->sortable()])->recordActions([EditAction::make(), DeleteAction::make()])->defaultSort('created_at', 'desc');
     }
 
     public static function getEloquentQuery(): Builder

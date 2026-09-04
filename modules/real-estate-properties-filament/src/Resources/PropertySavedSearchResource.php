@@ -45,9 +45,9 @@ final class PropertySavedSearchResource extends Resource
     public static function table(Table $table): Table
     {
         return $table->columns([
-            TextColumn::make('name')->searchable()->sortable(),
-            TextColumn::make('user_id')->label('Saved by'),
-            TextColumn::make('created_at')->dateTime()->sortable(),
+            TextColumn::make('name')->label(__('filament.property_saved_search.fields.name'))->searchable()->sortable(),
+            TextColumn::make('user_id')->label(__('filament.property_saved_search.fields.user_id')),
+            TextColumn::make('created_at')->label(__('filament.property_saved_search.fields.created_at'))->dateTime()->sortable(),
         ])->defaultSort('created_at', 'desc');
     }
 

@@ -54,7 +54,7 @@ final class SalesProgressionResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table->columns([TextColumn::make('subject')->searchable(), TextColumn::make('status')->badge(), TextColumn::make('created_at')->dateTime()])->recordActions([
+        return $table->columns([TextColumn::make('subject')->label(__('filament.sales_progression.fields.subject'))->searchable(), TextColumn::make('status')->label(__('filament.sales_progression.fields.status'))->badge(), TextColumn::make('created_at')->label(__('filament.sales_progression.fields.created_at'))->dateTime()])->recordActions([
             EditAction::make(),
             Action::make('exchange')->requiresConfirmation()->action(fn (Model $record): SalesProgression => app(TransitionSalesProgression::class)->handle($record, (int) auth()->user()->current_team_id, SalesProgressionStatus::Exchanged)),
             Action::make('complete')->requiresConfirmation()->action(fn (Model $record): SalesProgression => app(TransitionSalesProgression::class)->handle($record, (int) auth()->user()->current_team_id, SalesProgressionStatus::Completed)),
