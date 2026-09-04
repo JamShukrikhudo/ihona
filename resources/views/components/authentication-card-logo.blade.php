@@ -1,11 +1,4 @@
-{{-- ihona brand mark (docs/brand/README.txt) — house pictogram on a rounded
-     square, same asset as the site favicon, not the old generic waveform. --}}
+{{-- ihona brand mark (docs/brand/README.txt) — same asset as the site favicon. --}}
 <a href="/" aria-label="{{ config('app.name', 'Boilerplate Laravel') }} home">
-    <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <rect width="64" height="64" rx="14" fill="#2E7D5C"/>
-        <g stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M14 36 L32 18 L50 36"/>
-            <path d="M20.5 33.5 L20.5 50 L43.5 50 L43.5 33.5"/>
-        </g>
-    </svg>
+    <svg width="64" height="64" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g transform="rotate(0 16 16)"><rect x="14.79" y="14.79" width="2.41" height="2.41" fill="#E4F3EC"/><path d="M14.79,14.79 h2.41 L16.00,16.00 Z" fill="#FFFFFF" opacity="0.5"/></g><g transform="rotate(45 16 16)"><path fill-rule="evenodd" d="M12.74,12.74 h6.52 v6.52 h-6.52 Z M13.59,13.59 h4.82 v4.82 h-4.82 Z" fill="#123527"/><rect x="13.25" y="13.25" width="5.50" height="0.38" fill="#0E2B20" opacity="0.9"/><rect x="13.25" y="13.25" width="0.38" height="5.50" fill="#0E2B20" opacity="0.9"/></g><g transform="rotate(0 16 16)"><path fill-rule="evenodd" d="M11.11,11.11 h9.78 v9.78 h-9.78 Z M12.38,12.38 h7.24 v7.24 h-7.24 Z" fill="#3B8566"/><rect x="11.11" y="11.11" width="9.78" height="0.51" fill="#8DB8A6" opacity="0.8"/><rect x="11.11" y="11.11" width="0.51" height="9.78" fill="#8DB8A6" opacity="0.8"/><rect x="11.87" y="11.87" width="8.25" height="0.57" fill="#2A634B" opacity="0.9"/><rect x="11.87" y="11.87" width="0.57" height="8.25" fill="#2A634B" opacity="0.9"/></g><g transform="rotate(45 16 16)"><path fill-rule="evenodd" d="M8.67,8.67 h14.67 v14.67 h-14.67 Z M10.57,10.57 h10.85 v10.85 h-10.85 Z" fill="#2E7D5C"/><rect x="8.67" y="8.67" width="14.67" height="0.76" fill="#86B4A0" opacity="0.8"/><rect x="8.67" y="8.67" width="0.76" height="14.67" fill="#86B4A0" opacity="0.8"/><rect x="9.81" y="9.81" width="12.38" height="0.86" fill="#225E45" opacity="0.9"/><rect x="9.81" y="9.81" width="0.86" height="12.38" fill="#225E45" opacity="0.9"/></g><g transform="rotate(0 16 16)"><path fill-rule="evenodd" d="M5.00,5.00 h22.00 v22.00 h-22.00 Z M7.86,7.86 h16.28 v16.28 h-16.28 Z" fill="#2B7556"/><rect x="5.00" y="5.00" width="22.00" height="1.14" fill="#84AF9D" opacity="0.8"/><rect x="5.00" y="5.00" width="1.14" height="22.00" fill="#84AF9D" opacity="0.8"/><rect x="6.72" y="6.72" width="18.57" height="1.29" fill="#205941" opacity="0.9"/><rect x="6.72" y="6.72" width="1.29" height="18.57" fill="#205941" opacity="0.9"/></g></svg>
 </a>
