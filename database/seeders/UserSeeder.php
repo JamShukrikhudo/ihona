@@ -52,6 +52,6 @@ class UserSeeder extends Seeder
         $role = Role::where('name', 'super_admin')->firstOrFail();
         $adminUser->assignRole($role);
 
-        echo "Admin password: {$adminPassword}\n";
+        $this->command?->getOutput()->writeln("Admin password: {$adminPassword}");
     }
 }
