@@ -36,7 +36,12 @@ final class StatusDefinitionResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return $schema->components([TextInput::make('entity')->required()->maxLength(80), TextInput::make('key')->required()->maxLength(80), TextInput::make('label')->required()->maxLength(255), Toggle::make('active')->default(true)]);
+        return $schema->components([
+            TextInput::make('entity')->label(__('filament.status_definition_form.fields.entity'))->required()->maxLength(80),
+            TextInput::make('key')->label(__('filament.status_definition_form.fields.key'))->required()->maxLength(80),
+            TextInput::make('label')->label(__('filament.status_definition_form.fields.label'))->required()->maxLength(255),
+            Toggle::make('active')->label(__('filament.status_definition_form.fields.active'))->default(true),
+        ]);
     }
 
     public static function table(Table $table): Table

@@ -38,11 +38,11 @@ final class InspectionResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            TextInput::make('property_id')->required()->numeric(),
-            Select::make('type')->options(collect(InspectionType::cases())->mapWithKeys(fn ($case) => [$case->value => str($case->value)->replace('_', ' ')->title()])->all())->required(),
-            Select::make('status')->options(['scheduled' => 'Scheduled', 'in_progress' => 'In progress', 'completed' => 'Completed', 'cancelled' => 'Cancelled'])->required(),
-            DateTimePicker::make('scheduled_at')->required(),
-            Textarea::make('notes')->columnSpanFull(),
+            TextInput::make('property_id')->label(__('filament.inspection.fields.property_id'))->required()->numeric(),
+            Select::make('type')->label(__('filament.inspection.fields.type'))->options(collect(InspectionType::cases())->mapWithKeys(fn ($case) => [$case->value => __('filament.inspection.types.'.$case->value)])->all())->required(),
+            Select::make('status')->label(__('filament.inspection.fields.status'))->options(['scheduled' => __('filament.inspection.statuses.scheduled'), 'in_progress' => __('filament.inspection.statuses.in_progress'), 'completed' => __('filament.inspection.statuses.completed'), 'cancelled' => __('filament.inspection.statuses.cancelled')])->required(),
+            DateTimePicker::make('scheduled_at')->label(__('filament.inspection.fields.scheduled_at'))->required(),
+            Textarea::make('notes')->label(__('filament.inspection.fields.notes'))->columnSpanFull(),
         ]);
     }
 

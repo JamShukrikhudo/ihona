@@ -37,8 +37,8 @@ final class PropertyTemplateResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            TextInput::make('name')->required()->maxLength(120),
-            Textarea::make('content')->required()->maxLength(100000)->rows(12)->helperText('Use placeholders such as {title}, {description}, {price}, and {address}.'),
+            TextInput::make('name')->label(__('filament.property_template.fields.name'))->required()->maxLength(120),
+            Textarea::make('content')->label(__('filament.property_template.fields.content'))->required()->maxLength(100000)->rows(12)->helperText('Use placeholders such as {title}, {description}, {price}, and {address}.'),
         ]);
     }
 

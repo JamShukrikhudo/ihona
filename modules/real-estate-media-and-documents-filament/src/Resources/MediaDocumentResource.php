@@ -42,7 +42,12 @@ final class MediaDocumentResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return $schema->components([Select::make('kind')->options(['photo' => 'Photo', 'floorplan' => 'Floorplan', 'video' => 'Video', 'certificate' => 'Certificate', 'brochure' => 'Brochure', 'document' => 'Document'])->required(), TextInput::make('path')->required()->maxLength(2048), TextInput::make('title')->maxLength(255), TextInput::make('sort_order')->numeric()->minValue(0)]);
+        return $schema->components([
+            Select::make('kind')->label(__('filament.media_document.fields.kind'))->options(['photo' => __('filament.media_document.kinds.photo'), 'floorplan' => __('filament.media_document.kinds.floorplan'), 'video' => __('filament.media_document.kinds.video'), 'certificate' => __('filament.media_document.kinds.certificate'), 'brochure' => __('filament.media_document.kinds.brochure'), 'document' => __('filament.media_document.kinds.document')])->required(),
+            TextInput::make('path')->label(__('filament.media_document.fields.path'))->required()->maxLength(2048),
+            TextInput::make('title')->label(__('filament.media_document.fields.title'))->maxLength(255),
+            TextInput::make('sort_order')->label(__('filament.media_document.fields.sort_order'))->numeric()->minValue(0),
+        ]);
     }
 
     public static function table(Table $table): Table

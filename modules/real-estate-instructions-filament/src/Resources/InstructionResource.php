@@ -42,7 +42,12 @@ final class InstructionResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return $schema->components([TextInput::make('subject')->required()->maxLength(255), Select::make('status')->options(['draft' => 'Draft', 'pending_approval' => 'Pending approval', 'approved' => 'Approved', 'withdrawn' => 'Withdrawn', 'rejected' => 'Rejected'])->disabled()->dehydrated(false), DateTimePicker::make('approved_at')->disabled()->dehydrated(false), DateTimePicker::make('withdrawn_at')->disabled()->dehydrated(false)]);
+        return $schema->components([
+            TextInput::make('subject')->label(__('filament.instruction.fields.subject'))->required()->maxLength(255),
+            Select::make('status')->label(__('filament.instruction.fields.status'))->options(['draft' => __('filament.instruction.statuses.draft'), 'pending_approval' => __('filament.instruction.statuses.pending_approval'), 'approved' => __('filament.instruction.statuses.approved'), 'withdrawn' => __('filament.instruction.statuses.withdrawn'), 'rejected' => __('filament.instruction.statuses.rejected')])->disabled()->dehydrated(false),
+            DateTimePicker::make('approved_at')->label(__('filament.instruction.fields.approved_at'))->disabled()->dehydrated(false),
+            DateTimePicker::make('withdrawn_at')->label(__('filament.instruction.fields.withdrawn_at'))->disabled()->dehydrated(false),
+        ]);
     }
 
     public static function table(Table $table): Table

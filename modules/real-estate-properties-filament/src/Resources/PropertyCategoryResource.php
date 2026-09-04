@@ -36,8 +36,8 @@ final class PropertyCategoryResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            TextInput::make('name')->required()->maxLength(120),
-            TextInput::make('slug')->maxLength(140)->helperText('Leave blank to derive from the name.'),
+            TextInput::make('name')->label(__('filament.property_category.fields.name'))->required()->maxLength(120),
+            TextInput::make('slug')->label(__('filament.property_category.fields.slug'))->maxLength(140)->helperText('Leave blank to derive from the name.'),
         ]);
     }
 

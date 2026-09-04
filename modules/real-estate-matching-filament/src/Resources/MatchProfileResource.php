@@ -42,7 +42,17 @@ final class MatchProfileResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return $schema->components([TextInput::make('subject')->required()->maxLength(255), TextInput::make('score')->numeric()->minValue(0)->maxValue(100), TextInput::make('party_id')->numeric(), Textarea::make('requirements')->json(), Textarea::make('affordability')->json(), Textarea::make('preferences')->json(), Textarea::make('alerts')->json(), Textarea::make('feedback')->json(), Textarea::make('exclusions')->json()]);
+        return $schema->components([
+            TextInput::make('subject')->label(__('filament.match_profile.fields.subject'))->required()->maxLength(255),
+            TextInput::make('score')->label(__('filament.match_profile.fields.score'))->numeric()->minValue(0)->maxValue(100),
+            TextInput::make('party_id')->label(__('filament.match_profile.fields.party_id'))->numeric(),
+            Textarea::make('requirements')->label(__('filament.match_profile.fields.requirements'))->json(),
+            Textarea::make('affordability')->label(__('filament.match_profile.fields.affordability'))->json(),
+            Textarea::make('preferences')->label(__('filament.match_profile.fields.preferences'))->json(),
+            Textarea::make('alerts')->label(__('filament.match_profile.fields.alerts'))->json(),
+            Textarea::make('feedback')->label(__('filament.match_profile.fields.feedback'))->json(),
+            Textarea::make('exclusions')->label(__('filament.match_profile.fields.exclusions'))->json(),
+        ]);
     }
 
     public static function table(Table $table): Table

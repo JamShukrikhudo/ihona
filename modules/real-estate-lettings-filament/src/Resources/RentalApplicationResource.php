@@ -35,7 +35,14 @@ final class RentalApplicationResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return $schema->components([TextInput::make('property_id')->required()->numeric(), TextInput::make('party_id')->numeric(), Select::make('status')->options(['draft' => 'Draft', 'submitted' => 'Submitted', 'under_review' => 'Under review', 'approved' => 'Approved', 'rejected' => 'Rejected'])->required(), TextInput::make('employment_status')->maxLength(50), TextInput::make('annual_income')->numeric()->minValue(0), DatePicker::make('desired_move_in_date')]);
+        return $schema->components([
+            TextInput::make('property_id')->label(__('filament.rental_application.fields.property_id'))->required()->numeric(),
+            TextInput::make('party_id')->label(__('filament.rental_application.fields.party_id'))->numeric(),
+            Select::make('status')->label(__('filament.rental_application.fields.status'))->options(['draft' => __('filament.rental_application.statuses.draft'), 'submitted' => __('filament.rental_application.statuses.submitted'), 'under_review' => __('filament.rental_application.statuses.under_review'), 'approved' => __('filament.rental_application.statuses.approved'), 'rejected' => __('filament.rental_application.statuses.rejected')])->required(),
+            TextInput::make('employment_status')->label(__('filament.rental_application.fields.employment_status'))->maxLength(50),
+            TextInput::make('annual_income')->label(__('filament.rental_application.fields.annual_income'))->numeric()->minValue(0),
+            DatePicker::make('desired_move_in_date')->label(__('filament.rental_application.fields.desired_move_in_date')),
+        ]);
     }
 
     public static function table(Table $table): Table

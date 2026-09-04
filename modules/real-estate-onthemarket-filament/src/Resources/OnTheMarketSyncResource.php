@@ -37,7 +37,12 @@ final class OnTheMarketSyncResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return $schema->components([TextInput::make('listing_id')->required()->numeric(), TextInput::make('property_id')->numeric(), TextInput::make('external_id'), TextInput::make('status')->required()]);
+        return $schema->components([
+            TextInput::make('listing_id')->label(__('filament.onthemarket_sync.fields.listing_id'))->required()->numeric(),
+            TextInput::make('property_id')->label(__('filament.onthemarket_sync.fields.property_id'))->numeric(),
+            TextInput::make('external_id')->label(__('filament.onthemarket_sync.fields.external_id')),
+            TextInput::make('status')->label(__('filament.onthemarket_sync.fields.status'))->required(),
+        ]);
     }
 
     public static function table(Table $table): Table

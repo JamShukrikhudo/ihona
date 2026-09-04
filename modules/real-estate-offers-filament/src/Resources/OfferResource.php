@@ -39,7 +39,17 @@ final class OfferResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return $schema->components([TextInput::make('subject')->required()->maxLength(255), TextInput::make('amount')->numeric()->minValue(0)->required(), TextInput::make('currency')->default('GBP')->length(3), Textarea::make('terms')->json(), Textarea::make('qualification')->json(), Textarea::make('negotiation')->json(), Textarea::make('proof')->json(), Textarea::make('conditions'), Select::make('status')->options(['draft' => 'Draft', 'submitted' => 'Submitted', 'countered' => 'Countered', 'accepted' => 'Accepted', 'rejected' => 'Rejected', 'withdrawn' => 'Withdrawn'])->disabled()->dehydrated(false)]);
+        return $schema->components([
+            TextInput::make('subject')->label(__('filament.offer.fields.subject'))->required()->maxLength(255),
+            TextInput::make('amount')->label(__('filament.offer.fields.amount'))->numeric()->minValue(0)->required(),
+            TextInput::make('currency')->label(__('filament.offer.fields.currency'))->default('GBP')->length(3),
+            Textarea::make('terms')->label(__('filament.offer.fields.terms'))->json(),
+            Textarea::make('qualification')->label(__('filament.offer.fields.qualification'))->json(),
+            Textarea::make('negotiation')->label(__('filament.offer.fields.negotiation'))->json(),
+            Textarea::make('proof')->label(__('filament.offer.fields.proof'))->json(),
+            Textarea::make('conditions')->label(__('filament.offer.fields.conditions')),
+            Select::make('status')->label(__('filament.offer.fields.status'))->options(['draft' => __('filament.offer.statuses.draft'), 'submitted' => __('filament.offer.statuses.submitted'), 'countered' => __('filament.offer.statuses.countered'), 'accepted' => __('filament.offer.statuses.accepted'), 'rejected' => __('filament.offer.statuses.rejected'), 'withdrawn' => __('filament.offer.statuses.withdrawn')])->disabled()->dehydrated(false),
+        ]);
     }
 
     public static function table(Table $table): Table

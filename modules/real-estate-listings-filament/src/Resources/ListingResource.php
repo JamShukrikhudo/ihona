@@ -44,7 +44,12 @@ final class ListingResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return $schema->components([TextInput::make('title')->required()->maxLength(255), Select::make('status')->options(['draft' => 'Draft', 'ready' => 'Ready', 'published' => 'Published', 'suspended' => 'Suspended', 'withdrawn' => 'Withdrawn'])->disabled()->dehydrated(false), TextInput::make('price')->numeric()->minValue(0), DatePicker::make('available_from')]);
+        return $schema->components([
+            TextInput::make('title')->label(__('filament.listing.fields.title'))->required()->maxLength(255),
+            Select::make('status')->label(__('filament.listing.fields.status'))->options(['draft' => __('filament.listing.statuses.draft'), 'ready' => __('filament.listing.statuses.ready'), 'published' => __('filament.listing.statuses.published'), 'suspended' => __('filament.listing.statuses.suspended'), 'withdrawn' => __('filament.listing.statuses.withdrawn')])->disabled()->dehydrated(false),
+            TextInput::make('price')->label(__('filament.listing.fields.price'))->numeric()->minValue(0),
+            DatePicker::make('available_from')->label(__('filament.listing.fields.available_from')),
+        ]);
     }
 
     public static function table(Table $table): Table

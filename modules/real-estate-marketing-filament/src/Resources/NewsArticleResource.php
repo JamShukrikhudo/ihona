@@ -30,7 +30,12 @@ final class NewsArticleResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return $schema->components([TextInput::make('title')->required(), TextInput::make('slug')->required(), Textarea::make('content')->required(), DateTimePicker::make('published_at')]);
+        return $schema->components([
+            TextInput::make('title')->label(__('filament.news_article.fields.title'))->required(),
+            TextInput::make('slug')->label(__('filament.news_article.fields.slug'))->required(),
+            Textarea::make('content')->label(__('filament.news_article.fields.content'))->required(),
+            DateTimePicker::make('published_at')->label(__('filament.news_article.fields.published_at')),
+        ]);
     }
 
     public static function table(Table $table): Table

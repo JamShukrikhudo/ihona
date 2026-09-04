@@ -60,14 +60,17 @@ class UserResource extends Resource
         return $schema
             ->components([
                 TextInput::make('name')
+                    ->label(__('filament.user_form.fields.name'))
                     ->required()
                     ->maxLength(255),
                 TextInput::make('email')
+                    ->label(__('filament.user_form.fields.email'))
                     ->email()
                     ->required()
                     ->unique(ignoreRecord: true)
                     ->maxLength(255),
                 TextInput::make('password')
+                    ->label(__('filament.user_form.fields.password'))
                     ->password()
                     ->dehydrateStateUsing(fn (string $state) => Hash::make($state))
                     ->dehydrated(fn (?string $state) => filled($state))
@@ -75,8 +78,9 @@ class UserResource extends Resource
                     ->maxLength(255)
                     ->helperText('Leave blank to keep the current password.'),
                 DateTimePicker::make('email_verified_at')
-                    ->label('Email verified at'),
+                    ->label(__('filament.user_form.fields.email_verified_at')),
                 Select::make('roles')
+                    ->label(__('filament.user_form.fields.roles'))
                     ->relationship('roles', 'name')
                     ->multiple()
                     ->preload()

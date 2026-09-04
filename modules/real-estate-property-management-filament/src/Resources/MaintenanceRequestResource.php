@@ -35,7 +35,13 @@ final class MaintenanceRequestResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return $schema->components([TextInput::make('property_id')->required()->numeric(), TextInput::make('title')->required()->maxLength(255), Textarea::make('description')->required()->columnSpanFull(), Select::make('priority')->options(['low' => 'Low', 'normal' => 'Normal', 'high' => 'High', 'urgent' => 'Urgent'])->required(), Select::make('status')->options(['pending' => 'Pending', 'in_progress' => 'In progress', 'completed' => 'Completed', 'cancelled' => 'Cancelled'])->required()]);
+        return $schema->components([
+            TextInput::make('property_id')->label(__('filament.maintenance_request.fields.property_id'))->required()->numeric(),
+            TextInput::make('title')->label(__('filament.maintenance_request.fields.title'))->required()->maxLength(255),
+            Textarea::make('description')->label(__('filament.maintenance_request.fields.description'))->required()->columnSpanFull(),
+            Select::make('priority')->label(__('filament.maintenance_request.fields.priority'))->options(['low' => __('filament.maintenance_request.priorities.low'), 'normal' => __('filament.maintenance_request.priorities.normal'), 'high' => __('filament.maintenance_request.priorities.high'), 'urgent' => __('filament.maintenance_request.priorities.urgent')])->required(),
+            Select::make('status')->label(__('filament.maintenance_request.fields.status'))->options(['pending' => __('filament.maintenance_request.statuses.pending'), 'in_progress' => __('filament.maintenance_request.statuses.in_progress'), 'completed' => __('filament.maintenance_request.statuses.completed'), 'cancelled' => __('filament.maintenance_request.statuses.cancelled')])->required(),
+        ]);
     }
 
     public static function table(Table $table): Table

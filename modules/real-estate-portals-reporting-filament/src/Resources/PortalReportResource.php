@@ -43,7 +43,14 @@ final class PortalReportResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return $schema->components([TextInput::make('portal')->required()->maxLength(120), TextInput::make('report_type')->required()->maxLength(120), TextInput::make('property_id')->numeric(), TextInput::make('listing_id')->numeric(), TextInput::make('status')->required(), Textarea::make('error')->columnSpanFull()]);
+        return $schema->components([
+            TextInput::make('portal')->label(__('filament.portal_report.fields.portal'))->required()->maxLength(120),
+            TextInput::make('report_type')->label(__('filament.portal_report.fields.report_type'))->required()->maxLength(120),
+            TextInput::make('property_id')->label(__('filament.portal_report.fields.property_id'))->numeric(),
+            TextInput::make('listing_id')->label(__('filament.portal_report.fields.listing_id'))->numeric(),
+            TextInput::make('status')->label(__('filament.portal_report.fields.status'))->required(),
+            Textarea::make('error')->label(__('filament.portal_report.fields.error'))->columnSpanFull(),
+        ]);
     }
 
     public static function table(Table $table): Table

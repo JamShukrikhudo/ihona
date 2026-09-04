@@ -44,7 +44,14 @@ final class MarketingCampaignResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return $schema->components([TextInput::make('name')->required()->maxLength(255), TextInput::make('channel')->required()->maxLength(80), TextInput::make('property_id')->numeric(), TextInput::make('listing_id')->numeric(), TextInput::make('status')->required(), Textarea::make('notes')->columnSpanFull()]);
+        return $schema->components([
+            TextInput::make('name')->label(__('filament.marketing_campaign.fields.name'))->required()->maxLength(255),
+            TextInput::make('channel')->label(__('filament.marketing_campaign.fields.channel'))->required()->maxLength(80),
+            TextInput::make('property_id')->label(__('filament.marketing_campaign.fields.property_id'))->numeric(),
+            TextInput::make('listing_id')->label(__('filament.marketing_campaign.fields.listing_id'))->numeric(),
+            TextInput::make('status')->label(__('filament.marketing_campaign.fields.status'))->required(),
+            Textarea::make('notes')->label(__('filament.marketing_campaign.fields.notes'))->columnSpanFull(),
+        ]);
     }
 
     public static function table(Table $table): Table

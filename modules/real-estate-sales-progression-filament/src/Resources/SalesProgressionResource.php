@@ -43,7 +43,13 @@ final class SalesProgressionResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return $schema->components([TextInput::make('subject')->required()->maxLength(255), TextInput::make('property_id')->numeric(), TextInput::make('offer_id')->numeric(), TextInput::make('status')->required(), Textarea::make('notes')->columnSpanFull()]);
+        return $schema->components([
+            TextInput::make('subject')->label(__('filament.sales_progression.fields.subject'))->required()->maxLength(255),
+            TextInput::make('property_id')->label(__('filament.sales_progression.fields.property_id'))->numeric(),
+            TextInput::make('offer_id')->label(__('filament.sales_progression.fields.offer_id'))->numeric(),
+            TextInput::make('status')->label(__('filament.sales_progression.fields.status'))->required(),
+            Textarea::make('notes')->label(__('filament.sales_progression.fields.notes'))->columnSpanFull(),
+        ]);
     }
 
     public static function table(Table $table): Table

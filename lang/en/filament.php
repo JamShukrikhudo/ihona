@@ -65,12 +65,74 @@ return [
 
     'stub_page_note' => 'The Filament adapter is installed. Domain operations remain governed by the matching core module.',
 
+    'property' => [
+        'fields' => [
+            'title' => 'Title',
+            'status' => 'Status',
+            'address' => 'Address',
+            'branch_id' => 'Branch',
+            'description' => 'Description',
+            'internal_notes' => 'Internal notes',
+            'price' => 'Price',
+            'currency' => 'Currency',
+            'bedrooms' => 'Bedrooms',
+            'bathrooms' => 'Bathrooms',
+            'reception_rooms' => 'Reception rooms',
+            'area_sqft' => 'Area, sqm',
+            'year_built' => 'Year built',
+            'property_category_id' => 'Category',
+            'property_template_id' => 'Listing template',
+            'postal_code' => 'Postal code',
+            'country' => 'Country',
+            'tenure' => 'Tenure',
+            'council_tax_band' => 'Council tax band',
+            'energy_rating' => 'Energy rating',
+            'energy_score' => 'Energy score',
+            'walkability_score' => 'Walkability score',
+            'transit_score' => 'Transit score',
+            'bike_score' => 'Bike score',
+            'virtual_tour_url' => 'Virtual tour URL',
+            'virtual_tour_provider' => 'Virtual tour provider',
+            'live_tour_available' => 'Live tour available',
+            'model_3d_url' => '3D model URL',
+            'floor_plan_image' => 'Floor plan image',
+            'is_featured' => 'Featured',
+            'holographic_enabled' => 'Holographic tour enabled',
+            'holographic_tour_url' => 'Holographic tour URL',
+            'holographic_provider' => 'Holographic provider',
+            'features' => 'Features',
+            'insurance_policy_id' => 'Insurance policy ID',
+            'insurance_coverage_amount' => 'Insurance coverage amount',
+            'insurance_premium' => 'Insurance premium',
+            'insurance_expiry_date' => 'Insurance expiry date',
+        ],
+        'statuses' => [
+            'draft' => 'Draft',
+            'available' => 'Available',
+            'under_offer' => 'Under offer',
+            'sold' => 'Sold',
+            'let' => 'Let',
+            'withdrawn' => 'Withdrawn',
+            'For Sale' => 'For Sale',
+            'For Rent' => 'For Rent',
+            'to_let' => 'To let',
+            'let_agreed' => 'Let agreed',
+            'sold_stc' => 'Sold (subject to contract)',
+            'sstc' => 'Sold (subject to contract)',
+            'exchanged' => 'Exchanged',
+            'archived' => 'Archived',
+            'coming_soon' => 'Coming soon',
+            'Rented' => 'Rented',
+        ],
+    ],
+
     'listing' => [
         'fields' => [
             'title' => 'Title',
             'status' => 'Status',
             'price' => 'Price',
             'created_at' => 'Created at',
+            'available_from' => 'Available from',
         ],
         'statuses' => [
             'draft' => 'Draft',
@@ -78,6 +140,425 @@ return [
             'published' => 'Published',
             'suspended' => 'Suspended',
             'withdrawn' => 'Withdrawn',
+        ],
+    ],
+
+    'valuation' => [
+        'fields' => [
+            'subject' => 'Subject',
+            'status' => 'Status',
+            'valued_amount' => 'Valued amount',
+            'fee_amount' => 'Fee amount',
+            'currency' => 'Currency',
+            'comparable_data' => 'Comparable data',
+            'recommendation' => 'Recommendation',
+            'scheduled_at' => 'Scheduled at',
+            'follow_up_at' => 'Follow-up date',
+        ],
+        'statuses' => [
+            'draft' => 'Draft',
+            'scheduled' => 'Scheduled',
+            'completed' => 'Completed',
+            'converted' => 'Converted',
+            'cancelled' => 'Cancelled',
+        ],
+    ],
+
+    'match_profile' => [
+        'fields' => [
+            'subject' => 'Subject',
+            'score' => 'Match score',
+            'party_id' => 'Party (ID)',
+            'requirements' => 'Requirements',
+            'affordability' => 'Affordability',
+            'preferences' => 'Preferences',
+            'alerts' => 'Alerts',
+            'feedback' => 'Feedback',
+            'exclusions' => 'Exclusions',
+        ],
+    ],
+
+    'offer' => [
+        'fields' => [
+            'subject' => 'Subject',
+            'amount' => 'Amount',
+            'currency' => 'Currency',
+            'terms' => 'Terms',
+            'qualification' => 'Buyer qualification',
+            'negotiation' => 'Negotiation',
+            'proof' => 'Proof of funds',
+            'conditions' => 'Conditions',
+        ],
+        'statuses' => [
+            'draft' => 'Draft',
+            'submitted' => 'Submitted',
+            'countered' => 'Countered',
+            'accepted' => 'Accepted',
+            'rejected' => 'Rejected',
+            'withdrawn' => 'Withdrawn',
+        ],
+    ],
+
+    'media_document' => [
+        'fields' => [
+            'kind' => 'Kind',
+            'path' => 'File path',
+            'title' => 'Title',
+            'sort_order' => 'Sort order',
+        ],
+        'kinds' => [
+            'photo' => 'Photo',
+            'floorplan' => 'Floorplan',
+            'video' => 'Video',
+            'certificate' => 'Certificate',
+            'brochure' => 'Brochure',
+            'document' => 'Document',
+        ],
+    ],
+
+    'viewing' => [
+        'fields' => [
+            'subject' => 'Subject',
+            'status' => 'Status',
+            'starts_at' => 'Starts at',
+            'ends_at' => 'Ends at',
+            'access' => 'Access',
+            'accompaniment' => 'Accompaniment',
+            'reminders' => 'Reminders',
+            'feedback' => 'Feedback',
+        ],
+        'statuses' => [
+            'requested' => 'Requested',
+            'confirmed' => 'Confirmed',
+            'completed' => 'Completed',
+            'cancelled' => 'Cancelled',
+            'no_show' => 'No show',
+        ],
+    ],
+
+    'portal_report' => [
+        'fields' => [
+            'portal' => 'Portal',
+            'report_type' => 'Report type',
+            'property_id' => 'Property (ID)',
+            'listing_id' => 'Listing (ID)',
+            'status' => 'Status',
+            'error' => 'Error',
+        ],
+    ],
+
+    'marketing_campaign' => [
+        'fields' => [
+            'name' => 'Name',
+            'channel' => 'Channel',
+            'property_id' => 'Property (ID)',
+            'listing_id' => 'Listing (ID)',
+            'status' => 'Status',
+            'notes' => 'Notes',
+        ],
+    ],
+
+    'sales_progression' => [
+        'fields' => [
+            'subject' => 'Subject',
+            'property_id' => 'Property (ID)',
+            'offer_id' => 'Offer (ID)',
+            'status' => 'Status',
+            'notes' => 'Notes',
+        ],
+    ],
+
+    'vendor_quote' => [
+        'fields' => [
+            'vendor_id' => 'Vendor (ID)',
+            'property_id' => 'Property (ID)',
+            'work_description' => 'Work description',
+            'quote_amount' => 'Quote amount',
+            'quote_date' => 'Quote date',
+            'valid_until' => 'Valid until',
+            'status' => 'Status',
+        ],
+        'statuses' => [
+            'pending' => 'Pending',
+            'accepted' => 'Accepted',
+            'rejected' => 'Rejected',
+            'expired' => 'Expired',
+            'withdrawn' => 'Withdrawn',
+        ],
+    ],
+
+    'work_order' => [
+        'fields' => [
+            'property_id' => 'Property (ID)',
+            'vendor_id' => 'Vendor (ID)',
+            'title' => 'Title',
+            'description' => 'Description',
+            'work_type' => 'Work type',
+            'status' => 'Status',
+        ],
+        'statuses' => [
+            'pending' => 'Pending',
+            'approved' => 'Approved',
+            'scheduled' => 'Scheduled',
+            'in_progress' => 'In progress',
+            'completed' => 'Completed',
+            'cancelled' => 'Cancelled',
+        ],
+    ],
+
+    'party' => [
+        'fields' => [
+            'type' => 'Type',
+            'name' => 'Name',
+            'email' => 'Email',
+            'phone' => 'Phone',
+        ],
+        'types' => [
+            'applicant' => 'Applicant',
+            'buyer' => 'Buyer',
+            'vendor' => 'Vendor',
+            'landlord' => 'Landlord',
+            'tenant' => 'Tenant',
+            'solicitor' => 'Solicitor',
+            'contractor' => 'Contractor',
+            'tourist' => 'Tourist',
+            'guide' => 'Guide',
+        ],
+    ],
+
+    'rental_application' => [
+        'fields' => [
+            'property_id' => 'Property (ID)',
+            'party_id' => 'Party (ID)',
+            'status' => 'Status',
+            'employment_status' => 'Employment status',
+            'annual_income' => 'Annual income',
+            'desired_move_in_date' => 'Desired move-in date',
+        ],
+        'statuses' => [
+            'draft' => 'Draft',
+            'submitted' => 'Submitted',
+            'under_review' => 'Under review',
+            'approved' => 'Approved',
+            'rejected' => 'Rejected',
+        ],
+    ],
+
+    'maintenance_request' => [
+        'fields' => [
+            'property_id' => 'Property (ID)',
+            'title' => 'Title',
+            'description' => 'Description',
+            'priority' => 'Priority',
+            'status' => 'Status',
+        ],
+        'priorities' => [
+            'low' => 'Low',
+            'normal' => 'Normal',
+            'high' => 'High',
+            'urgent' => 'Urgent',
+        ],
+        'statuses' => [
+            'pending' => 'Pending',
+            'in_progress' => 'In progress',
+            'completed' => 'Completed',
+            'cancelled' => 'Cancelled',
+        ],
+    ],
+
+    'inspection' => [
+        'fields' => [
+            'property_id' => 'Property (ID)',
+            'type' => 'Type',
+            'status' => 'Status',
+            'scheduled_at' => 'Scheduled at',
+            'notes' => 'Notes',
+        ],
+        'types' => [
+            'routine' => 'Routine',
+            'check_in' => 'Check-in',
+            'check_out' => 'Check-out',
+            'mid_tenancy' => 'Mid-tenancy',
+        ],
+        'statuses' => [
+            'scheduled' => 'Scheduled',
+            'in_progress' => 'In progress',
+            'completed' => 'Completed',
+            'cancelled' => 'Cancelled',
+        ],
+    ],
+
+    'user_form' => [
+        'fields' => [
+            'name' => 'Name',
+            'email' => 'Email',
+            'password' => 'Password',
+            'email_verified_at' => 'Email verified at',
+            'roles' => 'Roles',
+        ],
+    ],
+
+    'zoopla_sync' => [
+        'fields' => [
+            'listing_id' => 'Listing (ID)',
+            'property_id' => 'Property (ID)',
+            'external_id' => 'External ID',
+            'status' => 'Status',
+        ],
+    ],
+
+    'rightmove_sync' => [
+        'fields' => [
+            'listing_id' => 'Listing (ID)',
+            'property_id' => 'Property (ID)',
+            'external_id' => 'External ID',
+            'status' => 'Status',
+        ],
+    ],
+
+    'onthemarket_sync' => [
+        'fields' => [
+            'listing_id' => 'Listing (ID)',
+            'property_id' => 'Property (ID)',
+            'external_id' => 'External ID',
+            'status' => 'Status',
+        ],
+    ],
+
+    'management_record' => [
+        'fields' => [
+            'subject' => 'Subject',
+            'capability' => 'Capability',
+            'status' => 'Status',
+            'failure_reason' => 'Failure reason',
+        ],
+        'capabilities' => [
+            'rent_schedule' => 'Rent schedule',
+            'statements' => 'Statements',
+            'inspections' => 'Inspections',
+            'compliance' => 'Compliance',
+            'maintenance' => 'Maintenance',
+            'contractors' => 'Contractors',
+            'owner_approvals' => 'Owner approvals',
+        ],
+        'statuses' => [
+            'draft' => 'Draft',
+            'in_progress' => 'In progress',
+            'completed' => 'Completed',
+            'cancelled' => 'Cancelled',
+        ],
+    ],
+
+    'news_article' => [
+        'fields' => [
+            'title' => 'Title',
+            'slug' => 'Slug (URL)',
+            'content' => 'Content',
+            'published_at' => 'Published at',
+        ],
+    ],
+
+    'letting' => [
+        'fields' => [
+            'subject' => 'Subject',
+            'capability' => 'Capability',
+            'status' => 'Status',
+            'failure_reason' => 'Failure reason',
+        ],
+        'capabilities' => [
+            'applications' => 'Applications',
+            'referencing' => 'Referencing',
+            'deposits' => 'Deposits',
+            'agreements' => 'Agreements',
+            'move_in_out' => 'Move in/out',
+            'renewals' => 'Renewals',
+            'rent_changes' => 'Rent changes',
+            'notices' => 'Notices',
+        ],
+        'statuses' => [
+            'draft' => 'Draft',
+            'in_progress' => 'In progress',
+            'completed' => 'Completed',
+            'cancelled' => 'Cancelled',
+        ],
+    ],
+
+    'instruction' => [
+        'fields' => [
+            'subject' => 'Subject',
+            'status' => 'Status',
+            'approved_at' => 'Approved at',
+            'withdrawn_at' => 'Withdrawn at',
+        ],
+        'statuses' => [
+            'draft' => 'Draft',
+            'pending_approval' => 'Pending approval',
+            'approved' => 'Approved',
+            'withdrawn' => 'Withdrawn',
+            'rejected' => 'Rejected',
+        ],
+    ],
+
+    'status_definition_form' => [
+        'fields' => [
+            'entity' => 'Entity',
+            'key' => 'Key',
+            'label' => 'Label',
+            'active' => 'Active',
+        ],
+    ],
+
+    'branch_form' => [
+        'fields' => [
+            'name' => 'Name',
+            'code' => 'Code',
+            'email' => 'Email',
+            'phone' => 'Phone',
+        ],
+    ],
+
+    'territory' => [
+        'fields' => [
+            'name' => 'Name',
+            'code' => 'Code',
+            'boundary' => 'Boundary (JSON)',
+        ],
+    ],
+
+    'team_form' => [
+        'fields' => [
+            'name' => 'Name',
+            'user_id' => 'Owner',
+            'personal_team' => 'Personal team',
+        ],
+    ],
+
+    'property_template' => [
+        'fields' => [
+            'name' => 'Name',
+            'content' => 'Template content',
+        ],
+    ],
+
+    'property_saved_search' => [
+        'fields' => [
+            'name' => 'Name',
+            'criteria' => 'Search criteria',
+        ],
+    ],
+
+    'property_category' => [
+        'fields' => [
+            'name' => 'Name',
+            'slug' => 'Slug (URL)',
+        ],
+    ],
+
+    'agency_form' => [
+        'fields' => [
+            'name' => 'Name',
+            'code' => 'Code',
+            'active' => 'Active',
         ],
     ],
 

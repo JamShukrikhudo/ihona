@@ -55,16 +55,17 @@ class TeamResource extends Resource
         return $schema
             ->components([
                 TextInput::make('name')
+                    ->label(__('filament.team_form.fields.name'))
                     ->required()
                     ->maxLength(255),
                 Select::make('user_id')
-                    ->label('Owner')
+                    ->label(__('filament.team_form.fields.user_id'))
                     ->relationship('owner', 'name')
                     ->required()
                     ->searchable()
                     ->preload(),
                 Toggle::make('personal_team')
-                    ->label('Personal team'),
+                    ->label(__('filament.team_form.fields.personal_team')),
             ]);
     }
 

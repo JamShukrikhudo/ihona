@@ -37,9 +37,9 @@ final class TerritoryResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            TextInput::make('name')->required()->maxLength(255),
-            TextInput::make('code')->required()->maxLength(20)->dehydrateStateUsing(fn (?string $state): ?string => $state !== null ? mb_strtoupper($state) : null),
-            Textarea::make('boundary')->helperText('Optional JSON boundary metadata.')->columnSpanFull(),
+            TextInput::make('name')->label(__('filament.territory.fields.name'))->required()->maxLength(255),
+            TextInput::make('code')->label(__('filament.territory.fields.code'))->required()->maxLength(20)->dehydrateStateUsing(fn (?string $state): ?string => $state !== null ? mb_strtoupper($state) : null),
+            Textarea::make('boundary')->label(__('filament.territory.fields.boundary'))->helperText('Optional JSON boundary metadata.')->columnSpanFull(),
         ]);
     }
 

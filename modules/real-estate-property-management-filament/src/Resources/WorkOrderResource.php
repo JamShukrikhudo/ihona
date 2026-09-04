@@ -35,7 +35,14 @@ final class WorkOrderResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return $schema->components([TextInput::make('property_id')->required()->numeric(), TextInput::make('vendor_id')->numeric(), TextInput::make('title')->required()->maxLength(255), Textarea::make('description')->required()->columnSpanFull(), TextInput::make('work_type')->required()->maxLength(100), Select::make('status')->options(['pending' => 'Pending', 'approved' => 'Approved', 'scheduled' => 'Scheduled', 'in_progress' => 'In progress', 'completed' => 'Completed', 'cancelled' => 'Cancelled'])->required()]);
+        return $schema->components([
+            TextInput::make('property_id')->label(__('filament.work_order.fields.property_id'))->required()->numeric(),
+            TextInput::make('vendor_id')->label(__('filament.work_order.fields.vendor_id'))->numeric(),
+            TextInput::make('title')->label(__('filament.work_order.fields.title'))->required()->maxLength(255),
+            Textarea::make('description')->label(__('filament.work_order.fields.description'))->required()->columnSpanFull(),
+            TextInput::make('work_type')->label(__('filament.work_order.fields.work_type'))->required()->maxLength(100),
+            Select::make('status')->label(__('filament.work_order.fields.status'))->options(['pending' => __('filament.work_order.statuses.pending'), 'approved' => __('filament.work_order.statuses.approved'), 'scheduled' => __('filament.work_order.statuses.scheduled'), 'in_progress' => __('filament.work_order.statuses.in_progress'), 'completed' => __('filament.work_order.statuses.completed'), 'cancelled' => __('filament.work_order.statuses.cancelled')])->required(),
+        ]);
     }
 
     public static function table(Table $table): Table

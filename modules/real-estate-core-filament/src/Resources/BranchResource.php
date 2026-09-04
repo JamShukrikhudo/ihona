@@ -36,10 +36,10 @@ final class BranchResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            TextInput::make('name')->required()->maxLength(255),
-            TextInput::make('code')->required()->maxLength(20)->dehydrateStateUsing(fn (?string $state): ?string => $state !== null ? mb_strtoupper($state) : null),
-            TextInput::make('email')->email(),
-            TextInput::make('phone')->maxLength(50),
+            TextInput::make('name')->label(__('filament.branch_form.fields.name'))->required()->maxLength(255),
+            TextInput::make('code')->label(__('filament.branch_form.fields.code'))->required()->maxLength(20)->dehydrateStateUsing(fn (?string $state): ?string => $state !== null ? mb_strtoupper($state) : null),
+            TextInput::make('email')->label(__('filament.branch_form.fields.email'))->email(),
+            TextInput::make('phone')->label(__('filament.branch_form.fields.phone'))->maxLength(50),
         ]);
     }
 

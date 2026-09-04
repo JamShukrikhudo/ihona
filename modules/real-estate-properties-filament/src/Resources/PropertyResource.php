@@ -60,11 +60,11 @@ final class PropertyResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            TextInput::make('title')->maxLength(255),
-            Select::make('status')->options(collect(PropertyStatus::cases())->mapWithKeys(fn (PropertyStatus $status): array => [$status->value => str($status->value)->headline()->toString()])->all())->disabled()->dehydrated(false),
-            Textarea::make('address')->required()->columnSpanFull(),
+            TextInput::make('title')->label(__('filament.property.fields.title'))->maxLength(255),
+            Select::make('status')->label(__('filament.property.fields.status'))->options(collect(PropertyStatus::cases())->mapWithKeys(fn (PropertyStatus $status): array => [$status->value => __('filament.property.statuses.'.$status->value)])->all())->disabled()->dehydrated(false),
+            Textarea::make('address')->label(__('filament.property.fields.address'))->required()->columnSpanFull(),
             Select::make('branch_id')
-                ->label('Branch')
+                ->label(__('filament.property.fields.branch_id'))
                 ->options(fn (): array => Branch::query()
                     ->forTeam(auth()->user()?->current_team_id ?? 0)
                     ->orderBy('name')
@@ -72,15 +72,16 @@ final class PropertyResource extends Resource
                     ->all())
                 ->searchable()
                 ->nullable(),
-            Textarea::make('description')->columnSpanFull(),
-            Textarea::make('internal_notes')->label('Internal notes')->columnSpanFull(),
-            TextInput::make('price')->numeric()->minValue(0),
-            TextInput::make('currency')->length(3)->default('TJS'),
-            TextInput::make('bedrooms')->numeric()->minValue(0),
-            TextInput::make('bathrooms')->numeric()->minValue(0),
-            TextInput::make('reception_rooms')->numeric()->minValue(0),
-            TextInput::make('area_sqft')->numeric()->minValue(0),
+            Textarea::make('description')->label(__('filament.property.fields.description'))->columnSpanFull(),
+            Textarea::make('internal_notes')->label(__('filament.property.fields.internal_notes'))->columnSpanFull(),
+            TextInput::make('price')->label(__('filament.property.fields.price'))->numeric()->minValue(0),
+            TextInput::make('currency')->label(__('filament.property.fields.currency'))->length(3)->default('TJS'),
+            TextInput::make('bedrooms')->label(__('filament.property.fields.bedrooms'))->numeric()->minValue(0),
+            TextInput::make('bathrooms')->label(__('filament.property.fields.bathrooms'))->numeric()->minValue(0),
+            TextInput::make('reception_rooms')->label(__('filament.property.fields.reception_rooms'))->numeric()->minValue(0),
+            TextInput::make('area_sqft')->label(__('filament.property.fields.area_sqft'))->numeric()->minValue(0),
             TextInput::make('year_built')
+                ->label(__('filament.property.fields.year_built'))
                 ->numeric()
                 ->minValue(Property::EARLIEST_YEAR_BUILT)
                 ->maxValue(Property::latestYearBuilt())
@@ -99,38 +100,38 @@ final class PropertyResource extends Resource
                 ])
                 ->required(),
             Select::make('property_category_id')
-                ->label('Category')
+                ->label(__('filament.property.fields.property_category_id'))
                 ->options(fn (): array => PropertyCategory::query()->forTeam(auth()->user()?->current_team_id ?? 0)->orderBy('name')->pluck('name', 'id')->all())
                 ->searchable()
                 ->nullable(),
             Select::make('property_template_id')
-                ->label('Listing template')
+                ->label(__('filament.property.fields.property_template_id'))
                 ->options(fn (): array => PropertyTemplate::query()->forTeam(auth()->user()?->current_team_id ?? 0)->orderBy('name')->pluck('name', 'id')->all())
                 ->searchable()
                 ->nullable(),
-            TextInput::make('postal_code')->maxLength(20),
-            TextInput::make('country')->length(2),
-            TextInput::make('tenure')->maxLength(40),
-            TextInput::make('council_tax_band')->maxLength(10),
-            TextInput::make('energy_rating')->maxLength(10),
-            TextInput::make('energy_score')->numeric()->minValue(0)->maxValue(100),
-            TextInput::make('walkability_score')->numeric()->minValue(0)->maxValue(100),
-            TextInput::make('transit_score')->numeric()->minValue(0)->maxValue(100),
-            TextInput::make('bike_score')->numeric()->minValue(0)->maxValue(100),
-            TextInput::make('virtual_tour_url')->url()->maxLength(2048),
-            TextInput::make('virtual_tour_provider')->maxLength(40),
-            Toggle::make('live_tour_available'),
-            TextInput::make('model_3d_url')->url()->maxLength(2048),
-            TextInput::make('floor_plan_image')->url()->maxLength(2048),
-            Toggle::make('is_featured'),
-            Toggle::make('holographic_enabled'),
-            TextInput::make('holographic_tour_url')->url()->maxLength(2048),
-            TextInput::make('holographic_provider')->maxLength(255),
-            TagsInput::make('features')->separator(','),
-            TextInput::make('insurance_policy_id')->numeric()->minValue(1),
-            TextInput::make('insurance_coverage_amount')->numeric()->minValue(0),
-            TextInput::make('insurance_premium')->numeric()->minValue(0),
-            DatePicker::make('insurance_expiry_date'),
+            TextInput::make('postal_code')->label(__('filament.property.fields.postal_code'))->maxLength(20),
+            TextInput::make('country')->label(__('filament.property.fields.country'))->length(2),
+            TextInput::make('tenure')->label(__('filament.property.fields.tenure'))->maxLength(40),
+            TextInput::make('council_tax_band')->label(__('filament.property.fields.council_tax_band'))->maxLength(10),
+            TextInput::make('energy_rating')->label(__('filament.property.fields.energy_rating'))->maxLength(10),
+            TextInput::make('energy_score')->label(__('filament.property.fields.energy_score'))->numeric()->minValue(0)->maxValue(100),
+            TextInput::make('walkability_score')->label(__('filament.property.fields.walkability_score'))->numeric()->minValue(0)->maxValue(100),
+            TextInput::make('transit_score')->label(__('filament.property.fields.transit_score'))->numeric()->minValue(0)->maxValue(100),
+            TextInput::make('bike_score')->label(__('filament.property.fields.bike_score'))->numeric()->minValue(0)->maxValue(100),
+            TextInput::make('virtual_tour_url')->label(__('filament.property.fields.virtual_tour_url'))->url()->maxLength(2048),
+            TextInput::make('virtual_tour_provider')->label(__('filament.property.fields.virtual_tour_provider'))->maxLength(40),
+            Toggle::make('live_tour_available')->label(__('filament.property.fields.live_tour_available')),
+            TextInput::make('model_3d_url')->label(__('filament.property.fields.model_3d_url'))->url()->maxLength(2048),
+            TextInput::make('floor_plan_image')->label(__('filament.property.fields.floor_plan_image'))->url()->maxLength(2048),
+            Toggle::make('is_featured')->label(__('filament.property.fields.is_featured')),
+            Toggle::make('holographic_enabled')->label(__('filament.property.fields.holographic_enabled')),
+            TextInput::make('holographic_tour_url')->label(__('filament.property.fields.holographic_tour_url'))->url()->maxLength(2048),
+            TextInput::make('holographic_provider')->label(__('filament.property.fields.holographic_provider'))->maxLength(255),
+            TagsInput::make('features')->label(__('filament.property.fields.features'))->separator(','),
+            TextInput::make('insurance_policy_id')->label(__('filament.property.fields.insurance_policy_id'))->numeric()->minValue(1),
+            TextInput::make('insurance_coverage_amount')->label(__('filament.property.fields.insurance_coverage_amount'))->numeric()->minValue(0),
+            TextInput::make('insurance_premium')->label(__('filament.property.fields.insurance_premium'))->numeric()->minValue(0),
+            DatePicker::make('insurance_expiry_date')->label(__('filament.property.fields.insurance_expiry_date')),
             Section::make('🏔️ Региональные особенности')
                 ->schema([
                     Toggle::make('has_generator')
@@ -202,7 +203,7 @@ final class PropertyResource extends Resource
                 TextColumn::make('created_at')->label('Создано')->dateTime()->sortable(),
             ])
             ->filters([
-                SelectFilter::make('status')->options(collect(PropertyStatus::cases())->mapWithKeys(fn (PropertyStatus $status): array => [$status->value => str($status->value)->headline()->toString()])->all()),
+                SelectFilter::make('status')->options(collect(PropertyStatus::cases())->mapWithKeys(fn (PropertyStatus $status): array => [$status->value => __('filament.property.statuses.'.$status->value)])->all()),
                 SelectFilter::make('property_template_id')
                     ->label('Template')
                     ->options(fn (): array => PropertyTemplate::query()->forTeam(auth()->user()?->current_team_id ?? 0)->orderBy('name')->pluck('name', 'id')->all()),

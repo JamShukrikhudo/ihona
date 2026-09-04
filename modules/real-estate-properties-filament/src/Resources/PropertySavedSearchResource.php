@@ -37,8 +37,8 @@ final class PropertySavedSearchResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            TextInput::make('name')->required()->maxLength(120),
-            Textarea::make('criteria')->required()->helperText('JSON representation of the property filters.')->formatStateUsing(fn (mixed $state): string => is_array($state) ? (json_encode($state, JSON_PRETTY_PRINT) ?: '{}') : (string) $state)->dehydrateStateUsing(fn (mixed $state): array => is_array($state) ? $state : (json_decode((string) $state, true) ?: []))->columnSpanFull(),
+            TextInput::make('name')->label(__('filament.property_saved_search.fields.name'))->required()->maxLength(120),
+            Textarea::make('criteria')->label(__('filament.property_saved_search.fields.criteria'))->required()->helperText('JSON representation of the property filters.')->formatStateUsing(fn (mixed $state): string => is_array($state) ? (json_encode($state, JSON_PRETTY_PRINT) ?: '{}') : (string) $state)->dehydrateStateUsing(fn (mixed $state): array => is_array($state) ? $state : (json_decode((string) $state, true) ?: []))->columnSpanFull(),
         ]);
     }
 
