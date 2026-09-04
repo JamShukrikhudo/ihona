@@ -21,9 +21,15 @@ final class AgencyResource extends Resource
 {
     protected static ?string $model = Agency::class;
 
-    protected static ?string $modelLabel = 'Агентство';
+    public static function getModelLabel(): string
+    {
+        return __('filament.resources.agency.singular');
+    }
 
-    protected static ?string $pluralModelLabel = 'Агентства';
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.resources.agency.plural');
+    }
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-building-office';
 

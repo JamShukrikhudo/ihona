@@ -10,5 +10,13 @@ final class Overview extends Page
 {
     protected string $view = 'analytics-core-filament::overview';
 
-    protected static ?string $title = 'Analytics Core';
+    public static function getNavigationLabel(): string
+    {
+        return __('filament.pages.analytics_core');
+    }
+
+    public function getTitle(): string
+    {
+        return __('filament.pages.analytics_core');
+    }
 }

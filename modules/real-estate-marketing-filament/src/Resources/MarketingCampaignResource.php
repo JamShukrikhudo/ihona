@@ -30,9 +30,15 @@ final class MarketingCampaignResource extends Resource
 {
     protected static ?string $model = MarketingCampaign::class;
 
-    protected static ?string $modelLabel = 'Маркетинговая кампания';
+    public static function getModelLabel(): string
+    {
+        return __('filament.resources.marketing_campaign.singular');
+    }
 
-    protected static ?string $pluralModelLabel = 'Маркетинговые кампании';
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.resources.marketing_campaign.plural');
+    }
 
     protected static string|\UnitEnum|null $navigationGroup = 'Недвижимость';
 

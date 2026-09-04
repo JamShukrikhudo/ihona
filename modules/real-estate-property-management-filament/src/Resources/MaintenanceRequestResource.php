@@ -21,6 +21,16 @@ final class MaintenanceRequestResource extends Resource
 {
     protected static ?string $model = MaintenanceRequest::class;
 
+    public static function getModelLabel(): string
+    {
+        return __('filament.resources.maintenance_request.singular');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.resources.maintenance_request.plural');
+    }
+
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-wrench-screwdriver';
 
     public static function form(Schema $schema): Schema

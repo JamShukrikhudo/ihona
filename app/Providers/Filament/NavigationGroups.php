@@ -70,7 +70,7 @@ final class NavigationGroups
     {
         if ($panel === 'app') {
             return [
-                'Account & support' => [
+                __('filament.nav_groups.account_support') => [
                     10 => AccountSetupWizard::class,
                     20 => AccountSecurity::class,
                 ],
@@ -78,7 +78,7 @@ final class NavigationGroups
         }
 
         return [
-            'Sales & lettings' => [
+            __('filament.nav_groups.sales_lettings') => [
                 10 => PropertyResource::class,
                 20 => ListingResource::class,
                 30 => ViewingResource::class,
@@ -87,17 +87,17 @@ final class NavigationGroups
                 60 => RentalApplicationResource::class,
                 70 => SalesProgressionResource::class,
             ],
-            'People & relationships' => [
+            __('filament.nav_groups.people_relationships') => [
                 10 => PartyResource::class,
             ],
-            'Property management' => [
+            __('filament.nav_groups.property_management') => [
                 10 => InspectionResource::class,
                 20 => MaintenanceRequestResource::class,
                 30 => ManagementRecordResource::class,
                 40 => VendorQuoteResource::class,
                 50 => WorkOrderResource::class,
             ],
-            'Marketing & portals' => [
+            __('filament.nav_groups.marketing_portals') => [
                 10 => MarketingCampaignResource::class,
                 20 => NewsArticleResource::class,
                 30 => PortalReportResource::class,
@@ -105,21 +105,21 @@ final class NavigationGroups
                 50 => ZooplaSyncResource::class,
                 60 => OnTheMarketSyncResource::class,
             ],
-            'Insights & tools' => [
+            __('filament.nav_groups.insights_tools') => [
                 10 => MatchProfileResource::class,
                 20 => ValuationResource::class,
                 30 => PropertySavedSearchResource::class,
             ],
-            'Instructions & media' => [
+            __('filament.nav_groups.instructions_media') => [
                 10 => InstructionResource::class,
                 20 => MediaDocumentResource::class,
             ],
-            'Organisation' => [
+            __('filament.nav_groups.organisation') => [
                 10 => TeamResource::class,
                 20 => UserResource::class,
                 30 => RoleResource::class,
             ],
-            'Property configuration' => [
+            __('filament.nav_groups.property_configuration') => [
                 10 => AgencyResource::class,
                 20 => BranchResource::class,
                 30 => TerritoryResource::class,
@@ -127,14 +127,14 @@ final class NavigationGroups
                 50 => PropertyCategoryResource::class,
                 60 => PropertyTemplateResource::class,
             ],
-            'Platform settings' => [
+            __('filament.nav_groups.platform_settings') => [
                 10 => ManageSiteSettings::class,
                 20 => Overview::class,
                 30 => \Liberu\Foundation\LocalizationCoreFilament\Pages\Overview::class,
                 40 => \Liberu\Foundation\CurrencyContextFilament\Pages\Overview::class,
                 50 => FoundationOperations::class,
             ],
-            'Integrations & API' => [
+            __('filament.nav_groups.integrations_api') => [
                 10 => \Liberu\Foundation\IntegrationsFilament\Pages\Overview::class,
                 20 => \Liberu\Foundation\ApiAccessFilament\Pages\Overview::class,
                 30 => \Liberu\Foundation\WebhooksFilament\Pages\Overview::class,
@@ -142,7 +142,7 @@ final class NavigationGroups
                 50 => \Liberu\Foundation\AnalyticsGoogleFilament\Pages\Overview::class,
                 60 => \Liberu\Foundation\AnalyticsMetaFilament\Pages\Overview::class,
             ],
-            'Operations & diagnostics' => [
+            __('filament.nav_groups.operations_diagnostics') => [
                 10 => \Liberu\Foundation\SchedulerQueuesFilament\Pages\Overview::class,
                 20 => \Liberu\Foundation\ObservabilityFilament\Pages\Overview::class,
                 30 => \Liberu\Foundation\NotificationsFilament\Pages\Overview::class,

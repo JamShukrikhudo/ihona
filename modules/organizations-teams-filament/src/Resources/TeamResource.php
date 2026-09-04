@@ -24,9 +24,15 @@ class TeamResource extends Resource
 {
     protected static ?string $model = Team::class;
 
-    protected static ?string $modelLabel = 'Команда';
+    public static function getModelLabel(): string
+    {
+        return __('filament.resources.team.singular');
+    }
 
-    protected static ?string $pluralModelLabel = 'Команды';
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.resources.team.plural');
+    }
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-user-group';
 

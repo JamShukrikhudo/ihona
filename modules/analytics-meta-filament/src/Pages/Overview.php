@@ -10,5 +10,13 @@ final class Overview extends Page
 {
     protected string $view = 'analytics-meta-filament::overview';
 
-    protected static ?string $title = 'Meta Server-Side Tracking';
+    public static function getNavigationLabel(): string
+    {
+        return __('filament.pages.analytics_meta');
+    }
+
+    public function getTitle(): string
+    {
+        return __('filament.pages.analytics_meta');
+    }
 }

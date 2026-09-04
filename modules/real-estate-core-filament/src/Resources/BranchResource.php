@@ -19,9 +19,15 @@ final class BranchResource extends Resource
 {
     protected static ?string $model = Branch::class;
 
-    protected static ?string $modelLabel = 'Филиал';
+    public static function getModelLabel(): string
+    {
+        return __('filament.resources.branch.singular');
+    }
 
-    protected static ?string $pluralModelLabel = 'Филиалы';
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.resources.branch.plural');
+    }
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-building-office';
 

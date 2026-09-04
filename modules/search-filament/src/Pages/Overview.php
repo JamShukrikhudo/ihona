@@ -10,5 +10,13 @@ final class Overview extends Page
 {
     protected string $view = 'search-filament::overview';
 
-    protected static ?string $title = 'Search';
+    public static function getNavigationLabel(): string
+    {
+        return __('filament.pages.search');
+    }
+
+    public function getTitle(): string
+    {
+        return __('filament.pages.search');
+    }
 }

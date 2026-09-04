@@ -28,9 +28,15 @@ final class ListingResource extends Resource
 {
     protected static ?string $model = Listing::class;
 
-    protected static ?string $modelLabel = 'Объявление';
+    public static function getModelLabel(): string
+    {
+        return __('filament.resources.listing.singular');
+    }
 
-    protected static ?string $pluralModelLabel = 'Объявления';
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.resources.listing.plural');
+    }
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-megaphone';
 

@@ -10,5 +10,13 @@ final class Overview extends Page
 {
     protected string $view = 'webhooks-filament::overview';
 
-    protected static ?string $title = 'Webhooks';
+    public static function getNavigationLabel(): string
+    {
+        return __('filament.pages.webhooks');
+    }
+
+    public function getTitle(): string
+    {
+        return __('filament.pages.webhooks');
+    }
 }

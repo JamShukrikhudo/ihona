@@ -20,9 +20,15 @@ final class PropertyTemplateResource extends Resource
 {
     protected static ?string $model = PropertyTemplate::class;
 
-    protected static ?string $modelLabel = 'Шаблон объекта';
+    public static function getModelLabel(): string
+    {
+        return __('filament.resources.property_template.singular');
+    }
 
-    protected static ?string $pluralModelLabel = 'Шаблоны объектов';
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.resources.property_template.plural');
+    }
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document';
 

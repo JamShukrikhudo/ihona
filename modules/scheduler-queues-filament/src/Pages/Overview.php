@@ -10,5 +10,13 @@ final class Overview extends Page
 {
     protected string $view = 'scheduler-queues-filament::overview';
 
-    protected static ?string $title = 'Scheduler and Queues';
+    public static function getNavigationLabel(): string
+    {
+        return __('filament.pages.scheduler_queues');
+    }
+
+    public function getTitle(): string
+    {
+        return __('filament.pages.scheduler_queues');
+    }
 }

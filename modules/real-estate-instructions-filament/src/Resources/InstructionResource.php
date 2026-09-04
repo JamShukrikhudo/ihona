@@ -26,9 +26,15 @@ final class InstructionResource extends Resource
 {
     protected static ?string $model = Instruction::class;
 
-    protected static ?string $modelLabel = 'Инструкция';
+    public static function getModelLabel(): string
+    {
+        return __('filament.resources.instruction.singular');
+    }
 
-    protected static ?string $pluralModelLabel = 'Инструкции';
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.resources.instruction.plural');
+    }
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-clipboard-document-check';
 

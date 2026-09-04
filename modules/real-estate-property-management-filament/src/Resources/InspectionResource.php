@@ -23,6 +23,16 @@ final class InspectionResource extends Resource
 {
     protected static ?string $model = Inspection::class;
 
+    public static function getModelLabel(): string
+    {
+        return __('filament.resources.inspection.singular');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.resources.inspection.plural');
+    }
+
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-clipboard-document-check';
 
     public static function form(Schema $schema): Schema

@@ -26,9 +26,15 @@ final class MediaDocumentResource extends Resource
 {
     protected static ?string $model = MediaDocument::class;
 
-    protected static ?string $modelLabel = 'Медиафайл';
+    public static function getModelLabel(): string
+    {
+        return __('filament.resources.media_document.singular');
+    }
 
-    protected static ?string $pluralModelLabel = 'Медиафайлы';
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.resources.media_document.plural');
+    }
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document';
 

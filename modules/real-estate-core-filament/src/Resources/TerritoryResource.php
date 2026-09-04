@@ -20,9 +20,15 @@ final class TerritoryResource extends Resource
 {
     protected static ?string $model = Territory::class;
 
-    protected static ?string $modelLabel = 'Территория';
+    public static function getModelLabel(): string
+    {
+        return __('filament.resources.territory.singular');
+    }
 
-    protected static ?string $pluralModelLabel = 'Территории';
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.resources.territory.plural');
+    }
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-map';
 

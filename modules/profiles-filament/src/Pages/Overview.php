@@ -10,5 +10,13 @@ final class Overview extends Page
 {
     protected string $view = 'profiles-filament::overview';
 
-    protected static ?string $title = 'Profiles';
+    public static function getNavigationLabel(): string
+    {
+        return __('filament.pages.profiles');
+    }
+
+    public function getTitle(): string
+    {
+        return __('filament.pages.profiles');
+    }
 }

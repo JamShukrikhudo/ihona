@@ -22,9 +22,15 @@ final class StatusDefinitionResource extends Resource
 {
     protected static ?string $model = StatusDefinition::class;
 
-    protected static ?string $modelLabel = 'Статус';
+    public static function getModelLabel(): string
+    {
+        return __('filament.resources.status_definition.singular');
+    }
 
-    protected static ?string $pluralModelLabel = 'Статусы';
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.resources.status_definition.plural');
+    }
 
     protected static string|\UnitEnum|null $navigationGroup = 'Недвижимость';
 

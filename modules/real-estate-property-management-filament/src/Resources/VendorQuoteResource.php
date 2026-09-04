@@ -22,6 +22,16 @@ final class VendorQuoteResource extends Resource
 {
     protected static ?string $model = VendorQuote::class;
 
+    public static function getModelLabel(): string
+    {
+        return __('filament.resources.vendor_quote.singular');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.resources.vendor_quote.plural');
+    }
+
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-currency-dollar';
 
     public static function form(Schema $schema): Schema

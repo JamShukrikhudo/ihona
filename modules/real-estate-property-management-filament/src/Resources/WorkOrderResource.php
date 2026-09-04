@@ -21,6 +21,16 @@ final class WorkOrderResource extends Resource
 {
     protected static ?string $model = WorkOrder::class;
 
+    public static function getModelLabel(): string
+    {
+        return __('filament.resources.work_order.singular');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.resources.work_order.plural');
+    }
+
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-clipboard-document-list';
 
     public static function form(Schema $schema): Schema

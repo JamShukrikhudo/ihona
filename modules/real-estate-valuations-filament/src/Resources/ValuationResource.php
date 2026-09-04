@@ -33,6 +33,16 @@ final class ValuationResource extends Resource
 {
     protected static ?string $model = Valuation::class;
 
+    public static function getModelLabel(): string
+    {
+        return __('filament.resources.valuation.singular');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.resources.valuation.plural');
+    }
+
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-calculator';
 
     protected static string|\UnitEnum|null $navigationGroup = 'Real Estate';

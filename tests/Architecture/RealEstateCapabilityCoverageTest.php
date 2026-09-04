@@ -195,8 +195,8 @@ it('keeps the property detail disclosure contract across adapters', function ():
         ->toContain('loading="lazy"')
         ->toContain('preload="none"')
         ->and($filament)->toContain("label('Цена за м²')")
-        ->toContain("label('Days listed')")
-        ->toContain("label('Floor plan')");
+        ->toContain("label('Дней в продаже')")
+        ->toContain("label('План этажа')");
 });
 
 it('keeps the property gallery contract connected to the media boundary', function (): void {

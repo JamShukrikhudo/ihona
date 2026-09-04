@@ -28,9 +28,15 @@ class UserResource extends Resource
         return config('auth.providers.users.model');
     }
 
-    protected static ?string $modelLabel = 'Пользователь';
+    public static function getModelLabel(): string
+    {
+        return __('filament.resources.user.singular');
+    }
 
-    protected static ?string $pluralModelLabel = 'Пользователи';
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.resources.user.plural');
+    }
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-user-group';
 

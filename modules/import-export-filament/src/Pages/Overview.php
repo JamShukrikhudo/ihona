@@ -10,5 +10,13 @@ final class Overview extends Page
 {
     protected string $view = 'import-export-filament::overview';
 
-    protected static ?string $title = 'Import and Export';
+    public static function getNavigationLabel(): string
+    {
+        return __('filament.pages.import_export');
+    }
+
+    public function getTitle(): string
+    {
+        return __('filament.pages.import_export');
+    }
 }

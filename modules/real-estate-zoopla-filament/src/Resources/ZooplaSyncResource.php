@@ -23,9 +23,15 @@ final class ZooplaSyncResource extends Resource
 {
     protected static ?string $model = ZooplaSync::class;
 
-    protected static ?string $modelLabel = 'Синхронизация Zoopla';
+    public static function getModelLabel(): string
+    {
+        return __('filament.resources.zoopla_sync.singular');
+    }
 
-    protected static ?string $pluralModelLabel = 'Синхронизации Zoopla';
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.resources.zoopla_sync.plural');
+    }
 
     protected static string|\UnitEnum|null $navigationGroup = 'Недвижимость';
 

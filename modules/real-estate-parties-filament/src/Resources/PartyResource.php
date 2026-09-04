@@ -26,9 +26,15 @@ final class PartyResource extends Resource
 {
     protected static ?string $model = Party::class;
 
-    protected static ?string $modelLabel = 'Контрагент';
+    public static function getModelLabel(): string
+    {
+        return __('filament.resources.party.singular');
+    }
 
-    protected static ?string $pluralModelLabel = 'Контрагенты';
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.resources.party.plural');
+    }
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-user-group';
 

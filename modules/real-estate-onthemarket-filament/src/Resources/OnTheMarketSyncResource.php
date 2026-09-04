@@ -23,9 +23,15 @@ final class OnTheMarketSyncResource extends Resource
 {
     protected static ?string $model = OnTheMarketSync::class;
 
-    protected static ?string $modelLabel = 'Синхронизация OnTheMarket';
+    public static function getModelLabel(): string
+    {
+        return __('filament.resources.onthemarket_sync.singular');
+    }
 
-    protected static ?string $pluralModelLabel = 'Синхронизации OnTheMarket';
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.resources.onthemarket_sync.plural');
+    }
 
     protected static string|\UnitEnum|null $navigationGroup = 'Недвижимость';
 

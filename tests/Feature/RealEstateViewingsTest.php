@@ -26,12 +26,12 @@ beforeEach(function (): void {
 });
 
 it('creates a requested viewing with access metadata', function (): void {
-    $viewing = app(CreateViewing::class)->handle(1, 5, ['subject' => 'Property viewing', 'starts_at' => '2026-09-01 10:00', 'access' => ['key_holder' => 'agent']]);
+    $viewing = app(CreateViewing::class)->handle(1, 5, ['subject' => 'Property viewing', 'starts_at' => now()->addDay()->startOfHour(), 'access' => ['key_holder' => 'agent']]);
     expect($viewing->status->value)->toBe('requested')->and($viewing->access['key_holder'])->toBe('agent');
 });
 it('requires a start time and archives a viewing for its team', function (): void {
     expect(fn () => app(CreateViewing::class)->handle(1, 5, ['subject' => 'Viewing']))->toThrow(ValidationException::class);
-    $viewing = Viewing::query()->create(['team_id' => 1, 'subject' => 'Viewing', 'status' => 'requested', 'starts_at' => '2026-09-01 10:00']);
+    $viewing = Viewing::query()->create(['team_id' => 1, 'subject' => 'Viewing', 'status' => 'requested', 'starts_at' => now()->addDay()->startOfHour()]);
     app(DeleteViewing::class)->handle($viewing, 1);
     expect(Viewing::withTrashed()->find($viewing->id)->deleted_at)->not->toBeNull();
 });
@@ -72,7 +72,7 @@ it('guards viewing availability and supports confirmation, completion, feedback,
 });
 
 it('returns weekday slots and removes requested or confirmed overlaps', function (): void {
-    $date = CarbonImmutable::now()->addDays(2)->startOfDay();
+    $date = CarbonImmutable::now()->addWeekdays(2)->startOfDay();
     $viewing = app(CreateViewing::class)->handle(1, 5, [
         'subject' => 'Already booked',
         'property_id' => 7,

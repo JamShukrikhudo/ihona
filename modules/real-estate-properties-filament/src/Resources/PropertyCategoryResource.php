@@ -19,9 +19,15 @@ final class PropertyCategoryResource extends Resource
 {
     protected static ?string $model = PropertyCategory::class;
 
-    protected static ?string $modelLabel = 'Категория объекта';
+    public static function getModelLabel(): string
+    {
+        return __('filament.resources.property_category.singular');
+    }
 
-    protected static ?string $pluralModelLabel = 'Категории объектов';
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.resources.property_category.plural');
+    }
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-tag';
 

@@ -18,6 +18,16 @@ final class NewsArticleResource extends Resource
 {
     protected static ?string $model = NewsArticle::class;
 
+    public static function getModelLabel(): string
+    {
+        return __('filament.resources.news_article.singular');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.resources.news_article.plural');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema->components([TextInput::make('title')->required(), TextInput::make('slug')->required(), Textarea::make('content')->required(), DateTimePicker::make('published_at')]);

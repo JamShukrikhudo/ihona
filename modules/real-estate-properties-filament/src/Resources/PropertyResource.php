@@ -43,9 +43,15 @@ final class PropertyResource extends Resource
 {
     protected static ?string $model = Property::class;
 
-    protected static ?string $modelLabel = 'Объект недвижимости';
+    public static function getModelLabel(): string
+    {
+        return __('filament.resources.property.singular');
+    }
 
-    protected static ?string $pluralModelLabel = 'Объекты недвижимости';
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.resources.property.plural');
+    }
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-building-office-2';
 

@@ -22,9 +22,15 @@ final class LettingResource extends Resource
 {
     protected static ?string $model = Letting::class;
 
-    protected static ?string $modelLabel = 'Аренда';
+    public static function getModelLabel(): string
+    {
+        return __('filament.resources.letting.singular');
+    }
 
-    protected static ?string $pluralModelLabel = 'Аренды';
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.resources.letting.plural');
+    }
 
     protected static string|\UnitEnum|null $navigationGroup = 'Недвижимость';
 

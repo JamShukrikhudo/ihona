@@ -30,9 +30,15 @@ final class ViewingResource extends Resource
 {
     protected static ?string $model = Viewing::class;
 
-    protected static ?string $modelLabel = 'Показ';
+    public static function getModelLabel(): string
+    {
+        return __('filament.resources.viewing.singular');
+    }
 
-    protected static ?string $pluralModelLabel = 'Показы';
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.resources.viewing.plural');
+    }
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-calendar-days';
 

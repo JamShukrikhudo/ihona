@@ -21,6 +21,16 @@ final class RentalApplicationResource extends Resource
 {
     protected static ?string $model = RentalApplication::class;
 
+    public static function getModelLabel(): string
+    {
+        return __('filament.resources.rental_application.singular');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.resources.rental_application.plural');
+    }
+
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
 
     public static function form(Schema $schema): Schema

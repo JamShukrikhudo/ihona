@@ -22,9 +22,15 @@ final class ManagementRecordResource extends Resource
 {
     protected static ?string $model = ManagementRecord::class;
 
-    protected static ?string $modelLabel = 'Запись управления';
+    public static function getModelLabel(): string
+    {
+        return __('filament.resources.management_record.singular');
+    }
 
-    protected static ?string $pluralModelLabel = 'Записи управления';
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.resources.management_record.plural');
+    }
 
     protected static string|\UnitEnum|null $navigationGroup = 'Недвижимость';
 

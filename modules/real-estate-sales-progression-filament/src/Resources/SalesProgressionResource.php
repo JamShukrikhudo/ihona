@@ -29,9 +29,15 @@ final class SalesProgressionResource extends Resource
 {
     protected static ?string $model = SalesProgression::class;
 
-    protected static ?string $modelLabel = 'Сопровождение сделки';
+    public static function getModelLabel(): string
+    {
+        return __('filament.resources.sales_progression.singular');
+    }
 
-    protected static ?string $pluralModelLabel = 'Сопровождения сделок';
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.resources.sales_progression.plural');
+    }
 
     protected static string|\UnitEnum|null $navigationGroup = 'Недвижимость';
 

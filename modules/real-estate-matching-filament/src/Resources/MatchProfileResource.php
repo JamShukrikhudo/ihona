@@ -26,6 +26,16 @@ final class MatchProfileResource extends Resource
 {
     protected static ?string $model = MatchProfile::class;
 
+    public static function getModelLabel(): string
+    {
+        return __('filament.resources.match_profile.singular');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.resources.match_profile.plural');
+    }
+
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-adjustments-horizontal';
 
     protected static string|\UnitEnum|null $navigationGroup = 'Real Estate';

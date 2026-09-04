@@ -29,9 +29,15 @@ final class PortalReportResource extends Resource
 {
     protected static ?string $model = PortalReport::class;
 
-    protected static ?string $modelLabel = 'Отчёт портала';
+    public static function getModelLabel(): string
+    {
+        return __('filament.resources.portal_report.singular');
+    }
 
-    protected static ?string $pluralModelLabel = 'Отчёты порталов';
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.resources.portal_report.plural');
+    }
 
     protected static string|\UnitEnum|null $navigationGroup = 'Недвижимость';
 

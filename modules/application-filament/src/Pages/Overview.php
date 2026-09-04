@@ -10,5 +10,13 @@ final class Overview extends Page
 {
     protected string $view = 'application-filament::overview';
 
-    protected static ?string $title = 'Application Core';
+    public static function getNavigationLabel(): string
+    {
+        return __('filament.pages.application_core');
+    }
+
+    public function getTitle(): string
+    {
+        return __('filament.pages.application_core');
+    }
 }
