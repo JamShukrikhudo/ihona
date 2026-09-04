@@ -17,6 +17,20 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->appendToGroup('web', [SetLocale::class, SecurityHeaders::class]);
+
+        // identity-core-api's token endpoints authenticate the request with
+        // credentials of their own (password, or nothing for register) —
+        // CSRF exists to stop a forged request riding an *existing* session,
+        // which doesn't apply here the same way a same-origin SPA login
+        // action doesn't need it either. They run under the 'web' group (see
+        // that route file) so the same request that issues a Bearer token
+        // also establishes a normal session, letting the Nuxt storefront and
+        // the Laravel-rendered /app panel recognize the same login without a
+        // second, separate sign-in.
+        $middleware->preventRequestForgery(except: [
+            'api/v1/auth/token',
+            'api/v1/auth/register',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

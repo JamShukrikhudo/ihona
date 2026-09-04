@@ -6,6 +6,7 @@ namespace Liberu\Foundation\IdentityCoreApi\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
@@ -13,6 +14,21 @@ use Liberu\Foundation\Organizations\Models\Team;
 
 final class AuthTokenController
 {
+    /**
+     * Self-declared registration intent -> the real Spatie role it grants.
+     * 'tourist' has no distinct permission role (see PartyType for that
+     * separate, CRM-facing concept) — it maps to 'buyer', with the raw
+     * intent kept on the user for personalizing their /app dashboard and
+     * default browsing view.
+     */
+    private const INTENT_TO_ROLE = [
+        'buyer' => 'buyer',
+        'tourist' => 'buyer',
+        'tenant' => 'tenant',
+        'landlord' => 'landlord',
+        'seller' => 'seller',
+    ];
+
     /**
      * Self-registration for API consumers (the Nuxt storefront), reusing
      * Fortify's own CreatesNewUsers action (jetstream-bridge's
@@ -30,13 +46,26 @@ final class AuthTokenController
     {
         $user = $creator->create($request->only(['name', 'email', 'password', 'password_confirmation']));
 
+        $intent = $request->string('signup_intent')->lower()->value();
+        if (array_key_exists($intent, self::INTENT_TO_ROLE)) {
+            $user->forceFill(['signup_intent' => $intent])->save();
+        } else {
+            $intent = null;
+        }
+
         $team = Team::query()->oldest()->first();
         if ($team) {
             if (! $team->users()->whereKey($user->id)->exists()) {
                 $team->users()->attach($user->id);
             }
             $user->forceFill(['current_team_id' => $team->id])->save();
+
+            setPermissionsTeamId($team->id);
+            $user->assignRole($intent !== null ? self::INTENT_TO_ROLE[$intent] : 'buyer');
         }
+
+        Auth::guard('web')->login($user);
+        $request->session()->regenerate();
 
         $token = $user->createToken('ihona-frontend')->plainTextToken;
 
@@ -83,6 +112,9 @@ final class AuthTokenController
             ], 422);
         }
 
+        Auth::guard('web')->login($user);
+        $request->session()->regenerate();
+
         $token = $user->createToken('ihona-frontend')->plainTextToken;
 
         return response()->json([
@@ -97,7 +129,25 @@ final class AuthTokenController
 
     public function destroy(Request $request): JsonResponse
     {
-        $request->user()?->currentAccessToken()?->delete();
+        // Now that store()/register() also log the request into the 'web'
+        // session, a request carrying both a valid session cookie and a
+        // Bearer header authenticates via the session guard, and
+        // currentAccessToken() resolves to Sanctum's TransientToken
+        // placeholder (no real row, no delete()) rather than the actual
+        // PersonalAccessToken the client is trying to revoke. Look the real
+        // token up from the raw bearer string instead, independent of
+        // whichever guard won.
+        $bearerToken = $request->bearerToken();
+        if ($bearerToken !== null) {
+            \Laravel\Sanctum\PersonalAccessToken::findToken($bearerToken)?->delete();
+        }
+
+        // Mirrors store()/register() establishing the web session alongside
+        // the token: tear both down together, so a Nuxt "log out" doesn't
+        // leave the /app panel still recognizing a stale session.
+        Auth::guard('web')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
         return response()->json(['message' => 'Logged out.']);
     }
