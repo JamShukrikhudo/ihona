@@ -81,6 +81,7 @@ return [
             'status' => 'Status',
             'address' => 'Address',
             'branch_id' => 'Branch',
+            'territory_id' => 'Territory',
             'description' => 'Description',
             'internal_notes' => 'Internal notes',
             'price' => 'Price',
@@ -115,6 +116,11 @@ return [
             'insurance_coverage_amount' => 'Insurance coverage amount',
             'insurance_premium' => 'Insurance premium',
             'insurance_expiry_date' => 'Insurance expiry date',
+            'deal_type' => 'Deal type',
+        ],
+        'deal_types' => [
+            'sale' => 'Sale',
+            'rent' => 'Rent',
         ],
         'statuses' => [
             'draft' => 'Draft',

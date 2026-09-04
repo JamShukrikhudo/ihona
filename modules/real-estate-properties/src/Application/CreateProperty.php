@@ -7,6 +7,7 @@ namespace Liberu\RealEstate\Properties\Application;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Liberu\RealEstate\Core\Models\Branch;
+use Liberu\RealEstate\Core\Models\Territory;
 use Liberu\RealEstate\Properties\Domain\PropertyStatus;
 use Liberu\RealEstate\Properties\Models\Property;
 use Liberu\RealEstate\Properties\Models\PropertyCategory;
@@ -34,8 +35,12 @@ final class CreateProperty
         if ($templateId !== null && ! PropertyTemplate::query()->forTeam($teamId)->whereKey($templateId)->exists()) {
             throw ValidationException::withMessages(['property_template_id' => 'The template must belong to the current team.']);
         }
+        $territoryId = $attributes['territory_id'] ?? null;
+        if ($territoryId !== null && ! Territory::query()->forTeam($teamId)->whereKey($territoryId)->exists()) {
+            throw ValidationException::withMessages(['territory_id' => 'The territory must belong to the current team.']);
+        }
 
-        return DB::transaction(function () use ($teamId, $actorId, $attributes, $address, $categoryId, $templateId): Property {
+        return DB::transaction(function () use ($teamId, $actorId, $attributes, $address, $categoryId, $templateId, $territoryId): Property {
             $property = Property::query()->create([
                 'team_id' => $teamId,
                 'branch_id' => $attributes['branch_id'] ?? null,
@@ -95,8 +100,10 @@ final class CreateProperty
                 'insurance_expiry_date' => $attributes['insurance_expiry_date'] ?? null,
                 'jupix_id' => $attributes['jupix_id'] ?? null,
                 'property_type' => $attributes['property_type'] ?? 'residential',
+                'deal_type' => $attributes['deal_type'] ?? 'sale',
                 'property_category_id' => $categoryId,
                 'property_template_id' => $templateId,
+                'territory_id' => $territoryId,
                 'characteristics' => $attributes['characteristics'] ?? [],
                 'utilities' => $attributes['utilities'] ?? [],
                 'features' => $attributes['features'] ?? [],

@@ -81,6 +81,7 @@ return [
             'status' => 'Статус',
             'address' => 'Адрес',
             'branch_id' => 'Филиал',
+            'territory_id' => 'Территория',
             'description' => 'Описание',
             'internal_notes' => 'Внутренние заметки',
             'price' => 'Цена',
@@ -115,6 +116,11 @@ return [
             'insurance_coverage_amount' => 'Страховая сумма',
             'insurance_premium' => 'Страховая премия',
             'insurance_expiry_date' => 'Дата окончания страховки',
+            'deal_type' => 'Тип сделки',
+        ],
+        'deal_types' => [
+            'sale' => 'Продажа',
+            'rent' => 'Аренда',
         ],
         'statuses' => [
             'draft' => 'Черновик',

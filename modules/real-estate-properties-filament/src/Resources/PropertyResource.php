@@ -26,6 +26,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Liberu\RealEstate\Core\Models\Branch;
+use Liberu\RealEstate\Core\Models\Territory;
 use Liberu\RealEstate\Properties\Application\EstimatePropertyTax;
 use Liberu\RealEstate\Properties\Application\RecordPropertyKey;
 use Liberu\RealEstate\Properties\Application\TogglePropertyFavorite;
@@ -72,6 +73,15 @@ final class PropertyResource extends Resource
                     ->all())
                 ->searchable()
                 ->nullable(),
+            Select::make('territory_id')
+                ->label(__('filament.property.fields.territory_id'))
+                ->options(fn (): array => Territory::query()
+                    ->forTeam(auth()->user()?->current_team_id ?? 0)
+                    ->orderBy('name')
+                    ->pluck('name', 'id')
+                    ->all())
+                ->searchable()
+                ->required(),
             Textarea::make('description')->label(__('filament.property.fields.description'))->columnSpanFull(),
             Textarea::make('internal_notes')->label(__('filament.property.fields.internal_notes'))->columnSpanFull(),
             TextInput::make('price')->label(__('filament.property.fields.price'))->numeric()->minValue(0),
@@ -98,6 +108,14 @@ final class PropertyResource extends Resource
                     'commercial' => 'Коммерческая',
                     'cottage' => 'Дача',
                 ])
+                ->required(),
+            Select::make('deal_type')
+                ->label(__('filament.property.fields.deal_type'))
+                ->options([
+                    'sale' => __('filament.property.deal_types.sale'),
+                    'rent' => __('filament.property.deal_types.rent'),
+                ])
+                ->default('sale')
                 ->required(),
             Select::make('property_category_id')
                 ->label(__('filament.property.fields.property_category_id'))
@@ -185,7 +203,9 @@ final class PropertyResource extends Resource
             ->columns([
                 TextColumn::make('reference')->label('Номер')->state(fn (Property $record): string => $record->reference())->sortable(query: fn (Builder $query, string $direction): Builder => $query->orderBy('id', $direction)),
                 TextColumn::make('address')->label('Адрес')->searchable()->sortable()->wrap(),
+                TextColumn::make('territory.name')->label(__('filament.property.fields.territory_id'))->sortable(),
                 TextColumn::make('property_type')->label('Тип')->searchable()->sortable(),
+                TextColumn::make('deal_type')->label(__('filament.property.fields.deal_type'))->badge()->formatStateUsing(fn (\Liberu\RealEstate\Properties\Domain\DealType|string|null $state): string => $state !== null ? __('filament.property.deal_types.'.($state instanceof \Liberu\RealEstate\Properties\Domain\DealType ? $state->value : $state)) : '—'),
                 TextColumn::make('status')->label('Статус')->badge(),
                 TextColumn::make('price')->label('Цена')->numeric()->sortable(),
                 TextColumn::make('bedrooms')->label('Спален')->sortable(),
