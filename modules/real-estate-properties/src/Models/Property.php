@@ -216,6 +216,20 @@ final class Property extends Model
             ->orderBy('distance');
     }
 
+    /**
+     * Rectangle viewport filter for the map search (cian-style "search this
+     * area") — a plain range check, not scopeNearby()'s haversine distance,
+     * because a map viewport already is a lat/lng rectangle.
+     */
+    public function scopeWithinBounds(Builder $query, float $minLat, float $minLng, float $maxLat, float $maxLng): Builder
+    {
+        return $query
+            ->whereNotNull('latitude')
+            ->whereNotNull('longitude')
+            ->whereBetween('latitude', [$minLat, $maxLat])
+            ->whereBetween('longitude', [$minLng, $maxLng]);
+    }
+
     public function scopeNeedsSyncing(Builder $query): Builder
     {
         return $query->where(function (Builder $query): void {

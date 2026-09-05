@@ -41,6 +41,10 @@ final class PublicPropertyController
             // cian-style sort dropdown: default (newest), cheapest first,
             // priciest first, largest area first.
             'sort' => ['sometimes', 'nullable', Rule::in(['newest', 'price_asc', 'price_desc', 'area_desc'])],
+            // Map viewport rectangle for the "search this area" flow:
+            // "minLng,minLat,maxLng,maxLat" (matches the order Yandex Maps'
+            // own bounds getter uses on the frontend).
+            'bbox' => ['sometimes', 'nullable', 'string', 'regex:/^-?\d+\.?\d*,-?\d+\.?\d*,-?\d+\.?\d*,-?\d+\.?\d*$/'],
         ]);
 
         [$sortColumn, $sortDirection] = match ($filters['sort'] ?? 'newest') {
@@ -53,6 +57,10 @@ final class PublicPropertyController
         $roomCounts = $filters['rooms'] ?? null
             ? array_values(array_filter(array_map('intval', explode(',', $filters['rooms']))))
             : [];
+
+        $bbox = $filters['bbox'] ?? null
+            ? array_map('floatval', explode(',', $filters['bbox']))
+            : null;
 
         $properties = Property::query()
             ->with('territory')
@@ -71,6 +79,7 @@ final class PublicPropertyController
                     }
                 });
             })
+            ->when($bbox, fn ($q, $b) => $q->withinBounds($b[1], $b[0], $b[3], $b[2]))
             ->sorted($sortColumn, $sortDirection)
             ->paginate(max(1, min($request->integer('page_size', 24), 60)));
 
