@@ -10,6 +10,8 @@ final class Overview extends Page
 {
     protected string $view = 'two-factor-authentication-filament::overview';
 
+    protected static ?string $slug = 'overview-two-factor-authentication';
+
     public static function getNavigationLabel(): string
     {
         return __('filament.pages.two_factor_authentication');

@@ -10,6 +10,8 @@ final class Overview extends Page
 {
     protected string $view = 'audit-filament::overview';
 
+    protected static ?string $slug = 'overview-audit';
+
     public static function getNavigationLabel(): string
     {
         return __('filament.pages.audit');

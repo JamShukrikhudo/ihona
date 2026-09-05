@@ -10,6 +10,8 @@ final class Overview extends Page
 {
     protected string $view = 'currency-context-filament::overview';
 
+    protected static ?string $slug = 'overview-currency-context';
+
     public static function getNavigationLabel(): string
     {
         return __('filament.pages.currency_context');

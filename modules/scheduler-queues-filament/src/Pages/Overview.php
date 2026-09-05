@@ -10,6 +10,8 @@ final class Overview extends Page
 {
     protected string $view = 'scheduler-queues-filament::overview';
 
+    protected static ?string $slug = 'overview-scheduler-queues';
+
     public static function getNavigationLabel(): string
     {
         return __('filament.pages.scheduler_queues');

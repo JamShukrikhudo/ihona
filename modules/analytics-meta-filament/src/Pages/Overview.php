@@ -10,6 +10,8 @@ final class Overview extends Page
 {
     protected string $view = 'analytics-meta-filament::overview';
 
+    protected static ?string $slug = 'overview-analytics-meta';
+
     public static function getNavigationLabel(): string
     {
         return __('filament.pages.analytics_meta');

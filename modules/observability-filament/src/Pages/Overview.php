@@ -10,6 +10,8 @@ final class Overview extends Page
 {
     protected string $view = 'observability-filament::overview';
 
+    protected static ?string $slug = 'overview-observability';
+
     public static function getNavigationLabel(): string
     {
         return __('filament.pages.observability');
