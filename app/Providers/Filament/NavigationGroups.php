@@ -149,7 +149,7 @@ final class NavigationGroups
                 40 => \Liberu\Foundation\FilesMediaFilament\Pages\Overview::class,
                 50 => \Liberu\Foundation\ImportExportFilament\Pages\Overview::class,
                 60 => \Liberu\Foundation\DeveloperExperienceFilament\Pages\Overview::class,
-                70 => \Liberu\Foundation\AuditFilament\Pages\Overview::class,
+                70 => \Liberu\Foundation\AuditFilament\Resources\ActivityLogResource::class,
             ],
         ];
     }

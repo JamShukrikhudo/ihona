@@ -51,6 +51,7 @@ return [
         'match_profile' => ['singular' => 'Профиль подбора', 'plural' => 'Профили подбора'],
         'valuation' => ['singular' => 'Оценка', 'plural' => 'Оценки'],
         'property_saved_search' => ['singular' => 'Сохранённый поиск', 'plural' => 'Сохранённые поиски'],
+        'activity_log' => ['singular' => 'Запись аудита', 'plural' => 'Журнал аудита'],
     ],
 
     'app_nav' => [
@@ -613,7 +614,6 @@ return [
         'analytics_meta' => 'Аналитика Meta',
         'api_access' => 'Доступ к API',
         'application_core' => 'Ядро приложения',
-        'audit' => 'Аудит',
         'currency_context' => 'Валюты',
         'developer_experience' => 'Инструменты разработчика',
         'feature_flags' => 'Флаги функций',
@@ -631,5 +631,21 @@ return [
         'webhooks' => 'Вебхуки',
         'foundation_operations' => 'Операции платформы',
         'manage_site_settings' => 'Настройки сайта',
+    ],
+
+    'audit_log' => [
+        'fields' => [
+            'created_at' => 'Дата',
+            'event' => 'Событие',
+            'subject' => 'Объект',
+            'causer' => 'Кто изменил',
+            'tenant' => 'Команда',
+            'correlation_id' => 'ID запроса',
+            'changes' => 'Изменения',
+            'hash_chain' => 'Цепочка проверки',
+            'previous_hash' => 'Предыдущий хэш',
+            'record_hash' => 'Хэш записи',
+        ],
+        'hash_chain_note' => 'Каждая запись содержит хэш предыдущей — если любую строку в журнале подменить задним числом, цепочка сломается и это будет видно.',
     ],
 ];

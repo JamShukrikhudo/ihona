@@ -51,6 +51,7 @@ return [
         'match_profile' => ['singular' => 'Match Profile', 'plural' => 'Match Profiles'],
         'valuation' => ['singular' => 'Valuation', 'plural' => 'Valuations'],
         'property_saved_search' => ['singular' => 'Saved Search', 'plural' => 'Saved Searches'],
+        'activity_log' => ['singular' => 'Audit Entry', 'plural' => 'Audit Log'],
     ],
 
     'app_nav' => [
@@ -613,7 +614,6 @@ return [
         'analytics_meta' => 'Analytics Meta',
         'api_access' => 'API Access',
         'application_core' => 'Application Core',
-        'audit' => 'Audit',
         'currency_context' => 'Currency Context',
         'developer_experience' => 'Developer Experience',
         'feature_flags' => 'Feature Flags',
@@ -631,5 +631,21 @@ return [
         'webhooks' => 'Webhooks',
         'foundation_operations' => 'Foundation Operations',
         'manage_site_settings' => 'Site Settings',
+    ],
+
+    'audit_log' => [
+        'fields' => [
+            'created_at' => 'Date',
+            'event' => 'Event',
+            'subject' => 'Subject',
+            'causer' => 'Changed by',
+            'tenant' => 'Team',
+            'correlation_id' => 'Request ID',
+            'changes' => 'Changes',
+            'hash_chain' => 'Verification chain',
+            'previous_hash' => 'Previous hash',
+            'record_hash' => 'Record hash',
+        ],
+        'hash_chain_note' => 'Each record carries a hash of the one before it — retroactively altering any row in the log breaks the chain, and that break is visible.',
     ],
 ];

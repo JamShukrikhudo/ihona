@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Liberu\RealEstate\Properties\Application;
 
+use Illuminate\Support\Facades\Context;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use Liberu\Foundation\Audit\Contracts\AuditRecorder;
+use Liberu\Foundation\Audit\Support\AuditContext;
 use Liberu\RealEstate\Properties\Domain\PropertyStatus;
 use Liberu\RealEstate\Properties\Models\Property;
 
@@ -27,13 +30,29 @@ final class TransitionProperty
             if ($status === PropertyStatus::Available && $property->published_at === null) {
                 $values['published_at'] = now();
             }
+            $from = $property->getRawOriginal('status');
             $property->forceFill($values)->save();
             $property->history()->create([
                 'team_id' => $teamId,
                 'actor_id' => $actorId,
                 'event' => 'status_changed',
-                'changes' => ['from' => $property->getRawOriginal('status'), 'to' => $status->value],
+                'changes' => ['from' => $from, 'to' => $status->value],
             ]);
+
+            app(AuditRecorder::class)->record(
+                event: 'property.status_changed',
+                subjectType: Property::class,
+                subjectId: $property->getKey(),
+                before: ['status' => $from],
+                after: ['status' => $status->value],
+                context: new AuditContext(
+                    actorId: $actorId,
+                    actorType: config('auth.providers.users.model'),
+                    tenantId: (string) $teamId,
+                    requestId: null,
+                    correlationId: Context::get('correlation_id'),
+                ),
+            );
 
             return $property->fresh('history');
         });

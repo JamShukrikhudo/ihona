@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Liberu\RealEstate\Properties\Application;
 
+use Illuminate\Support\Facades\Context;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use Liberu\Foundation\Audit\Contracts\AuditRecorder;
+use Liberu\Foundation\Audit\Support\AuditContext;
 use Liberu\RealEstate\Core\Models\Branch;
 use Liberu\RealEstate\Core\Models\Territory;
 use Liberu\RealEstate\Properties\Models\Property;
@@ -79,6 +82,27 @@ final class UpdateProperty
                     'event' => 'updated',
                     'changes' => $changes,
                 ]);
+
+                // Tamper-evident hash-chain record, on top of the property's own
+                // (unsigned) history() log — scoped to the price, the one field a
+                // marketplace actually needs cryptographic proof was, or wasn't,
+                // altered by a given actor at a given time.
+                if (array_key_exists('price', $changes)) {
+                    app(AuditRecorder::class)->record(
+                        event: 'property.price_changed',
+                        subjectType: Property::class,
+                        subjectId: $property->getKey(),
+                        before: ['price' => $changes['price']['from']],
+                        after: ['price' => $changes['price']['to']],
+                        context: new AuditContext(
+                            actorId: $actorId,
+                            actorType: config('auth.providers.users.model'),
+                            tenantId: (string) $teamId,
+                            requestId: null,
+                            correlationId: Context::get('correlation_id'),
+                        ),
+                    );
+                }
             }
 
             return $property->fresh('history');

@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Liberu\RealEstate\Offers\Application;
 
+use Illuminate\Support\Facades\Context;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use Liberu\Foundation\Audit\Contracts\AuditRecorder;
+use Liberu\Foundation\Audit\Support\AuditContext;
 use Liberu\RealEstate\Offers\Domain\OfferStatus;
 use Liberu\RealEstate\Offers\Models\Offer;
 
@@ -26,6 +29,21 @@ final class TransitionOffer
             $offer->fill(array_merge($attributes, ['status' => $status, 'responded_at' => in_array($status, [OfferStatus::Accepted, OfferStatus::Rejected, OfferStatus::Withdrawn], true) ? now() : $offer->responded_at]));
             $offer->save();
             $offer->events()->create(['team_id' => $teamId, 'actor_id' => $actorId, 'event_type' => $status->value, 'previous_amount' => $before->amount, 'amount' => $offer->amount, 'previous_status' => $before->status, 'status' => $status, 'note' => $attributes['note'] ?? null, 'changes' => $offer->getChanges(), 'occurred_at' => now()]);
+
+            app(AuditRecorder::class)->record(
+                event: 'offer.status_changed',
+                subjectType: Offer::class,
+                subjectId: $offer->getKey(),
+                before: ['status' => $before->status?->value, 'amount' => $before->amount],
+                after: ['status' => $status->value, 'amount' => $offer->amount],
+                context: new AuditContext(
+                    actorId: $actorId,
+                    actorType: config('auth.providers.users.model'),
+                    tenantId: (string) $teamId,
+                    requestId: null,
+                    correlationId: Context::get('correlation_id'),
+                ),
+            );
 
             return $offer->fresh();
         });
