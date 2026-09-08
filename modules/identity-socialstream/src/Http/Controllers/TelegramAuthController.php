@@ -29,6 +29,12 @@ class TelegramAuthController
 
         abort_if($payload === null, 403, 'Invalid Telegram login payload.');
 
+        // See GenerateRedirectForProvider — same SPA-intent flag, set here
+        // instead since Telegram has no separate /oauth/telegram redirect step.
+        if ($request->boolean('spa')) {
+            session(['socialstream.spa_redirect' => true]);
+        }
+
         $name = trim(($payload['first_name'] ?? '').' '.($payload['last_name'] ?? ''));
         $host = parse_url((string) config('app.url'), PHP_URL_HOST) ?: 'localhost';
 

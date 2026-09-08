@@ -13,6 +13,12 @@ class GenerateRedirectForProvider implements GeneratesProviderRedirect
      */
     public function generate(string $provider): RedirectResponse
     {
+        // Carries the SPA's intent across the external OAuth roundtrip —
+        // see SpaAwareOAuthResponse, which reads this once the callback lands.
+        if (request()->boolean('spa')) {
+            session(['socialstream.spa_redirect' => true]);
+        }
+
         return Socialite::driver($provider)->redirect();
     }
 }
