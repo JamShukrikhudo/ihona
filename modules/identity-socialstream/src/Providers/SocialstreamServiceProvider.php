@@ -34,6 +34,7 @@ class SocialstreamServiceProvider extends ServiceProvider
     {
         Socialstream::useConnectedAccountModel(ConnectedAccount::class);
         $this->loadMigrationsFrom(__DIR__.'/../../database/migrations');
+        $this->loadRoutesFrom(__DIR__.'/../../routes/web.php');
         Gate::policy(ConnectedAccount::class, ConnectedAccountPolicy::class);
         Socialstream::resolvesSocialiteUsersUsing(ResolveSocialiteUser::class);
         Socialstream::createUsersFromProviderUsing(CreateUserFromProvider::class);

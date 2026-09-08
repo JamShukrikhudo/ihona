@@ -47,6 +47,14 @@ return [
         'redirect' => env('GOOGLE_REDIRECT_URI', '/oauth/google/callback'),
     ],
 
+    // Not a Socialite provider — Telegram's Login Widget signs its own
+    // redirect payload with the bot token instead of an OAuth handshake.
+    // Verified in identity-socialstream's TelegramAuthController.
+    'telegram' => [
+        'bot_username' => env('TELEGRAM_BOT_USERNAME'),
+        'bot_token' => env('TELEGRAM_BOT_TOKEN'),
+    ],
+
     'facebook' => [
         'client_id' => env('FACEBOOK_CLIENT_ID'),
         'client_secret' => env('FACEBOOK_CLIENT_SECRET'),

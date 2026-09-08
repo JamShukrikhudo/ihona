@@ -52,6 +52,10 @@ class AdminPanelProvider extends PanelProvider
                     ['locales' => ['ru' => 'Русский', 'en' => 'English']],
                 ),
             )
+            ->renderHook(
+                PanelsRenderHook::AUTH_LOGIN_FORM_AFTER,
+                fn (): string => view('components.socialstream')->render(),
+            )
             ->sidebarCollapsibleOnDesktop()
             ->globalSearch()
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')

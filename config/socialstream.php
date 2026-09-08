@@ -1,22 +1,22 @@
 <?php
 
 use JoelButcher\Socialstream\Features;
+use JoelButcher\Socialstream\Providers;
 
 return [
     'guard' => 'web', // used if Fortify is not installed
     'middleware' => ['web'],
     'prompt' => 'Or Login Via',
-    // Empty: none of these are wired to real OAuth apps (the *_CLIENT_ID/
-    // SECRET .env entries are unfilled scaffolding), and GitHub/GitLab/
-    // Bitbucket/Slack/LinkedIn/Twitter are developer-network providers with
-    // no relevance to this market's real estate consumers anyway. Add back
-    // only a provider that's actually configured.
+    // Google is wired to a real OAuth app (GOOGLE_CLIENT_ID/SECRET in .env).
+    // GitHub/GitLab/Bitbucket/Slack/LinkedIn/Twitter are developer-network
+    // providers with no relevance to this market's real estate consumers,
+    // so they stay out. Add back only a provider that's actually configured.
     'providers' => [
-        // \JoelButcher\Socialstream\Providers::google(),
+        Providers::google(),
     ],
     'features' => [
         // Features::generateMissingEmails(),
-        // Features::createAccountOnFirstLogin(),
+        Features::createAccountOnFirstLogin(),
         // Features::globalLogin(),
         // Features::authExistingUnlinkedUsers(),
         Features::rememberSession(),

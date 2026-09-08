@@ -1,5 +1,5 @@
 <div class="space-y-6 mt-6 mb-2">
-    @if(! empty(\JoelButcher\Socialstream\Socialstream::providers()))
+    @if(! empty(\JoelButcher\Socialstream\Socialstream::providers()) || config('services.telegram.bot_username'))
         <div class="relative flex items-center">
             <div class="flex-grow border-t border-gray-400"></div>
             <span class="flex-shrink text-gray-400 px-6">
@@ -19,5 +19,16 @@
                 <span class="block font-medium text-sm text-gray-700">{{ $provider['buttonLabel'] }}</span>
             </a>
         @endforeach
+
+        @if (config('services.telegram.bot_username'))
+            <div class="flex justify-center">
+                <script async
+                    src="https://telegram.org/js/telegram-widget.js?22"
+                    data-telegram-login="{{ config('services.telegram.bot_username') }}"
+                    data-size="large"
+                    data-auth-url="{{ route('oauth.telegram.callback') }}"
+                    data-request-access="write"></script>
+            </div>
+        @endif
     </div>
 </div>
