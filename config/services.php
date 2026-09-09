@@ -55,6 +55,13 @@ return [
         'bot_token' => env('TELEGRAM_BOT_TOKEN'),
     ],
 
+    // The standalone liberu CRM (crm-laravel) — opt-in, no-ops with either
+    // unset. See identity-core's SyncNewUserToCrm.
+    'crm' => [
+        'base_url' => env('CRM_API_BASE_URL'),
+        'token' => env('CRM_API_TOKEN'),
+    ],
+
     'facebook' => [
         'client_id' => env('FACEBOOK_CLIENT_ID'),
         'client_secret' => env('FACEBOOK_CLIENT_SECRET'),

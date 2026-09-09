@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
+use Laravel\Sanctum\PersonalAccessToken;
+use Liberu\Foundation\Identity\Jobs\SyncNewUserToCrm;
 use Liberu\Foundation\Organizations\Models\Team;
 
 final class AuthTokenController
@@ -68,6 +70,22 @@ final class AuthTokenController
         $request->session()->regenerate();
 
         $token = $user->createToken('ihona-frontend')->plainTextToken;
+
+        SyncNewUserToCrm::dispatch(
+            $user->id,
+            'email',
+            [
+                'signup_intent' => $intent,
+                'locale' => app()->getLocale(),
+                'team_id' => $user->current_team_id,
+            ],
+            [
+                'ip' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+                'referer' => $request->header('referer'),
+                'registered_at' => $user->created_at?->toIso8601String(),
+            ],
+        );
 
         return response()->json([
             'plainTextToken' => $token,
@@ -139,7 +157,7 @@ final class AuthTokenController
         // whichever guard won.
         $bearerToken = $request->bearerToken();
         if ($bearerToken !== null) {
-            \Laravel\Sanctum\PersonalAccessToken::findToken($bearerToken)?->delete();
+            PersonalAccessToken::findToken($bearerToken)?->delete();
         }
 
         // Mirrors store()/register() establishing the web session alongside

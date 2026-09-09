@@ -6,6 +6,8 @@
   "require": {
     "php": "^8.5",
     "illuminate/support": "^13.0",
+    "illuminate/http": "^13.0",
+    "illuminate/queue": "^13.0",
     "liberusoftware/module-manager": "^1.0"
   },
   "autoload": {
