@@ -35,6 +35,16 @@ class TelegramAuthController
             session(['socialstream.spa_redirect' => true]);
         }
 
+        // Every other provider goes through OAuthController::redirect(),
+        // which stashes the referring page here so AuthenticateOAuthCallback
+        // can tell "came from /register" from "came from /login" and decide
+        // whether a brand-new account may be created. The Telegram widget
+        // redirects straight here from the login/register page itself with
+        // no redirect step of ours in between, so nothing sets this key
+        // unless we do — without it, canRegister() always sees a blank
+        // previous_url and every first-time Telegram sign-in fails.
+        session(['socialstream.previous_url' => url()->previous()]);
+
         $name = trim(($payload['first_name'] ?? '').' '.($payload['last_name'] ?? ''));
         $host = parse_url((string) config('app.url'), PHP_URL_HOST) ?: 'localhost';
 
