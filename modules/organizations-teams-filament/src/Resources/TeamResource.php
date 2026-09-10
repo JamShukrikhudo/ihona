@@ -16,6 +16,7 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Liberu\Foundation\Organizations\Models\Team;
 use Liberu\Foundation\OrganizationsFilament\Resources\TeamResource\Pages\CreateTeam;
 use Liberu\Foundation\OrganizationsFilament\Resources\TeamResource\Pages\EditTeam;
@@ -49,6 +50,27 @@ class TeamResource extends Resource
     public static function isScopedToTenant(): bool
     {
         return false;
+    }
+
+    /**
+     * isScopedToTenant() being false only opts this resource OUT of
+     * Filament's automatic "current tenant" scope — it does not, by itself,
+     * limit the list to teams the user actually belongs to. Without this,
+     * any admin/staff user (not just super_admin) could list, edit and
+     * delete every team in the system, not just their own — team_user
+     * membership is Jetstream's real ownership boundary here, so it's what
+     * this query enforces. super_admin bypasses it, matching every other
+     * resource's super_admin-sees-everything behaviour.
+     */
+    public static function getEloquentQuery(): Builder
+    {
+        $user = auth()->user();
+
+        if ($user?->isSuperAdmin()) {
+            return parent::getEloquentQuery();
+        }
+
+        return parent::getEloquentQuery()->whereIn('id', $user?->allTeams()->pluck('id') ?? []);
     }
 
     public static function form(Schema $schema): Schema
