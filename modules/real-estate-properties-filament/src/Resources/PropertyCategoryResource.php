@@ -6,6 +6,7 @@ namespace Liberu\RealEstate\PropertiesFilament\Resources;
 
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -36,8 +37,13 @@ final class PropertyCategoryResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            TextInput::make('name')->label(__('filament.property_category.fields.name'))->required()->maxLength(120),
-            TextInput::make('slug')->label(__('filament.property_category.fields.slug'))->maxLength(140)->helperText('Leave blank to derive from the name.'),
+            Section::make(__('filament.property_category.sections.details'))
+                ->description(__('filament.property_category.sections.details_description'))
+                ->columns(2)
+                ->schema([
+                    TextInput::make('name')->label(__('filament.property_category.fields.name'))->required()->maxLength(120),
+                    TextInput::make('slug')->label(__('filament.property_category.fields.slug'))->maxLength(140)->helperText('Leave blank to derive from the name.'),
+                ]),
         ]);
     }
 

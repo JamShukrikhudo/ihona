@@ -11,6 +11,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -43,15 +44,26 @@ final class MatchProfileResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            TextInput::make('subject')->label(__('filament.match_profile.fields.subject'))->required()->maxLength(255),
-            TextInput::make('score')->label(__('filament.match_profile.fields.score'))->numeric()->minValue(0)->maxValue(100),
-            TextInput::make('party_id')->label(__('filament.match_profile.fields.party_id'))->numeric(),
-            Textarea::make('requirements')->label(__('filament.match_profile.fields.requirements'))->json(),
-            Textarea::make('affordability')->label(__('filament.match_profile.fields.affordability'))->json(),
-            Textarea::make('preferences')->label(__('filament.match_profile.fields.preferences'))->json(),
-            Textarea::make('alerts')->label(__('filament.match_profile.fields.alerts'))->json(),
-            Textarea::make('feedback')->label(__('filament.match_profile.fields.feedback'))->json(),
-            Textarea::make('exclusions')->label(__('filament.match_profile.fields.exclusions'))->json(),
+            Section::make(__('filament.match_profile.sections.basic'))
+                ->columns(3)
+                ->schema([
+                    TextInput::make('subject')->label(__('filament.match_profile.fields.subject'))->required()->maxLength(255),
+                    TextInput::make('score')->label(__('filament.match_profile.fields.score'))->numeric()->minValue(0)->maxValue(100),
+                    TextInput::make('party_id')->label(__('filament.match_profile.fields.party_id'))->numeric(),
+                ]),
+            Section::make(__('filament.match_profile.sections.criteria'))
+                ->description(__('filament.match_profile.sections.criteria_description'))
+                ->schema([
+                    Textarea::make('requirements')->label(__('filament.match_profile.fields.requirements'))->json()->columnSpanFull(),
+                    Textarea::make('affordability')->label(__('filament.match_profile.fields.affordability'))->json()->columnSpanFull(),
+                    Textarea::make('preferences')->label(__('filament.match_profile.fields.preferences'))->json()->columnSpanFull(),
+                    Textarea::make('exclusions')->label(__('filament.match_profile.fields.exclusions'))->json()->columnSpanFull(),
+                ]),
+            Section::make(__('filament.match_profile.sections.tracking'))
+                ->schema([
+                    Textarea::make('alerts')->label(__('filament.match_profile.fields.alerts'))->json()->columnSpanFull(),
+                    Textarea::make('feedback')->label(__('filament.match_profile.fields.feedback'))->json()->columnSpanFull(),
+                ]),
         ]);
     }
 

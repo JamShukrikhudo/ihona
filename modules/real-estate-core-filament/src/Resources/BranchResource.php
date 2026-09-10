@@ -6,6 +6,7 @@ namespace Liberu\RealEstate\CoreFilament\Resources;
 
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -36,10 +37,15 @@ final class BranchResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            TextInput::make('name')->label(__('filament.branch_form.fields.name'))->required()->maxLength(255),
-            TextInput::make('code')->label(__('filament.branch_form.fields.code'))->required()->maxLength(20)->dehydrateStateUsing(fn (?string $state): ?string => $state !== null ? mb_strtoupper($state) : null),
-            TextInput::make('email')->label(__('filament.branch_form.fields.email'))->email(),
-            TextInput::make('phone')->label(__('filament.branch_form.fields.phone'))->maxLength(50),
+            Section::make(__('filament.branch_form.sections.details'))
+                ->description(__('filament.branch_form.sections.details_description'))
+                ->columns(2)
+                ->schema([
+                    TextInput::make('name')->label(__('filament.branch_form.fields.name'))->required()->maxLength(255),
+                    TextInput::make('code')->label(__('filament.branch_form.fields.code'))->required()->maxLength(20)->dehydrateStateUsing(fn (?string $state): ?string => $state !== null ? mb_strtoupper($state) : null),
+                    TextInput::make('email')->label(__('filament.branch_form.fields.email'))->email(),
+                    TextInput::make('phone')->label(__('filament.branch_form.fields.phone'))->maxLength(50),
+                ]),
         ]);
     }
 

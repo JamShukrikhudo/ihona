@@ -12,6 +12,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -47,14 +48,21 @@ final class ViewingResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            TextInput::make('subject')->label(__('filament.viewing.fields.subject'))->required()->maxLength(255),
-            Select::make('status')->label(__('filament.viewing.fields.status'))->options(['requested' => __('filament.viewing.statuses.requested'), 'confirmed' => __('filament.viewing.statuses.confirmed'), 'completed' => __('filament.viewing.statuses.completed'), 'cancelled' => __('filament.viewing.statuses.cancelled'), 'no_show' => __('filament.viewing.statuses.no_show')])->required(),
-            DateTimePicker::make('starts_at')->label(__('filament.viewing.fields.starts_at')),
-            DateTimePicker::make('ends_at')->label(__('filament.viewing.fields.ends_at')),
-            Textarea::make('access')->label(__('filament.viewing.fields.access'))->helperText('JSON access instructions.')->columnSpanFull(),
-            Textarea::make('accompaniment')->label(__('filament.viewing.fields.accompaniment'))->helperText('JSON accompaniment details.')->columnSpanFull(),
-            Textarea::make('reminders')->label(__('filament.viewing.fields.reminders'))->helperText('JSON reminder settings.')->columnSpanFull(),
-            Textarea::make('feedback')->label(__('filament.viewing.fields.feedback'))->helperText('JSON feedback.')->columnSpanFull(),
+            Section::make(__('filament.viewing.sections.basic'))
+                ->columns(2)
+                ->schema([
+                    TextInput::make('subject')->label(__('filament.viewing.fields.subject'))->required()->maxLength(255)->columnSpanFull(),
+                    Select::make('status')->label(__('filament.viewing.fields.status'))->options(['requested' => __('filament.viewing.statuses.requested'), 'confirmed' => __('filament.viewing.statuses.confirmed'), 'completed' => __('filament.viewing.statuses.completed'), 'cancelled' => __('filament.viewing.statuses.cancelled'), 'no_show' => __('filament.viewing.statuses.no_show')])->required(),
+                    DateTimePicker::make('starts_at')->label(__('filament.viewing.fields.starts_at')),
+                    DateTimePicker::make('ends_at')->label(__('filament.viewing.fields.ends_at')),
+                ]),
+            Section::make(__('filament.viewing.sections.details'))
+                ->schema([
+                    Textarea::make('access')->label(__('filament.viewing.fields.access'))->helperText('JSON access instructions.')->columnSpanFull(),
+                    Textarea::make('accompaniment')->label(__('filament.viewing.fields.accompaniment'))->helperText('JSON accompaniment details.')->columnSpanFull(),
+                    Textarea::make('reminders')->label(__('filament.viewing.fields.reminders'))->helperText('JSON reminder settings.')->columnSpanFull(),
+                    Textarea::make('feedback')->label(__('filament.viewing.fields.feedback'))->helperText('JSON feedback.')->columnSpanFull(),
+                ]),
         ]);
     }
 

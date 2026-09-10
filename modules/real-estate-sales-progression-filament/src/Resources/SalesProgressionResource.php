@@ -10,6 +10,7 @@ use Filament\Actions\EditAction;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -44,11 +45,20 @@ final class SalesProgressionResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            TextInput::make('subject')->label(__('filament.sales_progression.fields.subject'))->required()->maxLength(255),
-            TextInput::make('property_id')->label(__('filament.sales_progression.fields.property_id'))->numeric(),
-            TextInput::make('offer_id')->label(__('filament.sales_progression.fields.offer_id'))->numeric(),
-            TextInput::make('status')->label(__('filament.sales_progression.fields.status'))->required(),
-            Textarea::make('notes')->label(__('filament.sales_progression.fields.notes'))->columnSpanFull(),
+            Section::make(__('filament.sales_progression.sections.overview'))
+                ->description(__('filament.sales_progression.sections.overview_description'))
+                ->columns(3)
+                ->schema([
+                    TextInput::make('subject')->label(__('filament.sales_progression.fields.subject'))->required()->maxLength(255),
+                    TextInput::make('property_id')->label(__('filament.sales_progression.fields.property_id'))->numeric(),
+                    TextInput::make('offer_id')->label(__('filament.sales_progression.fields.offer_id'))->numeric(),
+                ]),
+            Section::make(__('filament.sales_progression.sections.status'))
+                ->description(__('filament.sales_progression.sections.status_description'))
+                ->schema([
+                    TextInput::make('status')->label(__('filament.sales_progression.fields.status'))->required(),
+                    Textarea::make('notes')->label(__('filament.sales_progression.fields.notes'))->columnSpanFull(),
+                ]),
         ]);
     }
 

@@ -11,6 +11,7 @@ use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -43,10 +44,15 @@ final class InstructionResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            TextInput::make('subject')->label(__('filament.instruction.fields.subject'))->required()->maxLength(255),
-            Select::make('status')->label(__('filament.instruction.fields.status'))->options(['draft' => __('filament.instruction.statuses.draft'), 'pending_approval' => __('filament.instruction.statuses.pending_approval'), 'approved' => __('filament.instruction.statuses.approved'), 'withdrawn' => __('filament.instruction.statuses.withdrawn'), 'rejected' => __('filament.instruction.statuses.rejected')])->disabled()->dehydrated(false),
-            DateTimePicker::make('approved_at')->label(__('filament.instruction.fields.approved_at'))->disabled()->dehydrated(false),
-            DateTimePicker::make('withdrawn_at')->label(__('filament.instruction.fields.withdrawn_at'))->disabled()->dehydrated(false),
+            Section::make(__('filament.instruction.sections.details'))
+                ->description(__('filament.instruction.sections.details_description'))
+                ->columns(2)
+                ->schema([
+                    TextInput::make('subject')->label(__('filament.instruction.fields.subject'))->required()->maxLength(255)->columnSpanFull(),
+                    Select::make('status')->label(__('filament.instruction.fields.status'))->options(['draft' => __('filament.instruction.statuses.draft'), 'pending_approval' => __('filament.instruction.statuses.pending_approval'), 'approved' => __('filament.instruction.statuses.approved'), 'withdrawn' => __('filament.instruction.statuses.withdrawn'), 'rejected' => __('filament.instruction.statuses.rejected')])->disabled()->dehydrated(false),
+                    DateTimePicker::make('approved_at')->label(__('filament.instruction.fields.approved_at'))->disabled()->dehydrated(false),
+                    DateTimePicker::make('withdrawn_at')->label(__('filament.instruction.fields.withdrawn_at'))->disabled()->dehydrated(false),
+                ]),
         ]);
     }
 

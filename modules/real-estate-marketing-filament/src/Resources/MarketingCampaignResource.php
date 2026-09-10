@@ -11,6 +11,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -45,12 +46,20 @@ final class MarketingCampaignResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            TextInput::make('name')->label(__('filament.marketing_campaign.fields.name'))->required()->maxLength(255),
-            TextInput::make('channel')->label(__('filament.marketing_campaign.fields.channel'))->required()->maxLength(80),
-            TextInput::make('property_id')->label(__('filament.marketing_campaign.fields.property_id'))->numeric(),
-            TextInput::make('listing_id')->label(__('filament.marketing_campaign.fields.listing_id'))->numeric(),
-            TextInput::make('status')->label(__('filament.marketing_campaign.fields.status'))->required(),
-            Textarea::make('notes')->label(__('filament.marketing_campaign.fields.notes'))->columnSpanFull(),
+            Section::make(__('filament.marketing_campaign.sections.basic'))
+                ->columns(3)
+                ->schema([
+                    TextInput::make('name')->label(__('filament.marketing_campaign.fields.name'))->required()->maxLength(255)->columnSpanFull(),
+                    TextInput::make('channel')->label(__('filament.marketing_campaign.fields.channel'))->required()->maxLength(80),
+                    TextInput::make('status')->label(__('filament.marketing_campaign.fields.status'))->required(),
+                ]),
+            Section::make(__('filament.marketing_campaign.sections.details'))
+                ->columns(2)
+                ->schema([
+                    TextInput::make('property_id')->label(__('filament.marketing_campaign.fields.property_id'))->numeric(),
+                    TextInput::make('listing_id')->label(__('filament.marketing_campaign.fields.listing_id'))->numeric(),
+                    Textarea::make('notes')->label(__('filament.marketing_campaign.fields.notes'))->columnSpanFull(),
+                ]),
         ]);
     }
 

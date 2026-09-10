@@ -11,6 +11,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\Pages\PageRegistration;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -54,18 +55,23 @@ class TeamResource extends Resource
     {
         return $schema
             ->components([
-                TextInput::make('name')
-                    ->label(__('filament.team_form.fields.name'))
-                    ->required()
-                    ->maxLength(255),
-                Select::make('user_id')
-                    ->label(__('filament.team_form.fields.user_id'))
-                    ->relationship('owner', 'name')
-                    ->required()
-                    ->searchable()
-                    ->preload(),
-                Toggle::make('personal_team')
-                    ->label(__('filament.team_form.fields.personal_team')),
+                Section::make(__('filament.team_form.sections.details'))
+                    ->description(__('filament.team_form.sections.details_description'))
+                    ->columns(2)
+                    ->schema([
+                        TextInput::make('name')
+                            ->label(__('filament.team_form.fields.name'))
+                            ->required()
+                            ->maxLength(255),
+                        Select::make('user_id')
+                            ->label(__('filament.team_form.fields.user_id'))
+                            ->relationship('owner', 'name')
+                            ->required()
+                            ->searchable()
+                            ->preload(),
+                        Toggle::make('personal_team')
+                            ->label(__('filament.team_form.fields.personal_team')),
+                    ]),
             ]);
     }
 

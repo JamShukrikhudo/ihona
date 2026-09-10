@@ -77,6 +77,20 @@ return [
     ],
 
     'property' => [
+        'sections' => [
+            'basic' => 'Основная информация',
+            'basic_description' => 'Тип, статус, категория и расположение в структуре агентства',
+            'location' => 'Адрес и юридические данные',
+            'location_description' => 'Адрес объекта, форма владения и налоговая категория',
+            'description' => 'Описание',
+            'pricing' => 'Цена и характеристики',
+            'pricing_description' => 'Стоимость, площадь и планировка',
+            'energy' => 'Энергоэффективность и доступность',
+            'energy_description' => 'Класс энергоэффективности и индексы пешей/транспортной доступности',
+            'media' => 'Медиа и туры',
+            'media_description' => 'Виртуальные и голографические туры, 3D-модель, планировка и особенности',
+            'insurance' => 'Страхование',
+        ],
         'fields' => [
             'title' => 'Заголовок',
             'status' => 'Статус',
@@ -144,6 +158,10 @@ return [
     ],
 
     'listing' => [
+        'sections' => [
+            'details' => 'Объявление',
+            'details_description' => 'Заголовок, цена и доступность объявления',
+        ],
         'fields' => [
             'title' => 'Заголовок',
             'status' => 'Статус',
@@ -161,6 +179,11 @@ return [
     ],
 
     'valuation' => [
+        'sections' => [
+            'basic' => 'Основное',
+            'financial' => 'Финансы',
+            'schedule' => 'Расписание и данные',
+        ],
         'fields' => [
             'subject' => 'Тема',
             'status' => 'Статус',
@@ -183,6 +206,12 @@ return [
     ],
 
     'match_profile' => [
+        'sections' => [
+            'basic' => 'Основное',
+            'criteria' => 'Критерии подбора',
+            'criteria_description' => 'Требования, доступность, предпочтения и исключения',
+            'tracking' => 'Отслеживание',
+        ],
         'fields' => [
             'subject' => 'Тема',
             'score' => 'Оценка соответствия',
@@ -198,10 +227,15 @@ return [
     ],
 
     'offer' => [
+        'sections' => [
+            'basic' => 'Основное',
+            'details' => 'Условия и детали',
+        ],
         'fields' => [
             'subject' => 'Тема',
             'amount' => 'Сумма',
             'currency' => 'Валюта',
+            'status' => 'Статус',
             'terms' => 'Условия',
             'qualification' => 'Квалификация покупателя',
             'negotiation' => 'Переговоры',
@@ -220,6 +254,10 @@ return [
     ],
 
     'media_document' => [
+        'sections' => [
+            'file' => 'Файл',
+            'file_description' => 'Тип, расположение и порядок отображения медиафайла',
+        ],
         'fields' => [
             'kind' => 'Тип',
             'path' => 'Путь к файлу',
@@ -239,6 +277,10 @@ return [
     ],
 
     'viewing' => [
+        'sections' => [
+            'basic' => 'Основное',
+            'details' => 'Детали показа',
+        ],
         'fields' => [
             'subject' => 'Тема',
             'status' => 'Статус',
@@ -260,6 +302,12 @@ return [
     ],
 
     'portal_report' => [
+        'sections' => [
+            'identification' => 'Идентификация',
+            'identification_description' => 'Портал, тип отчёта и связанные записи',
+            'status' => 'Статус',
+            'status_description' => 'Текущее состояние и ошибки синхронизации',
+        ],
         'fields' => [
             'portal' => 'Портал',
             'report_type' => 'Тип отчёта',
@@ -272,6 +320,10 @@ return [
     ],
 
     'marketing_campaign' => [
+        'sections' => [
+            'basic' => 'Основное',
+            'details' => 'Связи и заметки',
+        ],
         'fields' => [
             'name' => 'Название',
             'channel' => 'Канал',
@@ -284,6 +336,12 @@ return [
     ],
 
     'sales_progression' => [
+        'sections' => [
+            'overview' => 'Основное',
+            'overview_description' => 'Предмет сопровождения и связанные записи',
+            'status' => 'Статус',
+            'status_description' => 'Текущее состояние сделки и заметки',
+        ],
         'fields' => [
             'subject' => 'Тема',
             'property_id' => 'Объект (ID)',
@@ -334,6 +392,10 @@ return [
     ],
 
     'party' => [
+        'sections' => [
+            'contact' => 'Контактные данные',
+            'contact_description' => 'Тип контрагента и способы связи',
+        ],
         'fields' => [
             'type' => 'Тип',
             'name' => 'Имя',
@@ -532,6 +594,10 @@ return [
     ],
 
     'instruction' => [
+        'sections' => [
+            'details' => 'Инструкция',
+            'details_description' => 'Тема и текущий статус согласования',
+        ],
         'fields' => [
             'subject' => 'Тема',
             'status' => 'Статус',
@@ -549,6 +615,10 @@ return [
     ],
 
     'status_definition_form' => [
+        'sections' => [
+            'details' => 'Определение статуса',
+            'details_description' => 'Сущность, ключ и отображаемое название статуса',
+        ],
         'fields' => [
             'entity' => 'Сущность',
             'key' => 'Ключ',
@@ -558,6 +628,10 @@ return [
     ],
 
     'branch_form' => [
+        'sections' => [
+            'details' => 'Данные филиала',
+            'details_description' => 'Название, код и контакты филиала',
+        ],
         'fields' => [
             'name' => 'Название',
             'code' => 'Код',
@@ -568,6 +642,10 @@ return [
     ],
 
     'territory' => [
+        'sections' => [
+            'details' => 'Основные данные',
+            'details_description' => 'Название, код и граница территории',
+        ],
         'fields' => [
             'name' => 'Название',
             'code' => 'Код',
@@ -577,6 +655,10 @@ return [
     ],
 
     'team_form' => [
+        'sections' => [
+            'details' => 'Основные данные',
+            'details_description' => 'Название команды и владелец',
+        ],
         'fields' => [
             'name' => 'Название',
             'user_id' => 'Владелец',
@@ -586,6 +668,10 @@ return [
     ],
 
     'property_template' => [
+        'sections' => [
+            'details' => 'Шаблон объявления',
+            'details_description' => 'Название и содержимое шаблона',
+        ],
         'fields' => [
             'name' => 'Название',
             'content' => 'Содержимое шаблона',
@@ -594,6 +680,10 @@ return [
     ],
 
     'property_saved_search' => [
+        'sections' => [
+            'details' => 'Сохранённый поиск',
+            'details_description' => 'Название и критерии поиска',
+        ],
         'fields' => [
             'name' => 'Название',
             'criteria' => 'Критерии поиска',
@@ -603,6 +693,10 @@ return [
     ],
 
     'property_category' => [
+        'sections' => [
+            'details' => 'Основные данные',
+            'details_description' => 'Название и слаг категории',
+        ],
         'fields' => [
             'name' => 'Название',
             'slug' => 'Слаг (URL)',
@@ -611,6 +705,10 @@ return [
     ],
 
     'agency_form' => [
+        'sections' => [
+            'details' => 'Основные данные',
+            'details_description' => 'Название, код и статус агентства',
+        ],
         'fields' => [
             'name' => 'Название',
             'code' => 'Код',

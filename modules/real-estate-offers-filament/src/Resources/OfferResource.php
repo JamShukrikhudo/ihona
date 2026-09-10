@@ -10,6 +10,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -40,15 +41,22 @@ final class OfferResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            TextInput::make('subject')->label(__('filament.offer.fields.subject'))->required()->maxLength(255),
-            TextInput::make('amount')->label(__('filament.offer.fields.amount'))->numeric()->minValue(0)->required(),
-            TextInput::make('currency')->label(__('filament.offer.fields.currency'))->default(config('app.currency', 'USD'))->length(3),
-            Textarea::make('terms')->label(__('filament.offer.fields.terms'))->json(),
-            Textarea::make('qualification')->label(__('filament.offer.fields.qualification'))->json(),
-            Textarea::make('negotiation')->label(__('filament.offer.fields.negotiation'))->json(),
-            Textarea::make('proof')->label(__('filament.offer.fields.proof'))->json(),
-            Textarea::make('conditions')->label(__('filament.offer.fields.conditions')),
-            Select::make('status')->label(__('filament.offer.fields.status'))->options(['draft' => __('filament.offer.statuses.draft'), 'submitted' => __('filament.offer.statuses.submitted'), 'countered' => __('filament.offer.statuses.countered'), 'accepted' => __('filament.offer.statuses.accepted'), 'rejected' => __('filament.offer.statuses.rejected'), 'withdrawn' => __('filament.offer.statuses.withdrawn')])->disabled()->dehydrated(false),
+            Section::make(__('filament.offer.sections.basic'))
+                ->columns(2)
+                ->schema([
+                    TextInput::make('subject')->label(__('filament.offer.fields.subject'))->required()->maxLength(255)->columnSpanFull(),
+                    TextInput::make('amount')->label(__('filament.offer.fields.amount'))->numeric()->minValue(0)->required(),
+                    TextInput::make('currency')->label(__('filament.offer.fields.currency'))->default(config('app.currency', 'USD'))->length(3),
+                    Select::make('status')->label(__('filament.offer.fields.status'))->options(['draft' => __('filament.offer.statuses.draft'), 'submitted' => __('filament.offer.statuses.submitted'), 'countered' => __('filament.offer.statuses.countered'), 'accepted' => __('filament.offer.statuses.accepted'), 'rejected' => __('filament.offer.statuses.rejected'), 'withdrawn' => __('filament.offer.statuses.withdrawn')])->disabled()->dehydrated(false)->columnSpanFull(),
+                ]),
+            Section::make(__('filament.offer.sections.details'))
+                ->schema([
+                    Textarea::make('terms')->label(__('filament.offer.fields.terms'))->json()->columnSpanFull(),
+                    Textarea::make('qualification')->label(__('filament.offer.fields.qualification'))->json()->columnSpanFull(),
+                    Textarea::make('negotiation')->label(__('filament.offer.fields.negotiation'))->json()->columnSpanFull(),
+                    Textarea::make('proof')->label(__('filament.offer.fields.proof'))->json()->columnSpanFull(),
+                    Textarea::make('conditions')->label(__('filament.offer.fields.conditions'))->columnSpanFull(),
+                ]),
         ]);
     }
 

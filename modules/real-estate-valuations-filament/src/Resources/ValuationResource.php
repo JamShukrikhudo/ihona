@@ -13,6 +13,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -50,15 +51,27 @@ final class ValuationResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            TextInput::make('subject')->label(__('filament.valuation.fields.subject'))->required()->maxLength(255),
-            Select::make('status')->label(__('filament.valuation.fields.status'))->options(['draft' => __('filament.valuation.statuses.draft'), 'scheduled' => __('filament.valuation.statuses.scheduled'), 'completed' => __('filament.valuation.statuses.completed'), 'converted' => __('filament.valuation.statuses.converted'), 'cancelled' => __('filament.valuation.statuses.cancelled')])->required(),
-            TextInput::make('valued_amount')->label(__('filament.valuation.fields.valued_amount'))->numeric()->minValue(0),
-            TextInput::make('fee_amount')->label(__('filament.valuation.fields.fee_amount'))->numeric()->minValue(0),
-            TextInput::make('currency')->label(__('filament.valuation.fields.currency'))->length(3)->default(config('app.currency', 'USD')),
-            Textarea::make('comparable_data')->label(__('filament.valuation.fields.comparable_data'))->helperText('JSON comparable evidence.')->columnSpanFull(),
-            Textarea::make('recommendation')->label(__('filament.valuation.fields.recommendation'))->helperText('JSON recommendation and follow-up notes.')->columnSpanFull(),
-            DateTimePicker::make('scheduled_at')->label(__('filament.valuation.fields.scheduled_at')),
-            DateTimePicker::make('follow_up_at')->label(__('filament.valuation.fields.follow_up_at')),
+            Section::make(__('filament.valuation.sections.basic'))
+                ->columns(2)
+                ->schema([
+                    TextInput::make('subject')->label(__('filament.valuation.fields.subject'))->required()->maxLength(255)->columnSpanFull(),
+                    Select::make('status')->label(__('filament.valuation.fields.status'))->options(['draft' => __('filament.valuation.statuses.draft'), 'scheduled' => __('filament.valuation.statuses.scheduled'), 'completed' => __('filament.valuation.statuses.completed'), 'converted' => __('filament.valuation.statuses.converted'), 'cancelled' => __('filament.valuation.statuses.cancelled')])->required(),
+                ]),
+            Section::make(__('filament.valuation.sections.financial'))
+                ->columns(3)
+                ->schema([
+                    TextInput::make('valued_amount')->label(__('filament.valuation.fields.valued_amount'))->numeric()->minValue(0),
+                    TextInput::make('fee_amount')->label(__('filament.valuation.fields.fee_amount'))->numeric()->minValue(0),
+                    TextInput::make('currency')->label(__('filament.valuation.fields.currency'))->length(3)->default(config('app.currency', 'USD')),
+                ]),
+            Section::make(__('filament.valuation.sections.schedule'))
+                ->columns(2)
+                ->schema([
+                    DateTimePicker::make('scheduled_at')->label(__('filament.valuation.fields.scheduled_at')),
+                    DateTimePicker::make('follow_up_at')->label(__('filament.valuation.fields.follow_up_at')),
+                    Textarea::make('comparable_data')->label(__('filament.valuation.fields.comparable_data'))->helperText('JSON comparable evidence.')->columnSpanFull(),
+                    Textarea::make('recommendation')->label(__('filament.valuation.fields.recommendation'))->helperText('JSON recommendation and follow-up notes.')->columnSpanFull(),
+                ]),
         ]);
     }
 

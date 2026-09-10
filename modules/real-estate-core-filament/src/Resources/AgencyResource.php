@@ -7,6 +7,7 @@ namespace Liberu\RealEstate\CoreFilament\Resources;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -38,9 +39,14 @@ final class AgencyResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            TextInput::make('name')->label(__('filament.agency_form.fields.name'))->required()->maxLength(255),
-            TextInput::make('code')->label(__('filament.agency_form.fields.code'))->required()->maxLength(20)->dehydrateStateUsing(fn (?string $state): ?string => $state !== null ? mb_strtoupper($state) : null),
-            Checkbox::make('active')->label(__('filament.agency_form.fields.active'))->default(true),
+            Section::make(__('filament.agency_form.sections.details'))
+                ->description(__('filament.agency_form.sections.details_description'))
+                ->columns(2)
+                ->schema([
+                    TextInput::make('name')->label(__('filament.agency_form.fields.name'))->required()->maxLength(255),
+                    TextInput::make('code')->label(__('filament.agency_form.fields.code'))->required()->maxLength(20)->dehydrateStateUsing(fn (?string $state): ?string => $state !== null ? mb_strtoupper($state) : null),
+                    Checkbox::make('active')->label(__('filament.agency_form.fields.active'))->default(true),
+                ]),
         ]);
     }
 

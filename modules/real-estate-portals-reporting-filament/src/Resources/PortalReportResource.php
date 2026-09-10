@@ -10,6 +10,7 @@ use Filament\Actions\EditAction;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -44,12 +45,21 @@ final class PortalReportResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            TextInput::make('portal')->label(__('filament.portal_report.fields.portal'))->required()->maxLength(120),
-            TextInput::make('report_type')->label(__('filament.portal_report.fields.report_type'))->required()->maxLength(120),
-            TextInput::make('property_id')->label(__('filament.portal_report.fields.property_id'))->numeric(),
-            TextInput::make('listing_id')->label(__('filament.portal_report.fields.listing_id'))->numeric(),
-            TextInput::make('status')->label(__('filament.portal_report.fields.status'))->required(),
-            Textarea::make('error')->label(__('filament.portal_report.fields.error'))->columnSpanFull(),
+            Section::make(__('filament.portal_report.sections.identification'))
+                ->description(__('filament.portal_report.sections.identification_description'))
+                ->columns(2)
+                ->schema([
+                    TextInput::make('portal')->label(__('filament.portal_report.fields.portal'))->required()->maxLength(120),
+                    TextInput::make('report_type')->label(__('filament.portal_report.fields.report_type'))->required()->maxLength(120),
+                    TextInput::make('property_id')->label(__('filament.portal_report.fields.property_id'))->numeric(),
+                    TextInput::make('listing_id')->label(__('filament.portal_report.fields.listing_id'))->numeric(),
+                ]),
+            Section::make(__('filament.portal_report.sections.status'))
+                ->description(__('filament.portal_report.sections.status_description'))
+                ->schema([
+                    TextInput::make('status')->label(__('filament.portal_report.fields.status'))->required(),
+                    Textarea::make('error')->label(__('filament.portal_report.fields.error'))->columnSpanFull(),
+                ]),
         ]);
     }
 

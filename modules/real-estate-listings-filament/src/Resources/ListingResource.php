@@ -11,6 +11,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -45,10 +46,15 @@ final class ListingResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            TextInput::make('title')->label(__('filament.listing.fields.title'))->required()->maxLength(255),
-            Select::make('status')->label(__('filament.listing.fields.status'))->options(['draft' => __('filament.listing.statuses.draft'), 'ready' => __('filament.listing.statuses.ready'), 'published' => __('filament.listing.statuses.published'), 'suspended' => __('filament.listing.statuses.suspended'), 'withdrawn' => __('filament.listing.statuses.withdrawn')])->disabled()->dehydrated(false),
-            TextInput::make('price')->label(__('filament.listing.fields.price'))->numeric()->minValue(0),
-            DatePicker::make('available_from')->label(__('filament.listing.fields.available_from')),
+            Section::make(__('filament.listing.sections.details'))
+                ->description(__('filament.listing.sections.details_description'))
+                ->columns(2)
+                ->schema([
+                    TextInput::make('title')->label(__('filament.listing.fields.title'))->required()->maxLength(255)->columnSpanFull(),
+                    Select::make('status')->label(__('filament.listing.fields.status'))->options(['draft' => __('filament.listing.statuses.draft'), 'ready' => __('filament.listing.statuses.ready'), 'published' => __('filament.listing.statuses.published'), 'suspended' => __('filament.listing.statuses.suspended'), 'withdrawn' => __('filament.listing.statuses.withdrawn')])->disabled()->dehydrated(false),
+                    TextInput::make('price')->label(__('filament.listing.fields.price'))->numeric()->minValue(0),
+                    DatePicker::make('available_from')->label(__('filament.listing.fields.available_from')),
+                ]),
         ]);
     }
 

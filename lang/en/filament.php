@@ -77,6 +77,20 @@ return [
     ],
 
     'property' => [
+        'sections' => [
+            'basic' => 'Basic Information',
+            'basic_description' => 'Type, status, category and where it sits in the agency structure',
+            'location' => 'Address & Legal',
+            'location_description' => 'Property address, tenure and council tax band',
+            'description' => 'Description',
+            'pricing' => 'Pricing & Characteristics',
+            'pricing_description' => 'Price, size and layout',
+            'energy' => 'Energy & Accessibility',
+            'energy_description' => 'Energy rating and walkability/transit scores',
+            'media' => 'Media & Tours',
+            'media_description' => 'Virtual and holographic tours, 3D model, floor plan and features',
+            'insurance' => 'Insurance',
+        ],
         'fields' => [
             'title' => 'Title',
             'status' => 'Status',
@@ -144,6 +158,10 @@ return [
     ],
 
     'listing' => [
+        'sections' => [
+            'details' => 'Listing',
+            'details_description' => 'Title, price and availability',
+        ],
         'fields' => [
             'title' => 'Title',
             'status' => 'Status',
@@ -161,6 +179,11 @@ return [
     ],
 
     'valuation' => [
+        'sections' => [
+            'basic' => 'Basic',
+            'financial' => 'Financial',
+            'schedule' => 'Schedule & Data',
+        ],
         'fields' => [
             'subject' => 'Subject',
             'status' => 'Status',
@@ -183,6 +206,12 @@ return [
     ],
 
     'match_profile' => [
+        'sections' => [
+            'basic' => 'Basic',
+            'criteria' => 'Matching Criteria',
+            'criteria_description' => 'Requirements, affordability, preferences and exclusions',
+            'tracking' => 'Tracking',
+        ],
         'fields' => [
             'subject' => 'Subject',
             'score' => 'Match score',
@@ -198,10 +227,15 @@ return [
     ],
 
     'offer' => [
+        'sections' => [
+            'basic' => 'Basic',
+            'details' => 'Terms & Details',
+        ],
         'fields' => [
             'subject' => 'Subject',
             'amount' => 'Amount',
             'currency' => 'Currency',
+            'status' => 'Status',
             'terms' => 'Terms',
             'qualification' => 'Buyer qualification',
             'negotiation' => 'Negotiation',
@@ -220,6 +254,10 @@ return [
     ],
 
     'media_document' => [
+        'sections' => [
+            'file' => 'File',
+            'file_description' => 'Type, location and display order of the media file',
+        ],
         'fields' => [
             'kind' => 'Kind',
             'path' => 'File path',
@@ -239,6 +277,10 @@ return [
     ],
 
     'viewing' => [
+        'sections' => [
+            'basic' => 'Basic',
+            'details' => 'Viewing Details',
+        ],
         'fields' => [
             'subject' => 'Subject',
             'status' => 'Status',
@@ -260,6 +302,12 @@ return [
     ],
 
     'portal_report' => [
+        'sections' => [
+            'identification' => 'Identification',
+            'identification_description' => 'Portal, report type and related records',
+            'status' => 'Status',
+            'status_description' => 'Current state and sync errors',
+        ],
         'fields' => [
             'portal' => 'Portal',
             'report_type' => 'Report type',
@@ -272,6 +320,10 @@ return [
     ],
 
     'marketing_campaign' => [
+        'sections' => [
+            'basic' => 'Basic',
+            'details' => 'Links & Notes',
+        ],
         'fields' => [
             'name' => 'Name',
             'channel' => 'Channel',
@@ -284,6 +336,12 @@ return [
     ],
 
     'sales_progression' => [
+        'sections' => [
+            'overview' => 'Overview',
+            'overview_description' => 'Subject and related records',
+            'status' => 'Status',
+            'status_description' => 'Current deal state and notes',
+        ],
         'fields' => [
             'subject' => 'Subject',
             'property_id' => 'Property (ID)',
@@ -334,6 +392,10 @@ return [
     ],
 
     'party' => [
+        'sections' => [
+            'contact' => 'Contact Details',
+            'contact_description' => 'Party type and contact information',
+        ],
         'fields' => [
             'type' => 'Type',
             'name' => 'Name',
@@ -532,6 +594,10 @@ return [
     ],
 
     'instruction' => [
+        'sections' => [
+            'details' => 'Instruction',
+            'details_description' => 'Subject and current approval status',
+        ],
         'fields' => [
             'subject' => 'Subject',
             'status' => 'Status',
@@ -549,6 +615,10 @@ return [
     ],
 
     'status_definition_form' => [
+        'sections' => [
+            'details' => 'Status Definition',
+            'details_description' => 'Entity, key and display label for this status',
+        ],
         'fields' => [
             'entity' => 'Entity',
             'key' => 'Key',
@@ -558,6 +628,10 @@ return [
     ],
 
     'branch_form' => [
+        'sections' => [
+            'details' => 'Branch Details',
+            'details_description' => 'Name, code and contact information',
+        ],
         'fields' => [
             'name' => 'Name',
             'code' => 'Code',
@@ -568,6 +642,10 @@ return [
     ],
 
     'territory' => [
+        'sections' => [
+            'details' => 'Territory Details',
+            'details_description' => 'Name, code and boundary of the territory',
+        ],
         'fields' => [
             'name' => 'Name',
             'code' => 'Code',
@@ -577,6 +655,10 @@ return [
     ],
 
     'team_form' => [
+        'sections' => [
+            'details' => 'Team Details',
+            'details_description' => 'Team name and owner',
+        ],
         'fields' => [
             'name' => 'Name',
             'user_id' => 'Owner',
@@ -586,6 +668,10 @@ return [
     ],
 
     'property_template' => [
+        'sections' => [
+            'details' => 'Template Details',
+            'details_description' => 'Name and template content',
+        ],
         'fields' => [
             'name' => 'Name',
             'content' => 'Template content',
@@ -594,6 +680,10 @@ return [
     ],
 
     'property_saved_search' => [
+        'sections' => [
+            'details' => 'Saved Search Details',
+            'details_description' => 'Name and search criteria',
+        ],
         'fields' => [
             'name' => 'Name',
             'criteria' => 'Search criteria',
@@ -603,6 +693,10 @@ return [
     ],
 
     'property_category' => [
+        'sections' => [
+            'details' => 'Category Details',
+            'details_description' => 'Name and slug of the category',
+        ],
         'fields' => [
             'name' => 'Name',
             'slug' => 'Slug (URL)',
@@ -611,6 +705,10 @@ return [
     ],
 
     'agency_form' => [
+        'sections' => [
+            'details' => 'Agency Details',
+            'details_description' => 'Name, code and active status',
+        ],
         'fields' => [
             'name' => 'Name',
             'code' => 'Code',

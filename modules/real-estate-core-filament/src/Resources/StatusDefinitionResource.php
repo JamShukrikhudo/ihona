@@ -9,6 +9,7 @@ use Filament\Actions\EditAction;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -37,10 +38,15 @@ final class StatusDefinitionResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            TextInput::make('entity')->label(__('filament.status_definition_form.fields.entity'))->required()->maxLength(80),
-            TextInput::make('key')->label(__('filament.status_definition_form.fields.key'))->required()->maxLength(80),
-            TextInput::make('label')->label(__('filament.status_definition_form.fields.label'))->required()->maxLength(255),
-            Toggle::make('active')->label(__('filament.status_definition_form.fields.active'))->default(true),
+            Section::make(__('filament.status_definition_form.sections.details'))
+                ->description(__('filament.status_definition_form.sections.details_description'))
+                ->columns(2)
+                ->schema([
+                    TextInput::make('entity')->label(__('filament.status_definition_form.fields.entity'))->required()->maxLength(80),
+                    TextInput::make('key')->label(__('filament.status_definition_form.fields.key'))->required()->maxLength(80),
+                    TextInput::make('label')->label(__('filament.status_definition_form.fields.label'))->required()->maxLength(255),
+                    Toggle::make('active')->label(__('filament.status_definition_form.fields.active'))->default(true),
+                ]),
         ]);
     }
 
