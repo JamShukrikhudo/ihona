@@ -26,6 +26,21 @@ final class NewsArticleResource extends Resource
 {
     protected static ?string $model = NewsArticle::class;
 
+    /**
+     * NewsArticle has no team() relationship — it's scoped by a plain
+     * team_id column via NewsArticle::scopeVisibleToTeam() (team_id null =
+     * shared/global article), handled manually in getEloquentQuery() below.
+     * Without this override, Filament's tenant global scope tries to call
+     * $model->team() during every query and throws
+     * "The model [...NewsArticle] does not have a relationship named
+     * [team]" the instant the resource is opened (see CLAUDE.md's
+     * "Tenancy rules that bite").
+     */
+    public static function isScopedToTenant(): bool
+    {
+        return false;
+    }
+
     public static function getModelLabel(): string
     {
         return __('filament.resources.news_article.singular');
