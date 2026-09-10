@@ -18,6 +18,7 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Liberu\Foundation\IdentityFilament\Resources\UserResource\Pages\CreateUser;
 use Liberu\Foundation\IdentityFilament\Resources\UserResource\Pages\EditUser;
@@ -123,6 +124,16 @@ class UserResource extends Resource
                             ->multiple()
                             ->preload()
                             ->searchable()
+                            // Only an existing super_admin may grant (or keep) the
+                            // super_admin role — otherwise a user holding any other
+                            // role with Update:User permission could promote
+                            // themselves via this very field. disableOptionWhen()
+                            // isn't just a UI hint: Select::getInValidationRuleValues()
+                            // turns it into a server-side `in:` rule, so a tampered
+                            // request submitting the disabled value still fails
+                            // validation before saveRelationshipsUsing() ever runs.
+                            ->disableOptionWhen(fn (string $label): bool => $label === config('filament-shield.super_admin.name', 'super_admin')
+                                && ! (Auth::user()?->isSuperAdmin() ?? false))
                             // Filament's default relationship sync is a plain
                             // BelongsToMany::sync() call, which doesn't know to fill
                             // model_has_roles.team_id — Spatie only injects that
