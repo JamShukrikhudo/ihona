@@ -558,10 +558,16 @@ return [
     ],
 
     'news_article' => [
+        'sections' => [
+            'details' => 'Новость',
+            'details_description' => 'Заголовок, содержание и публикация',
+        ],
         'fields' => [
             'title' => 'Заголовок',
             'slug' => 'Слаг (URL)',
+            'excerpt' => 'Краткое описание',
             'content' => 'Содержание',
+            'featured_image' => 'Обложка',
             'published_at' => 'Дата публикации',
             'is_featured' => 'Рекомендуемая',
         ],

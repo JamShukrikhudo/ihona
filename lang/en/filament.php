@@ -558,10 +558,16 @@ return [
     ],
 
     'news_article' => [
+        'sections' => [
+            'details' => 'News Article',
+            'details_description' => 'Title, content and publication',
+        ],
         'fields' => [
             'title' => 'Title',
             'slug' => 'Slug (URL)',
+            'excerpt' => 'Excerpt',
             'content' => 'Content',
+            'featured_image' => 'Featured image',
             'published_at' => 'Published at',
             'is_featured' => 'Featured',
         ],
