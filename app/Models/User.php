@@ -75,6 +75,7 @@ class User extends Authenticatable implements ConnectedAccountOwner, FilamentUse
         'locale',
         'timezone',
         'signup_intent',
+        'profile_photo_path',
     ];
 
     /**

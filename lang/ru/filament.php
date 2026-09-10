@@ -418,11 +418,23 @@ return [
     ],
 
     'user_form' => [
+        'sections' => [
+            'profile' => 'Личные данные',
+            'profile_description' => 'Основная информация и фото профиля',
+            'localization' => 'Локализация и оформление',
+            'localization_description' => 'Язык интерфейса, часовой пояс и тема оформления',
+            'roles' => 'Роли и права',
+            'roles_description' => 'Роли определяют, к чему у пользователя есть доступ',
+        ],
         'fields' => [
             'name' => 'Имя',
             'email' => 'Email',
             'password' => 'Пароль',
             'email_verified_at' => 'Email подтверждён',
+            'profile_photo_path' => 'Фото профиля',
+            'locale' => 'Язык',
+            'timezone' => 'Часовой пояс',
+            'theme_preference' => 'Тема оформления',
             'roles' => 'Роли',
             'created_at' => 'Создано',
         ],

@@ -418,11 +418,23 @@ return [
     ],
 
     'user_form' => [
+        'sections' => [
+            'profile' => 'Personal Details',
+            'profile_description' => 'Basic user information and profile photo',
+            'localization' => 'Localization & Appearance',
+            'localization_description' => 'Interface language, timezone and theme',
+            'roles' => 'Roles & Permissions',
+            'roles_description' => 'Roles control what the user can access',
+        ],
         'fields' => [
             'name' => 'Name',
             'email' => 'Email',
             'password' => 'Password',
             'email_verified_at' => 'Email verified at',
+            'profile_photo_path' => 'Profile photo',
+            'locale' => 'Locale',
+            'timezone' => 'Timezone',
+            'theme_preference' => 'Theme preference',
             'roles' => 'Roles',
             'created_at' => 'Created at',
         ],

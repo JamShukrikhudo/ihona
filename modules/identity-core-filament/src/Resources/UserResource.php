@@ -7,10 +7,12 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Pages\PageRegistration;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -59,42 +61,79 @@ class UserResource extends Resource
     {
         return $schema
             ->components([
-                TextInput::make('name')
-                    ->label(__('filament.user_form.fields.name'))
-                    ->required()
-                    ->maxLength(255),
-                TextInput::make('email')
-                    ->label(__('filament.user_form.fields.email'))
-                    ->email()
-                    ->required()
-                    ->unique(ignoreRecord: true)
-                    ->maxLength(255),
-                TextInput::make('password')
-                    ->label(__('filament.user_form.fields.password'))
-                    ->password()
-                    ->dehydrateStateUsing(fn (string $state) => Hash::make($state))
-                    ->dehydrated(fn (?string $state) => filled($state))
-                    ->required(fn (string $operation) => $operation === 'create')
-                    ->maxLength(255)
-                    ->helperText('Leave blank to keep the current password.'),
-                DateTimePicker::make('email_verified_at')
-                    ->label(__('filament.user_form.fields.email_verified_at')),
-                Select::make('roles')
-                    ->label(__('filament.user_form.fields.roles'))
-                    ->relationship('roles', 'name')
-                    ->multiple()
-                    ->preload()
-                    ->searchable()
-                    // Filament's default relationship sync is a plain
-                    // BelongsToMany::sync() call, which doesn't know to fill
-                    // model_has_roles.team_id — Spatie only injects that
-                    // pivot value inside its own assignRole()/syncRoles()
-                    // helpers (see HasRoles::assignRole()). Route the save
-                    // through those instead, or every save 500s with
-                    // "Field 'team_id' doesn't have a default value".
-                    ->saveRelationshipsUsing(function (Select $component, Model $record): void {
-                        $record->syncRoles($component->getState() ?? []);
-                    }),
+                Section::make(__('filament.user_form.sections.profile'))
+                    ->description(__('filament.user_form.sections.profile_description'))
+                    ->columns(2)
+                    ->schema([
+                        FileUpload::make('profile_photo_path')
+                            ->label(__('filament.user_form.fields.profile_photo_path'))
+                            ->avatar()
+                            ->imageEditor()
+                            // Matches Jetstream's own HasProfilePhoto::updateProfilePhoto()
+                            // disk/directory, so photos uploaded here and from the user's
+                            // own profile page land in — and are servable from — the same place.
+                            ->disk('public')
+                            ->directory('profile-photos')
+                            ->visibility('public')
+                            ->columnSpanFull(),
+                        TextInput::make('name')
+                            ->label(__('filament.user_form.fields.name'))
+                            ->required()
+                            ->maxLength(255),
+                        TextInput::make('email')
+                            ->label(__('filament.user_form.fields.email'))
+                            ->email()
+                            ->required()
+                            ->unique(ignoreRecord: true)
+                            ->maxLength(255),
+                        TextInput::make('password')
+                            ->label(__('filament.user_form.fields.password'))
+                            ->password()
+                            ->dehydrateStateUsing(fn (string $state) => Hash::make($state))
+                            ->dehydrated(fn (?string $state) => filled($state))
+                            ->required(fn (string $operation) => $operation === 'create')
+                            ->maxLength(255)
+                            ->helperText('Leave blank to keep the current password.'),
+                        DateTimePicker::make('email_verified_at')
+                            ->label(__('filament.user_form.fields.email_verified_at')),
+                    ]),
+                Section::make(__('filament.user_form.sections.localization'))
+                    ->description(__('filament.user_form.sections.localization_description'))
+                    ->columns(3)
+                    ->schema([
+                        Select::make('locale')
+                            ->label(__('filament.user_form.fields.locale'))
+                            ->options((array) config('app.supported_locales', []))
+                            ->native(false),
+                        TextInput::make('timezone')
+                            ->label(__('filament.user_form.fields.timezone'))
+                            ->datalist(timezone_identifiers_list())
+                            ->maxLength(255),
+                        TextInput::make('theme_preference')
+                            ->label(__('filament.user_form.fields.theme_preference'))
+                            ->maxLength(255)
+                            ->helperText('Theme package name, e.g. "default", "dark", "clear-signal".'),
+                    ]),
+                Section::make(__('filament.user_form.sections.roles'))
+                    ->description(__('filament.user_form.sections.roles_description'))
+                    ->schema([
+                        Select::make('roles')
+                            ->label(__('filament.user_form.fields.roles'))
+                            ->relationship('roles', 'name')
+                            ->multiple()
+                            ->preload()
+                            ->searchable()
+                            // Filament's default relationship sync is a plain
+                            // BelongsToMany::sync() call, which doesn't know to fill
+                            // model_has_roles.team_id — Spatie only injects that
+                            // pivot value inside its own assignRole()/syncRoles()
+                            // helpers (see HasRoles::assignRole()). Route the save
+                            // through those instead, or every save 500s with
+                            // "Field 'team_id' doesn't have a default value".
+                            ->saveRelationshipsUsing(function (Select $component, Model $record): void {
+                                $record->syncRoles($component->getState() ?? []);
+                            }),
+                    ]),
             ]);
     }
 
