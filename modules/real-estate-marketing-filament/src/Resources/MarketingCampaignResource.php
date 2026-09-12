@@ -18,6 +18,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Liberu\RealEstate\Marketing\Application\DeleteMarketingCampaign;
+use Liberu\RealEstate\Marketing\Application\SendMarketingCampaign;
 use Liberu\RealEstate\Marketing\Application\TransitionMarketingCampaign;
 use Liberu\RealEstate\Marketing\Application\UpdateMarketingCampaignSection;
 use Liberu\RealEstate\Marketing\Domain\MarketingCampaignSection;
@@ -69,6 +70,11 @@ final class MarketingCampaignResource extends Resource
             EditAction::make(),
             Action::make('schedule')->requiresConfirmation()->action(fn (Model $record): MarketingCampaign => app(TransitionMarketingCampaign::class)->handle($record, (int) auth()->user()->current_team_id, MarketingCampaignStatus::Scheduled)),
             Action::make('activate')->requiresConfirmation()->action(fn (Model $record): MarketingCampaign => app(TransitionMarketingCampaign::class)->handle($record, (int) auth()->user()->current_team_id, MarketingCampaignStatus::Active)),
+            Action::make('send_now')
+                ->label(__('filament.marketing_campaign.actions.send_now'))
+                ->visible(fn (MarketingCampaign $record): bool => $record->status === MarketingCampaignStatus::Active && strtolower((string) $record->channel) === 'email')
+                ->requiresConfirmation()
+                ->action(fn (MarketingCampaign $record): MarketingCampaign => app(SendMarketingCampaign::class)->handle($record)),
             Action::make('update_section')
                 ->form([
                     Select::make('section')->options(collect(MarketingCampaignSection::cases())->mapWithKeys(fn (MarketingCampaignSection $section): array => [$section->value => str($section->value)->replace('_', ' ')->title()])->all())->required(),

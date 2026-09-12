@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
+use Liberu\RealEstate\Marketing\Application\DispatchScheduledCampaigns;
 use Liberu\RealEstate\Properties\Application\CheckPriceAlerts;
 use Liberu\RealEstate\Properties\Application\CheckSavedSearchAlerts;
 
@@ -16,6 +17,12 @@ Artisan::command('inspire', function () {
 // matched, so hourly is cheap and keeps alerts close to real-time.
 Schedule::call(fn () => app(CheckPriceAlerts::class)->handle())->name('check-price-alerts')->hourly()->onOneServer();
 Schedule::call(fn () => app(CheckSavedSearchAlerts::class)->handle())->name('check-saved-search-alerts')->hourly()->onOneServer();
+
+// MarketingCampaign records could be created and scheduled but never
+// actually sent anything — 'content'/'audience' were free-form JSON with no
+// dispatch path. This only sends the 'email' channel (see
+// SendMarketingCampaign); every other channel value stays inert.
+Schedule::call(fn () => app(DispatchScheduledCampaigns::class)->handle())->name('dispatch-scheduled-campaigns')->everyFiveMinutes()->onOneServer();
 
 // Database + user-upload backups (see config/backup.php for what's actually
 // included — deliberately not the codebase, which already lives in git).
