@@ -8,9 +8,12 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Liberu\Foundation\Currency\Services\CurrencyConverter;
 use Liberu\RealEstate\Properties\Models\PropertyFavorite;
+use Liberu\RealEstate\PropertiesApi\Http\Resources\Concerns\ResolvesPropertyGallery;
 
 final class PropertyResource extends JsonResource
 {
+    use ResolvesPropertyGallery;
+
     /** @return array<string, mixed> */
     public function toArray(Request $request): array
     {
@@ -44,7 +47,7 @@ final class PropertyResource extends JsonResource
             'price_per_square_meter' => $this->resource->pricePerSquareMeter(),
             'price_usd' => $this->priceUsd(),
             'disclosure_facts' => $this->resource->disclosureFacts(),
-            'gallery' => array_map(static fn ($item): array => $item->toArray(), $this->resource->galleryItems()),
+            'gallery' => array_map(static fn ($item): array => $item->toArray(), $this->resource->galleryItems($this->propertyMediaItems($this->resource))),
             'is_favorited' => $isFavorited,
         ];
     }

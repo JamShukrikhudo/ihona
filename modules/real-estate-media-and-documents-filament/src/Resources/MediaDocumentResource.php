@@ -48,9 +48,10 @@ final class MediaDocumentResource extends Resource
                 ->description(__('filament.media_document.sections.file_description'))
                 ->columns(2)
                 ->schema([
+                    TextInput::make('property_id')->label(__('filament.media_document.fields.property_id'))->numeric(),
                     Select::make('kind')->label(__('filament.media_document.fields.kind'))->options(['photo' => __('filament.media_document.kinds.photo'), 'floorplan' => __('filament.media_document.kinds.floorplan'), 'video' => __('filament.media_document.kinds.video'), 'certificate' => __('filament.media_document.kinds.certificate'), 'brochure' => __('filament.media_document.kinds.brochure'), 'document' => __('filament.media_document.kinds.document')])->required(),
                     TextInput::make('title')->label(__('filament.media_document.fields.title'))->maxLength(255),
-                    TextInput::make('path')->label(__('filament.media_document.fields.path'))->required()->maxLength(2048)->columnSpanFull(),
+                    TextInput::make('path')->label(__('filament.media_document.fields.path'))->required()->maxLength(2048)->helperText(__('filament.media_document.fields.path_help'))->columnSpanFull(),
                     TextInput::make('sort_order')->label(__('filament.media_document.fields.sort_order'))->numeric()->minValue(0),
                 ]),
         ]);
@@ -58,7 +59,7 @@ final class MediaDocumentResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table->columns([TextColumn::make('kind')->label(__('filament.media_document.fields.kind'))->badge(), TextColumn::make('title')->label(__('filament.media_document.fields.title'))->searchable(), TextColumn::make('path')->label(__('filament.media_document.fields.path'))->limit(50), TextColumn::make('sort_order')->label(__('filament.media_document.fields.sort_order'))->sortable(), TextColumn::make('retention_until')->label(__('filament.media_document.fields.retention_until'))->date(), TextColumn::make('created_at')->label(__('filament.media_document.fields.created_at'))->dateTime()->sortable()])->recordActions([
+        return $table->columns([TextColumn::make('property_id')->label(__('filament.media_document.fields.property_id'))->placeholder('—')->sortable(), TextColumn::make('kind')->label(__('filament.media_document.fields.kind'))->badge(), TextColumn::make('title')->label(__('filament.media_document.fields.title'))->searchable(), TextColumn::make('path')->label(__('filament.media_document.fields.path'))->limit(50), TextColumn::make('sort_order')->label(__('filament.media_document.fields.sort_order'))->sortable(), TextColumn::make('retention_until')->label(__('filament.media_document.fields.retention_until'))->date(), TextColumn::make('created_at')->label(__('filament.media_document.fields.created_at'))->dateTime()->sortable()])->recordActions([
             EditAction::make(),
             Action::make('brochure')->form([TextInput::make('title')->required(), TextInput::make('price')->numeric()->required(), TextInput::make('address')])->action(fn (MediaDocument $record, array $data): array => app(GeneratePropertyBrochure::class)->handle(['id' => $record->getKey(), 'title' => $data['title'], 'price' => $data['price'], 'address' => $data['address'] ?? '', 'images' => [$record->path]])),
             Action::make('reorder')->form([TextInput::make('sort_order')->numeric()->required()->minValue(0)])->action(fn (MediaDocument $record, array $data): MediaDocument => app(ReorderMediaDocument::class)->handle($record, (int) auth()->user()->current_team_id, (int) $data['sort_order'])),

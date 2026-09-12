@@ -7,6 +7,7 @@ namespace Liberu\RealEstate\PropertiesApi\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Liberu\Foundation\Currency\Services\CurrencyConverter;
+use Liberu\RealEstate\PropertiesApi\Http\Resources\Concerns\ResolvesPropertyGallery;
 
 /**
  * Anonymous, storefront-facing property shape. Deliberately narrower than
@@ -20,6 +21,8 @@ use Liberu\Foundation\Currency\Services\CurrencyConverter;
  */
 final class PublicPropertyResource extends JsonResource
 {
+    use ResolvesPropertyGallery;
+
     /** @return array<string, mixed> */
     public function toArray(Request $request): array
     {
@@ -50,7 +53,7 @@ final class PublicPropertyResource extends JsonResource
             'max_guests' => $this->resource->max_guests,
             'views_count' => $this->resource->views_count,
             'published_at' => $this->resource->published_at?->toIso8601String(),
-            'gallery' => array_map(static fn ($item): array => $item->toArray(), $this->resource->galleryItems()),
+            'gallery' => array_map(static fn ($item): array => $item->toArray(), $this->resource->galleryItems($this->propertyMediaItems($this->resource))),
         ];
     }
 

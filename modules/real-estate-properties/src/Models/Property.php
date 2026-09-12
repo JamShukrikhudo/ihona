@@ -24,6 +24,17 @@ final class Property extends Model
 
     public const EARLIEST_YEAR_BUILT = 1066;
 
+    /**
+     * Every value here must stay in sync with the Filament admin form's
+     * property_type Select (PropertyResource) and the frontend's
+     * PropertyTypeValue type (ihona-frontend/app/data/territories.ts) — all
+     * three used to drift independently. guesthouse/hostel/hunting-lodge/
+     * cottage are the ones the storefront's tourism segment and the admin
+     * form already used in production; without them here, the authenticated
+     * PropertyController API (Rule::in(array_keys(Property::TYPES))) 422'd
+     * on every one of them despite the admin UI happily saving the same
+     * value directly.
+     */
     public const TYPES = [
         'residential' => 'Residential',
         'commercial' => 'Commercial',
@@ -37,6 +48,10 @@ final class Property extends Model
         'townhouse' => 'Townhouse',
         'villa' => 'Villa',
         'hmo' => 'HMO',
+        'guesthouse' => 'Guesthouse',
+        'hostel' => 'Hostel',
+        'hunting-lodge' => 'Hunting lodge',
+        'cottage' => 'Cottage',
     ];
 
     /** @var list<string> */
