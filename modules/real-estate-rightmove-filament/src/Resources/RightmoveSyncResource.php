@@ -57,6 +57,16 @@ final class RightmoveSyncResource extends Resource
         ]);
     }
 
+    /**
+     * RightmoveSync has no team() relationship — it's scoped by a plain
+     * team_id column via scopeForTeam(), handled manually in
+     * getEloquentQuery() below (see CLAUDE.md's "Tenancy rules that bite").
+     */
+    public static function isScopedToTenant(): bool
+    {
+        return false;
+    }
+
     public static function getEloquentQuery(): Builder
     {
         $teamId = auth()->user()?->current_team_id;
