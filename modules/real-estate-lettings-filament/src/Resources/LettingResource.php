@@ -8,6 +8,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -39,10 +40,19 @@ final class LettingResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            TextInput::make('subject')->label(__('filament.letting.fields.subject'))->required()->maxLength(255),
-            Select::make('capability')->label(__('filament.letting.fields.capability'))->options(collect(LettingCapability::cases())->mapWithKeys(fn ($c) => [$c->value => __('filament.letting.capabilities.'.$c->value)])->all())->required(),
-            Select::make('status')->label(__('filament.letting.fields.status'))->options(['draft' => __('filament.letting.statuses.draft'), 'in_progress' => __('filament.letting.statuses.in_progress'), 'completed' => __('filament.letting.statuses.completed'), 'cancelled' => __('filament.letting.statuses.cancelled')])->required(),
-            Textarea::make('failure_reason')->label(__('filament.letting.fields.failure_reason'))->maxLength(2000)->columnSpanFull(),
+            Section::make(__('filament.letting.sections.basic'))
+                ->description(__('filament.letting.sections.basic_description'))
+                ->columns(2)
+                ->schema([
+                    TextInput::make('subject')->label(__('filament.letting.fields.subject'))->required()->maxLength(255)->columnSpanFull(),
+                    Select::make('capability')->label(__('filament.letting.fields.capability'))->options(collect(LettingCapability::cases())->mapWithKeys(fn ($c) => [$c->value => __('filament.letting.capabilities.'.$c->value)])->all())->required(),
+                    Select::make('status')->label(__('filament.letting.fields.status'))->options(['draft' => __('filament.letting.statuses.draft'), 'in_progress' => __('filament.letting.statuses.in_progress'), 'completed' => __('filament.letting.statuses.completed'), 'cancelled' => __('filament.letting.statuses.cancelled')])->required(),
+                ]),
+            Section::make(__('filament.letting.sections.details'))
+                ->description(__('filament.letting.sections.details_description'))
+                ->schema([
+                    Textarea::make('failure_reason')->label(__('filament.letting.fields.failure_reason'))->maxLength(2000)->columnSpanFull(),
+                ]),
         ]);
     }
 

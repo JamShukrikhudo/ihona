@@ -8,6 +8,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -39,10 +40,19 @@ final class ManagementRecordResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            TextInput::make('subject')->label(__('filament.management_record.fields.subject'))->required()->maxLength(255),
-            Select::make('capability')->label(__('filament.management_record.fields.capability'))->options(collect(ManagementCapability::cases())->mapWithKeys(fn ($c) => [$c->value => __('filament.management_record.capabilities.'.$c->value)])->all())->required(),
-            Select::make('status')->label(__('filament.management_record.fields.status'))->options(['draft' => __('filament.management_record.statuses.draft'), 'in_progress' => __('filament.management_record.statuses.in_progress'), 'completed' => __('filament.management_record.statuses.completed'), 'cancelled' => __('filament.management_record.statuses.cancelled')])->required(),
-            Textarea::make('failure_reason')->label(__('filament.management_record.fields.failure_reason'))->maxLength(2000)->columnSpanFull(),
+            Section::make(__('filament.management_record.sections.basic'))
+                ->description(__('filament.management_record.sections.basic_description'))
+                ->columns(2)
+                ->schema([
+                    TextInput::make('subject')->label(__('filament.management_record.fields.subject'))->required()->maxLength(255)->columnSpanFull(),
+                    Select::make('capability')->label(__('filament.management_record.fields.capability'))->options(collect(ManagementCapability::cases())->mapWithKeys(fn ($c) => [$c->value => __('filament.management_record.capabilities.'.$c->value)])->all())->required(),
+                    Select::make('status')->label(__('filament.management_record.fields.status'))->options(['draft' => __('filament.management_record.statuses.draft'), 'in_progress' => __('filament.management_record.statuses.in_progress'), 'completed' => __('filament.management_record.statuses.completed'), 'cancelled' => __('filament.management_record.statuses.cancelled')])->required(),
+                ]),
+            Section::make(__('filament.management_record.sections.details'))
+                ->description(__('filament.management_record.sections.details_description'))
+                ->schema([
+                    Textarea::make('failure_reason')->label(__('filament.management_record.fields.failure_reason'))->maxLength(2000)->columnSpanFull(),
+                ]),
         ]);
     }
 
