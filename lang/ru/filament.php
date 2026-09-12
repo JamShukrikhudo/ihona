@@ -26,7 +26,9 @@ return [
         'territory' => ['singular' => 'Территория', 'plural' => 'Территории'],
         'agency' => ['singular' => 'Агентство', 'plural' => 'Агентства'],
         'instruction' => ['singular' => 'Инструкция', 'plural' => 'Инструкции'],
+        'lead' => ['singular' => 'Лид', 'plural' => 'Лиды'],
         'letting' => ['singular' => 'Аренда', 'plural' => 'Аренды'],
+        'lease_agreement' => ['singular' => 'Договор аренды', 'plural' => 'Договоры аренды'],
         'listing' => ['singular' => 'Объявление', 'plural' => 'Объявления'],
         'marketing_campaign' => ['singular' => 'Маркетинговая кампания', 'plural' => 'Маркетинговые кампании'],
         'media_document' => ['singular' => 'Медиафайл', 'plural' => 'Медиафайлы'],
@@ -157,6 +159,46 @@ return [
         ],
     ],
 
+    'lead' => [
+        'sections' => [
+            'contact' => 'Контактные данные',
+            'contact_description' => 'Кто этот лид и как он к нам обратился',
+            'pipeline' => 'Воронка',
+            'pipeline_description' => 'Текущий этап, оценка и ответственный',
+            'notes' => 'Заметки',
+            'notes_description' => 'Произвольные заметки по этому лиду',
+        ],
+        'fields' => [
+            'name' => 'Имя',
+            'email' => 'Email',
+            'phone' => 'Телефон',
+            'source' => 'Источник',
+            'property_id' => 'Объект (ID)',
+            'status' => 'Статус',
+            'score' => 'Оценка',
+            'assigned_to' => 'Ответственный',
+            'notes' => 'Заметки',
+            'last_activity_at' => 'Последняя активность',
+            'created_at' => 'Создано',
+        ],
+        'sources' => [
+            'contact_form' => 'Форма обратной связи',
+            'manual' => 'Вручную',
+            'phone_call' => 'Звонок',
+            'referral' => 'Рекомендация',
+            'other' => 'Другое',
+        ],
+        'statuses' => [
+            'new' => 'Новый',
+            'contacted' => 'Связались',
+            'qualified' => 'Квалифицирован',
+            'viewing' => 'Показ',
+            'offer' => 'Предложение',
+            'won' => 'Успешно',
+            'lost' => 'Отказ',
+        ],
+    ],
+
     'listing' => [
         'sections' => [
             'details' => 'Объявление',
@@ -259,8 +301,10 @@ return [
             'file_description' => 'Тип, расположение и порядок отображения медиафайла',
         ],
         'fields' => [
+            'property_id' => 'Объект (ID)',
             'kind' => 'Тип',
             'path' => 'Путь к файлу',
+            'path_help' => 'Полный URL или путь на диске хранилища по умолчанию.',
             'title' => 'Заголовок',
             'sort_order' => 'Порядок сортировки',
             'retention_until' => 'Хранить до',
@@ -333,6 +377,9 @@ return [
             'notes' => 'Заметки',
             'created_at' => 'Создано',
         ],
+        'actions' => [
+            'send_now' => 'Отправить сейчас',
+        ],
     ],
 
     'sales_progression' => [
@@ -353,6 +400,14 @@ return [
     ],
 
     'vendor_quote' => [
+        'sections' => [
+            'basic' => 'Данные расценки',
+            'basic_description' => 'Подрядчик, объект и текущий статус расценки',
+            'details' => 'Описание работ',
+            'details_description' => 'Описание работ, на которые предоставлена расценка',
+            'financial' => 'Стоимость и срок действия',
+            'financial_description' => 'Сумма расценки, дата и срок действия',
+        ],
         'fields' => [
             'vendor_id' => 'Подрядчик (ID)',
             'property_id' => 'Объект (ID)',
@@ -372,6 +427,12 @@ return [
     ],
 
     'work_order' => [
+        'sections' => [
+            'basic' => 'Данные наряда',
+            'basic_description' => 'Заголовок, описание и вид требуемых работ',
+            'assignment' => 'Назначение и статус',
+            'assignment_description' => 'Объект, назначенный подрядчик и текущий статус',
+        ],
         'fields' => [
             'property_id' => 'Объект (ID)',
             'vendor_id' => 'Подрядчик (ID)',
@@ -417,6 +478,12 @@ return [
     ],
 
     'rental_application' => [
+        'sections' => [
+            'basic' => 'Данные заявки',
+            'basic_description' => 'Объект, заявитель и текущий статус рассмотрения',
+            'details' => 'Финансовые данные и заезд',
+            'details_description' => 'Занятость, доход и желаемая дата заезда',
+        ],
         'fields' => [
             'property_id' => 'Объект (ID)',
             'party_id' => 'Контрагент (ID)',
@@ -435,6 +502,12 @@ return [
     ],
 
     'maintenance_request' => [
+        'sections' => [
+            'basic' => 'Данные заявки',
+            'basic_description' => 'Объект, заголовок, приоритет и статус заявки на обслуживание',
+            'details' => 'Описание',
+            'details_description' => 'Полное описание сообщаемой проблемы',
+        ],
         'fields' => [
             'property_id' => 'Объект (ID)',
             'title' => 'Заголовок',
@@ -458,6 +531,14 @@ return [
     ],
 
     'inspection' => [
+        'sections' => [
+            'basic' => 'Данные инспекции',
+            'basic_description' => 'Объект, тип и статус инспекции',
+            'schedule' => 'Расписание',
+            'schedule_description' => 'Дата и время проведения инспекции',
+            'findings' => 'Результаты',
+            'findings_description' => 'Заметки, зафиксированные во время или после инспекции',
+        ],
         'fields' => [
             'property_id' => 'Объект (ID)',
             'type' => 'Тип',
@@ -533,6 +614,12 @@ return [
     ],
 
     'management_record' => [
+        'sections' => [
+            'basic' => 'Основные данные',
+            'basic_description' => 'Тема, функция и текущий статус процесса управления',
+            'details' => 'Дополнительные данные',
+            'details_description' => 'Причина сбоя, если процесс не удалось завершить',
+        ],
         'fields' => [
             'subject' => 'Тема',
             'capability' => 'Функция',
@@ -574,6 +661,12 @@ return [
     ],
 
     'letting' => [
+        'sections' => [
+            'basic' => 'Основные данные',
+            'basic_description' => 'Тема, функция и текущий статус процесса аренды',
+            'details' => 'Дополнительные данные',
+            'details_description' => 'Причина сбоя, если процесс не удалось завершить',
+        ],
         'fields' => [
             'subject' => 'Тема',
             'capability' => 'Функция',
@@ -596,6 +689,50 @@ return [
             'in_progress' => 'В работе',
             'completed' => 'Завершено',
             'cancelled' => 'Отменено',
+        ],
+    ],
+
+    'lease_agreement' => [
+        'sections' => [
+            'details' => 'Данные договора',
+            'details_description' => 'Объект и стороны, к которым относится этот договор аренды',
+            'term' => 'Срок и арендная плата',
+            'term_description' => 'Даты начала и окончания, сумма и периодичность платежей',
+            'deposit_and_signatures' => 'Депозит и подписи',
+            'deposit_and_signatures_description' => 'Данные о депозитной схеме и статусе подписания сторонами',
+            'notice_and_termination' => 'Уведомление и расторжение',
+            'notice_and_termination_description' => 'Срок уведомления и как/почему договор был завершён, если применимо',
+        ],
+        'fields' => [
+            'property_id' => 'Объект',
+            'tenant_party_id' => 'Арендатор',
+            'landlord_party_id' => 'Арендодатель',
+            'status' => 'Статус',
+            'start_date' => 'Дата начала',
+            'end_date' => 'Дата окончания',
+            'payment_frequency' => 'Периодичность платежей',
+            'monthly_rent' => 'Ежемесячная плата',
+            'security_deposit' => 'Гарантийный депозит',
+            'deposit_scheme' => 'Депозитная схема',
+            'deposit_reference' => 'Номер депозита',
+            'landlord_signed' => 'Подписано арендодателем',
+            'tenant_signed' => 'Подписано арендатором',
+            'terms' => 'Условия',
+            'notice_type' => 'Тип уведомления',
+            'notice_served_at' => 'Уведомление направлено',
+            'notice_expires_at' => 'Уведомление истекает',
+            'ended_at' => 'Дата завершения',
+            'end_reason' => 'Причина завершения',
+            'created_at' => 'Создано',
+        ],
+        'statuses' => [
+            'draft' => 'Черновик',
+            'pending_signature' => 'Ожидает подписания',
+            'active' => 'Действует',
+            'notice_served' => 'Уведомление направлено',
+            'ended' => 'Завершён',
+            'terminated' => 'Расторгнут',
+            'renewed' => 'Продлён',
         ],
     ],
 

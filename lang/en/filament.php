@@ -26,7 +26,9 @@ return [
         'territory' => ['singular' => 'Territory', 'plural' => 'Territories'],
         'agency' => ['singular' => 'Agency', 'plural' => 'Agencies'],
         'instruction' => ['singular' => 'Instruction', 'plural' => 'Instructions'],
+        'lead' => ['singular' => 'Lead', 'plural' => 'Leads'],
         'letting' => ['singular' => 'Letting', 'plural' => 'Lettings'],
+        'lease_agreement' => ['singular' => 'Lease Agreement', 'plural' => 'Lease Agreements'],
         'listing' => ['singular' => 'Listing', 'plural' => 'Listings'],
         'marketing_campaign' => ['singular' => 'Marketing Campaign', 'plural' => 'Marketing Campaigns'],
         'media_document' => ['singular' => 'Media Document', 'plural' => 'Media Documents'],
@@ -157,6 +159,46 @@ return [
         ],
     ],
 
+    'lead' => [
+        'sections' => [
+            'contact' => 'Contact Details',
+            'contact_description' => 'Who this lead is and how they reached out',
+            'pipeline' => 'Pipeline',
+            'pipeline_description' => 'Current stage, score and who is following up',
+            'notes' => 'Notes',
+            'notes_description' => 'Free-text notes about this lead',
+        ],
+        'fields' => [
+            'name' => 'Name',
+            'email' => 'Email',
+            'phone' => 'Phone',
+            'source' => 'Source',
+            'property_id' => 'Property (ID)',
+            'status' => 'Status',
+            'score' => 'Score',
+            'assigned_to' => 'Assigned to',
+            'notes' => 'Notes',
+            'last_activity_at' => 'Last activity',
+            'created_at' => 'Created at',
+        ],
+        'sources' => [
+            'contact_form' => 'Contact form',
+            'manual' => 'Manual',
+            'phone_call' => 'Phone call',
+            'referral' => 'Referral',
+            'other' => 'Other',
+        ],
+        'statuses' => [
+            'new' => 'New',
+            'contacted' => 'Contacted',
+            'qualified' => 'Qualified',
+            'viewing' => 'Viewing',
+            'offer' => 'Offer',
+            'won' => 'Won',
+            'lost' => 'Lost',
+        ],
+    ],
+
     'listing' => [
         'sections' => [
             'details' => 'Listing',
@@ -259,8 +301,10 @@ return [
             'file_description' => 'Type, location and display order of the media file',
         ],
         'fields' => [
+            'property_id' => 'Property (ID)',
             'kind' => 'Kind',
             'path' => 'File path',
+            'path_help' => 'A full URL, or a path on the default storage disk.',
             'title' => 'Title',
             'sort_order' => 'Sort order',
             'retention_until' => 'Retention until',
@@ -333,6 +377,9 @@ return [
             'notes' => 'Notes',
             'created_at' => 'Created at',
         ],
+        'actions' => [
+            'send_now' => 'Send now',
+        ],
     ],
 
     'sales_progression' => [
@@ -353,6 +400,14 @@ return [
     ],
 
     'vendor_quote' => [
+        'sections' => [
+            'basic' => 'Quote Details',
+            'basic_description' => 'Vendor, property and current status of the quote',
+            'details' => 'Work Description',
+            'details_description' => 'Description of the work being quoted',
+            'financial' => 'Cost & Validity',
+            'financial_description' => 'Quoted amount, quote date and validity period',
+        ],
         'fields' => [
             'vendor_id' => 'Vendor (ID)',
             'property_id' => 'Property (ID)',
@@ -372,6 +427,12 @@ return [
     ],
 
     'work_order' => [
+        'sections' => [
+            'basic' => 'Work Order Details',
+            'basic_description' => 'Title, description and type of work required',
+            'assignment' => 'Assignment & Status',
+            'assignment_description' => 'Property, assigned vendor and current status',
+        ],
         'fields' => [
             'property_id' => 'Property (ID)',
             'vendor_id' => 'Vendor (ID)',
@@ -417,6 +478,12 @@ return [
     ],
 
     'rental_application' => [
+        'sections' => [
+            'basic' => 'Application Details',
+            'basic_description' => 'Property, applicant and current review status',
+            'details' => 'Financial & Move-in Details',
+            'details_description' => 'Employment, income and desired move-in date',
+        ],
         'fields' => [
             'property_id' => 'Property (ID)',
             'party_id' => 'Party (ID)',
@@ -435,6 +502,12 @@ return [
     ],
 
     'maintenance_request' => [
+        'sections' => [
+            'basic' => 'Request Details',
+            'basic_description' => 'Property, title, priority and status of the maintenance request',
+            'details' => 'Description',
+            'details_description' => 'Full description of the issue being reported',
+        ],
         'fields' => [
             'property_id' => 'Property (ID)',
             'title' => 'Title',
@@ -458,6 +531,14 @@ return [
     ],
 
     'inspection' => [
+        'sections' => [
+            'basic' => 'Inspection Details',
+            'basic_description' => 'Property, type and status of this inspection',
+            'schedule' => 'Schedule',
+            'schedule_description' => 'When the inspection is scheduled to take place',
+            'findings' => 'Findings',
+            'findings_description' => 'Notes recorded during or after the inspection',
+        ],
         'fields' => [
             'property_id' => 'Property (ID)',
             'type' => 'Type',
@@ -533,6 +614,12 @@ return [
     ],
 
     'management_record' => [
+        'sections' => [
+            'basic' => 'Basic Details',
+            'basic_description' => 'Subject, capability and current status of this management workflow',
+            'details' => 'Additional Details',
+            'details_description' => 'Notes on failure, if the workflow could not be completed',
+        ],
         'fields' => [
             'subject' => 'Subject',
             'capability' => 'Capability',
@@ -574,6 +661,12 @@ return [
     ],
 
     'letting' => [
+        'sections' => [
+            'basic' => 'Basic Details',
+            'basic_description' => 'Subject, capability and current status of this letting workflow',
+            'details' => 'Additional Details',
+            'details_description' => 'Notes on failure, if the workflow could not be completed',
+        ],
         'fields' => [
             'subject' => 'Subject',
             'capability' => 'Capability',
@@ -596,6 +689,50 @@ return [
             'in_progress' => 'In progress',
             'completed' => 'Completed',
             'cancelled' => 'Cancelled',
+        ],
+    ],
+
+    'lease_agreement' => [
+        'sections' => [
+            'details' => 'Agreement Details',
+            'details_description' => 'The property and parties this tenancy agreement covers',
+            'term' => 'Term & Rent',
+            'term_description' => 'Start and end dates, rent amount and payment frequency',
+            'deposit_and_signatures' => 'Deposit & Signatures',
+            'deposit_and_signatures_description' => 'Deposit scheme details and signing status of both parties',
+            'notice_and_termination' => 'Notice & Termination',
+            'notice_and_termination_description' => 'Notice period and how/why the agreement ended, if applicable',
+        ],
+        'fields' => [
+            'property_id' => 'Property',
+            'tenant_party_id' => 'Tenant',
+            'landlord_party_id' => 'Landlord',
+            'status' => 'Status',
+            'start_date' => 'Start date',
+            'end_date' => 'End date',
+            'payment_frequency' => 'Payment frequency',
+            'monthly_rent' => 'Monthly rent',
+            'security_deposit' => 'Security deposit',
+            'deposit_scheme' => 'Deposit scheme',
+            'deposit_reference' => 'Deposit reference',
+            'landlord_signed' => 'Landlord signed',
+            'tenant_signed' => 'Tenant signed',
+            'terms' => 'Terms',
+            'notice_type' => 'Notice type',
+            'notice_served_at' => 'Notice served at',
+            'notice_expires_at' => 'Notice expires at',
+            'ended_at' => 'Ended at',
+            'end_reason' => 'End reason',
+            'created_at' => 'Created at',
+        ],
+        'statuses' => [
+            'draft' => 'Draft',
+            'pending_signature' => 'Pending signature',
+            'active' => 'Active',
+            'notice_served' => 'Notice served',
+            'ended' => 'Ended',
+            'terminated' => 'Terminated',
+            'renewed' => 'Renewed',
         ],
     ],
 
