@@ -12,6 +12,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Liberu\RealEstate\Leads\Domain\LeadSource;
@@ -90,7 +91,11 @@ final class LeadResource extends Resource
             ->filters([
                 SelectFilter::make('status')->label(__('filament.lead.fields.status'))->options(collect(LeadStatus::cases())->mapWithKeys(fn (LeadStatus $status): array => [$status->value => __('filament.lead.statuses.'.$status->value)])->all()),
             ])
-            ->defaultGroup('status')
+            ->defaultGroup(
+                Group::make('status')
+                    ->label(__('filament.lead.fields.status'))
+                    ->getTitleFromRecordUsing(fn (Lead $record): string => __('filament.lead.statuses.'.$record->status->value)),
+            )
             ->defaultSort('last_activity_at', 'desc');
     }
 
