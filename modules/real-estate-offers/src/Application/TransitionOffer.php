@@ -6,9 +6,11 @@ namespace Liberu\RealEstate\Offers\Application;
 
 use Illuminate\Support\Facades\Context;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Validation\ValidationException;
 use Liberu\Foundation\Audit\Contracts\AuditRecorder;
 use Liberu\Foundation\Audit\Support\AuditContext;
+use Liberu\RealEstate\Offers\Domain\Events\OfferStatusChanged;
 use Liberu\RealEstate\Offers\Domain\OfferStatus;
 use Liberu\RealEstate\Offers\Models\Offer;
 
@@ -44,6 +46,11 @@ final class TransitionOffer
                     correlationId: Context::get('correlation_id'),
                 ),
             );
+
+            // Submitting, countering or accepting an offer is a pipeline
+            // signal for real-estate-leads' TransitionLeadFromOffer, which
+            // advances (or wins) the matching lead without a manual sync.
+            Event::dispatch(new OfferStatusChanged($offer, $before->status, $status));
 
             return $offer->fresh();
         });

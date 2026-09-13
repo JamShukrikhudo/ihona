@@ -11,7 +11,9 @@
         "liberusoftware/module-manager": "^1.0",
         "liberusoftware/organizations-teams": "^1.0",
         "liberusoftware/real-estate-parties": "^1.0",
-        "liberusoftware/real-estate-properties": "^1.0"
+        "liberusoftware/real-estate-properties": "^1.0",
+        "liberusoftware/real-estate-viewings": "^1.0",
+        "liberusoftware/real-estate-offers": "^1.0"
     },
     "autoload": {
         "psr-4": {
