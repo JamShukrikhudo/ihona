@@ -35,11 +35,22 @@ return [
             'key' => env('REVERB_APP_KEY'),
             'secret' => env('REVERB_APP_SECRET'),
             'app_id' => env('REVERB_APP_ID'),
+            // This 'options' block is the SERVER-side trigger API (Laravel
+            // POSTing to /apps/{id}/events to publish an event) — not the
+            // browser's websocket connection, which uses REVERB_HOST/PORT/
+            // SCHEME directly. Pointing this at REVERB_HOST sends the
+            // request back out through ihona.tj/nginx, which has no route
+            // for /apps/* (only /reverb/ is proxied, for the websocket
+            // itself) and serves the app's own 404 HTML back to the Pusher
+            // client — "Pusher error: <!DOCTYPE html>" (reproduced and
+            // fixed on ihona-crm, same bug, same fix). Talk to Reverb
+            // directly; it's the same box, no need to round-trip through
+            // nginx/TLS for a server-to-server call.
             'options' => [
-                'host' => env('REVERB_HOST'),
-                'port' => env('REVERB_PORT', 443),
-                'scheme' => env('REVERB_SCHEME', 'https'),
-                'useTLS' => env('REVERB_SCHEME', 'https') === 'https',
+                'host' => env('REVERB_SERVER_HOST', '127.0.0.1'),
+                'port' => env('REVERB_SERVER_PORT', 8081),
+                'scheme' => 'http',
+                'useTLS' => false,
             ],
             'client_options' => [
                 // Guzzle client options: https://docs.guzzlephp.org/en/stable/request-options.html
