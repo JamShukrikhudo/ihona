@@ -184,42 +184,32 @@ final class PropertyResource extends Resource
                     TextInput::make('insurance_premium')->label(__('filament.property.fields.insurance_premium'))->numeric()->minValue(0),
                     DatePicker::make('insurance_expiry_date')->label(__('filament.property.fields.insurance_expiry_date')),
                 ]),
-            Section::make('🏔️ Региональные особенности')
+            Section::make('🏔️ '.__('filament.property.sections.regional'))
                 ->columns(2)
                 ->schema([
                     Toggle::make('has_generator')
-                        ->label('Генератор')
+                        ->label(__('filament.property.fields.has_generator'))
                         ->default(false),
                     Toggle::make('has_wifi')
-                        ->label('Wi-Fi')
+                        ->label(__('filament.property.fields.has_wifi'))
                         ->default(false),
                     Toggle::make('has_parking')
-                        ->label('Парковка')
+                        ->label(__('filament.property.fields.has_parking'))
                         ->default(false),
                     Select::make('mountain_view')
-                        ->label('Вид на горы')
-                        ->options([
-                            'pamir' => 'Памир',
-                            'fan' => 'Фанские горы',
-                            'hissar' => 'Гиссарский хребет',
-                            'other' => 'Другие',
-                        ])
+                        ->label(__('filament.property.fields.mountain_view'))
+                        ->options(collect(['pamir', 'fan', 'hissar', 'other'])->mapWithKeys(fn (string $value): array => [$value => __('filament.property.mountain_views.'.$value)])->all())
                         ->nullable(),
                     TextInput::make('altitude')
-                        ->label('Высота над уровнем моря (м)')
+                        ->label(__('filament.property.fields.altitude'))
                         ->numeric()
                         ->nullable(),
                     Select::make('water_source')
-                        ->label('Источник воды')
-                        ->options([
-                            'well' => 'Скважина',
-                            'river' => 'Река',
-                            'spring' => 'Родник',
-                            'other' => 'Другой',
-                        ])
+                        ->label(__('filament.property.fields.water_source'))
+                        ->options(collect(['well', 'river', 'spring', 'other'])->mapWithKeys(fn (string $value): array => [$value => __('filament.property.water_sources.'.$value)])->all())
                         ->nullable(),
                     TextInput::make('max_guests')
-                        ->label('Максимальное количество гостей')
+                        ->label(__('filament.property.fields.max_guests'))
                         ->numeric()
                         ->minValue(1)
                         ->nullable(),
@@ -283,50 +273,65 @@ final class PropertyResource extends Resource
             ->recordActions([
                 EditAction::make(),
                 Action::make('favorite')
-                    ->label('Toggle favorite')
+                    ->label(__('filament.property.actions.favorite'))
                     ->action(fn (Property $record): bool => app(TogglePropertyFavorite::class)->handle($record->team_id, auth()->id(), $record->getKey())),
                 Action::make('similar')
-                    ->label('Similar properties')
+                    ->label(__('filament.property.actions.similar'))
                     ->action(function (Property $record): void {
                         Notification::make()
-                            ->title($record->similarProperties()->count().' similar properties found')
+                            ->title(__('filament.property.actions.similar_found', ['count' => $record->similarProperties()->count()]))
                             ->success()
                             ->send();
                     }),
                 Action::make('tax_estimate')
-                    ->label('Estimate tax')
+                    ->label(__('filament.property.actions.tax_estimate'))
                     ->form([
-                        Select::make('buyer_type')->options([
-                            'first_time_buyer' => 'First-time buyer',
-                            'home_mover' => 'Home mover',
-                            'additional_property' => 'Additional property',
-                        ])->required()->default('home_mover'),
-                        TextInput::make('country')->required()->maxLength(80)->default('GB'),
+                        Select::make('buyer_type')
+                            ->label(__('filament.property.fields.buyer_type'))
+                            ->options(collect(['first_time_buyer', 'home_mover', 'additional_property'])->mapWithKeys(fn (string $value): array => [$value => __('filament.property.buyer_types.'.$value)])->all())
+                            ->required()
+                            ->default('home_mover'),
+                        TextInput::make('country')->label(__('filament.property.fields.country'))->required()->maxLength(80)->default('GB'),
                     ])
                     ->action(function (Property $record, array $data): void {
                         $estimate = app(EstimatePropertyTax::class)->handle((float) $record->price, (string) $data['country'], $data);
                         Notification::make()
-                            ->title('Estimated tax: '.number_format((float) $estimate['total_tax'], 2))
+                            ->title(__('filament.property.actions.tax_estimated', ['amount' => number_format((float) $estimate['total_tax'], 2)]))
                             ->warning()
                             ->send();
                     })
                     ->visible(fn (Property $record): bool => $record->price !== null),
-                Action::make('unit')->form([TextInput::make('label')->required()->maxLength(80), TextInput::make('bedrooms')->numeric()->minValue(0), TextInput::make('bathrooms')->numeric()->minValue(0), TextInput::make('area_sqft')->numeric()->minValue(0)])->action(fn (Property $record, array $data): mixed => app(UpsertPropertyUnit::class)->handle($record, (int) auth()->user()->current_team_id, $data)),
-                Action::make('key')->form([TextInput::make('key_reference')->required()->maxLength(80), TextInput::make('quantity')->numeric()->required()->minValue(1), Textarea::make('notes')])->action(fn (Property $record, array $data): mixed => app(RecordPropertyKey::class)->handle($record, (int) auth()->user()->current_team_id, $data)),
+                Action::make('unit')
+                    ->label(__('filament.property.actions.unit'))
+                    ->form([
+                        TextInput::make('label')->label(__('filament.property.fields.label'))->required()->maxLength(80),
+                        TextInput::make('bedrooms')->label(__('filament.property.fields.bedrooms'))->numeric()->minValue(0),
+                        TextInput::make('bathrooms')->label(__('filament.property.fields.bathrooms'))->numeric()->minValue(0),
+                        TextInput::make('area_sqft')->label(__('filament.property.fields.area_sqft'))->numeric()->minValue(0),
+                    ])
+                    ->action(fn (Property $record, array $data): mixed => app(UpsertPropertyUnit::class)->handle($record, (int) auth()->user()->current_team_id, $data)),
+                Action::make('key')
+                    ->label(__('filament.property.actions.key'))
+                    ->form([
+                        TextInput::make('key_reference')->label(__('filament.property.fields.key_reference'))->required()->maxLength(80),
+                        TextInput::make('quantity')->label(__('filament.property.fields.quantity'))->numeric()->required()->minValue(1),
+                        Textarea::make('notes')->label(__('filament.property.fields.notes')),
+                    ])
+                    ->action(fn (Property $record, array $data): mixed => app(RecordPropertyKey::class)->handle($record, (int) auth()->user()->current_team_id, $data)),
                 Action::make('available')
-                    ->label('Publish')
+                    ->label(__('filament.property.actions.publish'))
                     ->action(fn (Property $record): Property => app(TransitionProperty::class)->handle($record->team_id, auth()->id(), $record->getKey(), PropertyStatus::Available))
                     ->visible(fn (Property $record): bool => $record->status === PropertyStatus::Draft),
                 Action::make('under_offer')
-                    ->label('Mark under offer')
+                    ->label(__('filament.property.actions.under_offer'))
                     ->action(fn (Property $record): Property => app(TransitionProperty::class)->handle($record->team_id, auth()->id(), $record->getKey(), PropertyStatus::UnderOffer))
                     ->visible(fn (Property $record): bool => $record->status === PropertyStatus::Available),
                 Action::make('sold')
-                    ->label('Mark sold')
+                    ->label(__('filament.property.actions.sold'))
                     ->action(fn (Property $record): Property => app(TransitionProperty::class)->handle($record->team_id, auth()->id(), $record->getKey(), PropertyStatus::Sold))
                     ->visible(fn (Property $record): bool => in_array($record->status, [PropertyStatus::Available, PropertyStatus::UnderOffer], true)),
                 Action::make('withdraw')
-                    ->label('Withdraw')
+                    ->label(__('filament.property.actions.withdraw'))
                     ->action(fn (Property $record): Property => app(TransitionProperty::class)->handle($record->team_id, auth()->id(), $record->getKey(), PropertyStatus::Withdrawn))
                     ->visible(fn (Property $record): bool => in_array($record->status, [PropertyStatus::Draft, PropertyStatus::Available, PropertyStatus::UnderOffer], true)),
                 DeleteAction::make(),
