@@ -19,7 +19,13 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => [env('NUXT_APP_URL', 'http://localhost:3000'), 'https://ihona.tj'],
+    'allowed_origins' => [
+        env('NUXT_APP_URL', 'http://localhost:3000'),
+        'https://ihona.tj',
+        // ihona-agent-crm — the separate Nuxt B2B cabinet (sibling repo),
+        // deployed at its own subdomain, consuming this same REST API.
+        env('AGENT_CRM_URL', 'https://agent.ihona.tj'),
+    ],
 
     'allowed_origins_patterns' => [],
 
