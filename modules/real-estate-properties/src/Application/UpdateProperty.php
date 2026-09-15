@@ -56,6 +56,7 @@ final class UpdateProperty
                 'walkability_updated_at',
                 'virtual_tour_url', 'virtual_tour_provider', 'model_3d_url', 'floor_plan_data', 'floor_plan_image', 'property_type', 'deal_type', 'property_category_id', 'property_template_id', 'territory_id',
                 'characteristics', 'utilities', 'features', 'list_date', 'sold_date', 'last_synced_at', 'is_featured',
+                'has_generator', 'has_wifi', 'has_parking', 'mountain_view', 'altitude', 'water_source', 'max_guests',
                 'live_tour_available', 'holographic_tour_url', 'holographic_provider', 'holographic_metadata',
                 'holographic_enabled', 'energy_rating_date', 'insurance_policy_id',
                 'insurance_coverage_amount', 'insurance_premium', 'insurance_expiry_date', 'jupix_id',
