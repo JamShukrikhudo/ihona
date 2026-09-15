@@ -13,6 +13,7 @@ use Laravel\Fortify\Contracts\CreatesNewUsers;
 use Laravel\Sanctum\PersonalAccessToken;
 use Liberu\Foundation\Identity\Jobs\SyncNewUserToCrm;
 use Liberu\Foundation\Organizations\Models\Team;
+use Spatie\Permission\PermissionRegistrar;
 
 final class AuthTokenController
 {
@@ -93,6 +94,7 @@ final class AuthTokenController
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
+                'roles' => $this->roleNames($user),
             ],
         ], 201);
     }
@@ -141,6 +143,40 @@ final class AuthTokenController
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
+                'roles' => $this->roleNames($user),
+            ],
+        ]);
+    }
+
+    /**
+     * Role checks elsewhere on User route through team-agnostic helpers
+     * because Spatie's own hasRole()/getRoleNames() are bound to whichever
+     * team the permissions registrar is currently pointed at — which is
+     * nothing, here, since this runs outside any Filament panel's tenant
+     * middleware. Point it at the user's own team before reading their
+     * roles, same as shield:generate and role assignment already must.
+     */
+    private function roleNames(mixed $user): array
+    {
+        if ($user->current_team_id === null) {
+            return [];
+        }
+
+        app(PermissionRegistrar::class)->setPermissionsTeamId($user->current_team_id);
+
+        return $user->getRoleNames()->all();
+    }
+
+    public function show(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        return response()->json([
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'roles' => $this->roleNames($user),
             ],
         ]);
     }
