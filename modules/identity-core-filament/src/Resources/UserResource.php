@@ -20,6 +20,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Liberu\Foundation\IdentityFilament\Clusters\UsersCluster;
 use Liberu\Foundation\IdentityFilament\Resources\UserResource\Pages\CreateUser;
 use Liberu\Foundation\IdentityFilament\Resources\UserResource\Pages\EditUser;
 use Liberu\Foundation\IdentityFilament\Resources\UserResource\Pages\ListUsers;
@@ -40,6 +41,8 @@ class UserResource extends Resource
     {
         return __('filament.resources.user.plural');
     }
+
+    protected static ?string $cluster = UsersCluster::class;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-user-group';
 
