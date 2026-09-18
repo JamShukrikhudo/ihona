@@ -10,7 +10,7 @@ final class IdentityFilamentPlugin implements Plugin
 {
     public static function make(): self
     {
-        return new self;
+        return new self();
     }
 
     public function getId(): string
@@ -22,14 +22,18 @@ final class IdentityFilamentPlugin implements Plugin
     {
         $panel->resources([UserResource::class]);
 
-        // Filament has no array-based clusters() registration the way
-        // resources()/pages() do — discoverClusters() (a directory scan) is
-        // the only entry point. Calling it here, from the plugin, keeps the
-        // host unaware of this package's internal Clusters/ directory,
-        // exactly like resources() above — the alternative (the host
-        // calling discoverClusters() once per package) would mean growing a
-        // second, parallel per-package registry outside ModulePlugins.
-        $panel->discoverClusters(in: __DIR__.'/Clusters', for: 'Liberu\Foundation\IdentityFilament\Clusters');
+        // UsersCluster lives in liberusoftware/filament-clusters-contracts,
+        // not this package — it's shared with organizations-teams-filament's
+        // TeamResource, and a Cluster has no runtime setter (unlike
+        // navigationGroup()/navigationSort()), so both resources must point
+        // at the exact same class without depending on each other. Both
+        // packages call discoverClusters() on this same vendor directory;
+        // Filament discovers by class name, so registering it twice is a
+        // harmless no-op the second time.
+        $panel->discoverClusters(
+            in: base_path('vendor/liberusoftware/filament-clusters-contracts/src'),
+            for: 'Liberu\FilamentClusters',
+        );
     }
 
     public function boot(Panel $panel): void {}

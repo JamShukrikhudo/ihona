@@ -7,8 +7,15 @@
     "php": "^8.5",
     "filament/filament": "^5.1",
     "liberusoftware/organizations-teams": "^1.0",
-    "liberusoftware/roles-permissions": "^1.0"
+    "liberusoftware/roles-permissions": "^1.0",
+    "liberusoftware/filament-clusters-contracts": "dev-main"
   },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/JamShukrikhudo/filament-clusters-contracts"
+    }
+  ],
   "autoload": {
     "psr-4": {
       "Liberu\\Foundation\\IdentityFilament\\": "src/"

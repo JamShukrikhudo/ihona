@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d9242550ffee52d6b7d65d2af897f524",
+    "content-hash": "389489d8fd5a0046df41034ba07d920e",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -9068,6 +9068,41 @@
             "time": "2026-08-23T02:08:11+00:00"
         },
         {
+            "name": "liberusoftware/filament-clusters-contracts",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/JamShukrikhudo/filament-clusters-contracts.git",
+                "reference": "edbe74cb5dbabe025467ae25e9173fd2d25add0e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/JamShukrikhudo/filament-clusters-contracts/zipball/edbe74cb5dbabe025467ae25e9173fd2d25add0e",
+                "reference": "edbe74cb5dbabe025467ae25e9173fd2d25add0e",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^5.0",
+                "php": "^8.5"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\FilamentClusters\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Shared Filament Cluster classes for grouping resources/pages across independent Liberu -filament packages without creating a dependency between them.",
+            "support": {
+                "source": "https://github.com/JamShukrikhudo/filament-clusters-contracts/tree/main",
+                "issues": "https://github.com/JamShukrikhudo/filament-clusters-contracts/issues"
+            },
+            "time": "2026-09-18T18:00:00+00:00"
+        },
+        {
             "name": "liberusoftware/files-media",
             "version": "1.4.1",
             "dist": {
@@ -9358,10 +9393,12 @@
             "dist": {
                 "type": "path",
                 "url": "modules/identity-core-filament",
-                "reference": "6b910864e2ab9451e0c750e2c96fd0cc16107225"
+                "reference": "4e4be5dbf87c963c2be4ebab2884be94ccf5af1c"
             },
             "require": {
                 "filament/filament": "^5.1",
+                "liberusoftware/filament-clusters-contracts": "dev-main",
+                "liberusoftware/organizations-teams": "^1.0",
                 "liberusoftware/roles-permissions": "^1.0",
                 "php": "^8.5"
             },
@@ -11042,10 +11079,11 @@
             "dist": {
                 "type": "path",
                 "url": "modules/organizations-teams-filament",
-                "reference": "eee036215ae415e3348bb72259a8897e5e0471fa"
+                "reference": "b905bad4ea8ddb7de68d4cec16c62e1bb4cb0d7a"
             },
             "require": {
                 "filament/filament": "^5.1",
+                "liberusoftware/filament-clusters-contracts": "dev-main",
                 "liberusoftware/organizations-teams": "^1.0",
                 "php": "^8.5"
             },
@@ -29569,7 +29607,9 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {},
+    "stability-flags": {
+        "liberusoftware/filament-clusters-contracts": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

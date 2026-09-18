@@ -20,7 +20,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Liberu\Foundation\IdentityFilament\Clusters\UsersCluster;
+use Liberu\FilamentClusters\UsersCluster;
 use Liberu\Foundation\IdentityFilament\Resources\UserResource\Pages\CreateUser;
 use Liberu\Foundation\IdentityFilament\Resources\UserResource\Pages\EditUser;
 use Liberu\Foundation\IdentityFilament\Resources\UserResource\Pages\ListUsers;
