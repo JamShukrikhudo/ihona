@@ -37,6 +37,9 @@ return [
         'portal_report' => ['singular' => 'Portal hisoboti', 'plural' => 'Portal hisobotlari'],
         'party' => ['singular' => 'Taraf', 'plural' => 'Taraflar'],
         'property_category' => ['singular' => 'Mulk toifasi', 'plural' => 'Mulk toifalari'],
+        'region' => ['singular' => 'Viloyat', 'plural' => 'Viloyatlar'],
+        'city' => ['singular' => 'Shahar', 'plural' => 'Shaharlar'],
+        'district' => ['singular' => 'Tuman', 'plural' => 'Tumanlar'],
         'property_template' => ['singular' => 'Mulk shabloni', 'plural' => 'Mulk shablonlari'],
         'property' => ['singular' => 'Ko‘chmas mulk', 'plural' => 'Ko‘chmas mulklar'],
         'management_record' => ['singular' => 'Boshqaruv yozuvi', 'plural' => 'Boshqaruv yozuvlari'],
@@ -876,6 +879,41 @@ return [
         'fields' => [
             'name' => 'Nomi',
             'slug' => 'Slag (URL)',
+            'created_at' => 'Yaratilgan sana',
+        ],
+    ],
+    'region' => [
+        'sections' => [
+            'details' => 'Viloyat tafsilotlari',
+            'details_description' => 'Viloyatning nomi va slagi',
+        ],
+        'fields' => [
+            'name' => 'Nomi',
+            'slug' => 'Slag (URL)',
+            'created_at' => 'Yaratilgan sana',
+        ],
+    ],
+    'city' => [
+        'sections' => [
+            'details' => 'Shahar tafsilotlari',
+            'details_description' => 'Nomi, slagi va viloyati',
+        ],
+        'fields' => [
+            'name' => 'Nomi',
+            'slug' => 'Slag (URL)',
+            'region_id' => 'Viloyat',
+            'created_at' => 'Yaratilgan sana',
+        ],
+    ],
+    'district' => [
+        'sections' => [
+            'details' => 'Tuman tafsilotlari',
+            'details_description' => 'Nomi, slagi va shahri',
+        ],
+        'fields' => [
+            'name' => 'Nomi',
+            'slug' => 'Slag (URL)',
+            'city_id' => 'Shahar',
             'created_at' => 'Yaratilgan sana',
         ],
     ],

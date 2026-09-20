@@ -6,10 +6,13 @@ namespace Liberu\RealEstate\PropertiesFilament;
 
 use Filament\Contracts\Plugin;
 use Filament\Panel;
+use Liberu\RealEstate\PropertiesFilament\Resources\CityResource;
+use Liberu\RealEstate\PropertiesFilament\Resources\DistrictResource;
 use Liberu\RealEstate\PropertiesFilament\Resources\PropertyCategoryResource;
 use Liberu\RealEstate\PropertiesFilament\Resources\PropertyResource;
 use Liberu\RealEstate\PropertiesFilament\Resources\PropertySavedSearchResource;
 use Liberu\RealEstate\PropertiesFilament\Resources\PropertyTemplateResource;
+use Liberu\RealEstate\PropertiesFilament\Resources\RegionResource;
 
 final class PropertiesFilamentPlugin implements Plugin
 {
@@ -30,6 +33,9 @@ final class PropertiesFilamentPlugin implements Plugin
             PropertyCategoryResource::class,
             PropertyTemplateResource::class,
             PropertySavedSearchResource::class,
+            RegionResource::class,
+            CityResource::class,
+            DistrictResource::class,
         ]);
     }
 

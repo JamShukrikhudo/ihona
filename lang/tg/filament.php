@@ -37,6 +37,9 @@ return [
         'portal_report' => ['singular' => 'Гузориши портал', 'plural' => 'Гузоришҳои портал'],
         'party' => ['singular' => 'Тараф', 'plural' => 'Тарафҳо'],
         'property_category' => ['singular' => 'Категорияи амвол', 'plural' => 'Категорияҳои амвол'],
+        'region' => ['singular' => 'Вилоят', 'plural' => 'Вилоятҳо'],
+        'city' => ['singular' => 'Шаҳр', 'plural' => 'Шаҳрҳо'],
+        'district' => ['singular' => 'Ноҳия', 'plural' => 'Ноҳияҳо'],
         'property_template' => ['singular' => 'Шаблони амвол', 'plural' => 'Шаблонҳои амвол'],
         'property' => ['singular' => 'Амволи ғайриманқул', 'plural' => 'Амволҳои ғайриманқул'],
         'management_record' => ['singular' => 'Сабти идоракунӣ', 'plural' => 'Сабтҳои идоракунӣ'],
@@ -876,6 +879,41 @@ return [
         'fields' => [
             'name' => 'Ном',
             'slug' => 'Слаг (URL)',
+            'created_at' => 'Санаи эҷод',
+        ],
+    ],
+    'region' => [
+        'sections' => [
+            'details' => 'Тафсилоти вилоят',
+            'details_description' => 'Ном ва слаги вилоят',
+        ],
+        'fields' => [
+            'name' => 'Ном',
+            'slug' => 'Слаг (URL)',
+            'created_at' => 'Санаи эҷод',
+        ],
+    ],
+    'city' => [
+        'sections' => [
+            'details' => 'Тафсилоти шаҳр',
+            'details_description' => 'Ном, слаг ва вилоят',
+        ],
+        'fields' => [
+            'name' => 'Ном',
+            'slug' => 'Слаг (URL)',
+            'region_id' => 'Вилоят',
+            'created_at' => 'Санаи эҷод',
+        ],
+    ],
+    'district' => [
+        'sections' => [
+            'details' => 'Тафсилоти ноҳия',
+            'details_description' => 'Ном, слаг ва шаҳр',
+        ],
+        'fields' => [
+            'name' => 'Ном',
+            'slug' => 'Слаг (URL)',
+            'city_id' => 'Шаҳр',
             'created_at' => 'Санаи эҷод',
         ],
     ],

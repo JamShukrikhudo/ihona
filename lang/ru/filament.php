@@ -37,6 +37,9 @@ return [
         'portal_report' => ['singular' => 'Отчёт портала', 'plural' => 'Отчёты порталов'],
         'party' => ['singular' => 'Контрагент', 'plural' => 'Контрагенты'],
         'property_category' => ['singular' => 'Категория объекта', 'plural' => 'Категории объектов'],
+        'region' => ['singular' => 'Область', 'plural' => 'Области'],
+        'city' => ['singular' => 'Город', 'plural' => 'Города'],
+        'district' => ['singular' => 'Район', 'plural' => 'Районы'],
         'property_template' => ['singular' => 'Шаблон объекта', 'plural' => 'Шаблоны объектов'],
         'property' => ['singular' => 'Объект недвижимости', 'plural' => 'Объекты недвижимости'],
         'management_record' => ['singular' => 'Запись управления', 'plural' => 'Записи управления'],
@@ -876,6 +879,41 @@ return [
         'fields' => [
             'name' => 'Название',
             'slug' => 'Слаг (URL)',
+            'created_at' => 'Создано',
+        ],
+    ],
+    'region' => [
+        'sections' => [
+            'details' => 'Основные данные',
+            'details_description' => 'Название и слаг области',
+        ],
+        'fields' => [
+            'name' => 'Название',
+            'slug' => 'Слаг (URL)',
+            'created_at' => 'Создано',
+        ],
+    ],
+    'city' => [
+        'sections' => [
+            'details' => 'Основные данные',
+            'details_description' => 'Название, слаг и область',
+        ],
+        'fields' => [
+            'name' => 'Название',
+            'slug' => 'Слаг (URL)',
+            'region_id' => 'Область',
+            'created_at' => 'Создано',
+        ],
+    ],
+    'district' => [
+        'sections' => [
+            'details' => 'Основные данные',
+            'details_description' => 'Название, слаг и город',
+        ],
+        'fields' => [
+            'name' => 'Название',
+            'slug' => 'Слаг (URL)',
+            'city_id' => 'Город',
             'created_at' => 'Создано',
         ],
     ],

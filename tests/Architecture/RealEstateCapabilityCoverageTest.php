@@ -419,7 +419,18 @@ it('keeps published news available through presentation adapters', function (): 
 it('keeps Filament resources tenant-scoped and lifecycle-delegated', function (): void {
     $root = dirname(__DIR__, 2);
 
+    // Region/City/District are deliberately global reference data (geography
+    // isn't a fact about which team lists in it) — each declares
+    // isScopedToTenant(): false instead of a per-team getEloquentQuery().
+    $globalResources = ['RegionResource.php', 'CityResource.php', 'DistrictResource.php'];
+
     foreach (glob("{$root}/modules/real-estate-*-filament/src/Resources/*Resource.php") ?: [] as $resourceFile) {
+        if (in_array(basename($resourceFile), $globalResources, true)) {
+            expect(file_get_contents($resourceFile))->toContain('isScopedToTenant');
+
+            continue;
+        }
+
         $resource = file_get_contents($resourceFile);
 
         expect($resource)->toContain('getEloquentQuery')

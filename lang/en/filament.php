@@ -37,6 +37,9 @@ return [
         'portal_report' => ['singular' => 'Portal Report', 'plural' => 'Portal Reports'],
         'party' => ['singular' => 'Party', 'plural' => 'Parties'],
         'property_category' => ['singular' => 'Property Category', 'plural' => 'Property Categories'],
+        'region' => ['singular' => 'Region', 'plural' => 'Regions'],
+        'city' => ['singular' => 'City', 'plural' => 'Cities'],
+        'district' => ['singular' => 'District', 'plural' => 'Districts'],
         'property_template' => ['singular' => 'Property Template', 'plural' => 'Property Templates'],
         'property' => ['singular' => 'Property', 'plural' => 'Properties'],
         'management_record' => ['singular' => 'Management Record', 'plural' => 'Management Records'],
@@ -876,6 +879,41 @@ return [
         'fields' => [
             'name' => 'Name',
             'slug' => 'Slug (URL)',
+            'created_at' => 'Created at',
+        ],
+    ],
+    'region' => [
+        'sections' => [
+            'details' => 'Region Details',
+            'details_description' => 'Name and slug of the region',
+        ],
+        'fields' => [
+            'name' => 'Name',
+            'slug' => 'Slug (URL)',
+            'created_at' => 'Created at',
+        ],
+    ],
+    'city' => [
+        'sections' => [
+            'details' => 'City Details',
+            'details_description' => 'Name, slug, and region',
+        ],
+        'fields' => [
+            'name' => 'Name',
+            'slug' => 'Slug (URL)',
+            'region_id' => 'Region',
+            'created_at' => 'Created at',
+        ],
+    ],
+    'district' => [
+        'sections' => [
+            'details' => 'District Details',
+            'details_description' => 'Name, slug, and city',
+        ],
+        'fields' => [
+            'name' => 'Name',
+            'slug' => 'Slug (URL)',
+            'city_id' => 'City',
             'created_at' => 'Created at',
         ],
     ],
