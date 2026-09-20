@@ -13,13 +13,16 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Cache;
 use Liberu\Foundation\Organizations\Models\Team;
 use Liberu\RealEstate\Core\Models\Branch;
-use Liberu\RealEstate\Core\Models\Territory;
 use Liberu\RealEstate\Properties\Domain\DealType;
 use Liberu\RealEstate\Properties\Domain\PropertyGalleryItem;
 use Liberu\RealEstate\Properties\Domain\PropertyStatus;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-final class Property extends Model
+final class Property extends Model implements HasMedia
 {
+    use InteractsWithMedia;
     use SoftDeletes;
 
     public const EARLIEST_YEAR_BUILT = 1066;
@@ -34,14 +37,16 @@ final class Property extends Model
      * PropertyController API (Rule::in(array_keys(Property::TYPES))) 422'd
      * on every one of them despite the admin UI happily saving the same
      * value directly.
+     *
+     * new_build/development/mixed_use were removed (confirmed zero live
+     * properties used them): those are deal-category concepts, not
+     * physical property types, and now belong on PropertyCategory
+     * (Вторичка/Новостройка/Земля) instead.
      */
     public const TYPES = [
         'residential' => 'Residential',
         'commercial' => 'Commercial',
         'land' => 'Land',
-        'new_build' => 'New build',
-        'development' => 'Development',
-        'mixed_use' => 'Mixed use',
         'house' => 'House',
         'apartment' => 'Apartment',
         'condo' => 'Condo',
@@ -70,12 +75,9 @@ final class Property extends Model
             'utilities' => 'array',
             'features' => 'array',
             'structured_address' => 'array',
-            'epc' => 'array',
             'floor_plan_data' => 'array',
             'price' => 'decimal:2',
             'area_sqft' => 'decimal:2',
-            'service_charge' => 'decimal:2',
-            'ground_rent' => 'decimal:2',
             'latitude' => 'float',
             'longitude' => 'float',
             'last_synced_at' => 'datetime',
@@ -91,11 +93,6 @@ final class Property extends Model
             'max_guests' => 'integer',
             'views_count' => 'integer',
             'live_tour_available' => 'boolean',
-            'holographic_metadata' => 'array',
-            'holographic_enabled' => 'boolean',
-            'walkability_updated_at' => 'datetime',
-            'energy_rating_date' => 'date',
-            'insurance_expiry_date' => 'date',
         ];
     }
 
@@ -268,12 +265,6 @@ final class Property extends Model
         return $query;
     }
 
-    public function needsWalkabilityUpdate(): bool
-    {
-        return $this->walkability_updated_at === null
-            || $this->walkability_updated_at->lt(now()->subDays(30));
-    }
-
     public function hasVirtualTour(): bool
     {
         return $this->virtualTourEmbed() !== null;
@@ -292,11 +283,6 @@ final class Property extends Model
             && filter_var($url, FILTER_VALIDATE_URL)
             ? $url
             : null;
-    }
-
-    public function hasHolographicTour(): bool
-    {
-        return (bool) $this->holographic_enabled && filled($this->holographic_tour_url);
     }
 
     public function isHmo(): bool
@@ -331,13 +317,6 @@ final class Property extends Model
         }
     }
 
-    public function hasActiveInsurance(): bool
-    {
-        return filled($this->insurance_policy_id)
-            && $this->insurance_expiry_date !== null
-            && $this->insurance_expiry_date->isFuture();
-    }
-
     public function daysListed(): ?int
     {
         if ($this->list_date === null || $this->list_date->isFuture()) {
@@ -362,9 +341,7 @@ final class Property extends Model
 
     public function isRental(): bool
     {
-        return in_array(strtolower(trim($this->statusValue())), [
-            'to_let', 'let', 'let_agreed', 'for rent', 'for_rent', 'rented', 'rent', 'rental',
-        ], true);
+        return in_array($this->deal_type, [DealType::Rent, DealType::Daily], true);
     }
 
     public function pricePerSquareMeterLabel(): string
@@ -411,41 +388,9 @@ final class Property extends Model
             && (int) $this->lease_years_remaining < 80;
     }
 
-    public function annualEnergyCost(): ?float
-    {
-        $cost = data_get($this->epc, 'annual_energy_cost');
-        if (is_numeric($cost)) {
-            return (float) $cost;
-        }
-
-        $parts = collect(['heating_cost', 'hot_water_cost', 'lighting_cost'])
-            ->map(fn (string $key): mixed => data_get($this->epc, $key))
-            ->filter(fn (mixed $value): bool => is_numeric($value));
-
-        return $parts->isEmpty() ? null : (float) $parts->sum();
-    }
-
     public function isComingSoon(): bool
     {
         return $this->list_date !== null && $this->list_date->isFuture();
-    }
-
-    public function closedStateLabel(): ?string
-    {
-        return match (strtolower(trim($this->statusValue()))) {
-            'sstc', 'sold_stc', 'sold stc' => 'Sold STC', 'exchanged' => 'Exchanged',
-            'archived', 'withdrawn' => 'Withdrawn', 'under_offer', 'under offer' => 'Under offer',
-            'let_agreed', 'let agreed' => 'Let agreed', 'sold' => 'Sold', default => null,
-        };
-    }
-
-    private function statusValue(): string
-    {
-        $status = $this->getAttribute('status');
-
-        return $status instanceof PropertyStatus
-            ? $status->value
-            : (string) ($status ?? $this->getRawOriginal('status'));
     }
 
     /** @return array<string, mixed> */
@@ -469,7 +414,6 @@ final class Property extends Model
     /** @return array<string, array{label: string, value: int|float|string|null, source: string}> */
     public function disclosureFacts(): array
     {
-        $epcDate = data_get($this->epc, 'assessment_date') ?: $this->energy_rating_date?->toDateString();
         $energyValue = $this->energy_rating;
         if ($this->energy_score !== null) {
             $energyValue = $energyValue === null
@@ -481,7 +425,7 @@ final class Property extends Model
             'energy' => [
                 'label' => 'Energy',
                 'value' => $energyValue,
-                'source' => $epcDate ? 'Certificate, assessed '.$epcDate : 'Certificate',
+                'source' => 'Certificate',
             ],
             'floor_area' => [
                 'label' => 'Floor area',
@@ -512,23 +456,6 @@ final class Property extends Model
                 'label' => 'Tenure',
                 'value' => $this->tenureForHumans(),
                 'source' => 'Property record',
-            ],
-            'service_charge' => [
-                'label' => 'Service charge',
-                'value' => $this->service_charge === null ? null : $this->currencySymbol().number_format((float) $this->service_charge, 0).' a year',
-                'source' => 'Property record',
-            ],
-            'ground_rent' => [
-                'label' => 'Ground rent',
-                'value' => $this->ground_rent === null
-                    ? null
-                    : ((float) $this->ground_rent === 0.0 ? 'Peppercorn' : $this->currencySymbol().number_format((float) $this->ground_rent, 0).' a year'),
-                'source' => 'Property record',
-            ],
-            'annual_energy_cost' => [
-                'label' => 'Annual energy cost',
-                'value' => $this->annualEnergyCost() === null ? null : $this->currencySymbol().number_format($this->annualEnergyCost(), 0).' a year',
-                'source' => 'Energy certificate',
             ],
         ];
     }
@@ -702,7 +629,7 @@ final class Property extends Model
 
     public function canBePublished(): bool
     {
-        return filled($this->address) && $this->status === PropertyStatus::Draft;
+        return filled($this->address) && in_array($this->status, [PropertyStatus::Draft, PropertyStatus::Moderation], true);
     }
 
     public function team()
@@ -710,8 +637,47 @@ final class Property extends Model
         return $this->belongsTo(Team::class);
     }
 
-    public function territory()
+    /**
+     * The `media` table itself already exists — liberusoftware/files-media
+     * created it (module.json's own foundation for future media adoption)
+     * with the exact spatie/laravel-medialibrary schema, but never wired
+     * up the real package. This is the first model to actually use it.
+     */
+    public function registerMediaCollections(): void
     {
-        return $this->belongsTo(Territory::class);
+        $this->addMediaCollection('photos');
+    }
+
+    /** @return array<int, array{url?: string|null, kind?: string|null, caption?: string|null, staged?: bool}> */
+    public function photoMediaItems(): array
+    {
+        return $this->getMedia('photos')
+            ->map(fn (Media $media): array => [
+                'url' => $media->getUrl(),
+                'kind' => 'photograph',
+                'caption' => $media->name,
+                'staged' => (bool) $media->getCustomProperty('staged', false),
+            ])->all();
+    }
+
+    /** @return BelongsTo<Model, $this> */
+    public function agent(): BelongsTo
+    {
+        return $this->belongsTo(config('auth.providers.users.model'), 'agent_id');
+    }
+
+    public function region(): BelongsTo
+    {
+        return $this->belongsTo(Region::class);
+    }
+
+    public function city(): BelongsTo
+    {
+        return $this->belongsTo(City::class);
+    }
+
+    public function district(): BelongsTo
+    {
+        return $this->belongsTo(District::class);
     }
 }

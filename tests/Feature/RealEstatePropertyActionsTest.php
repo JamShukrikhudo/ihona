@@ -3,8 +3,10 @@
 use App\Models\User;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 use Liberu\RealEstate\Core\Application\CreateBranch;
 use Liberu\RealEstate\MediaAndDocuments\Application\CreateMediaDocument;
@@ -131,14 +133,12 @@ it('provides portable property detail disclosure facts', function (): void {
         'list_date' => now()->subDays(46)->toDateString(),
         'energy_rating' => 'B',
         'energy_score' => 84,
-        'epc' => ['assessment_date' => '2019-03-12'],
         'council_tax_band' => 'D',
     ]);
 
     expect($property->daysListed())->toBe(46)
         ->and($property->pricePerSquareMeter())->toBe(455.65)
         ->and($property->disclosureFacts()['energy']['value'])->toBe('B (84)')
-        ->and($property->disclosureFacts()['energy']['source'])->toContain('2019-03-12')
         ->and($property->disclosureFacts()['council_tax_band']['value'])->toBe('D');
 });
 
@@ -181,6 +181,26 @@ it('orders safe property gallery items and supplies a floor-plan fallback', func
         ->and($gallery[0]->caption)->toBe('Kitchen')
         ->and($gallery[0]->staged)->toBeTrue()
         ->and($gallery[1]->url)->toBe('https://cdn.example.test/plans/ground.png');
+});
+
+it('stores real photos through the medialibrary photos collection', function (): void {
+    Storage::fake('public');
+    $property = app(CreateProperty::class)->handle(10, 20, ['address' => '1 High Street']);
+
+    expect($property->photoMediaItems())->toBe([]);
+
+    $property->addMedia(UploadedFile::fake()->image('kitchen.jpg'))
+        ->usingName('Kitchen')
+        ->withCustomProperties(['staged' => true])
+        ->toMediaCollection('photos');
+
+    $items = $property->fresh()->photoMediaItems();
+
+    expect($items)->toHaveCount(1)
+        ->and($items[0]['kind'])->toBe('photograph')
+        ->and($items[0]['caption'])->toBe('Kitchen')
+        ->and($items[0]['staged'])->toBeTrue()
+        ->and($items[0]['url'])->toContain('kitchen.jpg');
 });
 
 it('preserves the legacy team-scoped branch association', function () {
@@ -398,11 +418,11 @@ it('centralizes legacy build-year rules and filters properties by year range', f
 
 it('filters properties by the modular lifecycle status vocabulary', function (): void {
     $draft = app(CreateProperty::class)->handle(10, 20, ['address' => '1 Draft Street']);
-    $available = app(CreateProperty::class)->handle(10, 20, ['address' => '2 Available Street']);
-    app(TransitionProperty::class)->handle(10, 20, $available->getKey(), PropertyStatus::Available);
+    $published = app(CreateProperty::class)->handle(10, 20, ['address' => '2 Published Street']);
+    app(TransitionProperty::class)->handle(10, 20, $published->getKey(), PropertyStatus::Published);
 
     expect(Property::query()->forTeam(10)->status(PropertyStatus::Draft)->pluck('id')->all())->toBe([$draft->getKey()])
-        ->and(Property::query()->forTeam(10)->status('available')->pluck('id')->all())->toBe([$available->getKey()])
+        ->and(Property::query()->forTeam(10)->status('published')->pluck('id')->all())->toBe([$published->getKey()])
         ->and(Property::query()->forTeam(10)->status(null)->count())->toBe(2);
 });
 
@@ -524,26 +544,18 @@ it('preserves legacy similar-property matching within the property boundary', fu
         ->and($source->similarProperties(0))->toHaveCount(1);
 });
 
-it('validates legacy property tour helpers and walkability freshness', function () {
+it('validates the legacy property virtual tour helper', function () {
     $property = app(CreateProperty::class)->handle(10, 20, [
         'address' => '1 High Street',
         'virtual_tour_url' => 'https://my.matterport.com/show/?m=abc',
-        'holographic_tour_url' => 'https://example.test/holographic',
-        'holographic_enabled' => true,
     ]);
 
     expect($property->hasVirtualTour())->toBeTrue()
-        ->and($property->getVirtualTourEmbed())->toContain('https://my.matterport.com/show/?m=abc')
-        ->and($property->hasHolographicTour())->toBeTrue()
-        ->and($property->needsWalkabilityUpdate())->toBeTrue();
+        ->and($property->getVirtualTourEmbed())->toContain('https://my.matterport.com/show/?m=abc');
 
-    $property->update([
-        'virtual_tour_url' => 'http://my.matterport.com/show/?m=unsafe',
-        'walkability_updated_at' => now(),
-    ]);
+    $property->update(['virtual_tour_url' => 'http://my.matterport.com/show/?m=unsafe']);
 
-    expect($property->fresh()->hasVirtualTour())->toBeFalse()
-        ->and($property->fresh()->needsWalkabilityUpdate())->toBeFalse();
+    expect($property->fresh()->hasVirtualTour())->toBeFalse();
 });
 
 it('preserves the legacy HMO property helper across case variants', function () {
@@ -560,32 +572,18 @@ it('preserves the legacy HMO property helper across case variants', function () 
         ->and($house->isHmo())->toBeFalse();
 });
 
-it('preserves the legacy active insurance helper', function () {
-    $property = app(CreateProperty::class)->handle(10, 20, [
-        'address' => '1 High Street',
-        'insurance_policy_id' => 42,
-        'insurance_expiry_date' => now()->addDay(),
-    ]);
-
-    expect($property->hasActiveInsurance())->toBeTrue();
-
-    $property->update(['insurance_expiry_date' => now()->subDay()]);
-
-    expect($property->fresh()->hasActiveInsurance())->toBeFalse();
-});
-
 it('requires explicit property lifecycle transitions and records status history', function () {
     $property = app(CreateProperty::class)->handle(10, 20, ['address' => '1 High Street']);
     $transition = app(TransitionProperty::class);
 
-    $property = $transition->handle(10, 20, $property->getKey(), PropertyStatus::Available);
-    $property = $transition->handle(10, 20, $property->getKey(), PropertyStatus::UnderOffer);
-    $property = $transition->handle(10, 20, $property->getKey(), PropertyStatus::Sold);
+    $property = $transition->handle(10, 20, $property->getKey(), PropertyStatus::Moderation);
+    $property = $transition->handle(10, 20, $property->getKey(), PropertyStatus::Published);
+    $property = $transition->handle(10, 20, $property->getKey(), PropertyStatus::Archive);
 
-    expect($property->status)->toBe(PropertyStatus::Sold)
+    expect($property->status)->toBe(PropertyStatus::Archive)
         ->and($property->published_at)->not->toBeNull()
         ->and($property->history->where('event', 'status_changed'))->toHaveCount(3)
-        ->and(fn () => $transition->handle(10, 20, $property->getKey(), PropertyStatus::Available))
+        ->and(fn () => $transition->handle(10, 20, $property->getKey(), PropertyStatus::Published))
         ->toThrow(ValidationException::class);
 });
 

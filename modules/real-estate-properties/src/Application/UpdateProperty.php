@@ -10,10 +10,12 @@ use Illuminate\Validation\ValidationException;
 use Liberu\Foundation\Audit\Contracts\AuditRecorder;
 use Liberu\Foundation\Audit\Support\AuditContext;
 use Liberu\RealEstate\Core\Models\Branch;
-use Liberu\RealEstate\Core\Models\Territory;
+use Liberu\RealEstate\Properties\Models\City;
+use Liberu\RealEstate\Properties\Models\District;
 use Liberu\RealEstate\Properties\Models\Property;
 use Liberu\RealEstate\Properties\Models\PropertyCategory;
 use Liberu\RealEstate\Properties\Models\PropertyTemplate;
+use Liberu\RealEstate\Properties\Models\Region;
 
 final class UpdateProperty
 {
@@ -42,24 +44,29 @@ final class UpdateProperty
             if (array_key_exists('property_template_id', $attributes) && $attributes['property_template_id'] !== null && ! PropertyTemplate::query()->forTeam($teamId)->whereKey($attributes['property_template_id'])->exists()) {
                 throw ValidationException::withMessages(['property_template_id' => 'The template must belong to the current team.']);
             }
-            if (array_key_exists('territory_id', $attributes) && $attributes['territory_id'] !== null && ! Territory::query()->forTeam($teamId)->whereKey($attributes['territory_id'])->exists()) {
-                throw ValidationException::withMessages(['territory_id' => 'The territory must belong to the current team.']);
+            if (array_key_exists('region_id', $attributes) && $attributes['region_id'] !== null && ! Region::query()->whereKey($attributes['region_id'])->exists()) {
+                throw ValidationException::withMessages(['region_id' => 'The region does not exist.']);
+            }
+            if (array_key_exists('city_id', $attributes) && $attributes['city_id'] !== null && ! City::query()->whereKey($attributes['city_id'])->exists()) {
+                throw ValidationException::withMessages(['city_id' => 'The city does not exist.']);
+            }
+            if (array_key_exists('district_id', $attributes) && $attributes['district_id'] !== null && ! District::query()->whereKey($attributes['district_id'])->exists()) {
+                throw ValidationException::withMessages(['district_id' => 'The district does not exist.']);
             }
             $changes = [];
 
             $fields = [
-                'address', 'branch_id', 'title', 'description', 'description_generated_at', 'internal_notes', 'price', 'currency', 'bedrooms', 'bathrooms', 'area_sqft',
+                'address', 'branch_id', 'agent_id', 'title', 'description', 'description_generated_at', 'internal_notes', 'price', 'currency', 'bedrooms', 'bathrooms', 'area_sqft',
                 'year_built', 'reception_rooms', 'parking', 'gardens', 'structured_address', 'latitude', 'longitude', 'postal_code', 'country', 'tenure',
-                'lease_years_remaining', 'service_charge', 'ground_rent', 'energy_rating', 'epc',
+                'region_id', 'city_id', 'district_id',
+                'lease_years_remaining', 'energy_rating',
                 'council_tax_band', 'energy_score', 'walkability_score', 'walkability_description',
                 'transit_score', 'transit_description', 'bike_score', 'bike_description',
-                'walkability_updated_at',
-                'virtual_tour_url', 'virtual_tour_provider', 'model_3d_url', 'floor_plan_data', 'floor_plan_image', 'property_type', 'deal_type', 'property_category_id', 'property_template_id', 'territory_id',
+                'virtual_tour_url', 'virtual_tour_provider', 'model_3d_url', 'floor_plan_data', 'floor_plan_image', 'property_type', 'deal_type', 'property_category_id', 'property_template_id',
                 'characteristics', 'utilities', 'features', 'list_date', 'sold_date', 'last_synced_at', 'is_featured',
                 'has_generator', 'has_wifi', 'has_parking', 'mountain_view', 'altitude', 'water_source', 'max_guests',
-                'live_tour_available', 'holographic_tour_url', 'holographic_provider', 'holographic_metadata',
-                'holographic_enabled', 'energy_rating_date', 'insurance_policy_id',
-                'insurance_coverage_amount', 'insurance_premium', 'insurance_expiry_date', 'jupix_id',
+                'live_tour_available', 'insurance_policy_id',
+                'insurance_coverage_amount', 'insurance_premium', 'jupix_id',
             ];
 
             foreach ($fields as $field) {

@@ -32,7 +32,7 @@ final class CheckSavedSearchAlerts
 
             $matches = Property::query()
                 ->forTeam($search->team_id)
-                ->status(PropertyStatus::Available)
+                ->status(PropertyStatus::Published)
                 ->where('published_at', '>', $since)
                 ->search($criteria['search'] ?? null)
                 ->priceRange($criteria['minPrice'] ?? null, $criteria['maxPrice'] ?? null)

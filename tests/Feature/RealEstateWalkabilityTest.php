@@ -59,8 +59,7 @@ it('refreshes and persists walkability scores through the team-scoped API', func
     $this->actingAs($user, 'sanctum')
         ->postJson('/api/v1/real-estate/properties/'.$property->getKey().'/walkability')
         ->assertOk()
-        ->assertJsonPath('data.walkability_score', $property->refresh()->walkability_score)
-        ->assertJsonPath('data.walkability_updated_at', fn ($value): bool => filled($value));
+        ->assertJsonPath('data.walkability_score', $property->refresh()->walkability_score);
 
     expect($property->fresh()->history()->where('event', 'updated')->exists())->toBeTrue();
 });

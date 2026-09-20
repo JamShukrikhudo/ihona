@@ -138,24 +138,19 @@ final class PropertyList extends Component
         $record->handle($property, $user->current_team_id, $attributes);
     }
 
+    public function submitForModeration(int $propertyId, TransitionProperty $transition): void
+    {
+        $this->transitionProperty($propertyId, PropertyStatus::Moderation, $transition);
+    }
+
     public function publish(int $propertyId, TransitionProperty $transition): void
     {
-        $this->transitionProperty($propertyId, PropertyStatus::Available, $transition);
+        $this->transitionProperty($propertyId, PropertyStatus::Published, $transition);
     }
 
-    public function markUnderOffer(int $propertyId, TransitionProperty $transition): void
+    public function archive(int $propertyId, TransitionProperty $transition): void
     {
-        $this->transitionProperty($propertyId, PropertyStatus::UnderOffer, $transition);
-    }
-
-    public function markSold(int $propertyId, TransitionProperty $transition): void
-    {
-        $this->transitionProperty($propertyId, PropertyStatus::Sold, $transition);
-    }
-
-    public function withdraw(int $propertyId, TransitionProperty $transition): void
-    {
-        $this->transitionProperty($propertyId, PropertyStatus::Withdrawn, $transition);
+        $this->transitionProperty($propertyId, PropertyStatus::Archive, $transition);
     }
 
     public function render(): View

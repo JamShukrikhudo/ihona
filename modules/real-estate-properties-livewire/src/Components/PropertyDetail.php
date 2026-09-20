@@ -124,23 +124,25 @@ final class PropertyDetail extends Component
     /** @return array<int, array{url?: string|null, kind?: string|null, caption?: string|null, staged?: bool}> */
     private function mediaItems(Property $property): array
     {
-        if (! Schema::hasTable('real_estate_media_documents')) {
-            return [];
+        $items = $property->photoMediaItems();
+
+        if (Schema::hasTable('real_estate_media_documents')) {
+            $items = array_merge($items, MediaDocument::query()
+                ->forTeam($property->team_id)
+                ->where('property_id', $property->getKey())
+                ->whereIn('kind', ['floorplan', 'siteplan'])
+                ->orderBy('sort_order')
+                ->orderBy('id')
+                ->get()
+                ->map(fn (MediaDocument $document): array => [
+                    'url' => $document->publicUrl(),
+                    'kind' => $document->galleryKind(),
+                    'caption' => $document->title,
+                    'staged' => (bool) data_get($document->metadata, 'staged', false),
+                ])->all());
         }
 
-        return MediaDocument::query()
-            ->forTeam($property->team_id)
-            ->where('property_id', $property->getKey())
-            ->whereIn('kind', ['photo', 'floorplan', 'siteplan'])
-            ->orderBy('sort_order')
-            ->orderBy('id')
-            ->get()
-            ->map(fn (MediaDocument $document): array => [
-                'url' => $document->publicUrl(),
-                'kind' => $document->galleryKind(),
-                'caption' => $document->title,
-                'staged' => (bool) data_get($document->metadata, 'staged', false),
-            ])->all();
+        return $items;
     }
 
     private function videoUrl(Property $property): ?string

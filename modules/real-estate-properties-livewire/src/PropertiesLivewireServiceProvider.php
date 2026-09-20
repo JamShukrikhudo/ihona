@@ -25,10 +25,8 @@ final class PropertiesLivewireServiceProvider extends ServiceProvider
         Livewire::component('module-real-estate-properties::property-review-form', Components\PropertyReviewForm::class);
         Livewire::component('module-real-estate-properties::property-submission-form', Components\PropertySubmissionForm::class);
         Livewire::component('module-real-estate-properties::property-preview', Components\PropertyPreview::class);
-        Livewire::component('module-real-estate-properties::neighborhood-review-form', Components\NeighborhoodReviewForm::class);
         Livewire::component('module-real-estate-properties::price-alert-manager', Components\PriceAlertManager::class);
         Livewire::component('price-alert-manager', Components\PriceAlertManager::class);
-        Livewire::component('neighborhood-review-form', Components\NeighborhoodReviewForm::class);
         Livewire::component('real-estate-properties-list', Components\PropertyList::class);
     }
 }

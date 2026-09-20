@@ -6,12 +6,12 @@ namespace Liberu\RealEstate\PropertiesFilament\Widgets;
 
 use Filament\Facades\Filament;
 use Filament\Widgets\ChartWidget;
-use Liberu\RealEstate\Core\Models\Territory;
 use Liberu\RealEstate\Properties\Models\Property;
+use Liberu\RealEstate\Properties\Models\Region;
 
 final class PropertiesByTerritoryChart extends ChartWidget
 {
-    protected ?string $heading = 'Объекты по территориям';
+    protected ?string $heading = 'Объекты по регионам';
 
     protected function getData(): array
     {
@@ -21,18 +21,14 @@ final class PropertiesByTerritoryChart extends ChartWidget
             return ['datasets' => [], 'labels' => []];
         }
 
-        // Territory has no properties() relation (core deliberately doesn't
-        // depend on the properties package — see CLAUDE.md), so aggregate
-        // from the properties side and map territory names in PHP instead.
         $counts = Property::query()
             ->forTeam($team->id)
-            ->whereNotNull('territory_id')
-            ->selectRaw('territory_id, count(*) as aggregate')
-            ->groupBy('territory_id')
-            ->pluck('aggregate', 'territory_id');
+            ->whereNotNull('region_id')
+            ->selectRaw('region_id, count(*) as aggregate')
+            ->groupBy('region_id')
+            ->pluck('aggregate', 'region_id');
 
-        $territoryNames = Territory::query()
-            ->forTeam($team->id)
+        $regionNames = Region::query()
             ->whereIn('id', $counts->keys())
             ->pluck('name', 'id');
 
@@ -42,7 +38,7 @@ final class PropertiesByTerritoryChart extends ChartWidget
                 'data' => $counts->values()->all(),
                 'backgroundColor' => '#2f7fd6',
             ]],
-            'labels' => $counts->keys()->map(fn ($id) => $territoryNames[$id] ?? "#{$id}")->all(),
+            'labels' => $counts->keys()->map(fn ($id) => $regionNames[$id] ?? "#{$id}")->all(),
         ];
     }
 

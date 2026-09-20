@@ -9,7 +9,6 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\Textarea;
@@ -19,6 +18,8 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Pages\PageRegistration;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
@@ -26,7 +27,6 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Liberu\RealEstate\Core\Models\Branch;
-use Liberu\RealEstate\Core\Models\Territory;
 use Liberu\RealEstate\Properties\Application\EstimatePropertyTax;
 use Liberu\RealEstate\Properties\Application\RecordPropertyKey;
 use Liberu\RealEstate\Properties\Application\TogglePropertyFavorite;
@@ -34,9 +34,12 @@ use Liberu\RealEstate\Properties\Application\TransitionProperty;
 use Liberu\RealEstate\Properties\Application\UpsertPropertyUnit;
 use Liberu\RealEstate\Properties\Domain\DealType;
 use Liberu\RealEstate\Properties\Domain\PropertyStatus;
+use Liberu\RealEstate\Properties\Models\City;
+use Liberu\RealEstate\Properties\Models\District;
 use Liberu\RealEstate\Properties\Models\Property;
 use Liberu\RealEstate\Properties\Models\PropertyCategory;
 use Liberu\RealEstate\Properties\Models\PropertyTemplate;
+use Liberu\RealEstate\Properties\Models\Region;
 use Liberu\RealEstate\PropertiesFilament\Resources\PropertyResource\Pages\CreateProperty;
 use Liberu\RealEstate\PropertiesFilament\Resources\PropertyResource\Pages\EditProperty;
 use Liberu\RealEstate\PropertiesFilament\Resources\PropertyResource\Pages\ListProperties;
@@ -73,6 +76,7 @@ final class PropertyResource extends Resource
                         ->options([
                             'sale' => __('filament.property.deal_types.sale'),
                             'rent' => __('filament.property.deal_types.rent'),
+                            'daily' => __('filament.property.deal_types.daily'),
                         ])
                         ->default('sale')
                         ->required(),
@@ -108,21 +112,48 @@ final class PropertyResource extends Resource
                             ->all())
                         ->searchable()
                         ->nullable(),
-                    Select::make('territory_id')
-                        ->label(__('filament.property.fields.territory_id'))
-                        ->options(fn (): array => Territory::query()
-                            ->forTeam(auth()->user()?->current_team_id ?? 0)
+                    Select::make('agent_id')
+                        ->label(__('filament.property.fields.agent_id'))
+                        ->options(fn (): array => config('auth.providers.users.model')::query()
                             ->orderBy('name')
                             ->pluck('name', 'id')
                             ->all())
                         ->searchable()
-                        ->required(),
+                        ->default(fn (): ?int => auth()->id())
+                        ->nullable(),
                 ]),
             Section::make(__('filament.property.sections.location'))
                 ->description(__('filament.property.sections.location_description'))
                 ->columns(2)
                 ->schema([
                     Textarea::make('address')->label(__('filament.property.fields.address'))->required()->columnSpanFull(),
+                    Select::make('region_id')
+                        ->label('Область')
+                        ->options(fn (): array => Region::query()->orderBy('name')->pluck('name', 'id')->all())
+                        ->searchable()
+                        ->live()
+                        ->afterStateUpdated(fn (Set $set) => $set('city_id', null))
+                        ->nullable(),
+                    Select::make('city_id')
+                        ->label('Город')
+                        ->options(fn (Get $get): array => City::query()
+                            ->when($get('region_id'), fn (Builder $query, $regionId) => $query->where('region_id', $regionId))
+                            ->orderBy('name')
+                            ->pluck('name', 'id')
+                            ->all())
+                        ->searchable()
+                        ->live()
+                        ->afterStateUpdated(fn (Set $set) => $set('district_id', null))
+                        ->nullable(),
+                    Select::make('district_id')
+                        ->label('Район')
+                        ->options(fn (Get $get): array => District::query()
+                            ->when($get('city_id'), fn (Builder $query, $cityId) => $query->where('city_id', $cityId))
+                            ->orderBy('name')
+                            ->pluck('name', 'id')
+                            ->all())
+                        ->searchable()
+                        ->nullable(),
                     TextInput::make('postal_code')->label(__('filament.property.fields.postal_code'))->maxLength(20),
                     TextInput::make('country')->label(__('filament.property.fields.country'))->length(2),
                     TextInput::make('tenure')->label(__('filament.property.fields.tenure'))->maxLength(40),
@@ -171,9 +202,6 @@ final class PropertyResource extends Resource
                     TextInput::make('model_3d_url')->label(__('filament.property.fields.model_3d_url'))->url()->maxLength(2048),
                     TextInput::make('floor_plan_image')->label(__('filament.property.fields.floor_plan_image'))->url()->maxLength(2048),
                     Toggle::make('is_featured')->label(__('filament.property.fields.is_featured')),
-                    Toggle::make('holographic_enabled')->label(__('filament.property.fields.holographic_enabled')),
-                    TextInput::make('holographic_tour_url')->label(__('filament.property.fields.holographic_tour_url'))->url()->maxLength(2048),
-                    TextInput::make('holographic_provider')->label(__('filament.property.fields.holographic_provider'))->maxLength(255),
                     TagsInput::make('features')->label(__('filament.property.fields.features'))->separator(',')->columnSpanFull(),
                 ]),
             Section::make(__('filament.property.sections.insurance'))
@@ -182,7 +210,6 @@ final class PropertyResource extends Resource
                     TextInput::make('insurance_policy_id')->label(__('filament.property.fields.insurance_policy_id'))->numeric()->minValue(1),
                     TextInput::make('insurance_coverage_amount')->label(__('filament.property.fields.insurance_coverage_amount'))->numeric()->minValue(0),
                     TextInput::make('insurance_premium')->label(__('filament.property.fields.insurance_premium'))->numeric()->minValue(0),
-                    DatePicker::make('insurance_expiry_date')->label(__('filament.property.fields.insurance_expiry_date')),
                 ]),
             Section::make('🏔️ '.__('filament.property.sections.regional'))
                 ->columns(2)
@@ -228,7 +255,9 @@ final class PropertyResource extends Resource
             ->columns([
                 TextColumn::make('reference')->label('Номер')->state(fn (Property $record): string => $record->reference())->sortable(query: fn (Builder $query, string $direction): Builder => $query->orderBy('id', $direction)),
                 TextColumn::make('address')->label('Адрес')->searchable()->sortable()->wrap(),
-                TextColumn::make('territory.name')->label(__('filament.property.fields.territory_id'))->sortable(),
+                TextColumn::make('agent.name')->label('Агент')->sortable(),
+                TextColumn::make('region.name')->label('Область')->sortable(),
+                TextColumn::make('city.name')->label('Город')->sortable(),
                 TextColumn::make('property_type')->label('Тип')->searchable()->sortable(),
                 TextColumn::make('deal_type')->label(__('filament.property.fields.deal_type'))->badge()->formatStateUsing(fn (\Liberu\RealEstate\Properties\Domain\DealType|string|null $state): string => $state !== null ? __('filament.property.deal_types.'.($state instanceof DealType ? $state->value : $state)) : '—'),
                 TextColumn::make('status')->label('Статус')->badge(),
@@ -318,22 +347,22 @@ final class PropertyResource extends Resource
                         Textarea::make('notes')->label(__('filament.property.fields.notes')),
                     ])
                     ->action(fn (Property $record, array $data): mixed => app(RecordPropertyKey::class)->handle($record, (int) auth()->user()->current_team_id, $data)),
-                Action::make('available')
-                    ->label(__('filament.property.actions.publish'))
-                    ->action(fn (Property $record): Property => app(TransitionProperty::class)->handle($record->team_id, auth()->id(), $record->getKey(), PropertyStatus::Available))
+                Action::make('moderation')
+                    ->label(__('filament.property.actions.moderation'))
+                    ->action(fn (Property $record): Property => app(TransitionProperty::class)->handle($record->team_id, auth()->id(), $record->getKey(), PropertyStatus::Moderation))
                     ->visible(fn (Property $record): bool => $record->status === PropertyStatus::Draft),
-                Action::make('under_offer')
-                    ->label(__('filament.property.actions.under_offer'))
-                    ->action(fn (Property $record): Property => app(TransitionProperty::class)->handle($record->team_id, auth()->id(), $record->getKey(), PropertyStatus::UnderOffer))
-                    ->visible(fn (Property $record): bool => $record->status === PropertyStatus::Available),
-                Action::make('sold')
-                    ->label(__('filament.property.actions.sold'))
-                    ->action(fn (Property $record): Property => app(TransitionProperty::class)->handle($record->team_id, auth()->id(), $record->getKey(), PropertyStatus::Sold))
-                    ->visible(fn (Property $record): bool => in_array($record->status, [PropertyStatus::Available, PropertyStatus::UnderOffer], true)),
-                Action::make('withdraw')
-                    ->label(__('filament.property.actions.withdraw'))
-                    ->action(fn (Property $record): Property => app(TransitionProperty::class)->handle($record->team_id, auth()->id(), $record->getKey(), PropertyStatus::Withdrawn))
-                    ->visible(fn (Property $record): bool => in_array($record->status, [PropertyStatus::Draft, PropertyStatus::Available, PropertyStatus::UnderOffer], true)),
+                Action::make('publish')
+                    ->label(__('filament.property.actions.publish'))
+                    ->action(fn (Property $record): Property => app(TransitionProperty::class)->handle($record->team_id, auth()->id(), $record->getKey(), PropertyStatus::Published))
+                    ->visible(fn (Property $record): bool => in_array($record->status, [PropertyStatus::Draft, PropertyStatus::Moderation], true)),
+                Action::make('archive')
+                    ->label(__('filament.property.actions.archive'))
+                    ->action(fn (Property $record): Property => app(TransitionProperty::class)->handle($record->team_id, auth()->id(), $record->getKey(), PropertyStatus::Archive))
+                    ->visible(fn (Property $record): bool => in_array($record->status, [PropertyStatus::Draft, PropertyStatus::Moderation, PropertyStatus::Published], true)),
+                Action::make('restore_to_draft')
+                    ->label(__('filament.property.actions.restore_to_draft'))
+                    ->action(fn (Property $record): Property => app(TransitionProperty::class)->handle($record->team_id, auth()->id(), $record->getKey(), PropertyStatus::Draft))
+                    ->visible(fn (Property $record): bool => $record->status === PropertyStatus::Archive),
                 DeleteAction::make(),
             ])
             ->toolbarActions([BulkActionGroup::make([DeleteBulkAction::make()])])

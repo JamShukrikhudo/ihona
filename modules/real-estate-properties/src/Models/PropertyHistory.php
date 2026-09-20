@@ -34,15 +34,6 @@ final class PropertyHistory extends Model
             });
     }
 
-    public function scopeSales(Builder $query): Builder
-    {
-        return $query->whereIn('event', ['sale', 'status_changed'])
-            ->where(function (Builder $query): void {
-                $query->where('event', 'sale')
-                    ->orWhereJsonContains('changes', ['to' => 'sold']);
-            });
-    }
-
     public function getPriceChangePercentage(): ?float
     {
         $changes = $this->getAttribute('changes') ?? [];

@@ -16,12 +16,12 @@ it('filters the public property list to a map viewport bounding box', function (
     $inside = app(CreateProperty::class)->handle($team->id, $team->user_id, [
         'address' => 'Inside the viewport', 'latitude' => 38.56, 'longitude' => 68.78,
     ]);
-    $inside->forceFill(['status' => PropertyStatus::Available])->save();
+    $inside->forceFill(['status' => PropertyStatus::Published])->save();
 
     $outside = app(CreateProperty::class)->handle($team->id, $team->user_id, [
         'address' => 'Outside the viewport', 'latitude' => 40.0, 'longitude' => 70.0,
     ]);
-    $outside->forceFill(['status' => PropertyStatus::Available])->save();
+    $outside->forceFill(['status' => PropertyStatus::Published])->save();
 
     $response = $this->getJson('/api/v1/public/properties?bbox=68.7,38.5,68.9,38.6');
 

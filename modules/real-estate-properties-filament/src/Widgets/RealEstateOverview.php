@@ -22,10 +22,7 @@ final class RealEstateOverview extends StatsOverviewWidget
         }
 
         $properties = Property::query()->forTeam($team->id);
-        $activeCount = (clone $properties)->whereIn('status', [
-            PropertyStatus::Available->value,
-            PropertyStatus::UnderOffer->value,
-        ])->count();
+        $activeCount = (clone $properties)->where('status', PropertyStatus::Published->value)->count();
         $averagePrice = (clone $properties)->whereNotNull('price')->avg('price');
 
         return [

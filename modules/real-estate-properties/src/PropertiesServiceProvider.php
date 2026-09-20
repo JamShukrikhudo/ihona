@@ -23,7 +23,6 @@ final class PropertiesServiceProvider extends ServiceProvider
         $this->app->singleton(Application\SavePropertySearch::class);
         $this->app->singleton(Application\DeletePropertySearch::class);
         $this->app->singleton(Application\SubmitPropertyReview::class);
-        $this->app->singleton(Application\SubmitNeighborhoodReview::class);
         $this->app->singleton(Application\CreatePriceAlert::class);
         $this->app->singleton(Application\UpdatePriceAlert::class);
         $this->app->singleton(Application\DeletePriceAlert::class);

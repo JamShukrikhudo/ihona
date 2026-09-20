@@ -27,7 +27,7 @@ final class TransitionProperty
             }
 
             $values = ['status' => $status];
-            if ($status === PropertyStatus::Available && $property->published_at === null) {
+            if ($status === PropertyStatus::Published && $property->published_at === null) {
                 $values['published_at'] = now();
             }
             $from = $property->getRawOriginal('status');
@@ -61,10 +61,10 @@ final class TransitionProperty
     private function canTransition(PropertyStatus $from, PropertyStatus $to): bool
     {
         return match ($from) {
-            PropertyStatus::Draft => in_array($to, [PropertyStatus::Available, PropertyStatus::Withdrawn], true),
-            PropertyStatus::Available => in_array($to, [PropertyStatus::UnderOffer, PropertyStatus::Sold, PropertyStatus::Let, PropertyStatus::Withdrawn], true),
-            PropertyStatus::UnderOffer => in_array($to, [PropertyStatus::Available, PropertyStatus::Sold, PropertyStatus::Withdrawn], true),
-            PropertyStatus::Sold, PropertyStatus::Let, PropertyStatus::Withdrawn => false,
+            PropertyStatus::Draft => in_array($to, [PropertyStatus::Moderation, PropertyStatus::Published, PropertyStatus::Archive], true),
+            PropertyStatus::Moderation => in_array($to, [PropertyStatus::Published, PropertyStatus::Draft, PropertyStatus::Archive], true),
+            PropertyStatus::Published => in_array($to, [PropertyStatus::Draft, PropertyStatus::Archive], true),
+            PropertyStatus::Archive => $to === PropertyStatus::Draft,
         };
     }
 }

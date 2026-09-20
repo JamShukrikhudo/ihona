@@ -4,27 +4,22 @@ declare(strict_types=1);
 
 namespace Liberu\RealEstate\Properties\Domain;
 
+/**
+ * Publication status only — not the deal outcome. A published listing that
+ * gets sold/let/reserved is a fact about a Deal/Offer, not about whether
+ * the listing itself is visible; keeping them separate means an accepted
+ * offer doesn't silently hide the listing, and a withdrawn listing doesn't
+ * erase its deal history.
+ */
 enum PropertyStatus: string
 {
     case Draft = 'draft';
-    case Available = 'available';
-    case UnderOffer = 'under_offer';
-    case Sold = 'sold';
-    case Let = 'let';
-    case Withdrawn = 'withdrawn';
-    case ForSale = 'For Sale';
-    case ForRent = 'For Rent';
-    case ToLet = 'to_let';
-    case LetAgreed = 'let_agreed';
-    case SoldStc = 'sold_stc';
-    case Sstc = 'sstc';
-    case Exchanged = 'exchanged';
-    case Archived = 'archived';
-    case ComingSoon = 'coming_soon';
-    case Rented = 'Rented';
+    case Moderation = 'moderation';
+    case Published = 'published';
+    case Archive = 'archive';
 
     public function isPublic(): bool
     {
-        return in_array($this, [self::Available, self::UnderOffer, self::ForSale, self::ForRent, self::ToLet, self::ComingSoon], true);
+        return $this === self::Published;
     }
 }

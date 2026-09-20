@@ -169,7 +169,7 @@ class PropertySeeder extends Seeder
                     'deal_type' => $data['deal_type'],
                     'latitude' => $data['latitude'],
                     'longitude' => $data['longitude'],
-                    'status' => 'available',
+                    'status' => 'published',
                     'published_at' => now(),
                     'has_generator' => $data['has_generator'] ?? false,
                     'mountain_view' => $data['mountain_view'] ?? null,

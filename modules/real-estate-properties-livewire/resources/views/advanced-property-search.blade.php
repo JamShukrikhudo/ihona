@@ -56,7 +56,7 @@
                 <label for="advanced-status">Status</label>
                 <select id="advanced-status" wire:model="status" class="w-full rounded border border-gray-300 px-3 py-2">
                     <option value="">Any status</option>
-                    @foreach (['draft' => 'Draft', 'available' => 'Available', 'under_offer' => 'Under offer', 'sold' => 'Sold', 'let' => 'Let', 'withdrawn' => 'Withdrawn'] as $value => $label)
+                    @foreach (['draft' => 'Draft', 'moderation' => 'Moderation', 'published' => 'Published', 'archive' => 'Archive'] as $value => $label)
                         <option value="{{ $value }}">{{ $label }}</option>
                     @endforeach
                 </select>

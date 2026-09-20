@@ -15,20 +15,16 @@ final class PropertiesByStatusChart extends ChartWidget
 
     private const LABELS = [
         'draft' => 'Черновик',
-        'available' => 'Доступен',
-        'under_offer' => 'Предложение принято',
-        'sold' => 'Продан',
-        'let' => 'Сдан в аренду',
-        'withdrawn' => 'Снят с продажи',
+        'moderation' => 'На модерации',
+        'published' => 'Опубликован',
+        'archive' => 'В архиве',
     ];
 
     private const COLORS = [
         'draft' => '#94a3b8',
-        'available' => '#2f7fd6',
-        'under_offer' => '#c2622d',
-        'sold' => '#1c63b3',
-        'let' => '#3d9970',
-        'withdrawn' => '#64748b',
+        'moderation' => '#c2622d',
+        'published' => '#2f7fd6',
+        'archive' => '#64748b',
     ];
 
     protected function getData(): array

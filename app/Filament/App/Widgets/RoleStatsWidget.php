@@ -59,7 +59,7 @@ final class RoleStatsWidget extends StatsOverviewWidget
             default => [
                 Stat::make('Saved properties', PropertyFavorite::query()->where('team_id', $teamId)->where('user_id', $user->id)->count())->icon('heroicon-o-heart')->color('primary'),
                 Stat::make('Saved searches', PropertySavedSearch::query()->where('team_id', $teamId)->where('user_id', $user->id)->count())->icon('heroicon-o-bookmark')->color('success'),
-                Stat::make('Available properties', Property::query()->where('team_id', $teamId)->where('status', 'available')->count())->icon('heroicon-o-home-modern')->color('warning'),
+                Stat::make('Available properties', Property::query()->where('team_id', $teamId)->where('status', 'published')->count())->icon('heroicon-o-home-modern')->color('warning'),
             ],
         };
     }

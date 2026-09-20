@@ -110,7 +110,41 @@ it('provides the legacy neural valuation contract through the modular engine', f
         ->and($result['prediction_factors'])->toBeArray();
 });
 
-it('serves property valuation reports through the API and Livewire adapters', function (): void {
+/**
+ * Skipped: real-estate-valuations is default_enabled: false for the
+ * Tajikistan-market CMS redesign — its Livewire views (like its API
+ * routes) have no registered hint path when the module's own service
+ * provider never boots.
+ */
+it('serves property valuation reports through the Livewire adapter', function (): void {
+    $user = User::factory()->create(['current_team_id' => 10]);
+    $property = [
+        'area_sqft' => 1200,
+        'bedrooms' => 3,
+        'bathrooms' => 2,
+        'year_built' => 2018,
+        'property_type' => 'detached',
+        'address' => 'Valuation Street',
+    ];
+
+    $this->actingAs($user);
+    Livewire::component('test-property-valuation-estimator', PropertyValuationEstimator::class);
+
+    Livewire::test('test-property-valuation-estimator', ['property' => $property])
+        ->call('generateValuation')
+        ->assertSet('valuation.estimated', true)
+        ->assertSet('valuation.method', 'explainable_heuristic')
+        ->call('resetValuation')
+        ->assertSet('valuation', null);
+})->skip('real-estate-valuations is default_enabled: false for the Tajikistan-market CMS — see docblock above.');
+
+/**
+ * Skipped: real-estate-valuations (Market Analysis / automated valuations —
+ * on the user's explicit removal list for the Tajikistan-market CMS
+ * redesign) is now default_enabled: false, so its API routes 404. Passes
+ * again if the module is re-enabled for a market that wants it.
+ */
+it('serves property valuation reports through the API', function (): void {
     $user = User::factory()->create(['current_team_id' => 10]);
     RateLimiter::for('api', static fn (): Limit => Limit::perMinute(1000));
     $property = [
@@ -127,18 +161,12 @@ it('serves property valuation reports through the API and Livewire adapters', fu
         ->assertOk()
         ->assertJsonPath('data.estimated', true)
         ->assertJsonPath('data.method', 'explainable_heuristic');
+})->skip('real-estate-valuations is default_enabled: false for the Tajikistan-market CMS — see docblock above.');
 
-    $this->actingAs($user);
-    Livewire::component('test-property-valuation-estimator', PropertyValuationEstimator::class);
-
-    Livewire::test('test-property-valuation-estimator', ['property' => $property])
-        ->call('generateValuation')
-        ->assertSet('valuation.estimated', true)
-        ->assertSet('valuation.method', 'explainable_heuristic')
-        ->call('resetValuation')
-        ->assertSet('valuation', null);
-});
-
+/**
+ * Skipped: same reason as above — real-estate-valuations is
+ * default_enabled: false for the Tajikistan-market CMS redesign.
+ */
 it('serves neural property valuations for properties in the current team', function (): void {
     $user = User::factory()->create(['current_team_id' => 10]);
     RateLimiter::for('api', static fn (): Limit => Limit::perMinute(1000));
@@ -156,7 +184,7 @@ it('serves neural property valuations for properties in the current team', funct
         ->assertOk()
         ->assertJsonPath('data.method', 'neural_network')
         ->assertJsonPath('data.model_version', '1.0.0');
-});
+})->skip('real-estate-valuations is default_enabled: false for the Tajikistan-market CMS — see docblock above.');
 
 it('calculates amortization safely, including zero-interest loans', function (): void {
     $calculate = app(CalculateMortgage::class);
@@ -173,7 +201,29 @@ it('calculates amortization safely, including zero-interest loans', function ():
     expect(fn () => $calculate->handle(240000, 250000, 5, 25))->toThrow(ValidationException::class);
 });
 
-it('serves mortgage estimates through the authenticated API and Livewire adapters', function (): void {
+/**
+ * Skipped: real-estate-valuations is default_enabled: false for the
+ * Tajikistan-market CMS redesign — its Livewire views have no registered
+ * hint path when the module's own service provider never boots.
+ */
+it('serves mortgage estimates through the Livewire adapter', function (): void {
+    $user = User::factory()->create(['current_team_id' => 10]);
+    $this->actingAs($user);
+    Livewire::component('test-mortgage-calculator', MortgageCalculator::class);
+
+    Livewire::test('test-mortgage-calculator', ['propertyPrice' => 240000, 'loanAmount' => 120000, 'interestRate' => 0, 'loanTermYears' => 10])
+        ->call('calculateMortgage')
+        ->assertSee('Mortgage estimate')
+        ->assertSet('result.monthly_payment', 1000)
+        ->call('resetCalculation')
+        ->assertSet('result', null);
+})->skip('real-estate-valuations is default_enabled: false for the Tajikistan-market CMS — see docblock above.');
+
+/**
+ * Skipped: real-estate-valuations is default_enabled: false for the
+ * Tajikistan-market CMS redesign, so its API routes 404.
+ */
+it('serves mortgage estimates through the authenticated API', function (): void {
     $user = User::factory()->create(['current_team_id' => 10]);
     RateLimiter::for('api', static fn (): Limit => Limit::perMinute(1000));
 
@@ -187,17 +237,7 @@ it('serves mortgage estimates through the authenticated API and Livewire adapter
         ->assertOk()
         ->assertJsonPath('data.estimated', true)
         ->assertJsonPath('data.monthly_payment', 1000);
-
-    $this->actingAs($user);
-    Livewire::component('test-mortgage-calculator', MortgageCalculator::class);
-
-    Livewire::test('test-mortgage-calculator', ['propertyPrice' => 240000, 'loanAmount' => 120000, 'interestRate' => 0, 'loanTermYears' => 10])
-        ->call('calculateMortgage')
-        ->assertSee('Mortgage estimate')
-        ->assertSet('result.monthly_payment', 1000)
-        ->call('resetCalculation')
-        ->assertSet('result', null);
-});
+})->skip('real-estate-valuations is default_enabled: false for the Tajikistan-market CMS — see docblock above.');
 
 it('calculates estimate-only rental yields', function (): void {
     $result = app(CalculateRentalYield::class)->handle(200000, 24000, 6000);
@@ -212,7 +252,29 @@ it('calculates estimate-only rental yields', function (): void {
     expect(fn () => app(CalculateRentalYield::class)->handle(0, 24000))->toThrow(ValidationException::class);
 });
 
-it('serves rental yield estimates through the authenticated API and Livewire adapters', function (): void {
+/**
+ * Skipped: real-estate-valuations is default_enabled: false for the
+ * Tajikistan-market CMS redesign — its Livewire views have no registered
+ * hint path when the module's own service provider never boots.
+ */
+it('serves rental yield estimates through the Livewire adapter', function (): void {
+    $user = User::factory()->create(['current_team_id' => 10]);
+    $this->actingAs($user);
+    Livewire::component('test-rental-yield-calculator', RentalYieldCalculator::class);
+
+    Livewire::test('test-rental-yield-calculator', ['propertyValue' => 200000, 'annualRentalIncome' => 24000, 'annualExpenses' => 6000])
+        ->call('calculateRentalYield')
+        ->assertSee('Rental yield estimate')
+        ->assertSet('result.net_yield', 9)
+        ->call('resetCalculation')
+        ->assertSet('result', null);
+})->skip('real-estate-valuations is default_enabled: false for the Tajikistan-market CMS — see docblock above.');
+
+/**
+ * Skipped: real-estate-valuations is default_enabled: false for the
+ * Tajikistan-market CMS redesign, so its API routes 404.
+ */
+it('serves rental yield estimates through the authenticated API', function (): void {
     $user = User::factory()->create(['current_team_id' => 10]);
     RateLimiter::for('api', static fn (): Limit => Limit::perMinute(1000));
 
@@ -225,14 +287,4 @@ it('serves rental yield estimates through the authenticated API and Livewire ada
         ->assertOk()
         ->assertJsonPath('data.estimated', true)
         ->assertJsonPath('data.net_yield', 9);
-
-    $this->actingAs($user);
-    Livewire::component('test-rental-yield-calculator', RentalYieldCalculator::class);
-
-    Livewire::test('test-rental-yield-calculator', ['propertyValue' => 200000, 'annualRentalIncome' => 24000, 'annualExpenses' => 6000])
-        ->call('calculateRentalYield')
-        ->assertSee('Rental yield estimate')
-        ->assertSet('result.net_yield', 9)
-        ->call('resetCalculation')
-        ->assertSet('result', null);
-});
+})->skip('real-estate-valuations is default_enabled: false for the Tajikistan-market CMS — see docblock above.');

@@ -48,7 +48,7 @@
             <label for="property-status">Status</label>
             <select id="property-status" wire:model.live="status" class="w-full rounded border border-gray-300 px-3 py-2">
                 <option value="">Any status</option>
-                @foreach (['draft' => 'Draft', 'available' => 'Available', 'under_offer' => 'Under offer', 'sold' => 'Sold', 'let' => 'Let', 'withdrawn' => 'Withdrawn'] as $value => $label)
+                @foreach (['draft' => 'Draft', 'moderation' => 'Moderation', 'published' => 'Published', 'archive' => 'Archive'] as $value => $label)
                     <option value="{{ $value }}">{{ $label }}</option>
                 @endforeach
             </select>
@@ -149,9 +149,6 @@
                     @if ($property->isHmo())
                         <span aria-label="House in multiple occupation">HMO</span>
                     @endif
-                    @if ($property->hasActiveInsurance())
-                        <span aria-label="Active insurance">Insured</span>
-                    @endif
                     @if ($property->hasVirtualTour())
                         <span aria-label="Virtual tour available">Virtual tour</span>
                     @endif
@@ -165,15 +162,13 @@
                     </button>
                     <button type="button" wire:click="showSimilar({{ $property->getKey() }})">Similar</button>
                     @if ($property->status->value === 'draft')
+                        <button type="button" wire:click="submitForModeration({{ $property->getKey() }})">Submit for moderation</button>
                         <button type="button" wire:click="publish({{ $property->getKey() }})">Publish</button>
-                    @elseif ($property->status->value === 'available')
-                        <button type="button" wire:click="markUnderOffer({{ $property->getKey() }})">Mark under offer</button>
-                        <button type="button" wire:click="markSold({{ $property->getKey() }})">Mark sold</button>
-                    @elseif ($property->status->value === 'under_offer')
-                        <button type="button" wire:click="markSold({{ $property->getKey() }})">Mark sold</button>
+                    @elseif ($property->status->value === 'moderation')
+                        <button type="button" wire:click="publish({{ $property->getKey() }})">Publish</button>
                     @endif
-                    @if (in_array($property->status->value, ['draft', 'available', 'under_offer'], true))
-                        <button type="button" wire:click="withdraw({{ $property->getKey() }})">Withdraw</button>
+                    @if (in_array($property->status->value, ['draft', 'moderation', 'published'], true))
+                        <button type="button" wire:click="archive({{ $property->getKey() }})">Archive</button>
                     @endif
                 </div>
             </li>

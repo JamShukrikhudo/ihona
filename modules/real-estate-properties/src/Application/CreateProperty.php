@@ -7,11 +7,13 @@ namespace Liberu\RealEstate\Properties\Application;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Liberu\RealEstate\Core\Models\Branch;
-use Liberu\RealEstate\Core\Models\Territory;
 use Liberu\RealEstate\Properties\Domain\PropertyStatus;
+use Liberu\RealEstate\Properties\Models\City;
+use Liberu\RealEstate\Properties\Models\District;
 use Liberu\RealEstate\Properties\Models\Property;
 use Liberu\RealEstate\Properties\Models\PropertyCategory;
 use Liberu\RealEstate\Properties\Models\PropertyTemplate;
+use Liberu\RealEstate\Properties\Models\Region;
 
 final class CreateProperty
 {
@@ -35,15 +37,24 @@ final class CreateProperty
         if ($templateId !== null && ! PropertyTemplate::query()->forTeam($teamId)->whereKey($templateId)->exists()) {
             throw ValidationException::withMessages(['property_template_id' => 'The template must belong to the current team.']);
         }
-        $territoryId = $attributes['territory_id'] ?? null;
-        if ($territoryId !== null && ! Territory::query()->forTeam($teamId)->whereKey($territoryId)->exists()) {
-            throw ValidationException::withMessages(['territory_id' => 'The territory must belong to the current team.']);
+        $regionId = $attributes['region_id'] ?? null;
+        if ($regionId !== null && ! Region::query()->whereKey($regionId)->exists()) {
+            throw ValidationException::withMessages(['region_id' => 'The region does not exist.']);
+        }
+        $cityId = $attributes['city_id'] ?? null;
+        if ($cityId !== null && ! City::query()->whereKey($cityId)->exists()) {
+            throw ValidationException::withMessages(['city_id' => 'The city does not exist.']);
+        }
+        $districtId = $attributes['district_id'] ?? null;
+        if ($districtId !== null && ! District::query()->whereKey($districtId)->exists()) {
+            throw ValidationException::withMessages(['district_id' => 'The district does not exist.']);
         }
 
-        return DB::transaction(function () use ($teamId, $actorId, $attributes, $address, $categoryId, $templateId, $territoryId): Property {
+        return DB::transaction(function () use ($teamId, $actorId, $attributes, $address, $categoryId, $templateId, $regionId, $cityId, $districtId): Property {
             $property = Property::query()->create([
                 'team_id' => $teamId,
                 'branch_id' => $attributes['branch_id'] ?? null,
+                'agent_id' => $attributes['agent_id'] ?? $actorId,
                 'created_by' => $actorId,
                 'address' => $address,
                 'title' => $attributes['title'] ?? null,
@@ -64,10 +75,11 @@ final class CreateProperty
                 'longitude' => $attributes['longitude'] ?? null,
                 'postal_code' => $attributes['postal_code'] ?? null,
                 'country' => $attributes['country'] ?? null,
+                'region_id' => $regionId,
+                'city_id' => $cityId,
+                'district_id' => $districtId,
                 'tenure' => $attributes['tenure'] ?? null,
                 'lease_years_remaining' => $attributes['lease_years_remaining'] ?? null,
-                'service_charge' => $attributes['service_charge'] ?? null,
-                'ground_rent' => $attributes['ground_rent'] ?? null,
                 'energy_rating' => $attributes['energy_rating'] ?? null,
                 'council_tax_band' => $attributes['council_tax_band'] ?? null,
                 'energy_score' => $attributes['energy_score'] ?? null,
@@ -77,8 +89,6 @@ final class CreateProperty
                 'transit_description' => $attributes['transit_description'] ?? null,
                 'bike_score' => $attributes['bike_score'] ?? null,
                 'bike_description' => $attributes['bike_description'] ?? null,
-                'walkability_updated_at' => $attributes['walkability_updated_at'] ?? null,
-                'epc' => $attributes['epc'] ?? null,
                 'virtual_tour_url' => $attributes['virtual_tour_url'] ?? null,
                 'virtual_tour_provider' => $attributes['virtual_tour_provider'] ?? null,
                 'model_3d_url' => $attributes['model_3d_url'] ?? null,
@@ -96,21 +106,14 @@ final class CreateProperty
                 'water_source' => $attributes['water_source'] ?? null,
                 'max_guests' => $attributes['max_guests'] ?? null,
                 'live_tour_available' => $attributes['live_tour_available'] ?? false,
-                'holographic_tour_url' => $attributes['holographic_tour_url'] ?? null,
-                'holographic_provider' => $attributes['holographic_provider'] ?? null,
-                'holographic_metadata' => $attributes['holographic_metadata'] ?? null,
-                'holographic_enabled' => $attributes['holographic_enabled'] ?? false,
-                'energy_rating_date' => $attributes['energy_rating_date'] ?? null,
                 'insurance_policy_id' => $attributes['insurance_policy_id'] ?? null,
                 'insurance_coverage_amount' => $attributes['insurance_coverage_amount'] ?? null,
                 'insurance_premium' => $attributes['insurance_premium'] ?? null,
-                'insurance_expiry_date' => $attributes['insurance_expiry_date'] ?? null,
                 'jupix_id' => $attributes['jupix_id'] ?? null,
                 'property_type' => $attributes['property_type'] ?? 'residential',
                 'deal_type' => $attributes['deal_type'] ?? 'sale',
                 'property_category_id' => $categoryId,
                 'property_template_id' => $templateId,
-                'territory_id' => $territoryId,
                 'characteristics' => $attributes['characteristics'] ?? [],
                 'utilities' => $attributes['utilities'] ?? [],
                 'features' => $attributes['features'] ?? [],

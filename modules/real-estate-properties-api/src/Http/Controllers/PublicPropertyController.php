@@ -31,7 +31,7 @@ final class PublicPropertyController
         $filters = $request->validate([
             'territory' => ['sometimes', 'nullable', 'string', 'max:20'],
             'type' => ['sometimes', 'nullable', 'string', 'max:40'],
-            'deal_type' => ['sometimes', 'nullable', Rule::in(['sale', 'rent'])],
+            'deal_type' => ['sometimes', 'nullable', Rule::in(['sale', 'rent', 'daily'])],
             'min_price' => ['sometimes', 'nullable', 'numeric', 'min:0'],
             'max_price' => ['sometimes', 'nullable', 'numeric', 'min:0'],
             // Comma-separated room counts, cian-style chips (1,2,3,4,5 — 5
@@ -63,10 +63,10 @@ final class PublicPropertyController
             : null;
 
         $properties = Property::query()
-            ->with('territory')
+            ->with(['region', 'city', 'district'])
             ->forTeam($team->id)
-            ->where('status', PropertyStatus::Available->value)
-            ->when($filters['territory'] ?? null, fn ($q, $code) => $q->whereHas('territory', fn ($t) => $t->where('code', strtoupper($code))))
+            ->where('status', PropertyStatus::Published->value)
+            ->when($filters['territory'] ?? null, fn ($q, $code) => $q->whereHas('city', fn ($t) => $t->whereRaw('lower(slug) = ?', [strtolower($code)])))
             ->when($filters['type'] ?? null, fn ($q, $type) => $q->where('property_type', $type))
             ->when($filters['deal_type'] ?? null, fn ($q, $dealType) => $q->where('deal_type', $dealType))
             ->when($filters['min_price'] ?? null, fn ($q, $min) => $q->where('price', '>=', $min))
@@ -88,10 +88,10 @@ final class PublicPropertyController
 
     public function show(Request $request, Property $property): JsonResponse
     {
-        abort_unless($property->status === PropertyStatus::Available, 404);
+        abort_unless($property->status === PropertyStatus::Published, 404);
 
         $property->recordView($request->ip() ?? 'unknown');
 
-        return (new PublicPropertyResource($property->load('territory')))->response();
+        return (new PublicPropertyResource($property->load(['region', 'city', 'district'])))->response();
     }
 }

@@ -140,7 +140,7 @@ it('keeps the API property response aligned with legacy listing data', function 
     $resource = file_get_contents(base_path('modules/real-estate-properties-api/src/Http/Resources/PropertyResource.php'));
     $openApi = file_get_contents(base_path('modules/real-estate-properties-api/openapi/v1/real-estate-properties.yaml'));
 
-    foreach (['title', 'description', 'currency', 'reception_rooms', 'year_built', 'postal_code', 'energy_score', 'list_date', 'is_featured', 'insurance_expiry_date', 'rightmove_id', 'zoopla_id', 'onthemarket_id'] as $field) {
+    foreach (['title', 'description', 'currency', 'reception_rooms', 'year_built', 'postal_code', 'energy_score', 'list_date', 'is_featured', 'insurance_policy_id', 'region_id', 'city_id'] as $field) {
         expect($resource)->toContain("'{$field}'");
         expect($openApi)->toContain($field);
     }
@@ -207,10 +207,11 @@ it('keeps the property gallery contract connected to the media boundary', functi
     $mediaCreate = file_get_contents(base_path('modules/real-estate-media-and-documents/src/Application/CreateMediaDocument.php'));
 
     expect($property)->toContain('public function galleryItems(array $mediaItems = []): array')
+        ->toContain('public function photoMediaItems(): array')
         ->and($galleryItem)->toContain('public function alt(): string')
         ->toContain('public function isPlan(): bool')
         ->and($detail)->toContain('MediaDocument::query()')
-        ->toContain("whereIn('kind', ['photo', 'floorplan', 'siteplan'])")
+        ->toContain("whereIn('kind', ['floorplan', 'siteplan'])")
         ->and($media)->toContain('public const GALLERY_KINDS')
         ->toContain('public function publicUrl(): ?string')
         ->toContain('public function isVideo(): bool')
@@ -335,26 +336,18 @@ it('keeps property reviews connected to the modular Livewire boundary', function
         ->and($provider)->toContain("property-review-form', Components\\PropertyReviewForm::class");
 });
 
-it('keeps role and neighborhood reviews inside their modular boundaries', function (): void {
+it('keeps role reviews inside their modular boundaries', function (): void {
     $party = file_get_contents(base_path('modules/real-estate-parties/src/Models/Party.php'));
     $partyReview = file_get_contents(base_path('modules/real-estate-parties/src/Models/PartyReview.php'));
     $partyAction = file_get_contents(base_path('modules/real-estate-parties/src/Application/SubmitPartyReview.php'));
     $partyComponent = file_get_contents(base_path('modules/real-estate-parties-livewire/src/Components/PartyReviewForm.php'));
     $partyProvider = file_get_contents(base_path('modules/real-estate-parties-livewire/src/PartiesLivewireServiceProvider.php'));
-    $neighborhood = file_get_contents(base_path('modules/real-estate-properties/src/Models/Neighborhood.php'));
-    $neighborhoodReview = file_get_contents(base_path('modules/real-estate-properties/src/Models/NeighborhoodReview.php'));
-    $neighborhoodAction = file_get_contents(base_path('modules/real-estate-properties/src/Application/SubmitNeighborhoodReview.php'));
-    $neighborhoodComponent = file_get_contents(base_path('modules/real-estate-properties-livewire/src/Components/NeighborhoodReviewForm.php'));
 
     expect($party)->toContain('function reviews')->toContain('averageReviewRating')
         ->and($partyReview)->toContain('class PartyReview')->toContain('scopeApproved')
         ->and($partyAction)->toContain('class SubmitPartyReview')->toContain('PartyType::Landlord')->toContain('PartyType::Tenant')
         ->and($partyComponent)->toContain('class PartyReviewForm')->toContain('submitReview')
-        ->and($partyProvider)->toContain('landlord-review-form')->toContain('tenant-review-form')
-        ->and($neighborhood)->toContain('class Neighborhood')->toContain('scopeForTeam')
-        ->and($neighborhoodReview)->toContain('class NeighborhoodReview')->toContain('scopeApproved')
-        ->and($neighborhoodAction)->toContain('class SubmitNeighborhoodReview')
-        ->and($neighborhoodComponent)->toContain('class NeighborhoodReviewForm')->toContain('submitReview');
+        ->and($partyProvider)->toContain('landlord-review-form')->toContain('tenant-review-form');
 });
 
 it('keeps property price alerts connected across modular boundaries', function (): void {

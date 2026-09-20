@@ -9,6 +9,12 @@ beforeEach(function (): void {
     Livewire::component('test-calculators', Calculators::class);
 });
 
+/**
+ * Skipped: real-estate-valuations (Market Analysis / automated valuations —
+ * on the user's explicit removal list for the Tajikistan-market CMS
+ * redesign) is now default_enabled: false, so its Livewire views have no
+ * registered hint path. Passes again if the module is re-enabled.
+ */
 it('provides the public calculator hub and delegates supported calculations', function (): void {
     Livewire::test('test-calculators')
         ->assertSet('calculatorType', 'mortgage')
@@ -19,10 +25,16 @@ it('provides the public calculator hub and delegates supported calculations', fu
         ->set('calculatorType', 'moving')->assertSee('Cost of moving estimate');
 
     $this->get('/calculators')->assertOk()->assertSee('Property calculators');
-});
+})->skip('real-estate-valuations is default_enabled: false for the Tajikistan-market CMS — see docblock above.');
 
-it('rejects invalid calculator input before invoking domain logic', function (): void {
+it('rejects invalid stamp duty input before invoking domain logic', function (): void {
     expect(fn () => app(CalculateStampDuty::class)->handle(-1, 'home_mover'))->toThrow(ValidationException::class);
-
-    Livewire::test('test-calculators')->set('propertyPrice', 'not-a-number')->set('loanAmount', null)->set('interestRate', '')->set('loanTerm', 'abc')->call('calculateMortgage')->assertHasErrors(['propertyPrice', 'loanAmount', 'interestRate', 'loanTerm']);
 });
+
+/**
+ * Skipped: same reason as above — real-estate-valuations is
+ * default_enabled: false for the Tajikistan-market CMS redesign.
+ */
+it('rejects invalid calculator input before invoking domain logic', function (): void {
+    Livewire::test('test-calculators')->set('propertyPrice', 'not-a-number')->set('loanAmount', null)->set('interestRate', '')->set('loanTerm', 'abc')->call('calculateMortgage')->assertHasErrors(['propertyPrice', 'loanAmount', 'interestRate', 'loanTerm']);
+})->skip('real-estate-valuations is default_enabled: false for the Tajikistan-market CMS — see docblock above.');
